@@ -1,0 +1,35 @@
+name: Daily trip weather report
+
+# Runs in GitHub's cloud — works even when Michel's Mac is off.
+on:
+  schedule:
+    - cron: "0 6 * * *"   # 06:00 UTC daily
+  workflow_dispatch: {}     # allow manual "Run workflow" button
+
+permissions:
+  contents: write           # needed to commit the updated report back
+
+jobs:
+  weather:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Update weather report
+        run: python3 trip-ni-july-2026/scripts/update_weather.py
+
+      - name: Commit changes if any
+        run: |
+          git config user.name  "trip-weather-bot"
+          git config user.email "actions@github.com"
+          git add trip-ni-july-2026/daily-report.md trip-ni-july-2026/history/
+          if git diff --staged --quiet; then
+            echo "No forecast changes."
+          else
+            git commit -m "weather: daily report update ($(date -u +%Y-%m-%d))"
+            git push
+          fi
