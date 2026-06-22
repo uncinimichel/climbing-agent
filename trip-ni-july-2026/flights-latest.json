@@ -1,6 +1,6 @@
 {
   "comment": "Latest flight prices per combo (round-trip, 1 pax, GBP). Updated on demand by Claude or by an API script. null = not yet checked.",
-  "checked_at": "2026-06-22 17:21 UTC (Google Flights / SerpApi)",
+  "checked_at": "2026-06-22 17:28 UTC (Google Flights / SerpApi)",
   "currency": "GBP",
   "combos": {
     "fri-mon": {
