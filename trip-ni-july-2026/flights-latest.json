@@ -1,6 +1,6 @@
 {
   "comment": "Latest flight prices per combo (round-trip, 1 pax, GBP). Updated on demand by Claude or by an API script. null = not yet checked.",
-  "checked_at": "2026-06-22 18:58 UTC (Google Flights/SerpApi)",
+  "checked_at": "2026-06-22 19:10 UTC (Google Flights/SerpApi)",
   "currency": "GBP",
   "rep_combo": {
     "id": "fri-tue",
@@ -15,7 +15,7 @@
         "to": "ZAD",
         "options": [
           {
-            "price": 176,
+            "price": 175,
             "airline": "Ryanair",
             "from": "STN",
             "to": "ZAD",
@@ -50,15 +50,6 @@
         "to": "ZAD",
         "options": [
           {
-            "price": 605,
-            "airline": "British Airways",
-            "from": "BHD",
-            "to": "ZAD",
-            "dep": "06:30",
-            "arr": "14:30",
-            "stops": 2
-          },
-          {
             "price": 612,
             "airline": "British Airways",
             "from": "BHD",
@@ -74,6 +65,15 @@
             "to": "ZAD",
             "dep": "20:10",
             "arr": "22:45",
+            "stops": 2
+          },
+          {
+            "price": 735,
+            "airline": "British Airways",
+            "from": "BHD",
+            "to": "ZAD",
+            "dep": "06:30",
+            "arr": "14:30",
             "stops": 2
           }
         ],
@@ -140,12 +140,12 @@
             "stops": 2
           },
           {
-            "price": 498,
+            "price": 505,
             "airline": "British Airways",
             "from": "BHD",
             "to": "BIO",
             "dep": "06:30",
-            "arr": "17:50",
+            "arr": "08:30",
             "stops": 2
           }
         ],
@@ -159,7 +159,7 @@
         "to": "GLA",
         "options": [
           {
-            "price": 74,
+            "price": 73,
             "airline": "Ryanair UK",
             "from": "STN",
             "to": "GLA",
