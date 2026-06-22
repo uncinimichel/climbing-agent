@@ -12,6 +12,7 @@ Outputs: index.html (repo root, for GitHub Pages), trip-ni-july-2026/daily-repor
 and a permanent trip-ni-july-2026/history/<date>.md snapshot. Stdlib only.
 """
 import json
+import time
 import urllib.request
 from datetime import date, datetime, timezone
 from pathlib import Path
@@ -31,6 +32,13 @@ FLIGHTS_CFG = json.loads((ROOT / "flights.json").read_text())
 FLIGHTS_DATA = json.loads((ROOT / "flights-latest.json").read_text())
 
 CLIMO_YEARS = [2021, 2022, 2023, 2024]   # recent years to average for "typical July"
+SITE_URL = "https://multi-pitch.com/"    # Michel & Dan's climbing site
+SHEET_URL = "https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit"
+REPO_URL = "https://github.com/uncinimichel/climbing-agent"
+
+
+def maps_url(v):
+    return f"https://www.google.com/maps/search/?api=1&query={v['lat']},{v['lon']}"
 
 WMO = {
     0: "☀️ clear", 1: "🌤️ mostly clear", 2: "⛅ partly cloudy", 3: "☁️ overcast",
@@ -42,9 +50,17 @@ WMO = {
 }
 
 
-def _get(url):
-    with urllib.request.urlopen(url, timeout=40) as r:
-        return json.load(r)
+def _get(url, retries=4):
+    """GET JSON with retries — Open-Meteo rate-limits bursts; never silently lose a sample."""
+    last = None
+    for attempt in range(retries):
+        try:
+            with urllib.request.urlopen(url, timeout=40) as r:
+                return json.load(r)
+        except Exception as e:
+            last = e
+            time.sleep(1.5 * (attempt + 1))
+    raise last
 
 
 # ---- Weather signals ------------------------------------------------------
@@ -59,35 +75,37 @@ def forecast(lat, lon):
 
 
 def climatology(lat, lon):
-    """Typical conditions for the trip window, averaged over recent years."""
+    """Typical trip-window conditions, averaged over recent years.
+
+    ONE ranged request per venue (not one per year) then filter to the trip
+    window client-side — deterministic and avoids the rate-limit/silent-drop
+    that made per-year requests non-reproducible.
+    """
+    d = _get(
+        "https://archive-api.open-meteo.com/v1/archive"
+        f"?latitude={lat}&longitude={lon}"
+        f"&start_date={CLIMO_YEARS[0]}-07-15&end_date={CLIMO_YEARS[-1]}-07-31"
+        "&daily=temperature_2m_max,precipitation_sum&timezone=auto"
+    )["daily"]
     tmaxs, precs, rain_days, total = [], [], 0, 0
-    for y in CLIMO_YEARS:
-        s = TARGET_START.replace(year=y).isoformat()
-        e = TARGET_END.replace(year=y).isoformat()
-        try:
-            d = _get(
-                "https://archive-api.open-meteo.com/v1/archive"
-                f"?latitude={lat}&longitude={lon}&start_date={s}&end_date={e}"
-                "&daily=temperature_2m_max,precipitation_sum,weathercode&timezone=auto"
-            )["daily"]
-        except Exception:
+    for t, tx, pr in zip(d["time"], d["temperature_2m_max"], d["precipitation_sum"]):
+        dd = date.fromisoformat(t)
+        if not (dd.month == TARGET_START.month and TARGET_START.day <= dd.day <= TARGET_END.day):
             continue
-        for i in range(len(d["time"])):
-            tx, pr = d["temperature_2m_max"][i], d["precipitation_sum"][i]
-            if tx is None:
-                continue
-            total += 1
-            tmaxs.append(tx)
-            precs.append(pr or 0)
-            if (pr or 0) >= 3:          # climbing-meaningful rain, not ERA5 trace/drizzle
-                rain_days += 1
+        if tx is None:
+            continue
+        total += 1
+        tmaxs.append(tx)
+        precs.append(pr or 0)
+        if (pr or 0) >= 3:              # climbing-meaningful rain, not ERA5 trace/drizzle
+            rain_days += 1
     if not total:
         return None
     return {
         "tmax": round(sum(tmaxs) / len(tmaxs)),
         "precip": round(sum(precs) / len(precs), 1),
         "rain_pct": round(100 * rain_days / total),
-        "years": len(CLIMO_YEARS),
+        "days": total,
     }
 
 
@@ -193,10 +211,11 @@ def climo_cell(c):
 
 
 def fc_cell(fc):
-    if not fc:
-        return "<span class='dim'>not in range yet</span>"
-    tag = "" if fc["in_window"] else " <span class='dim'>(proxy)</span>"
-    return f"{fc['sky']} {fc['tmax']}°C · {fc['rain_prob']}% rain{tag}"
+    # Only show the live forecast when it actually covers the trip window — a
+    # single day 16 days out is not meaningful, so don't display it as a number.
+    if not fc or not fc.get("in_window"):
+        return "<span class='dim'>from ~8 Jul</span>"
+    return f"{fc['sky']} {fc['tmax']}°C · {fc['rain_prob']}% rain"
 
 
 def build_html(ranked, now, banner):
@@ -211,7 +230,7 @@ def build_html(ranked, now, banner):
         medal = {1: "🥇", 2: "🥈", 3: "🥉"}.get(n, f"{n}")
         rows.append(
             f"<tr><td class='rank'>{medal}</td>"
-            f"<td><div class='vname'>{v['name']}</div>"
+            f"<td><div class='vname'><a class='vlink' href='{maps_url(v)}' target='_blank' rel='noopener'>{v['name']} 🗺️</a></div>"
             f"<div class='vsub'>{v['country']} · {v.get('style','')}</div></td>"
             f"<td><span class='pill' style='background:{col}'>{r['score']}</span></td>"
             f"<td class='clim'>{climo_cell(r.get('climo'))}</td>"
@@ -310,6 +329,11 @@ tr:last-child td{{border-bottom:none}}
 tbody tr:hover{{background:rgba(37,99,235,.04)}}
 .rank{{font-size:18px;font-weight:800;width:40px;text-align:center}}
 .vname{{font-weight:700;font-size:15px}}
+.vlink{{color:inherit;text-decoration:none}}
+.vlink:hover{{color:var(--accent);text-decoration:underline}}
+.links{{margin:0 0 6px;font-size:13.5px}}
+.links a{{color:var(--accent);text-decoration:none;font-weight:600}}
+.links a:hover{{text-decoration:underline}}
 .vsub{{color:var(--dim);font-size:12.5px;margin-top:2px}}
 .clim{{white-space:nowrap}}
 .pill{{display:inline-block;min-width:42px;text-align:center;color:#fff;font-weight:800;
@@ -328,6 +352,9 @@ footer a{{color:var(--accent);text-decoration:none}}
 <h1>🧗 Climbing Trip Planner — where should Michel &amp; Dan go?</h1>
 <p class="lead">Multi-pitch trip <b>Fri 24 – Tue 28 Jul 2026</b> · ranked best-first ·
 updated {now:%a %d %b %Y, %H:%M UTC}</p>
+<div class="links"><a href="{SITE_URL}" target="_blank" rel="noopener">🧗 multi-pitch.com</a> ·
+<a href="{SHEET_URL}" target="_blank" rel="noopener">📋 venue spreadsheet</a> ·
+<span class="dim">🗺️ tap a venue for Google Maps</span></div>
 </header>
 <div class="banner {banner[0]}">{banner[1]}</div>
 {top_html}
@@ -346,8 +373,10 @@ updated {now:%a %d %b %Y, %H:%M UTC}</p>
 <table><thead><tr><th>Dates</th><th>Length</th><th>Price</th><th>Airline</th><th>Link</th></tr></thead>
 <tbody>{frows}</tbody></table>
 </div>
-<footer>Weather: Open-Meteo forecast + historical (free, no key).<br>
-Flights: indicative / on-demand. Source &amp; history: <a href="https://github.com/uncinimichel/climbing-agent">github.com/uncinimichel/climbing-agent</a></footer>
+<footer>Weather: Open-Meteo forecast + historical (free). Flights: live Google Flights via SerpApi, updated daily.<br>
+<a href="{SITE_URL}" target="_blank" rel="noopener">multi-pitch.com</a> ·
+<a href="{SHEET_URL}" target="_blank" rel="noopener">venue spreadsheet</a> ·
+<a href="{REPO_URL}" target="_blank" rel="noopener">source &amp; daily history</a></footer>
 </div></body></html>
 """
 
@@ -379,7 +408,9 @@ def build_md(ranked, now, banner):
         url = d.get("book_url") or d.get("view_url")
         link = f"[view / book]({url})" if url else "—"
         lines.append(f"| {c['out']}→{c['back']} | {c['nights']} | {p} | {d.get('airline','')} | {link} |")
-    lines += ["", "_Rendered dashboard: https://uncinimichel.github.io/climbing-agent/_"]
+    lines += ["", f"**Links:** [multi-pitch.com]({SITE_URL}) · [venue spreadsheet]({SHEET_URL}) · "
+              "[live dashboard](https://uncinimichel.github.io/climbing-agent/) · "
+              "venue rows on the dashboard link to Google Maps."]
     return "\n".join(lines) + "\n"
 
 
