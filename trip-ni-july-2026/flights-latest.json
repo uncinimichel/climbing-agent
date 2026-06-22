@@ -2,36 +2,94 @@
   "comment": "Latest flight prices per combo (round-trip, 1 pax, GBP). Updated on demand by Claude or by an API script. null = not yet checked.",
   "checked_at": "2026-06-22 17:51 UTC (Google Flights / SerpApi)",
   "currency": "GBP",
-  "combos": {
-    "fri-mon": {
-      "cheapest_gbp": 102,
-      "airline": "easyJet",
-      "out_airport": "LTN",
-      "back_airport": "BFS",
-      "notes": "easyJet, direct, from LTN \u2014 live Google Flights",
-      "stops": "direct",
-      "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpLEgoyMDI2LTA3LTI0agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDQkZTcgcIARIDQkhEGksSCjIwMjYtMDctMjdqBwgBEgNCRlNqBwgBEgNCSERyBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ",
-      "book_url": "https://www.skyscanner.net/transport/flights/ltn/bfs/260724/260727/"
+  "checked_at": "2026-06-22 18:06 UTC (Google Flights/SerpApi)",
+  "rep_combo": {
+    "id": "fri-tue",
+    "out": "2026-07-24",
+    "back": "2026-07-28",
+    "nights": 4
+  },
+  "venues": {
+    "Paklenica (Anica Kuk)": {
+      "michel": {
+        "mode": "fly",
+        "price": 176,
+        "airline": "Ryanair",
+        "from": "STN",
+        "to": "ZAD",
+        "route": "STN\u2192ZAD",
+        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTA3LTI0agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDWkFEGkISCjIwMjYtMDctMjhqBwgBEgNaQURyBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ",
+        "book_url": "https://www.skyscanner.net/transport/flights/stn/zad/260724/260728/"
+      },
+      "dan": {
+        "mode": "fly",
+        "price": 605,
+        "airline": "British Airways",
+        "from": "BHD",
+        "to": "ZAD",
+        "route": "BHD\u2192ZAD",
+        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhonEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEcgcIARIDWkFEGicSCjIwMjYtMDctMjhqBwgBEgNaQURyBwgBEgNCRlNyBwgBEgNCSERAAUgBcAGYAQE&tfu=EgIIAQ",
+        "book_url": "https://www.skyscanner.net/transport/flights/bhd/zad/260724/260728/"
+      }
     },
-    "fri-tue": {
-      "cheapest_gbp": 80,
-      "airline": "Ryanair UK",
-      "out_airport": "STN",
-      "back_airport": "BFS",
-      "notes": "Ryanair UK, direct, from STN \u2014 live Google Flights",
-      "stops": "direct",
-      "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpLEgoyMDI2LTA3LTI0agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDQkZTcgcIARIDQkhEGksSCjIwMjYtMDctMjhqBwgBEgNCRlNqBwgBEgNCSERyBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ",
-      "book_url": "https://www.skyscanner.net/transport/flights/stn/bfs/260724/260728/"
+    "Picos de Europa": {
+      "michel": {
+        "mode": "fly",
+        "price": 84,
+        "airline": "Wizz Air",
+        "from": "LTN",
+        "to": "BIO",
+        "route": "LTN\u2192BIO",
+        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTA3LTI0agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDQklPGkISCjIwMjYtMDctMjhqBwgBEgNCSU9yBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ",
+        "book_url": "https://www.skyscanner.net/transport/flights/ltn/bio/260724/260728/"
+      },
+      "dan": {
+        "mode": "fly",
+        "price": 454,
+        "airline": "British Airways",
+        "from": "BHD",
+        "to": "BIO",
+        "route": "BHD\u2192BIO",
+        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhonEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEcgcIARIDQklPGicSCjIwMjYtMDctMjhqBwgBEgNCSU9yBwgBEgNCRlNyBwgBEgNCSERAAUgBcAGYAQE&tfu=EgIIAQ",
+        "book_url": "https://www.skyscanner.net/transport/flights/bhd/bio/260724/260728/"
+      }
     },
-    "sat-tue": {
-      "cheapest_gbp": 80,
-      "airline": "Ryanair UK",
-      "out_airport": "STN",
-      "back_airport": "BFS",
-      "notes": "Ryanair UK, direct, from STN \u2014 live Google Flights",
-      "stops": "direct",
-      "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpLEgoyMDI2LTA3LTI1agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDQkZTcgcIARIDQkhEGksSCjIwMjYtMDctMjhqBwgBEgNCRlNqBwgBEgNCSERyBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ",
-      "book_url": "https://www.skyscanner.net/transport/flights/stn/bfs/260725/260728/"
+    "Isle of Arran": {
+      "michel": {
+        "mode": "fly",
+        "price": 74,
+        "airline": "Ryanair UK",
+        "from": "STN",
+        "to": "GLA",
+        "route": "STN\u2192GLA",
+        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTA3LTI0agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDR0xBGkISCjIwMjYtMDctMjhqBwgBEgNHTEFyBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ",
+        "book_url": "https://www.skyscanner.net/transport/flights/stn/gla/260724/260728/"
+      },
+      "dan": {
+        "mode": "fly",
+        "price": 80,
+        "airline": "easyJet",
+        "from": "BFS",
+        "to": "GLA",
+        "route": "BFS\u2192GLA",
+        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhonEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEcgcIARIDR0xBGicSCjIwMjYtMDctMjhqBwgBEgNHTEFyBwgBEgNCRlNyBwgBEgNCSERAAUgBcAGYAQE&tfu=EgIIAQ",
+        "book_url": "https://www.skyscanner.net/transport/flights/bfs/gla/260724/260728/"
+      }
+    },
+    "Mournes, NI": {
+      "michel": {
+        "mode": "fly",
+        "price": 80,
+        "airline": "Ryanair UK",
+        "from": "STN",
+        "to": "BFS",
+        "route": "STN\u2192BFS",
+        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTA3LTI0agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDQkZTGkISCjIwMjYtMDctMjhqBwgBEgNCRlNyBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ",
+        "book_url": "https://www.skyscanner.net/transport/flights/stn/bfs/260724/260728/"
+      },
+      "dan": {
+        "mode": "local"
+      }
     }
   }
 }

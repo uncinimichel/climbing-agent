@@ -3,72 +3,54 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Climbing Trip Planner — Michel &amp; Dan · ~24 Jul 2026</title>
 <style>
-:root{
-  --bg:#eef1f6; --card:#ffffff; --ink:#1f2733; --dim:#7b8694; --line:#e6eaf0;
-  --accent:#2563eb; --shadow:0 1px 3px rgba(16,24,40,.08),0 1px 2px rgba(16,24,40,.04);
-}
-@media(prefers-color-scheme:dark){
-  :root{--bg:#0b0f17;--card:#141a24;--ink:#e7edf5;--dim:#8b97a7;--line:#222c3a;
-  --accent:#5b9dff;--shadow:0 1px 3px rgba(0,0,0,.5);}
-}
-*{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%}
+:root{--bg:#eef1f6;--card:#fff;--ink:#1f2733;--dim:#7b8694;--line:#e6eaf0;--accent:#2563eb;
+--shadow:0 1px 3px rgba(16,24,40,.08),0 1px 2px rgba(16,24,40,.04);}
+@media(prefers-color-scheme:dark){:root{--bg:#0b0f17;--card:#141a24;--ink:#e7edf5;--dim:#8b97a7;
+--line:#222c3a;--accent:#5b9dff;--shadow:0 1px 3px rgba(0,0,0,.5);}}
+*{box-sizing:border-box}html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--ink);
-  font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-  padding:24px 16px;}
-.wrap{max-width:820px;margin:0 auto}
-header{margin-bottom:18px}
-h1{font-size:23px;line-height:1.25;margin:0 0 6px;letter-spacing:-.01em}
-.lead{color:var(--dim);font-size:14px;margin:0}
-.lead b{color:var(--ink)}
+font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;padding:24px 16px}
+.wrap{max-width:860px;margin:0 auto}
+h1{font-size:22px;line-height:1.25;margin:0 0 6px;letter-spacing:-.01em}
+.lead{color:var(--dim);font-size:14px;margin:0}.lead b{color:var(--ink)}
+.links{margin:8px 0 0;font-size:13.5px}
+.links a{color:var(--accent);text-decoration:none;font-weight:600}.links a:hover{text-decoration:underline}
 .banner{margin:16px 0;padding:12px 15px;border-radius:12px;font-size:13.5px;line-height:1.45;
-  background:#fff7e6;border:1px solid #f3d18a;color:#7a5a12;}
+background:#fff7e6;border:1px solid #f3d18a;color:#7a5a12}
 @media(prefers-color-scheme:dark){.banner{background:#241d0e;border-color:#5c4a1e;color:#e7cf94}}
 .banner.ok{background:#e9f9ef;border-color:#a6e3bd;color:#176436}
 @media(prefers-color-scheme:dark){.banner.ok{background:#0f2418;border-color:#235c39;color:#86e0a6}}
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px;
-  box-shadow:var(--shadow);padding:18px 20px;margin:0 0 18px}
-.card h2{font-size:15px;text-transform:uppercase;letter-spacing:.05em;color:var(--dim);
-  margin:0 0 14px;font-weight:700}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);
+padding:18px 18px;margin:0 0 18px}
+.card h2{font-size:15px;text-transform:uppercase;letter-spacing:.05em;color:var(--dim);margin:0 0 12px;font-weight:700}
 .hero{background:linear-gradient(135deg,#2563eb,#1e40af);color:#fff;border:none}
 @media(prefers-color-scheme:dark){.hero{background:linear-gradient(135deg,#1e3a8a,#0f2456)}}
 .hero-tag{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;opacity:.85}
-.hero-name{font-size:26px;font-weight:800;margin:4px 0 6px;letter-spacing:-.01em}
-.hero-flag{font-size:14px;font-weight:600;opacity:.85;background:rgba(255,255,255,.16);
-  padding:2px 9px;border-radius:20px;vertical-align:middle;margin-left:6px}
-.hero-why{font-size:14.5px;line-height:1.5;opacity:.95;margin-bottom:16px}
-.hero-stats{display:flex;gap:26px;flex-wrap:wrap}
+.hero-name{font-size:25px;font-weight:800;margin:4px 0 6px}
+.hero-flag{font-size:14px;font-weight:600;opacity:.85;background:rgba(255,255,255,.16);padding:2px 9px;border-radius:20px;margin-left:6px}
+.hero-why{font-size:14px;line-height:1.5;opacity:.95;margin-bottom:16px}
+.hero-stats{display:flex;gap:22px;flex-wrap:wrap}
 .stat{display:flex;flex-direction:column}
-.snum{font-size:24px;font-weight:800;line-height:1}
-.hero .snum{color:#fff}
-.slab{font-size:11.5px;opacity:.85;margin-top:3px;text-transform:uppercase;letter-spacing:.03em}
-.hero-basis{margin-top:14px;font-size:12px;opacity:.8}
+.snum{font-size:22px;font-weight:800;line-height:1;color:#fff}
+.slab{font-size:11px;opacity:.85;margin-top:3px;text-transform:uppercase;letter-spacing:.03em}
 table{width:100%;border-collapse:separate;border-spacing:0}
-th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--dim);
-  font-weight:700;padding:0 10px 10px;border-bottom:2px solid var(--line)}
-td{padding:13px 10px;border-bottom:1px solid var(--line);vertical-align:middle;font-size:14px}
-tr:last-child td{border-bottom:none}
-tbody tr:hover{background:rgba(37,99,235,.04)}
-.rank{font-size:18px;font-weight:800;width:40px;text-align:center}
-.vname{font-weight:700;font-size:15px}
-.vlink{color:inherit;text-decoration:none}
-.vlink:hover{color:var(--accent);text-decoration:underline}
-.links{margin:0 0 6px;font-size:13.5px}
-.links a{color:var(--accent);text-decoration:none;font-weight:600}
-.links a:hover{text-decoration:underline}
-.vsub{color:var(--dim);font-size:12.5px;margin-top:2px}
-.clim{white-space:nowrap}
-.pill{display:inline-block;min-width:42px;text-align:center;color:#fff;font-weight:800;
-  font-size:15px;padding:5px 10px;border-radius:9px}
+th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.03em;color:var(--dim);
+font-weight:700;padding:0 8px 10px;border-bottom:2px solid var(--line)}
+td{padding:12px 8px;border-bottom:1px solid var(--line);vertical-align:top;font-size:14px}
+tr:last-child td{border-bottom:none}tbody tr:hover{background:rgba(37,99,235,.04)}
+.rank{font-size:17px;font-weight:800;width:34px;text-align:center}
+.vname{font-weight:700;font-size:14.5px}
+.vlink{color:inherit;text-decoration:none}.vlink:hover{color:var(--accent);text-decoration:underline}
+.vsub{color:var(--dim);font-size:12px;margin-top:2px}
+.wx,.fl{white-space:nowrap}
+.flink{color:var(--accent);text-decoration:none;font-weight:600;font-size:12.5px}
+.flink:hover{text-decoration:underline}
+.pill{display:inline-block;min-width:38px;text-align:center;color:#fff;font-weight:800;font-size:14px;padding:4px 9px;border-radius:8px}
 .dim{color:var(--dim)}
-.legend{color:var(--dim);font-size:12.5px;margin:14px 2px 0}
-.fcard p{margin:0 0 12px;color:var(--dim);font-size:13.5px}
-footer{color:var(--dim);font-size:12px;text-align:center;margin-top:6px;line-height:1.6}
+.legend{color:var(--dim);font-size:12.5px;margin:12px 2px 0;line-height:1.5}
+footer{color:var(--dim);font-size:12px;text-align:center;margin-top:6px;line-height:1.7}
 footer a{color:var(--accent);text-decoration:none}
-@media(max-width:560px){
-  .vsub{display:none} td,th{padding-left:6px;padding-right:6px}
-  .hero-stats{gap:18px}
-}
+@media(max-width:600px){td .vsub{display:none} th,td{padding-left:5px;padding-right:5px} .hero-stats{gap:14px}}
 </style></head><body><div class="wrap">
 <header>
 <h1>🧗 Climbing Trip Planner — where should Michel &amp; Dan go?</h1>
@@ -76,26 +58,27 @@ footer a{color:var(--accent);text-decoration:none}
 updated Mon 22 Jun 2026, 17:51 UTC</p>
 <div class="links"><a href="https://multi-pitch.com/" target="_blank" rel="noopener">🧗 multi-pitch.com</a> ·
 <a href="https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit" target="_blank" rel="noopener">📋 venue spreadsheet</a> ·
-<span class="dim">🗺️ tap a venue for Google Maps</span></div>
+<span class="dim">🗺️ tap a venue for Maps</span></div>
 </header>
-<div class="banner ">📅 Trip is 30 days out — beyond the 16-day live forecast (reaches 2026-07-07). Ranked on <b>typical late-July weather</b> (historical averages, 2021–2024). The live forecast column fills in automatically from ~8 July.</div>
-<div class='hero'><div class='hero-tag'>📍 Best option right now</div><div class='hero-name'>Paklenica (Anica Kuk) <span class='hero-flag'>Croatia</span></div><div class='hero-why'>In the Velebit mountains, not too hot in July IF you pick shade — most crags face E/W and Anica Kuk faces NORTH (stays shaded); sea nearby to cool off. Season Apr–Oct. Sources: climbgrades.com/seasons/croatia, mojagear.com Paklenica guide.</div><div class='hero-stats'><span class='stat'><span class='snum' style='color:#16a34a'>93</span><span class='slab'>score /100</span></span><span class='stat'><span class='snum'>29°</span><span class='slab'>typical July high</span></span><span class='stat'><span class='snum'>8%</span><span class='slab'>wet days (July)</span></span></div><div class='hero-basis'>Ranked on: typical July (climatology)</div></div>
+<div class="banner ">📅 Trip is 30 days out — beyond the 16-day live forecast (reaches 2026-07-07). Ranked on <b>typical late-July weather</b> (historical 2021–2024). Live forecast fills in from ~8 July.</div>
+<div class='hero'><div class='hero-tag'>📍 Best option right now</div><div class='hero-name'>Paklenica (Anica Kuk) <span class='hero-flag'>Croatia</span></div><div class='hero-why'>In the Velebit mountains, not too hot in July IF you pick shade — most crags face E/W and Anica Kuk faces NORTH (stays shaded); sea nearby to cool off. Season Apr–Oct. Sources: climbgrades.com/seasons/croatia, mojagear.com Paklenica guide.</div><div class='hero-stats'><span class='stat'><span class='snum'>93</span><span class='slab'>score /100</span></span><span class='stat'><span class='snum'>29°</span><span class='slab'>typical July</span></span><span class='stat'><span class='snum'>8%</span><span class='slab'>wet days</span></span><span class='stat'><span class='snum'>£176</span><span class='slab'>✈️ Michel</span></span><span class='stat'><span class='snum'>£605</span><span class='slab'>✈️ Dan</span></span></div></div>
 <div class="card">
-<h2>🏔️ Venue ranking</h2>
+<h2>🏔️ Venues + flights — best first</h2>
 <table><thead>
-<tr><th>#</th><th>Venue</th><th>Score</th><th>Typical July</th><th>Live forecast</th><th>Access</th></tr>
+<tr><th>#</th><th>Venue</th><th>Score</th><th>Weather</th><th>✈️ Michel<br><span class='dim'>London</span></th><th>✈️ Dan<br><span class='dim'>Belfast</span></th></tr>
 </thead><tbody>
-<tr><td class='rank'>🥇</td><td><div class='vname'><a class='vlink' href='https://www.google.com/maps/search/?api=1&query=44.31,15.46' target='_blank' rel='noopener'>Paklenica (Anica Kuk) 🗺️</a></div><div class='vsub'>Croatia · big-wall multi-pitch up to 350m + sport</div></td><td><span class='pill' style='background:#16a34a'>93</span></td><td class='clim'>29°C · <b>8%</b> wet days</td><td><span class='dim'>from ~8 Jul</span></td><td class='vsub'>Zadar (ZAD) + ~40 min drive to Starigrad</td></tr>
-<tr><td class='rank'>🥈</td><td><div class='vname'><a class='vlink' href='https://www.google.com/maps/search/?api=1&query=43.201,-4.821' target='_blank' rel='noopener'>Picos de Europa 🗺️</a></div><div class='vsub'>Spain · moderate-to-hard alpine multi-pitch (Naranjo de Bulnes)</div></td><td><span class='pill' style='background:#16a34a'>85</span></td><td class='clim'>15°C · <b>17%</b> wet days</td><td><span class='dim'>from ~8 Jul</span></td><td class='vsub'>Bilbao/Santander + drive</td></tr>
-<tr><td class='rank'>🥉</td><td><div class='vname'><a class='vlink' href='https://www.google.com/maps/search/?api=1&query=55.634,-5.2' target='_blank' rel='noopener'>Isle of Arran 🗺️</a></div><div class='vsub'>Scotland · mountain multi-pitch (Cìr Mhòr)</div></td><td><span class='pill' style='background:#16a34a'>70</span></td><td class='clim'>14°C · <b>33%</b> wet days</td><td><span class='dim'>from ~8 Jul</span></td><td class='vsub'>Glasgow + ferry</td></tr>
-<tr><td class='rank'>4</td><td><div class='vname'><a class='vlink' href='https://www.google.com/maps/search/?api=1&query=54.15,-6.0' target='_blank' rel='noopener'>Mournes, NI 🗺️</a></div><div class='vsub'>Northern Ireland · moderate multi-pitch trad</div></td><td><span class='pill' style='background:#d97706'>66</span></td><td class='clim'>18°C · <b>38%</b> wet days</td><td><span class='dim'>from ~8 Jul</span></td><td class='vsub'>Belfast (BFS/BHD)</td></tr>
-<tr><td class='rank'>5</td><td><div class='vname'><a class='vlink' href='https://www.google.com/maps/search/?api=1&query=55.222,-6.156' target='_blank' rel='noopener'>Fair Head, NI 🗺️</a></div><div class='vsub'>Northern Ireland · long single & multi-pitch trad</div></td><td><span class='pill' style='background:#d97706'>59</span></td><td class='clim'>17°C · <b>46%</b> wet days</td><td><span class='dim'>from ~8 Jul</span></td><td class='vsub'>Belfast (BFS/BHD), ~1h flight from London</td></tr>
-<tr><td class='rank'>6</td><td><div class='vname'><a class='vlink' href='https://www.google.com/maps/search/?api=1&query=54.546,-3.128' target='_blank' rel='noopener'>Lake District (Borrowdale) 🗺️</a></div><div class='vsub'>England · large, Full-Range multi-pitch</div></td><td><span class='pill' style='background:#d97706'>55</span></td><td class='clim'>18°C · <b>50%</b> wet days</td><td><span class='dim'>from ~8 Jul</span></td><td class='vsub'>Kendal (drive/train from London)</td></tr>
-<tr><td class='rank'>7</td><td><div class='vname'><a class='vlink' href='https://www.google.com/maps/search/?api=1&query=46.829,12.769' target='_blank' rel='noopener'>East Tyrol (Lienz) 🗺️</a></div><div class='vsub'>Austria · large, medium-to-hard multi-pitch</div></td><td><span class='pill' style='background:#d97706'>51</span></td><td class='clim'>26°C · <b>54%</b> wet days</td><td><span class='dim'>from ~8 Jul</span></td><td class='vsub'>Innsbruck / Salzburg + drive</td></tr>
-<tr><td class='rank'>8</td><td><div class='vname'><a class='vlink' href='https://www.google.com/maps/search/?api=1&query=53.103,-4.043' target='_blank' rel='noopener'>Snowdonia (Llanberis Pass) 🗺️</a></div><div class='vsub'>Wales · vast, Full-Range multi-pitch</div></td><td><span class='pill' style='background:#d97706'>48</span></td><td class='clim'>14°C · <b>58%</b> wet days</td><td><span class='dim'>from ~8 Jul</span></td><td class='vsub'>drive/train from London</td></tr>
-<tr><td class='rank'>9</td><td><div class='vname'><a class='vlink' href='https://www.google.com/maps/search/?api=1&query=46.54,12.137' target='_blank' rel='noopener'>Dolomites (Cortina) 🗺️</a></div><div class='vsub'>Italy · vast Full-Range multi-pitch</div></td><td><span class='pill' style='background:#dc2626'>40</span></td><td class='clim'>22°C · <b>67%</b> wet days</td><td><span class='dim'>from ~8 Jul</span></td><td class='vsub'>Venice/Treviso/Innsbruck + drive</td></tr>
+<tr><td class='rank'>🥇</td><td><div class='vname'><a class='vlink' href='https://www.google.com/maps/search/?api=1&query=44.31,15.46' target='_blank' rel='noopener'>Paklenica (Anica Kuk) 🗺️</a></div><div class='vsub'>Croatia · big-wall multi-pitch up to 350m + sport</div></td><td><span class='pill' style='background:#16a34a'>93</span></td><td class='wx'>29°C · <b>8%</b> wet</td><td class='fl'><b>£176</b> <span class='vsub'>STN→ZAD</span><div><a class='flink' href='https://www.skyscanner.net/transport/flights/stn/zad/260724/260728/' target='_blank' rel='noopener'>book ↗</a></div></td><td class='fl'><b>£605</b> <span class='vsub'>BHD→ZAD</span><div><a class='flink' href='https://www.skyscanner.net/transport/flights/bhd/zad/260724/260728/' target='_blank' rel='noopener'>book ↗</a></div></td></tr>
+<tr><td class='rank'>🥈</td><td><div class='vname'><a class='vlink' href='https://www.google.com/maps/search/?api=1&query=43.201,-4.821' target='_blank' rel='noopener'>Picos de Europa 🗺️</a></div><div class='vsub'>Spain · moderate-to-hard alpine multi-pitch (Naranjo de Bulnes)</div></td><td><span class='pill' style='background:#16a34a'>85</span></td><td class='wx'>15°C · <b>17%</b> wet</td><td class='fl'><b>£84</b> <span class='vsub'>LTN→BIO</span><div><a class='flink' href='https://www.skyscanner.net/transport/flights/ltn/bio/260724/260728/' target='_blank' rel='noopener'>book ↗</a></div></td><td class='fl'><b>£454</b> <span class='vsub'>BHD→BIO</span><div><a class='flink' href='https://www.skyscanner.net/transport/flights/bhd/bio/260724/260728/' target='_blank' rel='noopener'>book ↗</a></div></td></tr>
+<tr><td class='rank'>🥉</td><td><div class='vname'><a class='vlink' href='https://www.google.com/maps/search/?api=1&query=55.634,-5.2' target='_blank' rel='noopener'>Isle of Arran 🗺️</a></div><div class='vsub'>Scotland · mountain multi-pitch (Cìr Mhòr)</div></td><td><span class='pill' style='background:#16a34a'>70</span></td><td class='wx'>14°C · <b>33%</b> wet</td><td class='fl'><b>£74</b> <span class='vsub'>STN→GLA</span><div><a class='flink' href='https://www.skyscanner.net/transport/flights/stn/gla/260724/260728/' target='_blank' rel='noopener'>book ↗</a></div></td><td class='fl'><b>£80</b> <span class='vsub'>BFS→GLA</span><div><a class='flink' href='https://www.skyscanner.net/transport/flights/bfs/gla/260724/260728/' target='_blank' rel='noopener'>book ↗</a></div></td></tr>
+<tr><td class='rank'>4</td><td><div class='vname'><a class='vlink' href='https://www.google.com/maps/search/?api=1&query=54.15,-6.0' target='_blank' rel='noopener'>Mournes, NI 🗺️</a></div><div class='vsub'>Northern Ireland · moderate multi-pitch trad</div></td><td><span class='pill' style='background:#d97706'>66</span></td><td class='wx'>18°C · <b>38%</b> wet</td><td class='fl'><b>£80</b> <span class='vsub'>STN→BFS</span><div><a class='flink' href='https://www.skyscanner.net/transport/flights/stn/bfs/260724/260728/' target='_blank' rel='noopener'>book ↗</a></div></td><td class='fl'>🚗 <b>local</b><div class='vsub'>Dan lives here</div></td></tr>
+<tr><td class='rank'>5</td><td><div class='vname'><a class='vlink' href='https://www.google.com/maps/search/?api=1&query=55.222,-6.156' target='_blank' rel='noopener'>Fair Head, NI 🗺️</a></div><div class='vsub'>Northern Ireland · long single & multi-pitch trad</div></td><td><span class='pill' style='background:#d97706'>59</span></td><td class='wx'>17°C · <b>46%</b> wet</td><td class='fl'><span class='dim'>—</span></td><td class='fl'><span class='dim'>—</span></td></tr>
+<tr><td class='rank'>6</td><td><div class='vname'><a class='vlink' href='https://www.google.com/maps/search/?api=1&query=54.546,-3.128' target='_blank' rel='noopener'>Lake District (Borrowdale) 🗺️</a></div><div class='vsub'>England · large, Full-Range multi-pitch</div></td><td><span class='pill' style='background:#d97706'>55</span></td><td class='wx'>18°C · <b>50%</b> wet</td><td class='fl'><span class='dim'>—</span></td><td class='fl'><span class='dim'>—</span></td></tr>
+<tr><td class='rank'>7</td><td><div class='vname'><a class='vlink' href='https://www.google.com/maps/search/?api=1&query=46.829,12.769' target='_blank' rel='noopener'>East Tyrol (Lienz) 🗺️</a></div><div class='vsub'>Austria · large, medium-to-hard multi-pitch</div></td><td><span class='pill' style='background:#d97706'>51</span></td><td class='wx'>26°C · <b>54%</b> wet</td><td class='fl'><span class='dim'>—</span></td><td class='fl'><span class='dim'>—</span></td></tr>
+<tr><td class='rank'>8</td><td><div class='vname'><a class='vlink' href='https://www.google.com/maps/search/?api=1&query=53.103,-4.043' target='_blank' rel='noopener'>Snowdonia (Llanberis Pass) 🗺️</a></div><div class='vsub'>Wales · vast, Full-Range multi-pitch</div></td><td><span class='pill' style='background:#d97706'>48</span></td><td class='wx'>14°C · <b>58%</b> wet</td><td class='fl'><span class='dim'>—</span></td><td class='fl'><span class='dim'>—</span></td></tr>
+<tr><td class='rank'>9</td><td><div class='vname'><a class='vlink' href='https://www.google.com/maps/search/?api=1&query=46.54,12.137' target='_blank' rel='noopener'>Dolomites (Cortina) 🗺️</a></div><div class='vsub'>Italy · vast Full-Range multi-pitch</div></td><td><span class='pill' style='background:#dc2626'>40</span></td><td class='wx'>22°C · <b>67%</b> wet</td><td class='fl'><span class='dim'>—</span></td><td class='fl'><span class='dim'>—</span></td></tr>
 </tbody></table>
-<p class="legend"><b>Score</b> 0–100 (higher = drier/better). <b>Typical July</b> = avg of 2021–2024 (free historical data — available now). <b>Live forecast</b> fills in within ~16 days of the trip.</p>
+<p class="legend"><b>Score</b> 0–100 (higher = drier). <b>Weather</b> = typical late-July (avg 2021–2024); live forecast appears within 16 days.
+<b>Flights</b> priced for the top 4 venues, one return (07-24→07-28, 4n) per traveller — use <i>book ↗</i> to change dates. Other date options: 07-24→07-27 (3n), 07-24→07-28 (4n), 07-25→07-28 (3n). Cheapest airport shown; Dan is local in NI.</p>
 </div>
 <div class="card fcard">
 <h2>✈️ Flights — London ⇄ Belfast</h2>

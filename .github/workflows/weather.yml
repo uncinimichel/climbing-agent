@@ -28,12 +28,9 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Fetch flight prices via Google Flights (skips if no key)
+      - name: Build report (weather ranking + per-venue flights + HTML)
         env:
           SERPAPI_KEY: ${{ secrets.SERPAPI_KEY }}
-        run: python3 trip-ni-july-2026/scripts/fetch_flights.py
-
-      - name: Build report (weather + flights + ranked HTML)
         run: python3 trip-ni-july-2026/scripts/update_report.py
 
       - name: Commit changes if any

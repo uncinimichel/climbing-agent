@@ -20,15 +20,16 @@ venues by forecast and (b) tracks cheapest flights, with **history preserved**.
   manual) runs in the cloud (works with laptop off): fetches flights (optional),
   builds the report, commits a dated history snapshot, deploys Pages.
 - **Data / config (single sources of truth):**
-  - `venues.json` — 9 candidate venues + target window. Edited here → drives queries.
-  - `flights.json` — route (London⇄Belfast) + the 3 date combos (Fri/Sat out,
-    Mon/Tue back, **3–4 nights only**).
-  - `flights-latest.json` — latest prices per combo (filled by Amadeus or on demand).
+  - `venues.json` — 9 candidate venues + target window + per-traveller `travel`
+    (mode fly|local|drive and destination airport for Michel/London & Dan/Belfast).
+  - `flights.json` — origin airports + the 3 date combos (Fri/Sat out, Mon/Tue back,
+    **3–4 nights only**); the max-nights combo is the representative round-trip priced.
+  - `flights-latest.json` — per-venue cached prices for both travellers (written by
+    update_report; never contains the API key).
 - **Scripts:**
-  - `scripts/update_report.py` — Open-Meteo weather → score+rank → writes
-    `index.html`, `daily-report.md`, `history/<date>.md`.
-  - `scripts/fetch_flights.py` — optional Amadeus self-service price fetch;
-    self-skips with no API key.
+  - `scripts/update_report.py` — weather rank → prices flights for the top-N venues
+    (Michel + Dan, Google Flights via SerpApi) → writes `index.html`,
+    `daily-report.md`, `history/<date>.md`. Flights fold into the ranking table.
 - **History:** `history/YYYY-MM-DD.md` (never overwritten) + full git history.
 - **Source CSVs:** `climbing-trips.csv` (40-venue shortlist), `dolomites-trip.csv`.
 
@@ -37,13 +38,16 @@ venues by forecast and (b) tracks cheapest flights, with **history preserved**.
 1. **Weather scoring.** `day_score()` = 100 − 0.8·rain% − 6·precip_mm, capped at
    25 if rain code ≥61, 15 for thunderstorms. Venue score = mean over used days.
    Rank by score desc, tie-break by venue priority (NI preferred when tied).
-2. **Forecast horizon.** Open-Meteo gives 16 days. The trip is further out until
-   ~8 July, so the report **falls back to the nearest queryable day** as a proxy
-   and **says so explicitly** in a banner (date + days-before-trip + "indicative").
-   From ~8 July it ranks on the real target window automatically.
-3. **Flights are decoupled** from weather: prices live in `flights-latest.json` so
-   automated weather runs never wipe them. No reliable *free* flight API → Amadeus
-   self-service (free tier) is the chosen automation; without a key it's on-demand.
+2. **Forecast horizon + climatology.** Open-Meteo forecast is 16 days. Until the
+   trip enters range (~8 July) venues are ranked on **July climatology** (ERA5
+   historical, free) via ONE ranged request/venue (deterministic — not per-year
+   bursts, which silently dropped samples and made ranking non-reproducible).
+   Banner states which basis is used; live forecast takes over automatically.
+3. **Flights via Google Flights (SerpApi).** Per venue, a representative round-trip
+   is priced for Michel (from London) and Dan (from Belfast) into the venue airport;
+   NI = Dan local, UK-mainland = Michel drives. To stay within the SerpApi quota
+   only the **top-N (=4)** venues are priced, one combo each (book links adjust dates).
+   Key is `SERPAPI_KEY` (GitHub secret + gitignored `.env`), never committed.
 4. **Hosting.** Free rendered HTML requires GitHub Pages → repo made **public**
    (no personal data in repo; home address is only in Claude's local memory).
 
@@ -51,21 +55,25 @@ venues by forecast and (b) tracks cheapest flights, with **history preserved**.
 
 - [ ] `python3 trip-ni-july-2026/scripts/update_report.py` runs clean and prints a
       ranking; `index.html` parses as valid HTML.
-- [ ] `index.html` title states what it is and shows the target dates; the proxy
-      banner is present and honest about the forecast horizon.
+- [ ] `index.html` title states what it is and shows the target dates; the banner is
+      present and honest about the forecast horizon / climatology basis.
+- [ ] Climatology is reproducible: run update_report twice → identical rain% and order.
 - [ ] Ranking order matches scores in the table; NI tie-break behaves.
+- [ ] Ranking table has ✈️ Michel (London) and ✈️ Dan (Belfast) columns for the top 4,
+      with price + airport + book link; NI shows Dan local; venue names link to Maps.
 - [ ] `flights.json` contains exactly 3 combos, all 3–4 nights (no 2-night option).
-- [ ] `fetch_flights.py` exits 0 and changes nothing when AMADEUS_* env unset.
-- [ ] Action `weather.yml`: has `pages: write`/`id-token: write`, a build job that
-      commits + uploads artifact, and a deploy job using `deploy-pages`.
+- [ ] `update_report.py` runs without SERPAPI_KEY (flights show search links, no crash).
+- [ ] No secret in any committed file; `.env` is gitignored.
+- [ ] Action `weather.yml`: has `pages: write`/`id-token: write`, passes SERPAPI_KEY
+      secret, a build job that commits + uploads artifact, and a deploy job.
 - [ ] GitHub Pages is enabled (build_type = workflow) and the URL renders.
 - [ ] A `history/<date>.md` snapshot exists and is not overwritten across days.
 - [ ] Repo visibility is public; Pages URL loads on mobile.
 
 ## Known limitations / TODO
 
-- Weather is a proxy until ~8 July (stated in-report). Re-check ranking then.
-- Flight prices are indicative until an Amadeus key is added as repo secrets
-  (`AMADEUS_CLIENT_ID`, `AMADEUS_CLIENT_SECRET`); Amadeus *test* env data is limited.
+- Weather ranking uses climatology until ~8 July, then live forecast (stated in-report).
+- SerpApi quota: top-4 × 2 travellers ≈ up to 8 searches/day. Balance is finite — may
+  need topping up near the trip, or reduce `TOP_N_FLIGHTS` / run less often to throttle.
 - Destination logic is advisory (NI-preferred); the human makes the final call.
 - Coordinates are one representative point per area, not per-crag.
