@@ -1,6 +1,7 @@
 __pycache__/
 *.pyc
 .DS_Store
+prototypes/
 
 # Secrets — NEVER commit (this repo is public). Keys go in GitHub Actions secrets.
 .env

@@ -417,17 +417,6 @@ def source_links(v):
     return f"{mp} · {sheet}"
 
 
-def weather_html(r):
-    c, fc = r.get("climo"), r.get("fc")
-    num = (f"<div class='wxnum'>{c['tmax']}°C · <b>{c['rain_pct']}%</b> wet · 💨{c.get('wind','?')}</div>"
-           if c else "<span class='dim'>—</span>")
-    graph = weather_mini_svg((c or {}).get("series")) if c else ""
-    live = (f"<div class='vsub'>{fc['sky']} now {fc['tmax']}°C/{fc['rain_prob']}%</div>"
-            if fc and fc.get("in_window") else "")
-    return (f"{num}{graph}{live}<div><a class='flink' href='{weather_url(r['venue'])}' "
-            f"target='_blank' rel='noopener'>forecast ↗</a></div>")
-
-
 def flight_html(f):
     if not f:
         return "<span class='dim'>—</span>"
@@ -503,66 +492,73 @@ def weather_mini_svg(series, W=300, H=104):
             f"role='img' aria-label='daily rain, temperature and wind'>{''.join(parts)}</svg>")
 
 
+def graph_legend():
+    return ("<div class='glegend'>"
+            "<span><i class='sw rain'></i>rain (mm)</span>"
+            "<span><i class='sw temp'></i>high °C</span>"
+            "<span><i class='sw wind'></i>wind (km/h)</span>"
+            "<span><i class='sw trip'></i>trip days</span></div>")
+
+
+def weather_card(r):
+    c = r.get("climo") or {}
+    fc = r.get("fc")
+    num = (f"<b>{c.get('tmax','?')}°C</b> · {c.get('rain_pct','?')}% wet days · 💨{c.get('wind','?')} km/h"
+           if c else "—")
+    live = (f" · live: {fc['sky']} {fc['tmax']}°C/{fc['rain_prob']}%" if fc and fc.get("in_window") else "")
+    graph = weather_mini_svg(c.get("series"), W=340, H=140) if c.get("series") else ""
+    return (f"<div class='wxnum'>{num}{live} · "
+            f"<a class='flink' href='{weather_url(r['venue'])}' target='_blank' rel='noopener'>full forecast ↗</a></div>"
+            f"{graph_legend()}{graph}")
+
+
+def flights_card(r):
+    fl = r.get("flights") or {}
+    cols = ""
+    for who, lbl in (("michel", "✈️ Michel — from London"),
+                     ("dan", "✈️ Dan — from Belfast / Dublin")):
+        cols += f"<div class='fcol'><h4>{lbl}</h4>{flight_html(fl.get(who))}</div>"
+    return f"<div class='flights'>{cols}</div>"
+
+
+def venue_card(n, r):
+    v = r["venue"]
+    if not r.get("ok") or r["score"] < 0:
+        return (f"<div class='vcard'><div class='vhead'><span class='rank'>{n}</span>"
+                f"<span class='vname'>{flag(v['country'])} {v['name']}<small>{v['country']}</small></span>"
+                f"<span class='pill' style='background:#9aa4b2'>n/a</span></div>"
+                f"<p class='why dim'>No weather data available right now.</p></div>")
+    medal = {1: "🥇", 2: "🥈", 3: "🥉"}.get(n, f"{n}")
+    best = n == 1
+    tag = "<span class='tag'>📍 best option right now</span>" if best else ""
+    why = f"<p class='why'>{v.get('why','')}</p>" if best else ""
+    return (
+        f"<div class='vcard{' best' if best else ''}'>{tag}"
+        f"<div class='vhead'><span class='rank'>{medal}</span>"
+        f"<span class='vname'>{flag(v['country'])} "
+        f"<a href='{maps_url(v)}' target='_blank' rel='noopener'>{v['name']} 🗺️</a>"
+        f"<small>{v['country']} · {v.get('style','')}</small></span>"
+        f"<span class='pill' style='background:{score_color(r['score'])}'>{r['score']}</span></div>"
+        f"{why}{weather_card(r)}{flights_card(r)}"
+        f"<div class='srcs'>{source_links(v)}</div></div>"
+    )
+
+
 def build_html(ranked, now, banner):
-    rows = []
-    for n, r in enumerate(ranked, 1):
-        v = r["venue"]
-        if not r.get("ok") or r["score"] < 0:
-            rows.append(f"<tr><td>{n}</td><td><b>{v['name']}</b></td><td colspan='4' class='dim'>no data</td></tr>")
-            continue
-        medal = {1: "🥇", 2: "🥈", 3: "🥉"}.get(n, f"{n}")
-        fl = r.get("flights") or {}
-        rows.append(
-            f"<tr><td class='rank'>{medal}</td>"
-            f"<td><div class='vname'>{flag(v['country'])} <a class='vlink' href='{maps_url(v)}' target='_blank' rel='noopener'>{v['name']} 🗺️</a></div>"
-            f"<div class='vsub'>{v['country']} · {v.get('style','')}</div>"
-            f"<div class='srcs'>{source_links(v)}</div></td>"
-            f"<td><span class='pill' style='background:{score_color(r['score'])}'>{r['score']}</span></td>"
-            f"<td class='wx'>{weather_html(r)}</td>"
-            f"<td class='fl'>{flight_html(fl.get('michel'))}</td>"
-            f"<td class='fl'>{flight_html(fl.get('dan'))}</td></tr>"
-        )
-    table = "\n".join(rows)
-
-    top = ranked[0] if ranked and ranked[0].get("ok") and ranked[0]["score"] >= 0 else None
-    if top:
-        tv = top["venue"]
-        fl = top.get("flights") or {}
-        def fsum(w):
-            f = fl.get(w)
-            if not f: return "—"
-            if f["mode"] == "local": return "local"
-            if f["mode"] == "drive": return "drive"
-            opts = f.get("options") or []
-            return f"£{opts[0]['price']}" if opts else "see link"
-        top_html = (
-            f"<div class='hero'><div class='hero-tag'>📍 Best option right now</div>"
-            f"<div class='hero-name'>{flag(tv['country'])} {tv['name']} <span class='hero-flag'>{tv['country']}</span></div>"
-            f"<div class='hero-why'>{tv.get('why','')}</div>"
-            f"<div class='hero-stats'>"
-            f"<span class='stat'><span class='snum'>{top['score']}</span><span class='slab'>score /100</span></span>"
-            f"<span class='stat'><span class='snum'>{(top.get('climo') or {}).get('tmax','–')}°</span><span class='slab'>typical July</span></span>"
-            f"<span class='stat'><span class='snum'>{(top.get('climo') or {}).get('rain_pct','–')}%</span><span class='slab'>wet days</span></span>"
-            f"<span class='stat'><span class='snum'>{fsum('michel')}</span><span class='slab'>✈️ Michel</span></span>"
-            f"<span class='stat'><span class='snum'>{fsum('dan')}</span><span class='slab'>✈️ Dan</span></span>"
-            f"</div></div>"
-        )
-    else:
-        top_html = "<div class='hero'><div class='hero-why'>No weather data available.</div></div>"
-
+    cards = "\n".join(venue_card(n, r) for n, r in enumerate(ranked, 1))
     return f"""<!doctype html>
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Climbing Trip Planner — Michel &amp; Dan · ~24 Jul 2026</title>
 <style>
 :root{{--bg:#eef1f6;--card:#fff;--ink:#1f2733;--dim:#7b8694;--line:#e6eaf0;--accent:#2563eb;
---shadow:0 1px 3px rgba(16,24,40,.08),0 1px 2px rgba(16,24,40,.04);}}
+--shadow:0 1px 3px rgba(16,24,40,.08),0 2px 8px rgba(16,24,40,.05);}}
 @media(prefers-color-scheme:dark){{:root{{--bg:#0b0f17;--card:#141a24;--ink:#e7edf5;--dim:#8b97a7;
 --line:#222c3a;--accent:#5b9dff;--shadow:0 1px 3px rgba(0,0,0,.5);}}}}
 *{{box-sizing:border-box}}html{{-webkit-text-size-adjust:100%}}
 body{{margin:0;background:var(--bg);color:var(--ink);
 font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;padding:24px 16px}}
-.wrap{{max-width:980px;margin:0 auto}}
+.wrap{{max-width:820px;margin:0 auto}}
 h1{{font-size:22px;line-height:1.25;margin:0 0 6px;letter-spacing:-.01em}}
 .lead{{color:var(--dim);font-size:14px;margin:0}}.lead b{{color:var(--ink)}}
 .links{{margin:8px 0 0;font-size:13.5px}}
@@ -572,81 +568,54 @@ background:#fff7e6;border:1px solid #f3d18a;color:#7a5a12}}
 @media(prefers-color-scheme:dark){{.banner{{background:#241d0e;border-color:#5c4a1e;color:#e7cf94}}}}
 .banner.ok{{background:#e9f9ef;border-color:#a6e3bd;color:#176436}}
 @media(prefers-color-scheme:dark){{.banner.ok{{background:#0f2418;border-color:#235c39;color:#86e0a6}}}}
-.card{{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);
-padding:18px 18px;margin:0 0 18px}}
-.card h2{{font-size:15px;text-transform:uppercase;letter-spacing:.05em;color:var(--dim);margin:0 0 12px;font-weight:700}}
-.hero{{background:linear-gradient(135deg,#2563eb,#1e40af);color:#fff;border:none}}
-@media(prefers-color-scheme:dark){{.hero{{background:linear-gradient(135deg,#1e3a8a,#0f2456)}}}}
-.hero-tag{{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;opacity:.85}}
-.hero-name{{font-size:25px;font-weight:800;margin:4px 0 6px}}
-.hero-flag{{font-size:14px;font-weight:600;opacity:.85;background:rgba(255,255,255,.16);padding:2px 9px;border-radius:20px;margin-left:6px}}
-.hero-why{{font-size:14px;line-height:1.5;opacity:.95;margin-bottom:16px}}
-.hero-stats{{display:flex;gap:22px;flex-wrap:wrap}}
-.stat{{display:flex;flex-direction:column}}
-.snum{{font-size:22px;font-weight:800;line-height:1;color:#fff}}
-.slab{{font-size:11px;opacity:.85;margin-top:3px;text-transform:uppercase;letter-spacing:.03em}}
-table{{width:100%;border-collapse:separate;border-spacing:0}}
-th{{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.03em;color:var(--dim);
-font-weight:700;padding:0 8px 10px;border-bottom:2px solid var(--line)}}
-td{{padding:12px 8px;border-bottom:1px solid var(--line);vertical-align:top;font-size:14px}}
-tr:last-child td{{border-bottom:none}}tbody tr:hover{{background:rgba(37,99,235,.04)}}
-.rank{{font-size:17px;font-weight:800;width:34px;text-align:center}}
-.vname{{font-weight:700;font-size:14.5px}}
-.vlink{{color:inherit;text-decoration:none}}.vlink:hover{{color:var(--accent);text-decoration:underline}}
-.vsub{{color:var(--dim);font-size:12px;margin-top:2px}}
-.srcs{{margin-top:4px;font-size:11.5px}}
-.src{{color:var(--accent);text-decoration:none;font-weight:600}}
-.src:hover{{text-decoration:underline}}
-.src.dim{{color:var(--dim);font-weight:400}}
-.tablewrap{{overflow-x:auto;-webkit-overflow-scrolling:touch}}
-.wx{{min-width:280px}}
-.wxnum{{font-size:13.5px;white-space:nowrap}}
-.wxsvg{{display:block;margin:6px 0 2px;width:100%;max-width:300px;height:auto}}
-.fl{{font-size:13px}}
-.fdates{{font-size:11px;font-weight:700;color:var(--accent);margin-bottom:4px;white-space:nowrap}}
-.opt{{margin-bottom:3px;white-space:nowrap}}
-.opt .t{{font-variant-numeric:tabular-nums;color:var(--ink)}}
+.vcard{{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);
+padding:16px 18px;margin:0 0 16px}}
+.vcard.best{{border:2px solid var(--accent)}}
+.tag{{display:inline-block;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;
+color:var(--accent);background:rgba(37,99,235,.1);padding:3px 9px;border-radius:20px;margin-bottom:8px}}
+.vhead{{display:flex;align-items:center;gap:10px}}
+.rank{{font-size:21px;font-weight:800;min-width:30px;text-align:center}}
+.vname{{font-weight:800;font-size:17px;flex:1;line-height:1.2}}
+.vname a{{color:inherit;text-decoration:none}}.vname a:hover{{color:var(--accent)}}
+.vname small{{display:block;font-weight:500;font-size:12px;color:var(--dim);margin-top:2px}}
+.pill{{color:#fff;font-weight:800;font-size:16px;padding:5px 12px;border-radius:10px;align-self:flex-start}}
+.why{{font-size:13.5px;line-height:1.5;color:var(--ink);margin:10px 0 4px}}.why.dim{{color:var(--dim)}}
+.wxnum{{font-size:13.5px;margin:10px 0 4px}}
+.glegend{{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--dim);margin:2px 0 2px}}
+.glegend i{{display:inline-block;width:16px;height:9px;border-radius:2px;margin-right:5px;vertical-align:middle}}
+.sw.rain{{background:linear-gradient(90deg,#16a34a,#d97706,#dc2626)}}
+.sw.temp{{height:0;border-top:2px solid #e6792b}}
+.sw.wind{{height:0;border-top:2px dashed #3b82f6}}
+.sw.trip{{background:rgba(37,99,235,.18)}}
+.wxsvg{{display:block;margin:4px 0 8px;width:100%;max-width:520px;height:auto}}
+.flights{{display:flex;gap:12px;flex-wrap:wrap}}
+.fcol{{flex:1;min-width:215px;background:rgba(127,127,127,.05);border:1px solid var(--line);
+border-radius:12px;padding:10px 12px}}
+.fcol h4{{margin:0 0 6px;font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--dim)}}
+.fdates{{font-size:11px;font-weight:700;color:var(--accent);margin-bottom:4px}}
+.opt{{margin-bottom:3px;font-size:13px}}.opt .t{{font-variant-numeric:tabular-nums;color:var(--ink)}}
+.vsub{{color:var(--dim);font-size:12px}}
 .flink{{color:var(--accent);text-decoration:none;font-weight:600;font-size:12.5px}}
 .flink:hover{{text-decoration:underline}}
-.pill{{display:inline-block;min-width:38px;text-align:center;color:#fff;font-weight:800;font-size:14px;padding:4px 9px;border-radius:8px}}
+.srcs{{margin-top:10px;padding-top:8px;border-top:1px dashed var(--line);font-size:11.5px}}
+.src{{color:var(--accent);text-decoration:none;font-weight:600}}.src:hover{{text-decoration:underline}}
+.src.dim{{color:var(--dim);font-weight:400}}
 .dim{{color:var(--dim)}}
-.legend{{color:var(--dim);font-size:12.5px;margin:12px 2px 0;line-height:1.5}}
 footer{{color:var(--dim);font-size:12px;text-align:center;margin-top:6px;line-height:1.7}}
 footer a{{color:var(--accent);text-decoration:none}}
-.scrollhint{{display:none}}
-@media(max-width:760px){{
-  td .vsub{{display:none}}
-  th,td{{padding-left:5px;padding-right:5px}}
-  .hero-stats{{gap:14px}}
-  .wx{{min-width:188px}}
-  .wxsvg{{max-width:200px}}
-  .flink{{font-size:13.5px;padding:1px 0}}
-  .scrollhint{{display:block;color:var(--accent);font-size:12.5px;font-weight:600;
-    text-align:center;margin:0 0 8px;animation:pulse 2s ease-in-out infinite}}
-}}
-@keyframes pulse{{0%,100%{{opacity:.55}}50%{{opacity:1}}}}
+@media(max-width:560px){{.fcol{{min-width:100%}} .wxsvg{{max-width:100%}}}}
 </style></head><body><div class="wrap">
 <header>
 <h1>🧗 Climbing Trip Planner — where should Michel &amp; Dan go?</h1>
 <p class="lead">Multi-pitch trip <b>Fri 24 – Tue 28 Jul 2026</b> · ranked best-first · updated {now:%a %d %b %Y, %H:%M UTC}</p>
 <div class="links"><a href="{SITE_URL}" target="_blank" rel="noopener">🧗 multi-pitch.com</a> ·
 <a href="{SHEET_URL}" target="_blank" rel="noopener">📋 venue spreadsheet</a> ·
-<span class="dim">🗺️ tap a venue for Maps</span></div>
+<span class="dim">🗺️ tap a venue name for Maps</span></div>
 </header>
 <div class="banner {banner[0]}">{banner[1]}</div>
-{top_html}
-<div class="card">
-<h2>🏔️ Venues + weather + flights — best first</h2>
-<div class="scrollhint">← swipe sideways for ✈️ Michel &amp; Dan flights →</div>
-<div class="tablewrap"><table><thead>
-<tr><th>#</th><th>Venue</th><th>Score</th><th>Weather (20–29 Jul)</th><th>✈️ Michel<br><span class='dim'>London</span></th><th>✈️ Dan<br><span class='dim'>Belfast/Dublin</span></th></tr>
-</thead><tbody>
-{table}
-</tbody></table></div>
-<p class="legend"><b>Score</b> 0–100 (higher = drier). <b>Weather graph</b> = typical daily weather for each venue across <b>20–29 Jul</b> (trip ±2 days, shaded = trip): bars = rain (🟢&lt;3mm · 🟠 · 🔴&gt;8mm), <span style="color:#e6792b">orange line</span> = high °C, <span style="color:#3b82f6">blue dashed</span> = wind km/h; summary shows °C · % wet days · 💨 wind. Avg {CLIMO_YEARS[0]}–{CLIMO_YEARS[-1]}; switches to live forecast within 16 days. Hover a bar for the day's detail.
-<b>Flights</b> top {TOP_N_FLIGHTS} venues, return <b>🛫 {REP_OUT_LBL} → 🛬 {REP_BACK_LBL}</b> ({REP['nights']} nights): up to <b>3 options each</b>, ranked by best value (price + stop penalty); times shown are <b>outbound</b> (return on {REP_BACK_LBL}). Use <i>book ↗</i> to see return times / change dates. Other date options: {COMBO_LABELS}. Dan is local in NI. <b>forecast ↗</b> opens the venue's detailed weather.</p>
-</div>
-<footer>Weather: Open-Meteo (free). Flights: Google Flights via SerpApi, updated daily.<br>
+{cards}
+<footer>Score 0–100 (higher = drier). Weather = typical late-July, avg {CLIMO_YEARS[0]}–{CLIMO_YEARS[-1]} (live forecast within 16 days). Flights = top {TOP_N_FLIGHTS} venues, best value, outbound times (book ↗ for return/dates). Dan local in NI.<br>
+Weather: Open-Meteo (free). Flights: Google Flights via SerpApi, updated daily.<br>
 <a href="{SITE_URL}" target="_blank" rel="noopener">multi-pitch.com</a> ·
 <a href="{SHEET_URL}" target="_blank" rel="noopener">venue spreadsheet</a> ·
 <a href="{REPO_URL}" target="_blank" rel="noopener">source &amp; daily history</a></footer>
