@@ -30,11 +30,13 @@ NI venues: **Fair Head** (world-class dolerite, long single/multi-pitch trad) an
 
 ## Files
 
-- `venues.json` — candidate venues + target window (drives the queries)
-- `daily-report.md` — latest dashboard (GitHub renders it); regenerated each run
+- `venues.json` — candidate venues + target window (drives the weather queries)
+- `flights.json` — flight route + date combos to price (rules: Fri/Sat out, Mon/Tue back, 3–4 nights)
+- `flights-latest.json` — latest prices per combo (filled on demand / by an API; not wiped by weather runs)
+- `daily-report.md` — latest dashboard with weather + flights (GitHub renders it); regenerated each run
 - `history/YYYY-MM-DD.md` — permanent dated snapshots (never overwritten)
 - `forecast-log.md` — running append-only log
-- `scripts/update_weather.py` — fetches Open-Meteo, writes report + history
+- `scripts/update_report.py` — fetches Open-Meteo + renders flights, writes report + history
 - `../.github/workflows/weather.yml` — daily cloud job that runs the script
 
 ## How this is monitored

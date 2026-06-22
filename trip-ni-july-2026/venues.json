@@ -38,6 +38,51 @@
       "rock": "limestone/dolomite", "style": "large, medium-to-hard multi-pitch",
       "why": "Second alpine alternative with a similar settled summer window.",
       "hub": "Innsbruck / Salzburg + drive"
+    },
+    {
+      "name": "Lake District (Borrowdale)",
+      "country": "England",
+      "priority": "4 (UK alt)",
+      "lat": 54.546, "lon": -3.128,
+      "rock": "volcanic rock", "style": "large, Full-Range multi-pitch",
+      "why": "Cheap UK backup, drivable for Michel; good when a dry spell hits Cumbria. In climbing-trips.csv.",
+      "hub": "Kendal (drive/train from London)"
+    },
+    {
+      "name": "Snowdonia (Llanberis Pass)",
+      "country": "Wales",
+      "priority": "4 (UK alt)",
+      "lat": 53.103, "lon": -4.043,
+      "rock": "rhyolite/dolerite", "style": "vast, Full-Range multi-pitch",
+      "why": "Classic UK mountain trad (Dinas Cromlech etc.); drivable, cheap. In climbing-trips.csv as Llanberis.",
+      "hub": "drive/train from London"
+    },
+    {
+      "name": "Isle of Arran",
+      "country": "Scotland",
+      "priority": "5 (alt)",
+      "lat": 55.634, "lon": -5.200,
+      "rock": "granite", "style": "mountain multi-pitch (Cìr Mhòr)",
+      "why": "Granite ridges/slabs; reachable via Glasgow + ferry. In climbing-trips.csv as Aaran.",
+      "hub": "Glasgow + ferry"
+    },
+    {
+      "name": "Picos de Europa",
+      "country": "Spain",
+      "priority": "5 (alt)",
+      "lat": 43.201, "lon": -4.821,
+      "rock": "limestone", "style": "moderate-to-hard alpine multi-pitch (Naranjo de Bulnes)",
+      "why": "Cooler N. Spain alpine rock — better than baking S. Spain in late July. In climbing-trips.csv.",
+      "hub": "Bilbao/Santander + drive"
+    },
+    {
+      "name": "Paklenica (Anica Kuk)",
+      "country": "Croatia",
+      "priority": "4 (backup)",
+      "lat": 44.310, "lon": 15.460,
+      "rock": "limestone", "style": "big-wall multi-pitch up to 350m + sport",
+      "why": "In the Velebit mountains, not too hot in July IF you pick shade — most crags face E/W and Anica Kuk faces NORTH (stays shaded); sea nearby to cool off. Season Apr–Oct. Sources: climbgrades.com/seasons/croatia, mojagear.com Paklenica guide.",
+      "hub": "Zadar (ZAD) + ~40 min drive to Starigrad"
     }
   ]
 }

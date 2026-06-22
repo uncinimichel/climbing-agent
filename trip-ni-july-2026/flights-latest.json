@@ -1,0 +1,10 @@
+{
+  "comment": "Latest flight prices per combo (round-trip, 1 pax, GBP). Updated on demand by Claude or by an API script. null = not yet checked.",
+  "checked_at": "2026-06-22 (INDICATIVE web estimate — not a live booking quote)",
+  "currency": "GBP",
+  "combos": {
+    "fri-mon": { "cheapest_gbp": null, "airline": "Ryanair/easyJet", "out_airport": "STN/LGW→BFS", "back_airport": "BFS→STN/LGW", "notes": "Indicative ~£80–120 return; check live nearer the date" },
+    "fri-tue": { "cheapest_gbp": null, "airline": "Ryanair/easyJet", "out_airport": "STN/LGW→BFS", "back_airport": "BFS→STN/LGW", "notes": "Indicative ~£80–120 return; check live nearer the date" },
+    "sat-tue": { "cheapest_gbp": null, "airline": "Ryanair/easyJet", "out_airport": "STN/LGW→BFS", "back_airport": "BFS→STN/LGW", "notes": "Indicative ~£80–120 return; check live nearer the date" }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "comment": "Flight search rules. The report enumerates every depart×return combo within max_nights and shows the cheapest. Prices themselves live in flights-latest.json (updated on demand / by an API script) so automated weather runs never overwrite them.",
+  "route": {
+    "origin_city": "London",
+    "origin_airports": ["LGW", "LHR", "LTN", "STN", "LCY"],
+    "dest_city": "Belfast",
+    "dest_airports": ["BFS", "BHD"],
+    "passengers": 1,
+    "note": "Michel only — Dan is local in Belfast. BFS = Intl (Ryanair/easyJet/Jet2), BHD = City (Aer Lingus/easyJet)."
+  },
+  "rules": { "depart_days": ["Fri", "Sat"], "return_days": ["Mon", "Tue"], "min_nights": 3, "max_nights": 4 },
+  "combos": [
+    { "id": "fri-mon", "out": "2026-07-24", "back": "2026-07-27", "nights": 3 },
+    { "id": "fri-tue", "out": "2026-07-24", "back": "2026-07-28", "nights": 4 },
+    { "id": "sat-tue", "out": "2026-07-25", "back": "2026-07-28", "nights": 3 }
+  ],
+  "target_price_gbp": 120,
+  "data_source": "Manual / on-demand. No reliable free flight-price API; Claude fills flights-latest.json on a session. To automate, plug a free-tier API (Amadeus self-service or Travelpayouts) and write flights-latest.json from it."
+}

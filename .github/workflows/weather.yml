@@ -19,8 +19,8 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Update weather report
-        run: python3 trip-ni-july-2026/scripts/update_weather.py
+      - name: Update trip report
+        run: python3 trip-ni-july-2026/scripts/update_report.py
 
       - name: Commit changes if any
         run: |
