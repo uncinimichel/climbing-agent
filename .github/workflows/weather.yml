@@ -1,16 +1,25 @@
-name: Daily trip weather report
+name: Daily trip report
 
 # Runs in GitHub's cloud — works even when Michel's Mac is off.
 on:
   schedule:
     - cron: "0 6 * * *"   # 06:00 UTC daily
-  workflow_dispatch: {}     # allow manual "Run workflow" button
+  workflow_dispatch: {}     # manual "Run workflow" button
+  push:
+    branches: [main]        # rebuild + redeploy the page on every push
 
 permissions:
-  contents: write           # needed to commit the updated report back
+  contents: write           # commit the updated report back
+  pages: write              # deploy to GitHub Pages
+  id-token: write
+
+# Avoid overlapping deploys
+concurrency:
+  group: pages
+  cancel-in-progress: true
 
 jobs:
-  weather:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -19,17 +28,39 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Update trip report
+      - name: Fetch flight prices (skips if no Amadeus key)
+        env:
+          AMADEUS_CLIENT_ID: ${{ secrets.AMADEUS_CLIENT_ID }}
+          AMADEUS_CLIENT_SECRET: ${{ secrets.AMADEUS_CLIENT_SECRET }}
+        run: python3 trip-ni-july-2026/scripts/fetch_flights.py
+
+      - name: Build report (weather + flights + ranked HTML)
         run: python3 trip-ni-july-2026/scripts/update_report.py
 
       - name: Commit changes if any
         run: |
-          git config user.name  "trip-weather-bot"
+          git config user.name  "trip-bot"
           git config user.email "actions@github.com"
-          git add trip-ni-july-2026/daily-report.md trip-ni-july-2026/history/
+          git add index.html .nojekyll trip-ni-july-2026/daily-report.md \
+                  trip-ni-july-2026/history/ trip-ni-july-2026/flights-latest.json
           if git diff --staged --quiet; then
-            echo "No forecast changes."
+            echo "No changes."
           else
-            git commit -m "weather: daily report update ($(date -u +%Y-%m-%d))"
+            git commit -m "report: daily update ($(date -u +%Y-%m-%d))"
             git push
           fi
+
+      - name: Upload page artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

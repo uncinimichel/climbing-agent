@@ -1,45 +1,44 @@
 #!/usr/bin/env python3
-"""Build the trip dashboard: free Open-Meteo weather for every candidate venue
-plus the latest flight prices, written to daily-report.md and a permanent dated
-history snapshot.
+"""Build the trip dashboard from free Open-Meteo weather + flight data.
 
-No dependencies, no API key — standard library only, so it runs on a bare
-GitHub Actions runner.
+Outputs:
+  index.html (repo root)            concise, ranked, self-contained HTML for GitHub Pages
+  trip-ni-july-2026/daily-report.md short markdown mirror (renders on github.com)
+  trip-ni-july-2026/history/<date>.md permanent dated snapshot
 
-Config / data files (all in the trip folder):
-  venues.json         candidate venues + target window  -> drives weather queries
-  flights.json        flight route + date combos (rules) -> what to price
-  flights-latest.json latest prices per combo            -> filled on demand / by API
+Ranking: every venue is scored on the forecast for the TARGET WINDOW when it is
+within the 16-day horizon; until then it falls back to the NEAREST queryable
+forecast day (closest to the trip) as an explicitly-labelled proxy. No deps, no
+API key — standard library only, runs on a bare GitHub Actions runner.
 """
 import json
 import urllib.request
 from datetime import date, datetime, timezone
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).resolve().parent.parent      # trip-ni-july-2026/
+REPO_ROOT = ROOT.parent                            # repo root (for index.html)
 HISTORY = ROOT / "history"
 DAILY = ROOT / "daily-report.md"
+INDEX = REPO_ROOT / "index.html"
 
 _cfg = json.loads((ROOT / "venues.json").read_text())
 TRIP_NAME = _cfg["trip"]
 TARGET_START = date.fromisoformat(_cfg["target_window"]["start"])
 TARGET_END = date.fromisoformat(_cfg["target_window"]["end"])
 VENUES = _cfg["venues"]
-
 FLIGHTS_CFG = json.loads((ROOT / "flights.json").read_text())
 FLIGHTS_DATA = json.loads((ROOT / "flights-latest.json").read_text())
 
 WMO = {
     0: "clear", 1: "mostly clear", 2: "partly cloudy", 3: "overcast",
-    45: "fog", 48: "rime fog", 51: "light drizzle", 53: "drizzle",
-    55: "heavy drizzle", 61: "light rain", 63: "rain", 65: "heavy rain",
-    71: "light snow", 73: "snow", 75: "heavy snow", 80: "rain showers",
-    81: "rain showers", 82: "violent showers", 95: "thunderstorm",
-    96: "thunderstorm+hail", 99: "thunderstorm+hail",
+    45: "fog", 48: "rime fog", 51: "light drizzle", 53: "drizzle", 55: "heavy drizzle",
+    61: "light rain", 63: "rain", 65: "heavy rain", 71: "light snow", 73: "snow",
+    75: "heavy snow", 80: "showers", 81: "showers", 82: "violent showers",
+    95: "thunderstorm", 96: "thunderstorm+hail", 99: "thunderstorm+hail",
 }
 
 
-# --- Weather ---------------------------------------------------------------
 def fetch(lat, lon):
     url = (
         "https://api.open-meteo.com/v1/forecast"
@@ -52,136 +51,225 @@ def fetch(lat, lon):
         return json.load(r)
 
 
-def score_day(code, precip_mm, precip_prob):
+def day_score(code, mm, prob):
+    """0 (washed out) .. 100 (perfect)."""
+    s = 100.0 - (prob or 0) * 0.8 - (mm or 0) * 6
     if code is not None and code >= 61:
-        return "❌ wet"
-    if (precip_prob or 0) >= 60 or (precip_mm or 0) >= 5:
-        return "⚠️ risky"
-    if (precip_prob or 0) <= 25 and (precip_mm or 0) < 1:
-        return "✅ dry"
-    return "➖ mixed"
+        s = min(s, 25)
+    if code in (95, 96, 99):
+        s = min(s, 15)
+    return max(0.0, min(100.0, s))
 
 
-def venue_block(v):
+def evaluate(v):
+    """Return dict with score, weather summary, the date(s) used, and mode."""
     try:
-        data = fetch(v["lat"], v["lon"])
+        d = fetch(v["lat"], v["lon"])["daily"]
     except Exception as e:
-        return f"### {v['name']}  _(priority {v['priority']})_\n\n_fetch failed: {e}_\n", []
+        return {"venue": v, "ok": False, "error": str(e), "score": -1}
 
-    d = data["daily"]
     days = d["time"]
-    lines = [f"### {v['name']}  _(priority {v['priority']})_", ""]
-    in_window = []
-    table = ["| Date | Sky | Max°C | Min°C | Rain mm | Rain % | Wind km/h | Verdict |",
-             "|---|---|---|---|---|---|---|---|"]
-    for i, day in enumerate(days):
-        dt = date.fromisoformat(day)
-        if not (TARGET_START <= dt <= TARGET_END):
+    valid = [i for i in range(len(days)) if d["temperature_2m_max"][i] is not None]
+    in_win = [i for i in valid if TARGET_START <= date.fromisoformat(days[i]) <= TARGET_END]
+    if in_win:
+        idx = in_win
+        mode = "target window"
+        used_label = f"{days[idx[0]]} … {days[idx[-1]]}"
+    elif valid:
+        idx = [valid[-1]]              # nearest queryable day to the trip
+        mode = "nearest available"
+        used_label = days[idx[0]]
+    else:
+        return {"venue": v, "ok": False, "error": "no forecast days", "score": -1}
+
+    scores = [day_score(d["weathercode"][i], d["precipitation_sum"][i],
+                        d["precipitation_probability_max"][i]) for i in idx]
+    tmax = sum(d["temperature_2m_max"][i] for i in idx) / len(idx)
+    prob = max((d["precipitation_probability_max"][i] or 0) for i in idx)
+    codes = [d["weathercode"][i] for i in idx]
+    sky = WMO.get(max(set(codes), key=codes.count), "?")
+    return {
+        "venue": v, "ok": True, "score": round(sum(scores) / len(scores)),
+        "tmax": round(tmax), "rain_prob": prob, "sky": sky,
+        "used_label": used_label, "mode": mode,
+        "horizon": days[-1],
+    }
+
+
+def prio_num(v):
+    for ch in v.get("priority", "9"):
+        if ch.isdigit():
+            return int(ch)
+    return 9
+
+
+def rank(results):
+    ok = [r for r in results if r.get("ok")]
+    ok.sort(key=lambda r: (-r["score"], prio_num(r["venue"])))
+    return ok + [r for r in results if not r.get("ok")]
+
+
+def cheapest_flight():
+    priced = [(d["cheapest_gbp"], cid) for cid, d in FLIGHTS_DATA["combos"].items()
+              if d.get("cheapest_gbp") is not None]
+    return min(priced) if priced else None
+
+
+# ---- HTML -----------------------------------------------------------------
+def badge(score):
+    if score < 0:
+        return "#888", "n/a"
+    if score >= 70:
+        return "#1a7f37", f"{score}"     # green
+    if score >= 45:
+        return "#bf8700", f"{score}"     # amber
+    return "#cf222e", f"{score}"         # red
+
+
+def build_html(ranked, now, proxy_note):
+    rows = []
+    for n, r in enumerate(ranked, 1):
+        v = r["venue"]
+        if not r.get("ok"):
+            rows.append(f"<tr><td>{n}</td><td>{v['name']}</td><td colspan=5 class='muted'>fetch failed</td></tr>")
             continue
-        code = d["weathercode"][i]
-        verdict = score_day(code, d["precipitation_sum"][i], d["precipitation_probability_max"][i])
-        in_window.append(verdict)
-        table.append(
-            f"| {day} | {WMO.get(code, code)} | {d['temperature_2m_max'][i]:.0f} | "
-            f"{d['temperature_2m_min'][i]:.0f} | {d['precipitation_sum'][i]:.1f} | "
-            f"{d['precipitation_probability_max'][i] or 0} | {d['windspeed_10m_max'][i]:.0f} | {verdict} |"
+        color, label = badge(r["score"])
+        medal = {1: "🥇", 2: "🥈", 3: "🥉"}.get(n, "")
+        rows.append(
+            f"<tr><td class='rk'>{medal}{n}</td>"
+            f"<td><b>{v['name']}</b><div class='sub'>{v['country']} · {v.get('style','')}</div></td>"
+            f"<td><span class='score' style='background:{color}'>{label}</span></td>"
+            f"<td>{r['tmax']}°C</td><td>{r['rain_prob']}%</td><td>{r['sky']}</td>"
+            f"<td class='sub'>{v.get('hub','')}</td></tr>"
         )
-    if in_window:
-        lines += table
-        dry = sum(1 for x in in_window if x.startswith("✅"))
-        lines += ["", f"**Window summary:** {dry}/{len(in_window)} clearly-dry days in {TARGET_START}…{TARGET_END}."]
-    else:
-        last = days[-1] if days else "?"
-        lines.append(f"_Target window {TARGET_START}…{TARGET_END} is beyond the 16-day forecast horizon "
-                     f"(forecast currently reaches {last}). Check back closer to the date._")
-    lines.append("")
-    return "\n".join(lines), in_window
+    table = "\n".join(rows)
+
+    top = ranked[0] if ranked and ranked[0].get("ok") else None
+    top_html = (
+        f"<div class='pick'><span class='pin'>📍 Top pick right now</span>"
+        f"<h2>{top['venue']['name']} <small>({top['venue']['country']})</small></h2>"
+        f"<p>{top['venue'].get('why','')}</p>"
+        f"<p class='sub'>Score {top['score']}/100 · {top['tmax']}°C · {top['rain_prob']}% rain · {top['sky']}</p></div>"
+        if top else "<div class='pick'><p>No forecast available.</p></div>"
+    )
+
+    # flights
+    fr = FLIGHTS_CFG["route"]
+    cf = cheapest_flight()
+    frows = "".join(
+        f"<tr><td>{c['out']}→{c['back']}</td><td>{c['nights']}n</td>"
+        f"<td>{('£'+str(FLIGHTS_DATA['combos'][c['id']]['cheapest_gbp'])) if FLIGHTS_DATA['combos'][c['id']].get('cheapest_gbp') is not None else '—'}</td>"
+        f"<td class='sub'>{FLIGHTS_DATA['combos'][c['id']].get('notes','')}</td></tr>"
+        for c in FLIGHTS_CFG["combos"]
+    )
+    cheap_line = (f"Cheapest: <b>{cf[1]} £{cf[0]}</b>" if cf
+                  else f"Indicative ~£80–120 return (Ryanair/easyJet) — live check nearer the date")
+
+    return f"""<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Climbing Trip Planner — Michel &amp; Dan, ~24 Jul 2026</title>
+<style>
+:root{{color-scheme:light dark}}
+*{{box-sizing:border-box}}
+body{{font:15px/1.45 -apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+margin:0;padding:18px;max-width:760px;margin:auto;color:#1c2024;background:#fff}}
+@media(prefers-color-scheme:dark){{body{{background:#0d1117;color:#e6edf3}}
+.card{{background:#161b22;border-color:#30363d}} th{{color:#9da7b3}} tr{{border-color:#21262d}}}}
+h1{{font-size:20px;margin:0 0 2px}} h2{{margin:.1em 0;font-size:18px}}
+.lead{{color:#57606a;margin:.2em 0 14px;font-size:13px}}
+.warn{{background:#fff8c5;border:1px solid #d4a72c;color:#54470b;padding:8px 11px;
+border-radius:8px;font-size:13px;margin:0 0 14px}}
+@media(prefers-color-scheme:dark){{.warn{{background:#272115;color:#e3d8a8;border-color:#6b5d2a}}}}
+.card{{border:1px solid #d0d7de;border-radius:10px;padding:12px 14px;margin:0 0 14px;background:#f6f8fa}}
+.pick{{border-left:5px solid #1a7f37}}
+.pin{{font-size:12px;font-weight:700;color:#1a7f37;text-transform:uppercase;letter-spacing:.04em}}
+table{{width:100%;border-collapse:collapse;font-size:14px}}
+th,td{{text-align:left;padding:7px 6px;border-bottom:1px solid #eaeef2;vertical-align:top}}
+th{{font-size:11px;text-transform:uppercase;letter-spacing:.03em;color:#57606a}}
+.rk{{font-weight:700;white-space:nowrap}}
+.sub{{color:#7d8590;font-size:12px}}
+.score{{display:inline-block;min-width:34px;text-align:center;color:#fff;font-weight:700;
+padding:2px 6px;border-radius:6px}}
+.muted{{color:#7d8590}}
+footer{{color:#7d8590;font-size:12px;margin-top:8px}}
+</style></head><body>
+<h1>🧗 Climbing Trip Planner — where should Michel &amp; Dan go?</h1>
+<p class="lead">Multi-pitch trip around <b>Fri 24 – Tue 28 Jul 2026</b> · ranked best-first by forecast ·
+updated {now:%Y-%m-%d %H:%M UTC}</p>
+<div class="warn">{proxy_note}</div>
+{top_html}
+<div class="card">
+<table>
+<tr><th>#</th><th>Venue</th><th>Score</th><th>Max°C</th><th>Rain</th><th>Sky</th><th>Getting there</th></tr>
+{table}
+</table>
+<p class="sub">Score 0–100 (higher = drier/better). 🥇 = best option right now.</p>
+</div>
+<div class="card">
+<h2>✈️ Flights — London ⇄ Belfast</h2>
+<p class="sub">{fr['passengers']} pax · 3–4 nights · target ≤ £{FLIGHTS_CFG['target_price_gbp']} · {cheap_line}</p>
+<table><tr><th>Dates</th><th>Nights</th><th>Price</th><th>Notes</th></tr>{frows}</table>
+</div>
+<footer>Weather: Open-Meteo (free). Flights: indicative / on-demand (no free price API).
+Source &amp; history: github.com/uncinimichel/climbing-agent</footer>
+</body></html>
+"""
 
 
-def recommendation(summaries):
-    scored = [(sum(1 for x in v if x.startswith("✅")), len(v), name)
-              for name, v in summaries.items() if v]
-    if not scored:
-        return ("⏳ Target window not yet in forecast range — no go/no-go call possible. "
-                "Forecasts reach 16 days out; meaningful from ~8 July.")
-    scored.sort(reverse=True)
-    best_dry, total, best = scored[0]
-    if best_dry == 0:
-        return f"⚠️ No venue shows clearly-dry days yet. Best so far: **{best}**. Keep watching."
-    return (f"📍 Leaning **{best}** — {best_dry}/{total} dry days in the window. "
-            "(NI preferred when dry; switch to a backup only if NI is washed out.)")
-
-
-# --- Flights ---------------------------------------------------------------
-def flights_block():
-    r = FLIGHTS_CFG["route"]
-    target = FLIGHTS_CFG.get("target_price_gbp")
-    data = FLIGHTS_DATA["combos"]
-    checked = FLIGHTS_DATA.get("checked_at") or "never"
-    cur = FLIGHTS_DATA.get("currency", "GBP")
-
-    lines = [
-        f"**Route:** {r['origin_city']} ({'/'.join(r['origin_airports'])}) ⇄ "
-        f"{r['dest_city']} ({'/'.join(r['dest_airports'])}) · {r['passengers']} pax · "
-        f"target ≤ £{target} return.",
-        f"**Prices last checked:** {checked}. _{FLIGHTS_CFG['data_source']}_",
-        "",
-        "| Combo | Out | Back | Nights | Cheapest | Airline | Airports | Notes |",
-        "|---|---|---|---|---|---|---|---|",
-    ]
-    priced = []
+def build_md(ranked, now, proxy_note):
+    lines = [f"# {TRIP_NAME}", "",
+             f"**Updated:** {now:%Y-%m-%d %H:%M UTC} · ranked best-first.", "",
+             f"> {proxy_note}", "", "## 🏆 Ranking", "",
+             "| # | Venue | Score | Max°C | Rain% | Sky | Getting there |",
+             "|---|---|---|---|---|---|---|"]
+    for n, r in enumerate(ranked, 1):
+        v = r["venue"]
+        if not r.get("ok"):
+            lines.append(f"| {n} | {v['name']} | n/a | | | fetch failed | |")
+            continue
+        lines.append(f"| {n} | {v['name']} | {r['score']} | {r['tmax']} | {r['rain_prob']} | {r['sky']} | {v.get('hub','')} |")
+    cf = cheapest_flight()
+    lines += ["", "## ✈️ Flights (London ⇄ Belfast, 3–4 nights)", "",
+              ("Cheapest: " + f"{cf[1]} £{cf[0]}" if cf else "Indicative ~£80–120 return; live check nearer the date."),
+              "", "| Dates | Nights | Price | Notes |", "|---|---|---|---|"]
     for c in FLIGHTS_CFG["combos"]:
-        d = data.get(c["id"], {})
-        price = d.get("cheapest_gbp")
-        price_s = f"£{price}" if price is not None else "—"
-        if price is not None:
-            priced.append((price, c["id"]))
-        ap = "→".join(x for x in [d.get("out_airport"), d.get("back_airport")] if x) or "—"
-        lines.append(
-            f"| {c['id']} | {c['out']} | {c['back']} | {c['nights']} | {price_s} | "
-            f"{d.get('airline') or '—'} | {ap} | {d.get('notes') or ''} |"
-        )
-    lines.append("")
-    if priced:
-        priced.sort()
-        best_price, best_id = priced[0]
-        flag = " ✅ under target" if target and best_price <= target else ""
-        lines.append(f"**Cheapest so far:** {best_id} at £{best_price} ({cur}){flag}.")
-    else:
-        lines.append("_No prices logged yet — ask Claude to check, or wire a flight API._")
-    lines.append("")
-    return "\n".join(lines)
+        d = FLIGHTS_DATA["combos"][c["id"]]
+        p = f"£{d['cheapest_gbp']}" if d.get("cheapest_gbp") is not None else "—"
+        lines.append(f"| {c['out']}→{c['back']} | {c['nights']} | {p} | {d.get('notes','')} |")
+    lines += ["", "_Full rendered dashboard: see index.html (GitHub Pages)._"]
+    return "\n".join(lines) + "\n"
 
 
-# --- Assemble --------------------------------------------------------------
 def main():
     now = datetime.now(timezone.utc)
     today = now.date().isoformat()
+    results = [evaluate(v) for v in VENUES]
+    ranked = rank(results)
 
-    blocks, summaries = [], {}
-    for v in VENUES:
-        block, summ = venue_block(v)
-        blocks.append(block)
-        summaries[v["name"]] = summ
-    weather_md = "\n".join(blocks)
-    rec = recommendation(summaries)
-    flights_md = flights_block()
+    sample = next((r for r in ranked if r.get("ok")), None)
+    if sample and sample["mode"] == "target window":
+        proxy_note = (f"✅ Trip dates are within forecast range — ranked on the actual "
+                      f"target window ({sample['used_label']}).")
+    elif sample:
+        used = date.fromisoformat(sample["used_label"])
+        days_before = (TARGET_START - used).days
+        proxy_note = (f"⚠️ Trip dates (22–28 Jul) are still beyond the 16-day forecast limit "
+                      f"(forecast reaches {sample['horizon']}). Ranked on the <b>nearest queryable "
+                      f"day, {sample['used_label']}</b> — ~{days_before} days before the trip, so "
+                      f"<b>indicative only</b>. Re-ranks on real trip-window weather from ~8 Jul.")
+    else:
+        proxy_note = "⚠️ No forecast data available right now."
 
-    report = (
-        f"# {TRIP_NAME}\n\n"
-        f"**Last update:** {now:%Y-%m-%d %H:%M UTC} · **Target window:** {TARGET_START}…{TARGET_END}\n\n"
-        f"## 🧭 Recommendation\n\n{rec}\n\n"
-        f"## ✈️ Flights\n\n{flights_md}\n"
-        f"## 🌦️ Weather by venue\n\n{weather_md}\n"
-    )
-    DAILY.write_text(report)
+    INDEX.write_text(build_html(ranked, now, proxy_note))
+    md = build_md(ranked, now, proxy_note)
+    DAILY.write_text(md)
     HISTORY.mkdir(exist_ok=True)
-    (HISTORY / f"{today}.md").write_text(
-        f"# Snapshot {today}\n\n## Recommendation\n\n{rec}\n\n"
-        f"## Flights\n\n{flights_md}\n## Weather\n\n{weather_md}\n"
-    )
-    print(f"Wrote daily-report.md and history/{today}.md")
-    print(rec)
+    (HISTORY / f"{today}.md").write_text(md)
+    order = " > ".join(r["venue"]["name"] for r in ranked if r.get("ok"))
+    print(f"Wrote index.html, daily-report.md, history/{today}.md")
+    print("Ranking:", order)
 
 
 if __name__ == "__main__":

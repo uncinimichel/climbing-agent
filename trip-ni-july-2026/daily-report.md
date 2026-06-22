@@ -1,59 +1,31 @@
 # Climbing trip ~24 July 2026 — Michel & Dan
 
-**Last update:** 2026-06-22 16:52 UTC · **Target window:** 2026-07-22…2026-07-27
+**Updated:** 2026-06-22 17:03 UTC · ranked best-first.
 
-## 🧭 Recommendation
+> ⚠️ Trip dates (22–28 Jul) are still beyond the 16-day forecast limit (forecast reaches 2026-07-07). Ranked on the <b>nearest queryable day, 2026-07-07</b> — ~15 days before the trip, so <b>indicative only</b>. Re-ranks on real trip-window weather from ~8 Jul.
 
-⏳ Target window not yet in forecast range — no go/no-go call possible. Forecasts reach 16 days out; meaningful from ~8 July.
+## 🏆 Ranking
 
-## ✈️ Flights
+| # | Venue | Score | Max°C | Rain% | Sky | Getting there |
+|---|---|---|---|---|---|---|
+| 1 | East Tyrol (Lienz) | 100 | 28 | 0 | overcast | Innsbruck / Salzburg + drive |
+| 2 | Paklenica (Anica Kuk) | 100 | 27 | 0 | overcast | Zadar (ZAD) + ~40 min drive to Starigrad |
+| 3 | Dolomites (Cortina) | 87 | 21 | 0 | light drizzle | Venice/Treviso/Innsbruck + drive |
+| 4 | Picos de Europa | 68 | 17 | 29 | drizzle | Bilbao/Santander + drive |
+| 5 | Mournes, NI | 66 | 18 | 33 | light drizzle | Belfast (BFS/BHD) |
+| 6 | Isle of Arran | 54 | 12 | 35 | drizzle | Glasgow + ferry |
+| 7 | Fair Head, NI | 37 | 15 | 55 | light drizzle | Belfast (BFS/BHD), ~1h flight from London |
+| 8 | Lake District (Borrowdale) | 0 | 16 | 59 | heavy drizzle | Kendal (drive/train from London) |
+| 9 | Snowdonia (Llanberis Pass) | 0 | 13 | 51 | heavy drizzle | drive/train from London |
 
-**Route:** London (LGW/LHR/LTN/STN/LCY) ⇄ Belfast (BFS/BHD) · 1 pax · target ≤ £120 return.
-**Prices last checked:** 2026-06-22 (INDICATIVE web estimate — not a live booking quote). _Manual / on-demand. No reliable free flight-price API; Claude fills flights-latest.json on a session. To automate, plug a free-tier API (Amadeus self-service or Travelpayouts) and write flights-latest.json from it._
+## ✈️ Flights (London ⇄ Belfast, 3–4 nights)
 
-| Combo | Out | Back | Nights | Cheapest | Airline | Airports | Notes |
-|---|---|---|---|---|---|---|---|
-| fri-mon | 2026-07-24 | 2026-07-27 | 3 | — | Ryanair/easyJet | STN/LGW→BFS→BFS→STN/LGW | Indicative ~£80–120 return; check live nearer the date |
-| fri-tue | 2026-07-24 | 2026-07-28 | 4 | — | Ryanair/easyJet | STN/LGW→BFS→BFS→STN/LGW | Indicative ~£80–120 return; check live nearer the date |
-| sat-tue | 2026-07-25 | 2026-07-28 | 3 | — | Ryanair/easyJet | STN/LGW→BFS→BFS→STN/LGW | Indicative ~£80–120 return; check live nearer the date |
+Indicative ~£80–120 return; live check nearer the date.
 
-_No prices logged yet — ask Claude to check, or wire a flight API._
+| Dates | Nights | Price | Notes |
+|---|---|---|---|
+| 2026-07-24→2026-07-27 | 3 | — | Indicative ~£80–120 return; check live nearer the date |
+| 2026-07-24→2026-07-28 | 4 | — | Indicative ~£80–120 return; check live nearer the date |
+| 2026-07-25→2026-07-28 | 3 | — | Indicative ~£80–120 return; check live nearer the date |
 
-## 🌦️ Weather by venue
-
-### Fair Head, NI  _(priority 1 (primary))_
-
-_Target window 2026-07-22…2026-07-27 is beyond the 16-day forecast horizon (forecast currently reaches 2026-07-07). Check back closer to the date._
-
-### Mournes, NI  _(priority 1 (primary))_
-
-_Target window 2026-07-22…2026-07-27 is beyond the 16-day forecast horizon (forecast currently reaches 2026-07-07). Check back closer to the date._
-
-### Dolomites (Cortina)  _(priority 2 (backup))_
-
-_Target window 2026-07-22…2026-07-27 is beyond the 16-day forecast horizon (forecast currently reaches 2026-07-07). Check back closer to the date._
-
-### East Tyrol (Lienz)  _(priority 3 (alt))_
-
-_Target window 2026-07-22…2026-07-27 is beyond the 16-day forecast horizon (forecast currently reaches 2026-07-07). Check back closer to the date._
-
-### Lake District (Borrowdale)  _(priority 4 (UK alt))_
-
-_Target window 2026-07-22…2026-07-27 is beyond the 16-day forecast horizon (forecast currently reaches 2026-07-07). Check back closer to the date._
-
-### Snowdonia (Llanberis Pass)  _(priority 4 (UK alt))_
-
-_Target window 2026-07-22…2026-07-27 is beyond the 16-day forecast horizon (forecast currently reaches 2026-07-07). Check back closer to the date._
-
-### Isle of Arran  _(priority 5 (alt))_
-
-_Target window 2026-07-22…2026-07-27 is beyond the 16-day forecast horizon (forecast currently reaches 2026-07-07). Check back closer to the date._
-
-### Picos de Europa  _(priority 5 (alt))_
-
-_Target window 2026-07-22…2026-07-27 is beyond the 16-day forecast horizon (forecast currently reaches 2026-07-07). Check back closer to the date._
-
-### Paklenica (Anica Kuk)  _(priority 4 (backup))_
-
-_Target window 2026-07-22…2026-07-27 is beyond the 16-day forecast horizon (forecast currently reaches 2026-07-07). Check back closer to the date._
-
+_Full rendered dashboard: see index.html (GitHub Pages)._
