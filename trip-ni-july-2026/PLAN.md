@@ -33,6 +33,42 @@ venues by forecast and (b) tracks cheapest flights, with **history preserved**.
 - **History:** `history/YYYY-MM-DD.md` (never overwritten) + full git history.
 - **Source CSVs:** `climbing-trips.csv` (40-venue shortlist), `dolomites-trip.csv`.
 
+## Architecture overview
+
+Fully serverless and free — no laptop, no Claude in the daily loop. Everything
+runs inside GitHub Actions on a schedule.
+
+```
+                  ┌─────────────────────────── GitHub Actions (cloud) ───────────────────────────┐
+  cron 06:00 UTC  │                                                                               │
+  (or push, or ── │ build job:                                                                    │
+   manual run)    │   1. checkout repo                                                            │
+                  │   2. python update_report.py                                                  │
+                  │        ├─ Open-Meteo  archive  → July climatology per venue (free, no key)    │
+                  │        ├─ Open-Meteo  forecast → 16-day forecast per venue (free, no key)     │
+                  │        ├─ rank venues by weather score                                        │
+                  │        └─ SerpApi (Google Flights) → top-4 venues × {Michel, Dan}             │
+                  │              using secret SERPAPI_KEY (never in code)                          │
+                  │   3. writes index.html + daily-report.md + history/<date>.md                  │
+                  │   4. git commit + push (the commit IS the history)                            │
+                  │   5. upload-pages-artifact                                                    │
+                  │ deploy job:                                                                   │
+                  │   6. deploy-pages  ───────────────────────────────────────────┐              │
+                  └────────────────────────────────────────────────────────────── │ ─────────────┘
+                                                                                   ▼
+                                            https://uncinimichel.github.io/climbing-agent/  (public)
+```
+
+- **Triggers:** `schedule` (daily 06:00 UTC), `push` to main, and `workflow_dispatch`
+  (manual "Run workflow" button). All three run the same job.
+- **Secrets:** only `SERPAPI_KEY`, stored as a GitHub Actions secret and masked in
+  logs. `.env` (local mirror) is gitignored. Weather APIs need no key.
+- **State:** the repo itself is the database — `flights-latest.json` is the latest
+  snapshot; `history/` + git log are the permanent archive.
+- **Failure modes:** weather APIs retry (4×); if SerpApi/key is unavailable the build
+  still succeeds and flight cells fall back to "search ↗" links; a no-change run
+  commits nothing and just redeploys.
+
 ## Key design decisions
 
 1. **Weather scoring.** `day_score()` = 100 − 0.8·rain% − 6·precip_mm, capped at
@@ -70,10 +106,48 @@ venues by forecast and (b) tracks cheapest flights, with **history preserved**.
 - [ ] A `history/<date>.md` snapshot exists and is not overwritten across days.
 - [ ] Repo visibility is public; Pages URL loads on mobile.
 
-## Known limitations / TODO
+## Limitations (known, accepted)
 
-- Weather ranking uses climatology until ~8 July, then live forecast (stated in-report).
-- SerpApi quota: top-4 × 2 travellers ≈ up to 8 searches/day. Balance is finite — may
-  need topping up near the trip, or reduce `TOP_N_FLIGHTS` / run less often to throttle.
-- Destination logic is advisory (NI-preferred); the human makes the final call.
-- Coordinates are one representative point per area, not per-crag.
+- **Weather basis switches at ~8 July**: climatology-ranked before, live-forecast after.
+  Climatology is a typical-year average, not a prediction for this specific July.
+- **"Wet day" = ≥3 mm/day** from ERA5; alpine venues with daily afternoon convection
+  (Dolomites, Tyrol) score worse than their real climbable-mornings would suggest.
+- **Flights:** only the **top-4** venues are priced, **one representative round-trip**
+  (Fri 24→Tue 28), **outbound-leg times only** (return times need a 2nd SerpApi call).
+  Prices are point-in-time, not continuously tracked.
+- **SerpApi quota**: top-4 × 2 travellers ≈ up to 8 searches/day. Balance is finite —
+  top up near the trip, or lower `TOP_N_FLIGHTS` / run less often to throttle.
+- **Coordinates** are one representative point per area, not per-crag.
+- **GitHub scheduled jobs** can lag a few minutes and are paused after ~60 days of repo
+  inactivity (not a risk here — it commits daily). Node20→24 deprecation is a warning only.
+- **Destination logic is advisory** (NI-preferred, weather-ranked); the humans decide.
+
+## Next tasks / backlog
+
+Priority order — pick up here. None are required for daily running; all are enhancements.
+
+1. **Return-leg flight times** — second SerpApi call per option (≈2× searches) to show
+   inbound dep→arr, not just outbound.
+2. **Price-drop alerting** — compare today's `flights-latest.json` to yesterday's history;
+   if a fare drops below a threshold, open a GitHub issue / email / push notification.
+3. **Lock the date once chosen** — when Michel & Dan pick a date, pin it in `flights.json`
+   and track that single combo's price trend over time (chart from history).
+4. **Tides for sea-cliff venues** (Fair Head, Gower, Cornwall) — add a free/low-cost tide
+   source so non-tidal climbing windows are flagged. (Old multi-pitch project had tides.)
+5. **Per-crag detail** — link each venue to its UKC/theCrag/Mountain-Project page and add
+   a guidebook/approach note (data partly in `climbing-trips.csv`).
+6. **Wind & sunrise/sunset** in the forecast cell (already fetched by the API) — useful for
+   alpine starts and exposed crags.
+7. **"Confidence" on climatology** — show spread/variance across years, not just the mean.
+8. **Email/Slack digest** — post the daily top pick + cheapest fares to a channel.
+9. **Pin the GitHub Action versions** / bump to Node24-based actions to clear the warning.
+10. **Tests** — a tiny pytest for `day_score`, `climo_score`, flight ranking, and the
+    out-of-window banner logic, run in CI before deploy.
+
+## Maintenance notes
+
+- Add/remove venues or change dates: edit `venues.json` (+ `travel` airports) and
+  `flights.json`; everything else flows from there.
+- Rotate the SerpApi key: `gh secret set SERPAPI_KEY --repo uncinimichel/climbing-agent`
+  and update local `.env`. The key was once pasted in chat → rotating is advisable.
+- Manual run: Actions tab → "Run workflow", or `gh workflow run weather.yml`.
