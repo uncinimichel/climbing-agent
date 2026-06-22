@@ -1,6 +1,6 @@
 {
   "comment": "Latest flight prices per combo (round-trip, 1 pax, GBP). Updated on demand by Claude or by an API script. null = not yet checked.",
-  "checked_at": "2026-06-22 19:10 UTC (Google Flights/SerpApi)",
+  "checked_at": "2026-06-22 19:17 UTC (Google Flights/SerpApi)",
   "currency": "GBP",
   "rep_combo": {
     "id": "fri-tue",
@@ -50,31 +50,31 @@
         "to": "ZAD",
         "options": [
           {
-            "price": 612,
-            "airline": "British Airways",
-            "from": "BHD",
+            "price": 272,
+            "airline": "Lufthansa City Airlines",
+            "from": "DUB",
             "to": "ZAD",
-            "dep": "06:30",
-            "arr": "14:55",
+            "dep": "17:45",
+            "arr": "09:30",
+            "stops": 1
+          },
+          {
+            "price": 241,
+            "airline": "SWISS",
+            "from": "DUB",
+            "to": "ZAD",
+            "dep": "20:15",
+            "arr": "18:30",
             "stops": 2
           },
           {
-            "price": 616,
-            "airline": "British Airways",
-            "from": "BHD",
+            "price": 285,
+            "airline": "Lufthansa",
+            "from": "DUB",
             "to": "ZAD",
-            "dep": "20:10",
-            "arr": "22:45",
-            "stops": 2
-          },
-          {
-            "price": 735,
-            "airline": "British Airways",
-            "from": "BHD",
-            "to": "ZAD",
-            "dep": "06:30",
-            "arr": "14:30",
-            "stops": 2
+            "dep": "10:40",
+            "arr": "09:30",
+            "stops": 1
           }
         ],
         "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDWkFEGjASCjIwMjYtMDctMjhqBwgBEgNaQURyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
@@ -140,13 +140,13 @@
             "stops": 1
           },
           {
-            "price": 505,
-            "airline": "British Airways",
-            "from": "BHD",
+            "price": 197,
+            "airline": "Vueling",
+            "from": "DUB",
             "to": "BIO",
-            "dep": "06:30",
-            "arr": "08:30",
-            "stops": 2
+            "dep": "22:05",
+            "arr": "08:15",
+            "stops": 1
           }
         ],
         "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQklPGjASCjIwMjYtMDctMjhqBwgBEgNCSU9yBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
