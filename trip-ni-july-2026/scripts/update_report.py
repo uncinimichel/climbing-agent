@@ -448,53 +448,59 @@ def flight_html(f):
         out.append(f"<div class='opt'><{strong}>£{o['price']}</{strong}> "
                    f"<span class='t' title='outbound time'>{o['dep']}→{o['arr']}</span> "
                    f"<span class='vsub'>{o['from']} · {o['airline'][:8]} · {st}</span></div>")
-    out.append(f"<div class='vsub'>times = outbound; return {REP_BACK_LBL.split()[0]} via link</div>")
     out.append(f"<a class='flink' href='{url}' target='_blank' rel='noopener'>book ↗</a>")
     return "".join(out)
 
 
-def weather_mini_svg(series, W=190, H=56):
-    """Compact per-row SVG: daily rain bars + high-temp line over the trip window ±2 days.
-    Fixed pixel size so it stays legible inside the table cell on desktop and mobile."""
+def weather_mini_svg(series, W=300, H=104):
+    """Per-row SVG: daily rain bars + high-temp line + wind line over the trip ±2 days.
+    Scales to the cell (viewBox); axis/labels use currentColor so dark mode adapts."""
     if not series:
         return ""
-    padL, padT, padB = 3, 5, 12
+    padL, padR, padT, padB = 7, 24, 10, 18
     n = len(series)
-    bw = (W - 2 * padL) / n
+    plotW = W - padL - padR
+    bw = plotW / n
     plotH = H - padT - padB
+    base = padT + plotH
     pmax = max([s["precip"] for s in series] + [6.0])
     tmn = min(s["tmax"] for s in series)
     tmx = max(s["tmax"] for s in series)
     trng = max(1, tmx - tmn)
-    parts = []
+    wmx = max([s.get("wind", 0) for s in series] + [1])
+    parts = [f"<line x1='{padL}' y1='{base:.0f}' x2='{W-padR}' y2='{base:.0f}' "
+             f"stroke='currentColor' stroke-width='1' opacity='.18'/>"]
     trip = [i for i, s in enumerate(series) if s["trip"]]
     if trip:
         x0 = padL + trip[0] * bw
         x1 = padL + (trip[-1] + 1) * bw
-        parts.append(f"<rect x='{x0:.0f}' y='{padT}' width='{x1-x0:.0f}' height='{plotH}' "
-                     f"fill='rgba(37,99,235,.14)' rx='3'/>")
-    wmx = max([s.get("wind", 0) for s in series] + [1])
+        parts.append(f"<rect x='{x0:.1f}' y='{padT}' width='{x1-x0:.1f}' height='{plotH}' "
+                     f"fill='rgba(37,99,235,.13)' rx='4'/>")
+        parts.append(f"<text x='{(x0+x1)/2:.0f}' y='{padT+8}' text-anchor='middle' font-size='8' "
+                     f"fill='#2563eb' opacity='.8'>trip</text>")
     pts, wpts = [], []
     for i, s in enumerate(series):
         x = padL + i * bw
         bh = plotH * (s["precip"] / pmax)
         col = "#16a34a" if s["precip"] < 3 else "#d97706" if s["precip"] < 8 else "#dc2626"
-        parts.append(f"<rect x='{x+bw*0.18:.1f}' y='{padT+plotH-bh:.1f}' width='{bw*0.64:.1f}' "
-                     f"height='{max(bh,0.8):.1f}' fill='{col}' rx='1'>"
-                     f"<title>{s['day']} Jul · {s['precip']}mm · {s['tmax']}°C · 💨{s.get('wind',0)}km/h</title></rect>")
+        parts.append(f"<rect x='{x+bw*0.2:.1f}' y='{base-bh:.1f}' width='{bw*0.6:.1f}' "
+                     f"height='{max(bh,1.0):.1f}' fill='{col}' opacity='.85' rx='1.5'>"
+                     f"<title>{s['day']} Jul · {s['precip']}mm rain · {s['tmax']}°C · 💨{s.get('wind',0)}km/h</title></rect>")
         pts.append(f"{x+bw/2:.1f},{padT+plotH*(1-(s['tmax']-tmn)/trng):.1f}")
         wpts.append(f"{x+bw/2:.1f},{padT+plotH*(1-s.get('wind',0)/wmx):.1f}")
-    # wind (blue, dashed) then temp (orange) on top
+        parts.append(f"<text x='{x+bw/2:.1f}' y='{H-5}' text-anchor='middle' font-size='8.5' "
+                     f"fill='currentColor' opacity='.55'>{s['day']}</text>")
     parts.append(f"<polyline points='{' '.join(wpts)}' fill='none' stroke='#3b82f6' "
-                 f"stroke-width='1.2' stroke-dasharray='3 2' opacity='.85'/>")
-    parts.append(f"<polyline points='{' '.join(pts)}' fill='none' stroke='#e6792b' stroke-width='1.4'/>")
-    # only label the window ends + trip start/end to avoid clutter
-    ticks = {0, n - 1} | ({trip[0], trip[-1]} if trip else set())
-    for i in sorted(ticks):
-        parts.append(f"<text x='{padL+i*bw+bw/2:.1f}' y='{H-2}' text-anchor='middle' "
-                     f"font-size='8' fill='#7b8694'>{series[i]['day']}</text>")
-    return (f"<svg class='wxsvg' viewBox='0 0 {W} {H}' width='{W}' height='{H}' "
-            f"role='img' aria-label='daily rain and temperature'>{''.join(parts)}</svg>")
+                 f"stroke-width='1.4' stroke-dasharray='3 2' opacity='.9'/>")
+    parts.append(f"<polyline points='{' '.join(pts)}' fill='none' stroke='#e6792b' stroke-width='1.8'/>")
+    for p in pts:
+        cx, cy = p.split(",")
+        parts.append(f"<circle cx='{cx}' cy='{cy}' r='1.8' fill='#e6792b'/>")
+    # temp range labels on the right axis
+    parts.append(f"<text x='{W-padR+3}' y='{padT+4}' font-size='8.5' fill='#e6792b'>{tmx}°</text>")
+    parts.append(f"<text x='{W-padR+3}' y='{base}' font-size='8.5' fill='#e6792b'>{tmn}°</text>")
+    return (f"<svg class='wxsvg' viewBox='0 0 {W} {H}' width='100%' preserveAspectRatio='xMidYMid meet' "
+            f"role='img' aria-label='daily rain, temperature and wind'>{''.join(parts)}</svg>")
 
 
 def build_html(ranked, now, banner):
@@ -593,9 +599,9 @@ tr:last-child td{{border-bottom:none}}tbody tr:hover{{background:rgba(37,99,235,
 .src:hover{{text-decoration:underline}}
 .src.dim{{color:var(--dim);font-weight:400}}
 .tablewrap{{overflow-x:auto;-webkit-overflow-scrolling:touch}}
-.wx{{min-width:210px}}
+.wx{{min-width:280px}}
 .wxnum{{font-size:13.5px;white-space:nowrap}}
-.wxsvg{{display:block;margin:5px 0 2px;max-width:100%}}
+.wxsvg{{display:block;margin:6px 0 2px;width:100%;max-width:300px;height:auto}}
 .fl{{font-size:13px}}
 .fdates{{font-size:11px;font-weight:700;color:var(--accent);margin-bottom:4px;white-space:nowrap}}
 .opt{{margin-bottom:3px;white-space:nowrap}}
@@ -607,7 +613,18 @@ tr:last-child td{{border-bottom:none}}tbody tr:hover{{background:rgba(37,99,235,
 .legend{{color:var(--dim);font-size:12.5px;margin:12px 2px 0;line-height:1.5}}
 footer{{color:var(--dim);font-size:12px;text-align:center;margin-top:6px;line-height:1.7}}
 footer a{{color:var(--accent);text-decoration:none}}
-@media(max-width:600px){{td .vsub{{display:none}} th,td{{padding-left:5px;padding-right:5px}} .hero-stats{{gap:14px}}}}
+.scrollhint{{display:none}}
+@media(max-width:760px){{
+  td .vsub{{display:none}}
+  th,td{{padding-left:5px;padding-right:5px}}
+  .hero-stats{{gap:14px}}
+  .wx{{min-width:188px}}
+  .wxsvg{{max-width:200px}}
+  .flink{{font-size:13.5px;padding:1px 0}}
+  .scrollhint{{display:block;color:var(--accent);font-size:12.5px;font-weight:600;
+    text-align:center;margin:0 0 8px;animation:pulse 2s ease-in-out infinite}}
+}}
+@keyframes pulse{{0%,100%{{opacity:.55}}50%{{opacity:1}}}}
 </style></head><body><div class="wrap">
 <header>
 <h1>🧗 Climbing Trip Planner — where should Michel &amp; Dan go?</h1>
@@ -620,6 +637,7 @@ footer a{{color:var(--accent);text-decoration:none}}
 {top_html}
 <div class="card">
 <h2>🏔️ Venues + weather + flights — best first</h2>
+<div class="scrollhint">← swipe sideways for ✈️ Michel &amp; Dan flights →</div>
 <div class="tablewrap"><table><thead>
 <tr><th>#</th><th>Venue</th><th>Score</th><th>Weather (20–29 Jul)</th><th>✈️ Michel<br><span class='dim'>London</span></th><th>✈️ Dan<br><span class='dim'>Belfast/Dublin</span></th></tr>
 </thead><tbody>
