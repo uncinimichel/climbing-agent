@@ -6,7 +6,9 @@ on:
     - cron: "0 6 * * *"   # 06:00 UTC daily
   workflow_dispatch: {}     # manual "Run workflow" button
   push:
-    branches: [main]        # rebuild + redeploy the page on every push
+    branches: [main]        # rebuild + redeploy the page on push…
+    paths-ignore:           # …but NOT for docs-only commits (saves SerpApi quota)
+      - '**.md'
 
 permissions:
   contents: write           # commit the updated report back

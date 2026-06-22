@@ -1,97 +1,195 @@
 {
   "trip": "Climbing trip ~24 July 2026 — Michel & Dan",
-  "target_window": { "start": "2026-07-22", "end": "2026-07-27" },
+  "target_window": {
+    "start": "2026-07-22",
+    "end": "2026-07-27"
+  },
   "notes": "Single source of truth for candidate venues. The script reads THIS file to decide what to query (weather + flights). 'travel' gives how each person reaches the venue: mode fly|local|drive and the destination airport IATA they fly into (Michel from London, Dan from Belfast).",
   "venues": [
     {
       "name": "Fair Head, NI",
       "country": "Northern Ireland",
       "priority": "1 (primary)",
-      "lat": 55.222, "lon": -6.156,
-      "rock": "dolerite", "style": "long single & multi-pitch trad",
+      "lat": 55.222,
+      "lon": -6.156,
+      "rock": "dolerite",
+      "style": "long single & multi-pitch trad",
       "why": "Dan lives in Belfast — cheapest logistics; world-class venue.",
       "hub": "Belfast (BFS/BHD), ~1h flight from London",
-      "travel": { "michel": { "mode": "fly", "to": "BFS" }, "dan": { "mode": "local" } }
+      "travel": {
+        "michel": {
+          "mode": "fly",
+          "to": "BFS"
+        },
+        "dan": {
+          "mode": "local"
+        }
+      }
     },
     {
       "name": "Mournes, NI",
       "country": "Northern Ireland",
       "priority": "1 (primary)",
-      "lat": 54.150, "lon": -6.000,
-      "rock": "granite", "style": "moderate multi-pitch trad",
+      "lat": 54.15,
+      "lon": -6.0,
+      "rock": "granite",
+      "style": "moderate multi-pitch trad",
       "why": "In climbing-trips.csv: Moderate, ~150m, Full Range, <4h, 2-day min. Local to Dan.",
       "hub": "Belfast (BFS/BHD)",
-      "travel": { "michel": { "mode": "fly", "to": "BFS" }, "dan": { "mode": "local" } }
+      "travel": {
+        "michel": {
+          "mode": "fly",
+          "to": "BFS"
+        },
+        "dan": {
+          "mode": "local"
+        }
+      }
     },
     {
       "name": "Dolomites (Cortina)",
       "country": "Italy",
       "priority": "2 (backup)",
-      "lat": 46.540, "lon": 12.137,
-      "rock": "limestone", "style": "vast Full-Range multi-pitch",
+      "lat": 46.54,
+      "lon": 12.137,
+      "rock": "limestone",
+      "style": "vast Full-Range multi-pitch",
       "why": "Confirmed backup if NI is wet. Peak season late July; routes already scoped in dolomites-trip.csv.",
       "hub": "Venice/Treviso/Innsbruck + drive",
-      "travel": { "michel": { "mode": "fly", "to": "VCE" }, "dan": { "mode": "fly", "to": "VCE" } }
+      "travel": {
+        "michel": {
+          "mode": "fly",
+          "to": "VCE"
+        },
+        "dan": {
+          "mode": "fly",
+          "to": "VCE"
+        }
+      }
     },
     {
       "name": "East Tyrol (Lienz)",
       "country": "Austria",
       "priority": "3 (alt)",
-      "lat": 46.829, "lon": 12.769,
-      "rock": "limestone/dolomite", "style": "large, medium-to-hard multi-pitch",
+      "lat": 46.829,
+      "lon": 12.769,
+      "rock": "limestone/dolomite",
+      "style": "large, medium-to-hard multi-pitch",
       "why": "Second alpine alternative with a similar settled summer window.",
       "hub": "Innsbruck / Salzburg + drive",
-      "travel": { "michel": { "mode": "fly", "to": "INN" }, "dan": { "mode": "fly", "to": "INN" } }
+      "travel": {
+        "michel": {
+          "mode": "fly",
+          "to": "INN"
+        },
+        "dan": {
+          "mode": "fly",
+          "to": "INN"
+        }
+      }
     },
     {
       "name": "Lake District (Borrowdale)",
       "country": "England",
       "priority": "4 (UK alt)",
-      "lat": 54.546, "lon": -3.128,
-      "rock": "volcanic rock", "style": "large, Full-Range multi-pitch",
+      "lat": 54.546,
+      "lon": -3.128,
+      "rock": "volcanic rock",
+      "style": "large, Full-Range multi-pitch",
       "why": "Cheap UK backup, drivable for Michel; good when a dry spell hits Cumbria. In climbing-trips.csv.",
       "hub": "Kendal (drive/train from London; fly Belfast→Manchester)",
-      "travel": { "michel": { "mode": "drive" }, "dan": { "mode": "fly", "to": "MAN" } }
+      "travel": {
+        "michel": {
+          "mode": "drive"
+        },
+        "dan": {
+          "mode": "fly",
+          "to": "MAN"
+        }
+      }
     },
     {
       "name": "Snowdonia (Llanberis Pass)",
       "country": "Wales",
       "priority": "4 (UK alt)",
-      "lat": 53.103, "lon": -4.043,
-      "rock": "rhyolite/dolerite", "style": "vast, Full-Range multi-pitch",
+      "lat": 53.103,
+      "lon": -4.043,
+      "rock": "rhyolite/dolerite",
+      "style": "vast, Full-Range multi-pitch",
       "why": "Classic UK mountain trad (Dinas Cromlech etc.); drivable, cheap. In climbing-trips.csv as Llanberis.",
       "hub": "drive/train from London; fly Belfast→Manchester/Liverpool",
-      "travel": { "michel": { "mode": "drive" }, "dan": { "mode": "fly", "to": "MAN" } }
+      "travel": {
+        "michel": {
+          "mode": "drive"
+        },
+        "dan": {
+          "mode": "fly",
+          "to": "MAN"
+        }
+      }
     },
     {
       "name": "Isle of Arran",
       "country": "Scotland",
       "priority": "5 (alt)",
-      "lat": 55.634, "lon": -5.200,
-      "rock": "granite", "style": "mountain multi-pitch (Cìr Mhòr)",
+      "lat": 55.634,
+      "lon": -5.2,
+      "rock": "granite",
+      "style": "mountain multi-pitch (Cìr Mhòr)",
       "why": "Granite ridges/slabs; reachable via Glasgow + ferry. In climbing-trips.csv as Aaran.",
       "hub": "Glasgow + ferry",
-      "travel": { "michel": { "mode": "fly", "to": "GLA" }, "dan": { "mode": "fly", "to": "GLA" } }
+      "travel": {
+        "michel": {
+          "mode": "fly",
+          "to": "GLA"
+        },
+        "dan": {
+          "mode": "fly",
+          "to": "GLA"
+        }
+      }
     },
     {
       "name": "Picos de Europa",
       "country": "Spain",
       "priority": "5 (alt)",
-      "lat": 43.201, "lon": -4.821,
-      "rock": "limestone", "style": "moderate-to-hard alpine multi-pitch (Naranjo de Bulnes)",
+      "lat": 43.201,
+      "lon": -4.821,
+      "rock": "limestone",
+      "style": "moderate-to-hard alpine multi-pitch (Naranjo de Bulnes)",
       "why": "Cooler N. Spain alpine rock — better than baking S. Spain in late July. In climbing-trips.csv.",
       "hub": "Bilbao/Santander + drive",
-      "travel": { "michel": { "mode": "fly", "to": "BIO" }, "dan": { "mode": "fly", "to": "BIO" } }
+      "travel": {
+        "michel": {
+          "mode": "fly",
+          "to": "BIO"
+        },
+        "dan": {
+          "mode": "fly",
+          "to": "BIO"
+        }
+      }
     },
     {
       "name": "Paklenica (Anica Kuk)",
       "country": "Croatia",
       "priority": "4 (backup)",
-      "lat": 44.310, "lon": 15.460,
-      "rock": "limestone", "style": "big-wall multi-pitch up to 350m + sport",
+      "lat": 44.31,
+      "lon": 15.46,
+      "rock": "limestone",
+      "style": "big-wall multi-pitch up to 350m + sport",
       "why": "In the Velebit mountains, not too hot in July IF you pick shade — most crags face E/W and Anica Kuk faces NORTH (stays shaded); sea nearby to cool off. Season Apr–Oct. Sources: climbgrades.com/seasons/croatia, mojagear.com Paklenica guide.",
       "hub": "Zadar (ZAD) + ~40 min drive to Starigrad",
-      "travel": { "michel": { "mode": "fly", "to": "ZAD" }, "dan": { "mode": "fly", "to": "ZAD" } }
+      "travel": {
+        "michel": {
+          "mode": "fly",
+          "to": "ZAD"
+        },
+        "dan": {
+          "mode": "fly",
+          "to": "ZAD"
+        }
+      }
     }
   ]
 }

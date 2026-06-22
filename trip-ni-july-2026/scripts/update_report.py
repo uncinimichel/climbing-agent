@@ -15,9 +15,14 @@ Flights (Google Flights via SerpApi, key from SERPAPI_KEY / gitignored .env):
 
 Outputs: index.html (Pages), daily-report.md, history/<date>.md. Stdlib only.
 """
+import csv
+import difflib
 import json
+import math
 import os
+import re
 import time
+import unicodedata
 import urllib.parse
 import urllib.request
 from datetime import date, datetime, timezone
@@ -39,8 +44,72 @@ FLIGHTS_DATA = json.loads((ROOT / "flights-latest.json").read_text())
 
 CLIMO_YEARS = [2021, 2022, 2023, 2024]
 SITE_URL = "https://multi-pitch.com/"
+MP_MAP_URL = "https://multi-pitch.com/map/"
+MP_DATA_URL = "https://multi-pitch.com/data/data.json"   # live climb DB (S3-backed)
 SHEET_URL = "https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit"
+CLIMBING_CSV = REPO_ROOT / "climbing-trips.csv"
 REPO_URL = "https://github.com/uncinimichel/climbing-agent"
+
+
+# ---- Data-driven source links (no hardcoded rows/URLs) --------------------
+def _norm(s):
+    s = unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode().lower()
+    s = re.sub(r"[^a-z0-9 ]", " ", s)   # keep parenthetical tokens (e.g. "Llanberis")
+    return [t for t in s.split() if t not in ("the", "de", "of", "ni", "la", "el")]
+
+
+def _load_sheet_rows():
+    """(sheet_row, area_name) parsed from the venue spreadsheet CSV — true row numbers."""
+    rows = []
+    try:
+        for i, r in enumerate(csv.reader(CLIMBING_CSV.open()), start=1):
+            if i >= 3 and r and r[0].strip():     # rows 1-2 are banner/header
+                rows.append((i, r[0].strip()))
+    except Exception:
+        pass
+    return rows
+
+
+SHEET_ROWS = _load_sheet_rows()
+MP_CLIMBS = []   # populated at build time from MP_DATA_URL
+
+
+def match_sheet_row(name):
+    """Find the spreadsheet row a venue came from by fuzzy-matching its area name."""
+    vt = _norm(name)
+    for row, area in SHEET_ROWS:
+        at = _norm(area)
+        if at and all(any(difflib.SequenceMatcher(None, a, x).ratio() >= 0.8 for x in vt) for a in at):
+            return row
+    return None
+
+
+def _haversine(la1, lo1, la2, lo2):
+    p = math.pi / 180
+    h = (math.sin((la2 - la1) * p / 2) ** 2
+         + math.cos(la1 * p) * math.cos(la2 * p) * math.sin((lo2 - lo1) * p / 2) ** 2)
+    return 2 * 6371 * math.asin(math.sqrt(h))
+
+
+def nearby_climbs(v, km=50):
+    """multi-pitch.com climbs within `km` of the venue, nearest first (from data.json)."""
+    out = []
+    for c in MP_CLIMBS:
+        try:
+            la, lo = map(float, c.get("geoLocation", "").split(","))
+        except Exception:
+            continue
+        d = _haversine(v["lat"], v["lon"], la, lo)
+        if d <= km:
+            out.append((round(d), c.get("cliff", "?")))
+    return sorted(out)
+
+
+def load_mp_climbs():
+    try:
+        return _get(MP_DATA_URL).get("climbs", [])
+    except Exception:
+        return []
 
 TOP_N_FLIGHTS = 4
 ORIGIN = {
@@ -49,7 +118,14 @@ ORIGIN = {
 }
 ORIGIN_CITY = {"michel": "London", "dan": "Belfast"}
 REP = max(FLIGHTS_CFG["combos"], key=lambda c: c["nights"])        # representative round-trip
+REP_OUT_LBL = f"{date.fromisoformat(REP['out']):%a %d %b}"          # e.g. "Fri 24 Jul"
+REP_BACK_LBL = f"{date.fromisoformat(REP['back']):%a %d %b}"        # e.g. "Tue 28 Jul"
 COMBO_LABELS = ", ".join(f"{c['out'][5:]}→{c['back'][5:]} ({c['nights']}n)" for c in FLIGHTS_CFG["combos"])
+
+
+def weather_url(v):
+    """Detailed forecast for the venue (Windy, by coordinates)."""
+    return f"https://www.windy.com/?{v['lat']},{v['lon']},9"
 
 WMO = {
     0: "☀️ clear", 1: "🌤️ mostly clear", 2: "⛅ partly cloudy", 3: "☁️ overcast",
@@ -292,12 +368,32 @@ def maps_url(v):
     return f"https://www.google.com/maps/search/?api=1&query={v['lat']},{v['lon']}"
 
 
+def source_links(v):
+    """Per-venue links back to the raw sources — all derived at build time:
+    multi-pitch.com climbs near the venue (from data.json) + its spreadsheet row (from CSV)."""
+    nb = nearby_climbs(v)
+    if nb:
+        title = "nearest: " + ", ".join(f"{c} ({d}km)" for d, c in nb[:3])
+        mp = (f"<a class='src' href='{MP_MAP_URL}' target='_blank' rel='noopener' "
+              f"title='{title}'>🧗 {len(nb)} on multi-pitch</a>")
+    else:
+        mp = f"<a class='src' href='{MP_MAP_URL}' target='_blank' rel='noopener'>🧗 multi-pitch map</a>"
+    row = match_sheet_row(v["name"])
+    if row:
+        sheet = (f"<a class='src' href='{SHEET_URL}#gid=0&range={row}:{row}' "
+                 f"target='_blank' rel='noopener'>📋 sheet row {row}</a>")
+    else:
+        sheet = "<span class='src dim'>📋 not in sheet</span>"
+    return f"{mp} · {sheet}"
+
+
 def weather_html(r):
     c, fc = r.get("climo"), r.get("fc")
     main = f"{c['tmax']}°C · <b>{c['rain_pct']}%</b> wet" if c else "<span class='dim'>—</span>"
     if fc and fc.get("in_window"):
         main += f"<div class='vsub'>{fc['sky']} now {fc['tmax']}°C/{fc['rain_prob']}%</div>"
-    return main
+    return (f"{main}<div><a class='flink' href='{weather_url(r['venue'])}' "
+            f"target='_blank' rel='noopener'>forecast ↗</a></div>")
 
 
 def flight_html(f):
@@ -309,16 +405,18 @@ def flight_html(f):
         return "🚗 drive / train"
     opts = f.get("options") or []
     url = f.get("view_url") or f.get("book_url")
+    dates = f"<div class='fdates'>🛫 {REP_OUT_LBL} · 🛬 {REP_BACK_LBL}</div>"
     if not opts:
-        return (f"<span class='dim'>to {f.get('to','?')}</span> "
-                f"<a class='flink' href='{url}' target='_blank' rel='noopener'>search ↗</a>" if url else "—")
-    out = []
+        return (dates + f"<span class='dim'>to {f.get('to','?')}</span> "
+                f"<a class='flink' href='{url}' target='_blank' rel='noopener'>search ↗</a>" if url else dates + "—")
+    out = [dates]
     for i, o in enumerate(opts):
         st = "direct" if o["stops"] == 0 else f"{o['stops']}-stop"
         strong = "b" if i == 0 else "span"
         out.append(f"<div class='opt'><{strong}>£{o['price']}</{strong}> "
-                   f"<span class='t'>{o['dep']}→{o['arr']}</span> "
+                   f"<span class='t' title='outbound time'>{o['dep']}→{o['arr']}</span> "
                    f"<span class='vsub'>{o['from']} · {o['airline'][:8]} · {st}</span></div>")
+    out.append(f"<div class='vsub'>times = outbound; return {REP_BACK_LBL.split()[0]} via link</div>")
     out.append(f"<a class='flink' href='{url}' target='_blank' rel='noopener'>book ↗</a>")
     return "".join(out)
 
@@ -335,7 +433,8 @@ def build_html(ranked, now, banner):
         rows.append(
             f"<tr><td class='rank'>{medal}</td>"
             f"<td><div class='vname'><a class='vlink' href='{maps_url(v)}' target='_blank' rel='noopener'>{v['name']} 🗺️</a></div>"
-            f"<div class='vsub'>{v['country']} · {v.get('style','')}</div></td>"
+            f"<div class='vsub'>{v['country']} · {v.get('style','')}</div>"
+            f"<div class='srcs'>{source_links(v)}</div></td>"
             f"<td><span class='pill' style='background:{score_color(r['score'])}'>{r['score']}</span></td>"
             f"<td class='wx'>{weather_html(r)}</td>"
             f"<td class='fl'>{flight_html(fl.get('michel'))}</td>"
@@ -413,8 +512,13 @@ tr:last-child td{{border-bottom:none}}tbody tr:hover{{background:rgba(37,99,235,
 .vname{{font-weight:700;font-size:14.5px}}
 .vlink{{color:inherit;text-decoration:none}}.vlink:hover{{color:var(--accent);text-decoration:underline}}
 .vsub{{color:var(--dim);font-size:12px;margin-top:2px}}
+.srcs{{margin-top:4px;font-size:11.5px}}
+.src{{color:var(--accent);text-decoration:none;font-weight:600}}
+.src:hover{{text-decoration:underline}}
+.src.dim{{color:var(--dim);font-weight:400}}
 .wx{{white-space:nowrap}}
 .fl{{font-size:13px}}
+.fdates{{font-size:11px;font-weight:700;color:var(--accent);margin-bottom:4px;white-space:nowrap}}
 .opt{{margin-bottom:3px;white-space:nowrap}}
 .opt .t{{font-variant-numeric:tabular-nums;color:var(--ink)}}
 .flink{{color:var(--accent);text-decoration:none;font-weight:600;font-size:12.5px}}
@@ -443,7 +547,7 @@ footer a{{color:var(--accent);text-decoration:none}}
 {table}
 </tbody></table>
 <p class="legend"><b>Score</b> 0–100 (higher = drier). <b>Weather</b> = typical late-July (avg {CLIMO_YEARS[0]}–{CLIMO_YEARS[-1]}); live forecast appears within 16 days.
-<b>Flights</b> top {TOP_N_FLIGHTS} venues, return {REP['out'][5:]}→{REP['back'][5:]} ({REP['nights']}n): up to <b>3 options each</b>, ranked by best value (price + stop penalty), with outbound times (dep→arr). Use <i>book ↗</i> to change dates. Other date options: {COMBO_LABELS}. Dan is local in NI.</p>
+<b>Flights</b> top {TOP_N_FLIGHTS} venues, return <b>🛫 {REP_OUT_LBL} → 🛬 {REP_BACK_LBL}</b> ({REP['nights']} nights): up to <b>3 options each</b>, ranked by best value (price + stop penalty); times shown are <b>outbound</b> (return on {REP_BACK_LBL}). Use <i>book ↗</i> to see return times / change dates. Other date options: {COMBO_LABELS}. Dan is local in NI. <b>forecast ↗</b> opens the venue's detailed weather.</p>
 </div>
 <footer>Weather: Open-Meteo (free). Flights: Google Flights via SerpApi, updated daily.<br>
 <a href="{SITE_URL}" target="_blank" rel="noopener">multi-pitch.com</a> ·
@@ -484,7 +588,11 @@ def build_md(ranked, now, banner):
         c = r.get("climo")
         cstr = f"{c['tmax']}°C, {c['rain_pct']}% wet" if c else "–"
         fl = r.get("flights") or {}
-        lines.append(f"| {n} | {v['name']} | {r['score']} | {cstr} | {fcell(fl.get('michel'))} | {fcell(fl.get('dan'))} |")
+        nb = nearby_climbs(v)
+        row = match_sheet_row(v["name"])
+        src = (f"[mp map]({MP_MAP_URL})" + (f" ({len(nb)})" if nb else "")
+               + (f" · [sheet r{row}]({SHEET_URL}#gid=0&range={row}:{row})" if row else " · not in sheet"))
+        lines.append(f"| {n} | {v['name']}<br><sub>{src}</sub> | {r['score']} | {cstr} | {fcell(fl.get('michel'))} | {fcell(fl.get('dan'))} |")
     lines += ["", f"_Flights: top {TOP_N_FLIGHTS} venues, return {REP['out']}→{REP['back']} ({REP['nights']}n); "
               f"date options: {COMBO_LABELS}. Use the book links to adjust. Rendered dashboard: "
               "https://uncinimichel.github.io/climbing-agent/_"]
@@ -492,6 +600,9 @@ def build_md(ranked, now, banner):
 
 
 def main():
+    global MP_CLIMBS
+    MP_CLIMBS = load_mp_climbs()
+    print(f"multi-pitch climbs loaded: {len(MP_CLIMBS)}")
     now = datetime.now(timezone.utc)
     today = now.date().isoformat()
     results = [evaluate(v) for v in VENUES]
