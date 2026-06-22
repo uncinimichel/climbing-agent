@@ -25,7 +25,7 @@ import time
 import unicodedata
 import urllib.parse
 import urllib.request
-from datetime import date, datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -43,6 +43,8 @@ FLIGHTS_CFG = json.loads((ROOT / "flights.json").read_text())
 FLIGHTS_DATA = json.loads((ROOT / "flights-latest.json").read_text())
 
 CLIMO_YEARS = [2021, 2022, 2023, 2024]
+GRAPH_START = TARGET_START - timedelta(days=2)   # 2 days before the trip
+GRAPH_END = TARGET_END + timedelta(days=2)       # 2 days after
 SITE_URL = "https://multi-pitch.com/"
 MP_MAP_URL = "https://multi-pitch.com/map/"
 MP_DATA_URL = "https://multi-pitch.com/data/data.json"   # live climb DB (S3-backed)
@@ -112,11 +114,12 @@ def load_mp_climbs():
         return []
 
 TOP_N_FLIGHTS = 4
+_TO = FLIGHTS_CFG["route"].get("traveller_origins", {})
 ORIGIN = {
-    "michel": ",".join(FLIGHTS_CFG["route"]["origin_airports"]),   # London airports
-    "dan": ",".join(FLIGHTS_CFG["route"]["dest_airports"]),        # Belfast airports
+    "michel": ",".join(_TO.get("michel", FLIGHTS_CFG["route"]["origin_airports"])),   # London
+    "dan": ",".join(_TO.get("dan", FLIGHTS_CFG["route"]["dest_airports"])),           # Belfast + Dublin
 }
-ORIGIN_CITY = {"michel": "London", "dan": "Belfast"}
+ORIGIN_CITY = {"michel": "London", "dan": "Belfast/Dublin"}
 REP = max(FLIGHTS_CFG["combos"], key=lambda c: c["nights"])        # representative round-trip
 REP_OUT_LBL = f"{date.fromisoformat(REP['out']):%a %d %b}"          # e.g. "Fri 24 Jul"
 REP_BACK_LBL = f"{date.fromisoformat(REP['back']):%a %d %b}"        # e.g. "Tue 28 Jul"
@@ -183,19 +186,33 @@ def climatology(lat, lon):
         "&daily=temperature_2m_max,precipitation_sum&timezone=auto"
     )["daily"]
     tmaxs, rain_days, total = [], 0, 0
+    per_day = {}   # day-of-month -> {"t": [...], "p": [...]} for the graph window
     for t, tx, pr in zip(d["time"], d["temperature_2m_max"], d["precipitation_sum"]):
         dd = date.fromisoformat(t)
-        if not (dd.month == TARGET_START.month and TARGET_START.day <= dd.day <= TARGET_END.day):
+        if dd.month != TARGET_START.month or tx is None:
             continue
-        if tx is None:
-            continue
-        total += 1
-        tmaxs.append(tx)
-        if (pr or 0) >= 3:
-            rain_days += 1
+        if GRAPH_START.day <= dd.day <= GRAPH_END.day:          # graph window (trip ±2)
+            per_day.setdefault(dd.day, {"t": [], "p": []})
+            per_day[dd.day]["t"].append(tx)
+            per_day[dd.day]["p"].append(pr or 0)
+        if TARGET_START.day <= dd.day <= TARGET_END.day:        # trip window aggregate
+            total += 1
+            tmaxs.append(tx)
+            if (pr or 0) >= 3:
+                rain_days += 1
     if not total:
         return None
-    return {"tmax": round(sum(tmaxs) / len(tmaxs)), "rain_pct": round(100 * rain_days / total), "days": total}
+    series = []
+    for day in range(GRAPH_START.day, GRAPH_END.day + 1):
+        pd = per_day.get(day)
+        if not pd:
+            continue
+        series.append({"day": day,
+                       "tmax": round(sum(pd["t"]) / len(pd["t"])),
+                       "precip": round(sum(pd["p"]) / len(pd["p"]), 1),
+                       "trip": TARGET_START.day <= day <= TARGET_END.day})
+    return {"tmax": round(sum(tmaxs) / len(tmaxs)), "rain_pct": round(100 * rain_days / total),
+            "days": total, "series": series}
 
 
 def day_score(code, mm, prob):
@@ -421,6 +438,43 @@ def flight_html(f):
     return "".join(out)
 
 
+def weather_graph_svg(series):
+    """Inline SVG: rain bars + high-temp line across the trip window ±2 days."""
+    if not series:
+        return ""
+    W, H, padL, padT, padB = 360, 120, 10, 10, 24
+    n = len(series)
+    bw = (W - 2 * padL) / n
+    plotH = H - padT - padB
+    pmax = max([s["precip"] for s in series] + [6.0])
+    tmn = min(s["tmax"] for s in series)
+    tmx = max(s["tmax"] for s in series)
+    trng = max(1, tmx - tmn)
+    parts = []
+    trip = [i for i, s in enumerate(series) if s["trip"]]
+    if trip:
+        x0 = padL + trip[0] * bw
+        x1 = padL + (trip[-1] + 1) * bw
+        parts.append(f"<rect x='{x0:.0f}' y='{padT}' width='{x1-x0:.0f}' height='{plotH}' "
+                     f"fill='rgba(37,99,235,.12)' rx='4'/>")
+    pts = []
+    for i, s in enumerate(series):
+        x = padL + i * bw
+        bh = plotH * (s["precip"] / pmax)
+        col = "#16a34a" if s["precip"] < 3 else "#d97706" if s["precip"] < 8 else "#dc2626"
+        parts.append(f"<rect x='{x+bw*0.22:.1f}' y='{padT+plotH-bh:.1f}' width='{bw*0.56:.1f}' "
+                     f"height='{bh:.1f}' fill='{col}' rx='1.5'><title>{s['day']} Jul: {s['precip']}mm rain, {s['tmax']}°C</title></rect>")
+        ty = padT + plotH * (1 - (s["tmax"] - tmn) / trng)
+        pts.append(f"{x+bw/2:.1f},{ty:.1f}")
+        parts.append(f"<text x='{x+bw/2:.1f}' y='{H-9}' text-anchor='middle' font-size='9' "
+                     f"fill='#7b8694'>{s['day']}</text>")
+    parts.append(f"<polyline points='{' '.join(pts)}' fill='none' stroke='#e6792b' stroke-width='1.6'/>")
+    for p in pts:
+        cx, cy = p.split(",")
+        parts.append(f"<circle cx='{cx}' cy='{cy}' r='2' fill='#e6792b'/>")
+    return f"<svg viewBox='0 0 {W} {H}' width='100%' style='max-width:{W}px;height:auto'>{''.join(parts)}</svg>"
+
+
 def build_html(ranked, now, banner):
     rows = []
     for n, r in enumerate(ranked, 1):
@@ -467,6 +521,17 @@ def build_html(ranked, now, banner):
         )
     else:
         top_html = "<div class='hero'><div class='hero-why'>No weather data available.</div></div>"
+
+    graph_card = ""
+    if top and (top.get("climo") or {}).get("series"):
+        graph_card = (
+            f"<div class='card'><h2>🌦️ Outlook — {top['venue']['name']}, "
+            f"{GRAPH_START:%-d}–{GRAPH_END:%-d %b} (typical)</h2>"
+            f"{weather_graph_svg(top['climo']['series'])}"
+            f"<p class='legend'>Bars = typical daily rain (🟢 dry &lt;3mm · 🟠 · 🔴 wet &gt;8mm); "
+            f"orange line = typical high °C. Shaded = trip days ({TARGET_START:%-d}–{TARGET_END:%-d} Jul). "
+            f"Averages {CLIMO_YEARS[0]}–{CLIMO_YEARS[-1]}; switches to live forecast from ~8 Jul.</p></div>"
+        )
 
     return f"""<!doctype html>
 <html lang="en"><head>
@@ -539,6 +604,7 @@ footer a{{color:var(--accent);text-decoration:none}}
 </header>
 <div class="banner {banner[0]}">{banner[1]}</div>
 {top_html}
+{graph_card}
 <div class="card">
 <h2>🏔️ Venues + flights — best first</h2>
 <table><thead>

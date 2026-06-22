@@ -5,8 +5,12 @@
     "origin_airports": ["LGW", "LHR", "LTN", "STN", "LCY"],
     "dest_city": "Belfast",
     "dest_airports": ["BFS", "BHD"],
+    "traveller_origins": {
+      "michel": ["LGW", "LHR", "LTN", "STN", "LCY"],
+      "dan": ["BFS", "BHD", "DUB"]
+    },
     "passengers": 1,
-    "note": "Michel only — Dan is local in Belfast. BFS = Intl (Ryanair/easyJet/Jet2), BHD = City (Aer Lingus/easyJet)."
+    "note": "Michel flies from London; Dan from Belfast OR Dublin (DUB — bigger hub, often cheaper to Europe, ~2h from Belfast). Dan is local for NI venues. BFS=Intl, BHD=City."
   },
   "rules": { "depart_days": ["Fri", "Sat"], "return_days": ["Mon", "Tue"], "min_nights": 3, "max_nights": 4 },
   "combos": [

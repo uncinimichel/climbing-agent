@@ -77,8 +77,8 @@
             "stops": 2
           }
         ],
-        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhonEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEcgcIARIDWkFEGicSCjIwMjYtMDctMjhqBwgBEgNaQURyBwgBEgNCRlNyBwgBEgNCSERAAUgBcAGYAQE&tfu=EgIIAQ",
-        "book_url": "https://www.skyscanner.net/transport/flights/bhd/zad/260724/260728/"
+        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDWkFEGjASCjIwMjYtMDctMjhqBwgBEgNaQURyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
+        "book_url": "https://www.skyscanner.net/transport/flights/dub/zad/260724/260728/"
       }
     },
     "Picos de Europa": {
@@ -122,22 +122,22 @@
         "to": "BIO",
         "options": [
           {
-            "price": 454,
-            "airline": "British Airways",
-            "from": "BHD",
+            "price": 194,
+            "airline": "Aer Lingus",
+            "from": "DUB",
             "to": "BIO",
-            "dep": "06:30",
-            "arr": "08:30",
-            "stops": 2
+            "dep": "14:05",
+            "arr": "17:10",
+            "stops": 0
           },
           {
-            "price": 463,
-            "airline": "British Airways",
-            "from": "BHD",
+            "price": 174,
+            "airline": "Lufthansa",
+            "from": "DUB",
             "to": "BIO",
-            "dep": "14:35",
-            "arr": "08:30",
-            "stops": 2
+            "dep": "06:05",
+            "arr": "23:10",
+            "stops": 1
           },
           {
             "price": 505,
@@ -149,8 +149,8 @@
             "stops": 2
           }
         ],
-        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhonEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEcgcIARIDQklPGicSCjIwMjYtMDctMjhqBwgBEgNCSU9yBwgBEgNCRlNyBwgBEgNCSERAAUgBcAGYAQE&tfu=EgIIAQ",
-        "book_url": "https://www.skyscanner.net/transport/flights/bhd/bio/260724/260728/"
+        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQklPGjASCjIwMjYtMDctMjhqBwgBEgNCSU9yBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
+        "book_url": "https://www.skyscanner.net/transport/flights/dub/bio/260724/260728/"
       }
     },
     "Isle of Arran": {
@@ -194,35 +194,35 @@
         "to": "GLA",
         "options": [
           {
-            "price": 80,
-            "airline": "easyJet",
-            "from": "BFS",
+            "price": 26,
+            "airline": "Ryanair",
+            "from": "DUB",
             "to": "GLA",
-            "dep": "08:30",
-            "arr": "09:15",
+            "dep": "06:00",
+            "arr": "07:00",
             "stops": 0
           },
           {
-            "price": 89,
-            "airline": "easyJet",
-            "from": "BFS",
+            "price": 27,
+            "airline": "Ryanair",
+            "from": "DUB",
             "to": "GLA",
-            "dep": "17:15",
-            "arr": "18:00",
+            "dep": "20:00",
+            "arr": "21:00",
             "stops": 0
           },
           {
-            "price": 90,
-            "airline": "easyJet",
-            "from": "BFS",
+            "price": 39,
+            "airline": "Ryanair",
+            "from": "DUB",
             "to": "GLA",
-            "dep": "13:50",
-            "arr": "14:35",
+            "dep": "13:55",
+            "arr": "14:55",
             "stops": 0
           }
         ],
-        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhonEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEcgcIARIDR0xBGicSCjIwMjYtMDctMjhqBwgBEgNHTEFyBwgBEgNCRlNyBwgBEgNCSERAAUgBcAGYAQE&tfu=EgIIAQ",
-        "book_url": "https://www.skyscanner.net/transport/flights/bfs/gla/260724/260728/"
+        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDR0xBGjASCjIwMjYtMDctMjhqBwgBEgNHTEFyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
+        "book_url": "https://www.skyscanner.net/transport/flights/dub/gla/260724/260728/"
       }
     },
     "Mournes, NI": {
