@@ -1,6 +1,6 @@
 # Climbing trip ~24 July 2026 — Michel & Dan
 
-**Updated:** 2026-06-22 17:03 UTC · ranked best-first.
+**Updated:** 2026-06-22 17:05 UTC · ranked best-first.
 
 > ⚠️ Trip dates (22–28 Jul) are still beyond the 16-day forecast limit (forecast reaches 2026-07-07). Ranked on the <b>nearest queryable day, 2026-07-07</b> — ~15 days before the trip, so <b>indicative only</b>. Re-ranks on real trip-window weather from ~8 Jul.
 
