@@ -28,10 +28,9 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Fetch flight prices (skips if no Amadeus key)
+      - name: Fetch flight prices via Google Flights (skips if no key)
         env:
-          AMADEUS_CLIENT_ID: ${{ secrets.AMADEUS_CLIENT_ID }}
-          AMADEUS_CLIENT_SECRET: ${{ secrets.AMADEUS_CLIENT_SECRET }}
+          SERPAPI_KEY: ${{ secrets.SERPAPI_KEY }}
         run: python3 trip-ni-july-2026/scripts/fetch_flights.py
 
       - name: Build report (weather + flights + ranked HTML)

@@ -1,10 +1,37 @@
 {
   "comment": "Latest flight prices per combo (round-trip, 1 pax, GBP). Updated on demand by Claude or by an API script. null = not yet checked.",
-  "checked_at": "2026-06-22 (INDICATIVE web estimate — not a live booking quote)",
+  "checked_at": "2026-06-22 17:21 UTC (Google Flights / SerpApi)",
   "currency": "GBP",
   "combos": {
-    "fri-mon": { "cheapest_gbp": null, "airline": "Ryanair/easyJet", "out_airport": "STN/LGW→BFS", "back_airport": "BFS→STN/LGW", "notes": "Indicative ~£80–120 return; check live nearer the date" },
-    "fri-tue": { "cheapest_gbp": null, "airline": "Ryanair/easyJet", "out_airport": "STN/LGW→BFS", "back_airport": "BFS→STN/LGW", "notes": "Indicative ~£80–120 return; check live nearer the date" },
-    "sat-tue": { "cheapest_gbp": null, "airline": "Ryanair/easyJet", "out_airport": "STN/LGW→BFS", "back_airport": "BFS→STN/LGW", "notes": "Indicative ~£80–120 return; check live nearer the date" }
+    "fri-mon": {
+      "cheapest_gbp": 102,
+      "airline": "easyJet",
+      "out_airport": "LTN",
+      "back_airport": "BFS",
+      "notes": "easyJet, direct, from LTN \u2014 live Google Flights",
+      "stops": "direct",
+      "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpLEgoyMDI2LTA3LTI0agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDQkZTcgcIARIDQkhEGksSCjIwMjYtMDctMjdqBwgBEgNCRlNqBwgBEgNCSERyBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ",
+      "book_url": "https://www.skyscanner.net/transport/flights/ltn/bfs/260724/260727/"
+    },
+    "fri-tue": {
+      "cheapest_gbp": 80,
+      "airline": "Ryanair UK",
+      "out_airport": "STN",
+      "back_airport": "BFS",
+      "notes": "Ryanair UK, direct, from STN \u2014 live Google Flights",
+      "stops": "direct",
+      "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpLEgoyMDI2LTA3LTI0agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDQkZTcgcIARIDQkhEGksSCjIwMjYtMDctMjhqBwgBEgNCRlNqBwgBEgNCSERyBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ",
+      "book_url": "https://www.skyscanner.net/transport/flights/stn/bfs/260724/260728/"
+    },
+    "sat-tue": {
+      "cheapest_gbp": 80,
+      "airline": "Ryanair UK",
+      "out_airport": "STN",
+      "back_airport": "BFS",
+      "notes": "Ryanair UK, direct, from STN \u2014 live Google Flights",
+      "stops": "direct",
+      "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpLEgoyMDI2LTA3LTI1agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDQkZTcgcIARIDQkhEGksSCjIwMjYtMDctMjhqBwgBEgNCRlNqBwgBEgNCSERyBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ",
+      "book_url": "https://www.skyscanner.net/transport/flights/stn/bfs/260725/260728/"
+    }
   }
 }

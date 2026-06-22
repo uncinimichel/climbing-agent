@@ -15,5 +15,5 @@
     { "id": "sat-tue", "out": "2026-07-25", "back": "2026-07-28", "nights": 3 }
   ],
   "target_price_gbp": 120,
-  "data_source": "Manual / on-demand. No reliable free flight-price API; Claude fills flights-latest.json on a session. To automate, plug a free-tier API (Amadeus self-service or Travelpayouts) and write flights-latest.json from it."
+  "data_source": "Live Google Flights via SerpApi (scripts/fetch_flights.py), 1 search per combo/day. Key in SERPAPI_KEY (GitHub secret + local .env, never committed)."
 }
