@@ -196,6 +196,11 @@ def skyscanner_url(dep, arr, out_date, back_date):
             f"{dep.lower()}/{arr.lower()}/{yymmdd(out_date)}/{yymmdd(back_date)}/")
 
 
+def _hhmm(t):
+    # "2026-07-24 06:25" -> "06:25"
+    return t[-5:] if t and len(t) >= 5 else "—"
+
+
 def serp_flights(dep, arr, out_date, back_date):
     q = urllib.parse.urlencode({
         "engine": "google_flights", "departure_id": dep, "arrival_id": arr,
@@ -204,24 +209,38 @@ def serp_flights(dep, arr, out_date, back_date):
         "adults": FLIGHTS_CFG["route"]["passengers"], "api_key": SERPAPI_KEY,
     })
     data = _get(f"https://serpapi.com/search.json?{q}", retries=2)
-    best = None
+    opts = []
     for o in (data.get("best_flights") or []) + (data.get("other_flights") or []):
         price = o.get("price")
-        if price is None:
-            continue
         legs = o.get("flights") or []
-        if best is None or price < best["price"]:
-            best = {"price": round(price),
-                    "airline": legs[0].get("airline") if legs else "?",
-                    "from": legs[0].get("departure_airport", {}).get("id") if legs else dep}
-    if not best:
+        if price is None or not legs:
+            continue
+        dep_ap = legs[0].get("departure_airport", {})
+        arr_ap = legs[-1].get("arrival_airport", {})
+        opts.append({
+            "price": round(price), "airline": legs[0].get("airline", "?"),
+            "from": dep_ap.get("id", dep.split(",")[0]), "to": arr_ap.get("id", arr),
+            "dep": _hhmm(dep_ap.get("time")), "arr": _hhmm(arr_ap.get("time")),
+            "stops": max(0, len(legs) - 1),
+        })
+    if not opts:
         return None
+    # rank by best value: price plus a £40 penalty per stop (a cheap 1-stop can
+    # beat a pricey nonstop, but stops are penalised). Bolded option = best value.
+    opts.sort(key=lambda x: x["price"] + 40 * x["stops"])
+    seen, uniq = set(), []
+    for o in opts:
+        k = (o["from"], o["dep"], o["price"])
+        if k in seen:
+            continue
+        seen.add(k)
+        uniq.append(o)
+    top = uniq[:3]
     google = (data.get("search_metadata") or {}).get("google_flights_url")
     return {
-        "mode": "fly", "price": best["price"], "airline": best["airline"],
-        "from": best["from"], "to": arr, "route": f"{best['from']}→{arr}",
-        "view_url": google or skyscanner_url(best["from"], arr, out_date, back_date),
-        "book_url": skyscanner_url(best["from"], arr, out_date, back_date),
+        "mode": "fly", "to": arr, "options": top,
+        "view_url": google or skyscanner_url(top[0]["from"], arr, out_date, back_date),
+        "book_url": skyscanner_url(top[0]["from"], arr, out_date, back_date),
     }
 
 
@@ -236,11 +255,11 @@ def traveller_flight(venue, who):
             f = serp_flights(ORIGIN[who], t["to"], REP["out"], REP["back"])
             if f:
                 return f
-        except Exception as e:
-            return {"mode": "fly", "price": None, "error": str(e), "to": t.get("to")}
-    # no key / no result: still offer a link so it's actionable
+        except Exception:
+            pass
+    # no key / no result / error: still offer a search link so it's actionable
     if mode == "fly":
-        return {"mode": "fly", "price": None, "to": t.get("to"),
+        return {"mode": "fly", "options": [], "to": t.get("to"),
                 "book_url": skyscanner_url(ORIGIN[who].split(",")[0], t["to"], REP["out"], REP["back"])}
     return {"mode": "unknown"}
 
@@ -288,13 +307,20 @@ def flight_html(f):
         return "🚗 <b>local</b><div class='vsub'>Dan lives here</div>"
     if f["mode"] == "drive":
         return "🚗 drive / train"
-    if f.get("price") is None:
-        url = f.get("book_url")
-        link = f" <a class='flink' href='{url}' target='_blank' rel='noopener'>search ↗</a>" if url else ""
-        return f"<span class='dim'>to {f.get('to','?')}</span>{link}"
-    url = f.get("book_url") or f.get("view_url")
-    return (f"<b>£{f['price']}</b> <span class='vsub'>{f.get('route','')}</span>"
-            f"<div><a class='flink' href='{url}' target='_blank' rel='noopener'>book ↗</a></div>")
+    opts = f.get("options") or []
+    url = f.get("view_url") or f.get("book_url")
+    if not opts:
+        return (f"<span class='dim'>to {f.get('to','?')}</span> "
+                f"<a class='flink' href='{url}' target='_blank' rel='noopener'>search ↗</a>" if url else "—")
+    out = []
+    for i, o in enumerate(opts):
+        st = "direct" if o["stops"] == 0 else f"{o['stops']}-stop"
+        strong = "b" if i == 0 else "span"
+        out.append(f"<div class='opt'><{strong}>£{o['price']}</{strong}> "
+                   f"<span class='t'>{o['dep']}→{o['arr']}</span> "
+                   f"<span class='vsub'>{o['from']} · {o['airline'][:8]} · {st}</span></div>")
+    out.append(f"<a class='flink' href='{url}' target='_blank' rel='noopener'>book ↗</a>")
+    return "".join(out)
 
 
 def build_html(ranked, now, banner):
@@ -326,7 +352,8 @@ def build_html(ranked, now, banner):
             if not f: return "—"
             if f["mode"] == "local": return "local"
             if f["mode"] == "drive": return "drive"
-            return f"£{f['price']}" if f.get("price") is not None else "see link"
+            opts = f.get("options") or []
+            return f"£{opts[0]['price']}" if opts else "see link"
         top_html = (
             f"<div class='hero'><div class='hero-tag'>📍 Best option right now</div>"
             f"<div class='hero-name'>{tv['name']} <span class='hero-flag'>{tv['country']}</span></div>"
@@ -386,7 +413,10 @@ tr:last-child td{{border-bottom:none}}tbody tr:hover{{background:rgba(37,99,235,
 .vname{{font-weight:700;font-size:14.5px}}
 .vlink{{color:inherit;text-decoration:none}}.vlink:hover{{color:var(--accent);text-decoration:underline}}
 .vsub{{color:var(--dim);font-size:12px;margin-top:2px}}
-.wx,.fl{{white-space:nowrap}}
+.wx{{white-space:nowrap}}
+.fl{{font-size:13px}}
+.opt{{margin-bottom:3px;white-space:nowrap}}
+.opt .t{{font-variant-numeric:tabular-nums;color:var(--ink)}}
 .flink{{color:var(--accent);text-decoration:none;font-weight:600;font-size:12.5px}}
 .flink:hover{{text-decoration:underline}}
 .pill{{display:inline-block;min-width:38px;text-align:center;color:#fff;font-weight:800;font-size:14px;padding:4px 9px;border-radius:8px}}
@@ -413,7 +443,7 @@ footer a{{color:var(--accent);text-decoration:none}}
 {table}
 </tbody></table>
 <p class="legend"><b>Score</b> 0–100 (higher = drier). <b>Weather</b> = typical late-July (avg {CLIMO_YEARS[0]}–{CLIMO_YEARS[-1]}); live forecast appears within 16 days.
-<b>Flights</b> priced for the top {TOP_N_FLIGHTS} venues, one return ({REP['out'][5:]}→{REP['back'][5:]}, {REP['nights']}n) per traveller — use <i>book ↗</i> to change dates. Other date options: {COMBO_LABELS}. Cheapest airport shown; Dan is local in NI.</p>
+<b>Flights</b> top {TOP_N_FLIGHTS} venues, return {REP['out'][5:]}→{REP['back'][5:]} ({REP['nights']}n): up to <b>3 options each</b>, ranked by best value (price + stop penalty), with outbound times (dep→arr). Use <i>book ↗</i> to change dates. Other date options: {COMBO_LABELS}. Dan is local in NI.</p>
 </div>
 <footer>Weather: Open-Meteo (free). Flights: Google Flights via SerpApi, updated daily.<br>
 <a href="{SITE_URL}" target="_blank" rel="noopener">multi-pitch.com</a> ·
@@ -431,10 +461,12 @@ def build_md(ranked, now, banner):
             return "local (Dan)"
         if f["mode"] == "drive":
             return "drive/train"
-        url = f.get("book_url") or f.get("view_url")
-        if f.get("price") is None:
+        url = f.get("view_url") or f.get("book_url")
+        opts = f.get("options") or []
+        if not opts:
             return f"[search]({url})" if url else "n/a"
-        return f"£{f['price']} {f.get('route','')} [book]({url})"
+        parts = "; ".join(f"£{o['price']} {o['dep']}→{o['arr']} {o['from']} {'direct' if o['stops']==0 else str(o['stops'])+'st'}" for o in opts)
+        return f"{parts} [book]({url})"
 
     lines = [f"# {TRIP_NAME}", "",
              f"**Updated:** {now:%Y-%m-%d %H:%M UTC} · ranked best-first.", "",

@@ -2,7 +2,7 @@
   "comment": "Latest flight prices per combo (round-trip, 1 pax, GBP). Updated on demand by Claude or by an API script. null = not yet checked.",
   "checked_at": "2026-06-22 17:51 UTC (Google Flights / SerpApi)",
   "currency": "GBP",
-  "checked_at": "2026-06-22 18:06 UTC (Google Flights/SerpApi)",
+  "checked_at": "2026-06-22 18:40 UTC (Google Flights/SerpApi)",
   "rep_combo": {
     "id": "fri-tue",
     "out": "2026-07-24",
@@ -13,21 +13,71 @@
     "Paklenica (Anica Kuk)": {
       "michel": {
         "mode": "fly",
-        "price": 176,
-        "airline": "Ryanair",
-        "from": "STN",
         "to": "ZAD",
-        "route": "STN\u2192ZAD",
+        "options": [
+          {
+            "price": 176,
+            "airline": "Ryanair",
+            "from": "STN",
+            "to": "ZAD",
+            "dep": "07:20",
+            "arr": "10:40",
+            "stops": 0
+          },
+          {
+            "price": 199,
+            "airline": "Lufthansa",
+            "from": "LHR",
+            "to": "ZAD",
+            "dep": "20:25",
+            "arr": "09:30",
+            "stops": 1
+          },
+          {
+            "price": 243,
+            "airline": "SWISS",
+            "from": "LHR",
+            "to": "ZAD",
+            "dep": "20:05",
+            "arr": "18:30",
+            "stops": 1
+          }
+        ],
         "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTA3LTI0agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDWkFEGkISCjIwMjYtMDctMjhqBwgBEgNaQURyBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ",
         "book_url": "https://www.skyscanner.net/transport/flights/stn/zad/260724/260728/"
       },
       "dan": {
         "mode": "fly",
-        "price": 605,
-        "airline": "British Airways",
-        "from": "BHD",
         "to": "ZAD",
-        "route": "BHD\u2192ZAD",
+        "options": [
+          {
+            "price": 605,
+            "airline": "British Airways",
+            "from": "BHD",
+            "to": "ZAD",
+            "dep": "06:30",
+            "arr": "14:30",
+            "stops": 2
+          },
+          {
+            "price": 612,
+            "airline": "British Airways",
+            "from": "BHD",
+            "to": "ZAD",
+            "dep": "06:30",
+            "arr": "14:55",
+            "stops": 2
+          },
+          {
+            "price": 616,
+            "airline": "British Airways",
+            "from": "BHD",
+            "to": "ZAD",
+            "dep": "20:10",
+            "arr": "22:45",
+            "stops": 2
+          }
+        ],
         "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhonEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEcgcIARIDWkFEGicSCjIwMjYtMDctMjhqBwgBEgNaQURyBwgBEgNCRlNyBwgBEgNCSERAAUgBcAGYAQE&tfu=EgIIAQ",
         "book_url": "https://www.skyscanner.net/transport/flights/bhd/zad/260724/260728/"
       }
@@ -35,21 +85,71 @@
     "Picos de Europa": {
       "michel": {
         "mode": "fly",
-        "price": 84,
-        "airline": "Wizz Air",
-        "from": "LTN",
         "to": "BIO",
-        "route": "LTN\u2192BIO",
+        "options": [
+          {
+            "price": 84,
+            "airline": "Wizz Air",
+            "from": "LTN",
+            "to": "BIO",
+            "dep": "18:00",
+            "arr": "21:00",
+            "stops": 0
+          },
+          {
+            "price": 88,
+            "airline": "Vueling",
+            "from": "LGW",
+            "to": "BIO",
+            "dep": "15:00",
+            "arr": "18:05",
+            "stops": 0
+          },
+          {
+            "price": 94,
+            "airline": "Vueling",
+            "from": "LGW",
+            "to": "BIO",
+            "dep": "19:40",
+            "arr": "22:40",
+            "stops": 0
+          }
+        ],
         "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTA3LTI0agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDQklPGkISCjIwMjYtMDctMjhqBwgBEgNCSU9yBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ",
         "book_url": "https://www.skyscanner.net/transport/flights/ltn/bio/260724/260728/"
       },
       "dan": {
         "mode": "fly",
-        "price": 454,
-        "airline": "British Airways",
-        "from": "BHD",
         "to": "BIO",
-        "route": "BHD\u2192BIO",
+        "options": [
+          {
+            "price": 454,
+            "airline": "British Airways",
+            "from": "BHD",
+            "to": "BIO",
+            "dep": "06:30",
+            "arr": "08:30",
+            "stops": 2
+          },
+          {
+            "price": 463,
+            "airline": "British Airways",
+            "from": "BHD",
+            "to": "BIO",
+            "dep": "14:35",
+            "arr": "08:30",
+            "stops": 2
+          },
+          {
+            "price": 498,
+            "airline": "British Airways",
+            "from": "BHD",
+            "to": "BIO",
+            "dep": "06:30",
+            "arr": "17:50",
+            "stops": 2
+          }
+        ],
         "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhonEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEcgcIARIDQklPGicSCjIwMjYtMDctMjhqBwgBEgNCSU9yBwgBEgNCRlNyBwgBEgNCSERAAUgBcAGYAQE&tfu=EgIIAQ",
         "book_url": "https://www.skyscanner.net/transport/flights/bhd/bio/260724/260728/"
       }
@@ -57,21 +157,71 @@
     "Isle of Arran": {
       "michel": {
         "mode": "fly",
-        "price": 74,
-        "airline": "Ryanair UK",
-        "from": "STN",
         "to": "GLA",
-        "route": "STN\u2192GLA",
+        "options": [
+          {
+            "price": 74,
+            "airline": "Ryanair UK",
+            "from": "STN",
+            "to": "GLA",
+            "dep": "08:05",
+            "arr": "09:40",
+            "stops": 0
+          },
+          {
+            "price": 78,
+            "airline": "Ryanair UK",
+            "from": "STN",
+            "to": "GLA",
+            "dep": "19:15",
+            "arr": "20:50",
+            "stops": 0
+          },
+          {
+            "price": 80,
+            "airline": "easyJet",
+            "from": "LTN",
+            "to": "GLA",
+            "dep": "08:50",
+            "arr": "10:10",
+            "stops": 0
+          }
+        ],
         "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTA3LTI0agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDR0xBGkISCjIwMjYtMDctMjhqBwgBEgNHTEFyBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ",
         "book_url": "https://www.skyscanner.net/transport/flights/stn/gla/260724/260728/"
       },
       "dan": {
         "mode": "fly",
-        "price": 80,
-        "airline": "easyJet",
-        "from": "BFS",
         "to": "GLA",
-        "route": "BFS\u2192GLA",
+        "options": [
+          {
+            "price": 80,
+            "airline": "easyJet",
+            "from": "BFS",
+            "to": "GLA",
+            "dep": "08:30",
+            "arr": "09:15",
+            "stops": 0
+          },
+          {
+            "price": 89,
+            "airline": "easyJet",
+            "from": "BFS",
+            "to": "GLA",
+            "dep": "17:15",
+            "arr": "18:00",
+            "stops": 0
+          },
+          {
+            "price": 90,
+            "airline": "easyJet",
+            "from": "BFS",
+            "to": "GLA",
+            "dep": "13:50",
+            "arr": "14:35",
+            "stops": 0
+          }
+        ],
         "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhonEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEcgcIARIDR0xBGicSCjIwMjYtMDctMjhqBwgBEgNHTEFyBwgBEgNCRlNyBwgBEgNCSERAAUgBcAGYAQE&tfu=EgIIAQ",
         "book_url": "https://www.skyscanner.net/transport/flights/bfs/gla/260724/260728/"
       }
@@ -79,11 +229,36 @@
     "Mournes, NI": {
       "michel": {
         "mode": "fly",
-        "price": 80,
-        "airline": "Ryanair UK",
-        "from": "STN",
         "to": "BFS",
-        "route": "STN\u2192BFS",
+        "options": [
+          {
+            "price": 80,
+            "airline": "Ryanair UK",
+            "from": "STN",
+            "to": "BFS",
+            "dep": "21:40",
+            "arr": "23:00",
+            "stops": 0
+          },
+          {
+            "price": 88,
+            "airline": "easyJet",
+            "from": "STN",
+            "to": "BFS",
+            "dep": "22:10",
+            "arr": "23:25",
+            "stops": 0
+          },
+          {
+            "price": 88,
+            "airline": "easyJet",
+            "from": "LTN",
+            "to": "BFS",
+            "dep": "07:05",
+            "arr": "08:20",
+            "stops": 0
+          }
+        ],
         "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTA3LTI0agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDQkZTGkISCjIwMjYtMDctMjhqBwgBEgNCRlNyBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ",
         "book_url": "https://www.skyscanner.net/transport/flights/stn/bfs/260724/260728/"
       },
