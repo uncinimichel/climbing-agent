@@ -1,3 +1,10 @@
 __pycache__/
 *.pyc
 .DS_Store
+
+# Secrets — NEVER commit (this repo is public). Keys go in GitHub Actions secrets.
+.env
+.env.*
+*.secret
+secrets.json
+credentials*.json
