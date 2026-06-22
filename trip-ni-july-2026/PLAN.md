@@ -44,9 +44,11 @@ runs inside GitHub Actions on a schedule.
   (or push, or ── │ build job:                                                                    │
    manual run)    │   1. checkout repo                                                            │
                   │   2. python update_report.py                                                  │
-                  │        ├─ Open-Meteo  archive  → July climatology per venue (free, no key)    │
-                  │        ├─ Open-Meteo  forecast → 16-day forecast per venue (free, no key)     │
-                  │        ├─ rank venues by weather score                                        │
+                  │        ├─ Open-Meteo archive   → July climatology + mini-graph (no key)      │
+                  │        ├─ Open-Meteo forecast  → 16-day live forecast (no key)                │
+                  │        ├─ Open-Meteo seasonal  → 45-day outlook per venue (no key)            │
+                  │        ├─ multi-pitch.com data.json → nearby climbs (geo-match)              │
+                  │        ├─ rank venues (live ▸ climatology+45-day blend)                       │
                   │        └─ SerpApi (Google Flights) → top-4 venues × {Michel, Dan}             │
                   │              using secret SERPAPI_KEY (never in code)                          │
                   │   3. writes index.html + daily-report.md + history/<date>.md                  │
@@ -74,11 +76,14 @@ runs inside GitHub Actions on a schedule.
 1. **Weather scoring.** `day_score()` = 100 − 0.8·rain% − 6·precip_mm, capped at
    25 if rain code ≥61, 15 for thunderstorms. Venue score = mean over used days.
    Rank by score desc, tie-break by venue priority (NI preferred when tied).
-2. **Forecast horizon + climatology.** Open-Meteo forecast is 16 days. Until the
-   trip enters range (~8 July) venues are ranked on **July climatology** (ERA5
-   historical, free) via ONE ranged request/venue (deterministic — not per-year
-   bursts, which silently dropped samples and made ranking non-reproducible).
-   Banner states which basis is used; live forecast takes over automatically.
+2. **Three weather horizons (all free, no key).** (a) **Live forecast** — Open-Meteo
+   16-day; ranks the trip once in range (~8 July). (b) **Climatology** — ERA5 historical
+   July averages via ONE ranged request/venue (deterministic; powers the per-venue
+   rain/temp/wind mini-graph and the base ranking). (c) **Sub-seasonal outlook** —
+   Open-Meteo **Seasonal Forecast API** (`seasonal-api.open-meteo.com`, CFS ensemble,
+   ~45 days / up to 9 months), shown per venue and **blended 70/30 into the ranking**
+   (climatology dominant) while the trip is beyond the live-forecast horizon. Banner
+   states the active basis; live forecast supersedes both when available.
 3. **Flights via Google Flights (SerpApi).** Per venue, a representative round-trip
    is priced for Michel (from London) and Dan (from Belfast) into the venue airport;
    NI = Dan local, UK-mainland = Michel drives. To stay within the SerpApi quota
@@ -94,9 +99,12 @@ runs inside GitHub Actions on a schedule.
 - [ ] `index.html` title states what it is and shows the target dates; the banner is
       present and honest about the forecast horizon / climatology basis.
 - [ ] Climatology is reproducible: run update_report twice → identical rain% and order.
-- [ ] Ranking order matches scores in the table; NI tie-break behaves.
-- [ ] Ranking table has ✈️ Michel (London) and ✈️ Dan (Belfast) columns for the top 4,
-      with price + airport + book link; NI shows Dan local; venue names link to Maps.
+- [ ] Each venue is a card with a weather mini-graph (rain bars + temp + wind line) and a
+      legend; #1 highlighted; no horizontal scroll at 390px width.
+- [ ] Out of live-forecast range, each card shows a "🔭 45-day outlook" and the basis reads
+      "typical July + 45-day outlook"; seasonal API failure degrades to climatology only.
+- [ ] Flights per card: ✈️ Michel (London) + ✈️ Dan (Belfast/Dublin), 3 best-value options
+      with outbound times + book link; NI shows Dan local; venue names link to Maps.
 - [ ] `flights.json` contains exactly 3 combos, all 3–4 nights (no 2-night option).
 - [ ] `update_report.py` runs without SERPAPI_KEY (flights show search links, no crash).
 - [ ] No secret in any committed file; `.env` is gitignored.
@@ -121,6 +129,18 @@ runs inside GitHub Actions on a schedule.
 - **GitHub scheduled jobs** can lag a few minutes and are paused after ~60 days of repo
   inactivity (not a risk here — it commits daily). Node20→24 deprecation is a warning only.
 - **Destination logic is advisory** (NI-preferred, weather-ranked); the humans decide.
+- **Sub-seasonal skill is modest** at ~30 days — the 45-day outlook is a weak signal
+  (hence only a 70/30 blend, clearly labelled "experimental"); it sharpens as the trip nears.
+
+## Recently shipped
+
+- ✅ Card-per-venue UI (replaced the table) — big per-venue weather mini-graph
+  (rain bars + temp line + **wind** dashed line) with a legend; no mobile h-scroll.
+- ✅ Per-traveller flights folded in: Michel (London) + Dan (**Belfast or Dublin**),
+  3 best-value options each with outbound times + book links; country flags.
+- ✅ Data-driven source links (multi-pitch.com climbs by geo-match from `data.json`;
+  spreadsheet row by CSV fuzzy-match). Weather "forecast ↗" → Windy.
+- ✅ **45-day sub-seasonal outlook** (Open-Meteo Seasonal API) per venue + ranking blend.
 
 ## Next tasks / backlog
 
@@ -132,17 +152,25 @@ Priority order — pick up here. None are required for daily running; all are en
    if a fare drops below a threshold, open a GitHub issue / email / push notification.
 3. **Lock the date once chosen** — when Michel & Dan pick a date, pin it in `flights.json`
    and track that single combo's price trend over time (chart from history).
-4. **Tides for sea-cliff venues** (Fair Head, Gower, Cornwall) — add a free/low-cost tide
+4. **Overlay the live/seasonal forecast on the mini-graph** once in range (currently the
+   graph is climatology; show the actual forecast line for the trip window from ~8 July).
+5. **Tides for sea-cliff venues** (Fair Head, Gower, Cornwall) — add a free/low-cost tide
    source so non-tidal climbing windows are flagged. (Old multi-pitch project had tides.)
-5. **Per-crag detail** — link each venue to its UKC/theCrag/Mountain-Project page and add
-   a guidebook/approach note (data partly in `climbing-trips.csv`).
-6. **Wind & sunrise/sunset** in the forecast cell (already fetched by the API) — useful for
-   alpine starts and exposed crags.
-7. **"Confidence" on climatology** — show spread/variance across years, not just the mean.
+6. **Per-crag detail** — link each venue to its UKC/theCrag/Mountain-Project page.
+7. **"Confidence"** — show climatology spread + seasonal ensemble agreement, not just means.
 8. **Email/Slack digest** — post the daily top pick + cheapest fares to a channel.
-9. **Pin the GitHub Action versions** / bump to Node24-based actions to clear the warning.
-10. **Tests** — a tiny pytest for `day_score`, `climo_score`, flight ranking, and the
-    out-of-window banner logic, run in CI before deploy.
+9. **Pin/bump GitHub Action versions** to Node24-based actions to clear the warning.
+10. **Tests** — pytest for `day_score`, `climo_score`, `seasonal` aggregation, flight
+    ranking, and the banner logic; run in CI before deploy.
+
+## Longer-range weather APIs (researched)
+
+- **Open-Meteo Seasonal Forecast** (`seasonal-api.open-meteo.com`) — **chosen**: free,
+  no key, CFS ensemble, ~45 days–9 months, same provider/format as the rest. Now wired in.
+- *Alternatives if more skill/resolution is needed:* **Visual Crossing Timeline** (free
+  tier w/ key; one call returns forecast for near dates + statistical estimate beyond),
+  **OpenWeather One Call `day_summary`** (statistical for any future date; the old
+  multi-pitch project's key), **Meteomatics**/**AccuWeather 45-day** (paid, higher skill).
 
 ## Maintenance notes
 

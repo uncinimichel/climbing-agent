@@ -228,6 +228,37 @@ def climatology(lat, lon):
             "wind": round(sum(winds) / len(winds)), "days": total, "series": series}
 
 
+def seasonal(lat, lon):
+    """Sub-seasonal (45-day) outlook for the trip window from Open-Meteo's free
+    Seasonal Forecast API (CFS ensemble, no key). Averages the ensemble members."""
+    d = _get(
+        "https://seasonal-api.open-meteo.com/v1/seasonal"
+        f"?latitude={lat}&longitude={lon}"
+        "&daily=temperature_2m_max,precipitation_sum&forecast_days=45&timezone=auto"
+    )["daily"]
+    times = d["time"]
+    tkeys = [k for k in d if k.startswith("temperature_2m_max")]
+    pkeys = [k for k in d if k.startswith("precipitation_sum")]
+    tmaxs, precs, wet, total = [], [], 0, 0
+    for i, day in enumerate(times):
+        if not (TARGET_START <= date.fromisoformat(day) <= TARGET_END):
+            continue
+        tvals = [d[k][i] for k in tkeys if i < len(d[k]) and d[k][i] is not None]
+        pvals = [d[k][i] for k in pkeys if i < len(d[k]) and d[k][i] is not None]
+        if not tvals:
+            continue
+        total += 1
+        tmaxs.append(sum(tvals) / len(tvals))
+        mp = sum(pvals) / len(pvals) if pvals else 0
+        precs.append(mp)
+        if mp >= 3:
+            wet += 1
+    if not total:
+        return None
+    return {"tmax": round(sum(tmaxs) / len(tmaxs)), "rain_pct": round(100 * wet / total),
+            "precip": round(sum(precs) / len(precs), 1), "members": max(1, len(tkeys))}
+
+
 def day_score(code, mm, prob):
     s = 100.0 - (prob or 0) * 0.8 - (mm or 0) * 6
     if code is not None and code >= 61:
@@ -245,11 +276,15 @@ def climo_score(c):
 
 
 def evaluate(v):
-    res = {"venue": v, "ok": True, "climo": None, "fc": None}
+    res = {"venue": v, "ok": True, "climo": None, "fc": None, "seasonal": None}
     try:
         res["climo"] = climatology(v["lat"], v["lon"])
     except Exception:
         res["climo"] = None
+    try:
+        res["seasonal"] = seasonal(v["lat"], v["lon"])
+    except Exception:
+        res["seasonal"] = None
     try:
         d = forecast(v["lat"], v["lon"])
         days = d["time"]
@@ -271,11 +306,18 @@ def evaluate(v):
     except Exception:
         res["fc"] = None
 
-    fc = res["fc"]
+    fc, sea = res["fc"], res["seasonal"]
     if fc and fc.get("in_window"):
         res["score"], res["basis"] = fc["score"], "live forecast (trip window)"
     elif res["climo"]:
-        res["score"], res["basis"] = climo_score(res["climo"]), "typical July (climatology)"
+        cs = climo_score(res["climo"])
+        if sea:
+            # gentle blend: climatology dominant, 45-day outlook nudges it
+            ss = climo_score({"tmax": sea["tmax"], "rain_pct": sea["rain_pct"]})
+            res["score"] = round(0.7 * cs + 0.3 * ss)
+            res["basis"] = "typical July + 45-day outlook"
+        else:
+            res["score"], res["basis"] = cs, "typical July (climatology)"
     else:
         res["score"], res["basis"] = -1, "no data"
     return res
@@ -503,13 +545,19 @@ def graph_legend():
 def weather_card(r):
     c = r.get("climo") or {}
     fc = r.get("fc")
+    sea = r.get("seasonal")
     num = (f"<b>{c.get('tmax','?')}°C</b> · {c.get('rain_pct','?')}% wet days · 💨{c.get('wind','?')} km/h"
            if c else "—")
     live = (f" · live: {fc['sky']} {fc['tmax']}°C/{fc['rain_prob']}%" if fc and fc.get("in_window") else "")
+    outlook = ""
+    if sea and not (fc and fc.get("in_window")):
+        dry = "mostly dry" if sea["rain_pct"] <= 30 else "mixed" if sea["rain_pct"] <= 55 else "wet"
+        outlook = (f"<div class='outlook'>🔭 <b>45-day outlook:</b> {sea['tmax']}°C · {sea['rain_pct']}% wet days · "
+                   f"{dry} <span class='vsub'>(experimental {sea['members']}-member ensemble)</span></div>")
     graph = weather_mini_svg(c.get("series"), W=340, H=140) if c.get("series") else ""
     return (f"<div class='wxnum'>{num}{live} · "
             f"<a class='flink' href='{weather_url(r['venue'])}' target='_blank' rel='noopener'>full forecast ↗</a></div>"
-            f"{graph_legend()}{graph}")
+            f"{outlook}{graph_legend()}{graph}")
 
 
 def flights_card(r):
@@ -581,6 +629,8 @@ color:var(--accent);background:rgba(37,99,235,.1);padding:3px 9px;border-radius:
 .pill{{color:#fff;font-weight:800;font-size:16px;padding:5px 12px;border-radius:10px;align-self:flex-start}}
 .why{{font-size:13.5px;line-height:1.5;color:var(--ink);margin:10px 0 4px}}.why.dim{{color:var(--dim)}}
 .wxnum{{font-size:13.5px;margin:10px 0 4px}}
+.outlook{{font-size:12.5px;background:rgba(91,157,255,.1);border:1px solid rgba(91,157,255,.3);
+border-radius:8px;padding:6px 10px;margin:0 0 6px}}
 .glegend{{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--dim);margin:2px 0 2px}}
 .glegend i{{display:inline-block;width:16px;height:9px;border-radius:2px;margin-right:5px;vertical-align:middle}}
 .sw.rain{{background:linear-gradient(90deg,#16a34a,#d97706,#dc2626)}}
@@ -681,9 +731,11 @@ def main():
         banner = ("ok", "✅ Trip dates are within the 16-day forecast — venues ranked on the <b>actual trip-window forecast</b>.")
     else:
         days_out = (TARGET_START - now.date()).days
+        has_sea = any(r.get("seasonal") for r in ranked)
+        sea_txt = (" blended with the <b>45-day sub-seasonal outlook</b> (shown per venue)" if has_sea else "")
         banner = ("", f"📅 Trip is {days_out} days out — beyond the 16-day live forecast (reaches {horizon}). "
-                      f"Ranked on <b>typical late-July weather</b> (historical {CLIMO_YEARS[0]}–{CLIMO_YEARS[-1]}). "
-                      f"Live forecast fills in from ~8 July.")
+                      f"Ranked on <b>typical late-July weather</b> ({CLIMO_YEARS[0]}–{CLIMO_YEARS[-1]}){sea_txt}. "
+                      f"Full live forecast fills in from ~8 July.")
 
     INDEX.write_text(build_html(ranked, now, banner))
     md = build_md(ranked, now, banner)
