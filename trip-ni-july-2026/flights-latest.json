@@ -1,6 +1,6 @@
 {
   "comment": "Latest flight prices per combo (round-trip, 1 pax, GBP). Updated on demand by Claude or by an API script. null = not yet checked.",
-  "checked_at": "2026-06-24 07:11 UTC (Google Flights/SerpApi)",
+  "checked_at": "2026-06-25 07:11 UTC (Google Flights/SerpApi)",
   "currency": "GBP",
   "rep_combo": {
     "id": "fri-tue",
@@ -15,7 +15,7 @@
         "to": "ZAD",
         "options": [
           {
-            "price": 191,
+            "price": 185,
             "airline": "Ryanair",
             "from": "STN",
             "to": "ZAD",
@@ -24,7 +24,7 @@
             "stops": 0
           },
           {
-            "price": 201,
+            "price": 213,
             "airline": "Lufthansa",
             "from": "LHR",
             "to": "ZAD",
@@ -33,12 +33,12 @@
             "stops": 1
           },
           {
-            "price": 232,
-            "airline": "Lufthansa",
-            "from": "LHR",
+            "price": 250,
+            "airline": "Norwegian",
+            "from": "LGW",
             "to": "ZAD",
-            "dep": "19:10",
-            "arr": "09:30",
+            "dep": "20:45",
+            "arr": "08:30",
             "stops": 1
           }
         ],
@@ -59,7 +59,7 @@
             "stops": 2
           },
           {
-            "price": 330,
+            "price": 274,
             "airline": "Lufthansa",
             "from": "DUB",
             "to": "ZAD",
@@ -87,7 +87,7 @@
         "to": "BIO",
         "options": [
           {
-            "price": 84,
+            "price": 76,
             "airline": "Wizz Air",
             "from": "LTN",
             "to": "BIO",
@@ -96,7 +96,7 @@
             "stops": 0
           },
           {
-            "price": 94,
+            "price": 87,
             "airline": "Vueling",
             "from": "LGW",
             "to": "BIO",
@@ -105,7 +105,7 @@
             "stops": 0
           },
           {
-            "price": 94,
+            "price": 93,
             "airline": "Vueling",
             "from": "LGW",
             "to": "BIO",
@@ -140,13 +140,13 @@
             "stops": 1
           },
           {
-            "price": 210,
-            "airline": "Aer Lingus",
+            "price": 174,
+            "airline": "Lufthansa",
             "from": "DUB",
             "to": "BIO",
-            "dep": "14:05",
-            "arr": "17:10",
-            "stops": 0
+            "dep": "06:05",
+            "arr": "17:00",
+            "stops": 1
           }
         ],
         "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQklPGjASCjIwMjYtMDctMjhqBwgBEgNCSU9yBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
@@ -159,7 +159,7 @@
         "to": "BFS",
         "options": [
           {
-            "price": 88,
+            "price": 89,
             "airline": "easyJet",
             "from": "LTN",
             "to": "BFS",
@@ -168,7 +168,7 @@
             "stops": 0
           },
           {
-            "price": 90,
+            "price": 94,
             "airline": "Ryanair UK",
             "from": "STN",
             "to": "BFS",
@@ -177,12 +177,12 @@
             "stops": 0
           },
           {
-            "price": 97,
+            "price": 102,
             "airline": "easyJet",
-            "from": "LTN",
+            "from": "STN",
             "to": "BFS",
-            "dep": "22:15",
-            "arr": "23:30",
+            "dep": "22:10",
+            "arr": "23:25",
             "stops": 0
           }
         ],
@@ -193,44 +193,44 @@
         "mode": "local"
       }
     },
-    "Snowdonia (Llanberis Pass)": {
+    "Fair Head, NI": {
       "michel": {
-        "mode": "drive"
-      },
-      "dan": {
         "mode": "fly",
-        "to": "MAN",
+        "to": "BFS",
         "options": [
           {
-            "price": 28,
-            "airline": "Ryanair",
-            "from": "DUB",
-            "to": "MAN",
-            "dep": "21:35",
-            "arr": "22:35",
+            "price": 89,
+            "airline": "easyJet",
+            "from": "LTN",
+            "to": "BFS",
+            "dep": "07:05",
+            "arr": "08:20",
             "stops": 0
           },
           {
-            "price": 30,
+            "price": 94,
             "airline": "Ryanair UK",
-            "from": "BFS",
-            "to": "MAN",
-            "dep": "17:05",
-            "arr": "18:05",
+            "from": "STN",
+            "to": "BFS",
+            "dep": "21:40",
+            "arr": "23:00",
             "stops": 0
           },
           {
-            "price": 31,
-            "airline": "Ryanair UK",
-            "from": "BFS",
-            "to": "MAN",
-            "dep": "08:55",
-            "arr": "09:55",
+            "price": 102,
+            "airline": "easyJet",
+            "from": "STN",
+            "to": "BFS",
+            "dep": "22:10",
+            "arr": "23:25",
             "stops": 0
           }
         ],
-        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDTUFOGjASCjIwMjYtMDctMjhqBwgBEgNNQU5yBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
-        "book_url": "https://www.skyscanner.net/transport/flights/dub/man/260724/260728/"
+        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTA3LTI0agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDQkZTGkISCjIwMjYtMDctMjhqBwgBEgNCRlNyBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ",
+        "book_url": "https://www.skyscanner.net/transport/flights/ltn/bfs/260724/260728/"
+      },
+      "dan": {
+        "mode": "local"
       }
     }
   }
