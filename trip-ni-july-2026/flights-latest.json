@@ -1,6 +1,6 @@
 {
   "comment": "Latest flight prices per combo (round-trip, 1 pax, GBP). Updated on demand by Claude or by an API script. null = not yet checked.",
-  "checked_at": "2026-06-29 07:38 UTC (Google Flights/SerpApi)",
+  "checked_at": "2026-06-30 07:16 UTC (Google Flights/SerpApi)",
   "currency": "GBP",
   "rep_combo": {
     "id": "fri-tue",
@@ -15,7 +15,7 @@
         "to": "ZAD",
         "options": [
           {
-            "price": 173,
+            "price": 168,
             "airline": "Ryanair",
             "from": "STN",
             "to": "ZAD",
@@ -50,7 +50,7 @@
         "to": "ZAD",
         "options": [
           {
-            "price": 241,
+            "price": 240,
             "airline": "SWISS",
             "from": "DUB",
             "to": "ZAD",
@@ -87,16 +87,7 @@
         "to": "BIO",
         "options": [
           {
-            "price": 67,
-            "airline": "Vueling",
-            "from": "LGW",
-            "to": "BIO",
-            "dep": "16:20",
-            "arr": "19:25",
-            "stops": 0
-          },
-          {
-            "price": 67,
+            "price": 62,
             "airline": "Vueling",
             "from": "LGW",
             "to": "BIO",
@@ -105,7 +96,16 @@
             "stops": 0
           },
           {
-            "price": 72,
+            "price": 69,
+            "airline": "Vueling",
+            "from": "LGW",
+            "to": "BIO",
+            "dep": "16:20",
+            "arr": "19:25",
+            "stops": 0
+          },
+          {
+            "price": 78,
             "airline": "Wizz Air",
             "from": "LTN",
             "to": "BIO",
@@ -122,16 +122,7 @@
         "to": "BIO",
         "options": [
           {
-            "price": 178,
-            "airline": "Iberia",
-            "from": "DUB",
-            "to": "BIO",
-            "dep": "09:50",
-            "arr": "16:55",
-            "stops": 1
-          },
-          {
-            "price": 178,
+            "price": 148,
             "airline": "Iberia",
             "from": "DUB",
             "to": "BIO",
@@ -145,7 +136,16 @@
             "from": "DUB",
             "to": "BIO",
             "dep": "06:05",
-            "arr": "17:00",
+            "arr": "23:10",
+            "stops": 1
+          },
+          {
+            "price": 212,
+            "airline": "Vueling",
+            "from": "DUB",
+            "to": "BIO",
+            "dep": "22:05",
+            "arr": "08:15",
             "stops": 1
           }
         ],
@@ -159,7 +159,7 @@
         "to": "BFS",
         "options": [
           {
-            "price": 90,
+            "price": 92,
             "airline": "easyJet",
             "from": "LTN",
             "to": "BFS",
@@ -168,7 +168,7 @@
             "stops": 0
           },
           {
-            "price": 97,
+            "price": 99,
             "airline": "easyJet",
             "from": "LTN",
             "to": "BFS",
@@ -178,11 +178,11 @@
           },
           {
             "price": 104,
-            "airline": "easyJet",
+            "airline": "Ryanair UK",
             "from": "STN",
             "to": "BFS",
-            "dep": "22:10",
-            "arr": "23:25",
+            "dep": "21:40",
+            "arr": "23:00",
             "stops": 0
           }
         ],
@@ -193,76 +193,44 @@
         "mode": "local"
       }
     },
-    "Isle of Arran": {
+    "Lake District (Borrowdale)": {
       "michel": {
-        "mode": "fly",
-        "to": "GLA",
-        "options": [
-          {
-            "price": 60,
-            "airline": "Ryanair UK",
-            "from": "STN",
-            "to": "GLA",
-            "dep": "08:05",
-            "arr": "09:40",
-            "stops": 0
-          },
-          {
-            "price": 77,
-            "airline": "easyJet",
-            "from": "LGW",
-            "to": "GLA",
-            "dep": "06:00",
-            "arr": "07:30",
-            "stops": 0
-          },
-          {
-            "price": 81,
-            "airline": "easyJet",
-            "from": "LTN",
-            "to": "GLA",
-            "dep": "08:50",
-            "arr": "10:10",
-            "stops": 0
-          }
-        ],
-        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTA3LTI0agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDR0xBGkISCjIwMjYtMDctMjhqBwgBEgNHTEFyBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ",
-        "book_url": "https://www.skyscanner.net/transport/flights/stn/gla/260724/260728/"
+        "mode": "drive"
       },
       "dan": {
         "mode": "fly",
-        "to": "GLA",
+        "to": "MAN",
         "options": [
           {
-            "price": 26,
+            "price": 28,
             "airline": "Ryanair",
             "from": "DUB",
-            "to": "GLA",
-            "dep": "06:00",
-            "arr": "07:00",
+            "to": "MAN",
+            "dep": "12:35",
+            "arr": "13:35",
             "stops": 0
           },
           {
-            "price": 43,
+            "price": 28,
             "airline": "Ryanair",
             "from": "DUB",
-            "to": "GLA",
-            "dep": "20:00",
-            "arr": "21:00",
+            "to": "MAN",
+            "dep": "13:35",
+            "arr": "14:35",
             "stops": 0
           },
           {
-            "price": 43,
+            "price": 28,
             "airline": "Ryanair",
             "from": "DUB",
-            "to": "GLA",
-            "dep": "13:55",
-            "arr": "14:55",
+            "to": "MAN",
+            "dep": "14:55",
+            "arr": "15:55",
             "stops": 0
           }
         ],
-        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDR0xBGjASCjIwMjYtMDctMjhqBwgBEgNHTEFyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
-        "book_url": "https://www.skyscanner.net/transport/flights/dub/gla/260724/260728/"
+        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDTUFOGjASCjIwMjYtMDctMjhqBwgBEgNNQU5yBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
+        "book_url": "https://www.skyscanner.net/transport/flights/dub/man/260724/260728/"
       }
     }
   }
