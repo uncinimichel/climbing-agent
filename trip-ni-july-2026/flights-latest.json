@@ -1,6 +1,6 @@
 {
   "comment": "Latest flight prices per combo (round-trip, 1 pax, GBP). Updated on demand by Claude or by an API script. null = not yet checked.",
-  "checked_at": "2026-06-30 07:16 UTC (Google Flights/SerpApi)",
+  "checked_at": "2026-07-01 07:29 UTC (Google Flights/SerpApi)",
   "currency": "GBP",
   "rep_combo": {
     "id": "fri-tue",
@@ -15,7 +15,7 @@
         "to": "ZAD",
         "options": [
           {
-            "price": 168,
+            "price": 151,
             "airline": "Ryanair",
             "from": "STN",
             "to": "ZAD",
@@ -24,7 +24,7 @@
             "stops": 0
           },
           {
-            "price": 201,
+            "price": 215,
             "airline": "Lufthansa",
             "from": "LHR",
             "to": "ZAD",
@@ -33,12 +33,12 @@
             "stops": 1
           },
           {
-            "price": 232,
-            "airline": "Lufthansa",
-            "from": "LHR",
+            "price": 235,
+            "airline": "Norwegian",
+            "from": "LGW",
             "to": "ZAD",
-            "dep": "19:10",
-            "arr": "09:30",
+            "dep": "20:45",
+            "arr": "08:30",
             "stops": 1
           }
         ],
@@ -50,16 +50,7 @@
         "to": "ZAD",
         "options": [
           {
-            "price": 240,
-            "airline": "SWISS",
-            "from": "DUB",
-            "to": "ZAD",
-            "dep": "20:15",
-            "arr": "18:30",
-            "stops": 2
-          },
-          {
-            "price": 283,
+            "price": 287,
             "airline": "Lufthansa",
             "from": "DUB",
             "to": "ZAD",
@@ -68,7 +59,16 @@
             "stops": 1
           },
           {
-            "price": 310,
+            "price": 255,
+            "airline": "SWISS",
+            "from": "DUB",
+            "to": "ZAD",
+            "dep": "20:15",
+            "arr": "18:30",
+            "stops": 2
+          },
+          {
+            "price": 315,
             "airline": "Lufthansa",
             "from": "DUB",
             "to": "ZAD",
@@ -87,7 +87,7 @@
         "to": "BIO",
         "options": [
           {
-            "price": 62,
+            "price": 67,
             "airline": "Vueling",
             "from": "LGW",
             "to": "BIO",
@@ -96,7 +96,7 @@
             "stops": 0
           },
           {
-            "price": 69,
+            "price": 75,
             "airline": "Vueling",
             "from": "LGW",
             "to": "BIO",
@@ -131,21 +131,21 @@
             "stops": 1
           },
           {
-            "price": 181,
-            "airline": "Lufthansa",
-            "from": "DUB",
-            "to": "BIO",
-            "dep": "06:05",
-            "arr": "23:10",
-            "stops": 1
-          },
-          {
-            "price": 212,
+            "price": 208,
             "airline": "Vueling",
             "from": "DUB",
             "to": "BIO",
             "dep": "22:05",
             "arr": "08:15",
+            "stops": 1
+          },
+          {
+            "price": 225,
+            "airline": "Air France",
+            "from": "DUB",
+            "to": "BIO",
+            "dep": "05:55",
+            "arr": "22:00",
             "stops": 1
           }
         ],
@@ -159,16 +159,7 @@
         "to": "BFS",
         "options": [
           {
-            "price": 92,
-            "airline": "easyJet",
-            "from": "LTN",
-            "to": "BFS",
-            "dep": "07:05",
-            "arr": "08:20",
-            "stops": 0
-          },
-          {
-            "price": 99,
+            "price": 84,
             "airline": "easyJet",
             "from": "LTN",
             "to": "BFS",
@@ -177,12 +168,21 @@
             "stops": 0
           },
           {
+            "price": 89,
+            "airline": "easyJet",
+            "from": "LTN",
+            "to": "BFS",
+            "dep": "07:05",
+            "arr": "08:20",
+            "stops": 0
+          },
+          {
             "price": 104,
-            "airline": "Ryanair UK",
+            "airline": "easyJet",
             "from": "STN",
             "to": "BFS",
-            "dep": "21:40",
-            "arr": "23:00",
+            "dep": "22:10",
+            "arr": "23:25",
             "stops": 0
           }
         ],
@@ -193,44 +193,44 @@
         "mode": "local"
       }
     },
-    "Lake District (Borrowdale)": {
+    "Fair Head, NI": {
       "michel": {
-        "mode": "drive"
-      },
-      "dan": {
         "mode": "fly",
-        "to": "MAN",
+        "to": "BFS",
         "options": [
           {
-            "price": 28,
-            "airline": "Ryanair",
-            "from": "DUB",
-            "to": "MAN",
-            "dep": "12:35",
-            "arr": "13:35",
+            "price": 84,
+            "airline": "easyJet",
+            "from": "LTN",
+            "to": "BFS",
+            "dep": "22:15",
+            "arr": "23:30",
             "stops": 0
           },
           {
-            "price": 28,
-            "airline": "Ryanair",
-            "from": "DUB",
-            "to": "MAN",
-            "dep": "13:35",
-            "arr": "14:35",
+            "price": 89,
+            "airline": "easyJet",
+            "from": "LTN",
+            "to": "BFS",
+            "dep": "07:05",
+            "arr": "08:20",
             "stops": 0
           },
           {
-            "price": 28,
-            "airline": "Ryanair",
-            "from": "DUB",
-            "to": "MAN",
-            "dep": "14:55",
-            "arr": "15:55",
+            "price": 104,
+            "airline": "easyJet",
+            "from": "STN",
+            "to": "BFS",
+            "dep": "22:10",
+            "arr": "23:25",
             "stops": 0
           }
         ],
-        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDTUFOGjASCjIwMjYtMDctMjhqBwgBEgNNQU5yBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
-        "book_url": "https://www.skyscanner.net/transport/flights/dub/man/260724/260728/"
+        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTA3LTI0agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDQkZTGkISCjIwMjYtMDctMjhqBwgBEgNCRlNyBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ",
+        "book_url": "https://www.skyscanner.net/transport/flights/ltn/bfs/260724/260728/"
+      },
+      "dan": {
+        "mode": "local"
       }
     }
   }
