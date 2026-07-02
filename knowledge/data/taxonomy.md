@@ -99,6 +99,31 @@ sorting. Full mapping + system definitions: [`grade-conversion.md`](grade-conver
 | `FS` | French Sport | Europe/sport | `f4c`, `f6a+` |
 | `N` | Norwegian | Norway | `N6−` |
 
+**Discipline-specific systems** (needed now that `style` includes ice/mixed/aid/bouldering —
+map the leading characters, à la Mountain Project):
+
+| `gradeSys` | Discipline | Example |
+|---|---|---|
+| `V` | Bouldering (Hueco/V-scale) | `V0`, `V7` |
+| `Font` | Bouldering (Fontainebleau) | `6a+`, `7c` |
+| `WI` | Water ice | `WI3`, `WI5` |
+| `AI` | Alpine ice | `AI3` |
+| `M` | Mixed (rock + ice) | `M6`, `M8` |
+| `A` / `C` | Aid / clean aid | `A2`, `C3` |
+
+## Commitment grade (overall seriousness / size of day)
+
+Distinct from technical difficulty — **how big and committing the outing is** (time, length,
+remoteness, escapability). Essential for multi-pitch/big-wall planning and easy to forget.
+
+| System | Values | Meaning |
+|---|---|---|
+| **NCCS** (Roman "grade") | `I`–`VII` | Overall time: `I`/`II` a few hrs · `III` most of a morning · `IV` a full day · `V` long/possible bivvy · `VI` multi-day · `VII` remote multi-day big-wall. |
+| **Alpine (IFAS)** | `F` `PD` `AD` `D` `TD` `ED` (+`ABO`) | Overall alpine commitment — already carried via `gradeSys: ALP`. |
+
+Store as `commitmentGrade` (e.g. `"III"`). Also track **`escapable`** (can you retreat
+mid-route?) — a serious multi-pitch attribute.
+
 ## Incline / steepness
 
 The overall angle of the route. Values compose left→right as the route steepens.
@@ -131,6 +156,29 @@ Boolean tags (`1` = present, absent/`null` = not). Safety-critical ones (`loose`
 | `polished` | Slick, polished rock | difficulty-in-practice |
 | `loose` | Loose / friable rock | safety |
 | `grassLedges` | Vegetated ledges (wet/awkward) | conditions |
+
+**Objective mountain hazards** (safety-critical for the alpine venues — Dolomites, Tyrol,
+Picos — that are our backups; set only from explicit evidence):
+
+| Flag | Meaning |
+|---|---|
+| `rockfall` | Rockfall-prone (loose gullies, thaw, parties above). |
+| `avalanche` | Avalanche terrain (snow slopes, couloirs). |
+| `serac` / `crevasse` | Glacier hazards on the approach/route. |
+| `altitude` | High enough for thin air / altitude effects. |
+| `stormExposed` | Exposed to lightning / no quick escape in a storm. |
+| `cornice` | Corniced ridge/summit. |
+
+## Conditions & orientation (route-level)
+
+Beyond `face`/aspect — the fields that decide *when* a route is in condition:
+
+| Field | Type | Meaning |
+|---|---|---|
+| `elevation_m` | int | Altitude of the route — drives temperature, snow line, season. |
+| `sunWindow` | enum | When sun hits: `morning` · `afternoon` · `all-day` · `shade`. A N-face in shade climbs cool in a heatwave; a sunny face is a winter pick. |
+| `bestSeason` | months[] | Months the route is typically in condition (e.g. sea-cliffs avoid bird-ban spring; alpine = summer). |
+| `windExposed` | bool | Exposed to wind (dries fast but cold/serious). |
 
 ## Approach
 

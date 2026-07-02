@@ -49,11 +49,17 @@ these fields are populated with provenance.
 | `techGrade` | string | Technical part for BAS (`4a 4b 4c 5a 5b 5c…`). |
 | `dataGrade` | int 1–7 | **Normalized cross-system difficulty** for sorting/comparison. See [`grade-conversion.md`](grade-conversion.md). |
 
-### Approach & logistics
+### Approach, gear & descent (the practical multi-pitch layer)
 | Field | Type | Notes |
 |---|---|---|
 | `approachTime` | int (min) | Walk-in time. |
 | `approachDifficulty` | int 1–3 | 1 = easy walk, 3 = serious (scramble/swim/exposed). |
+| `commitmentGrade` | string | Overall seriousness / size of day — NCCS `I`–`VII` (see [`taxonomy.md`](taxonomy.md)). |
+| `escapable` | bool | Can the party retreat mid-route? A key multi-pitch safety attribute. |
+| `rack` | string | Gear needed — e.g. "single rack of cams to 3, doubles 0.5–2, nuts, 12 draws". |
+| `boltsCount` | int | Number of bolts/fixed anchors (`-1` = unknown), for sport/mixed. |
+| `rope` | string | Rope requirement — single 60 m · **double/half ropes** · twin · "2×60 m for the abseil". Critical for retreat/descent. |
+| `descent` | obj | `{ method: walk-off \| abseil \| lower-off, abseils: int, notes }` — how you get down (today buried in the `approach` prose). |
 
 ### Route character & hazard flags
 Boolean-ish (`1` = present, `null`/absent = not). These are the tags that most change how a

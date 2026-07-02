@@ -48,3 +48,8 @@ sync when new concepts appear in the code or docs.
 | **Redpoint** | Lead clean **after rehearsing** the route over previous attempts. |
 | **Beta** | Prior information about a route's moves/sequence. Having it is what separates a flash from an onsight. |
 | **FA / FFA** | First Ascent (first to climb a line) / First Free Ascent (first to climb it free, no aid). |
+| **Commitment grade** | Overall size/seriousness of the outing (NCCS `I`–`VII`, or alpine F–ED) — separate from technical difficulty. `IV`≈full day, `VI`≈multi-day. |
+| **Escapable** | Whether a party can retreat partway up a multi-pitch route — a core seriousness attribute. |
+| **Rack** | The set of protection gear a route needs (cams, nuts, quickdraws). |
+| **Half / double ropes** | Two thinner ropes clipped alternately — standard trad multi-pitch practice; enables full-length abseil retreat. |
+| **Objective hazard** | Danger from the mountain itself (rockfall, avalanche, serac, lightning), not from the climbing moves. |
