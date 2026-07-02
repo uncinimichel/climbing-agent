@@ -430,247 +430,582 @@ def attach_flights(ranked):
 
 
 # ---- HTML -----------------------------------------------------------------
-def score_color(s):
-    if s < 0:
-        return "#9aa4b2"
-    return "#16a34a" if s >= 70 else "#d97706" if s >= 45 else "#dc2626"
-
-
 def maps_url(v):
     return f"https://www.google.com/maps/search/?api=1&query={v['lat']},{v['lon']}"
 
 
-def source_links(v):
-    """Per-venue links back to the raw sources — all derived at build time:
-    multi-pitch.com climbs near the venue (from data.json) + its spreadsheet row (from CSV)."""
-    nb = nearby_climbs(v)
-    if nb:
-        title = "nearest: " + ", ".join(f"{c} ({d}km)" for d, c in nb[:3])
-        mp = (f"<a class='src' href='{MP_MAP_URL}' target='_blank' rel='noopener' "
-              f"title='{title}'>🧗 {len(nb)} on multi-pitch</a>")
-    else:
-        mp = f"<a class='src' href='{MP_MAP_URL}' target='_blank' rel='noopener'>🧗 multi-pitch map</a>"
-    row = match_sheet_row(v["name"])
-    if row:
-        sheet = (f"<a class='src' href='{SHEET_URL}#gid=0&range={row}:{row}' "
-                 f"target='_blank' rel='noopener'>📋 sheet row {row}</a>")
-    else:
-        sheet = "<span class='src dim'>📋 not in sheet</span>"
-    return f"{mp} · {sheet}"
+def wx_band(rain_pct):
+    """Weather → dry/mixed/wet band (same thresholds as the seasonal-outlook copy)."""
+    if rain_pct is None:
+        return ("Mixed", "mix")
+    return ("Dry", "go") if rain_pct <= 30 else ("Mixed", "mix") if rain_pct <= 55 else ("Wet", "wet")
 
 
-def flight_html(f):
-    if not f:
-        return "<span class='dim'>—</span>"
-    if f["mode"] == "local":
-        return "🚗 <b>local</b><div class='vsub'>Dan lives here</div>"
-    if f["mode"] == "drive":
-        return "🚗 drive / train"
-    opts = f.get("options") or []
-    url = f.get("view_url") or f.get("book_url")
-    dates = f"<div class='fdates'>🛫 {REP_OUT_LBL} · 🛬 {REP_BACK_LBL}</div>"
-    if not opts:
-        return (dates + f"<span class='dim'>to {f.get('to','?')}</span> "
-                f"<a class='flink' href='{url}' target='_blank' rel='noopener'>search ↗</a>" if url else dates + "—")
-    out = [dates]
-    for i, o in enumerate(opts):
-        st = "direct" if o["stops"] == 0 else f"{o['stops']}-stop"
-        strong = "b" if i == 0 else "span"
-        out.append(f"<div class='opt'><{strong}>£{o['price']}</{strong}> "
-                   f"<span class='t' title='outbound time'>{o['dep']}→{o['arr']}</span> "
-                   f"<span class='vsub'>{o['from']} · {o['airline'][:8]} · {st}</span></div>")
-    out.append(f"<a class='flink' href='{url}' target='_blank' rel='noopener'>book ↗</a>")
-    return "".join(out)
+def arc_color(band_cls):
+    return {"go": "#C4FF5C", "mix": "#C8A44A", "wet": "#B94438"}.get(band_cls, "#C8A44A")
 
 
-def weather_mini_svg(series, W=300, H=104):
-    """Per-row SVG: daily rain bars + high-temp line + wind line over the trip ±2 days.
-    Scales to the cell (viewBox); axis/labels use currentColor so dark mode adapts."""
-    if not series:
+_GRADE_NORM = {"VDiff": "VD", "V Diff": "VD", "Diff": "D", "Mod": "M", "Moderate": "M",
+               "Severe": "S", "Hard Severe": "HS", "Very Severe": "VS", "Hard Very Severe": "HVS"}
+GRADE_ORDER = ["M", "D", "VD", "S", "HS", "VS", "HVS", "E1", "E2", "E3", "E4", "E5", "E6", "E7"]
+
+
+def _grade_norm(g):
+    g = (g or "").strip()
+    return _GRADE_NORM.get(g, g)
+
+
+def grade_range(cards):
+    idx = sorted({GRADE_ORDER.index(_grade_norm(c["tradGrade"]))
+                  for c in cards if _grade_norm(c.get("tradGrade")) in GRADE_ORDER})
+    if not idx:
         return ""
-    padL, padR, padT, padB = 7, 24, 10, 18
-    n = len(series)
-    plotW = W - padL - padR
-    bw = plotW / n
-    plotH = H - padT - padB
-    base = padT + plotH
-    pmax = max([s["precip"] for s in series] + [6.0])
-    tmn = min(s["tmax"] for s in series)
-    tmx = max(s["tmax"] for s in series)
-    trng = max(1, tmx - tmn)
-    wmx = max([s.get("wind", 0) for s in series] + [1])
-    parts = [f"<line x1='{padL}' y1='{base:.0f}' x2='{W-padR}' y2='{base:.0f}' "
-             f"stroke='currentColor' stroke-width='1' opacity='.18'/>"]
-    trip = [i for i, s in enumerate(series) if s["trip"]]
-    if trip:
-        x0 = padL + trip[0] * bw
-        x1 = padL + (trip[-1] + 1) * bw
-        parts.append(f"<rect x='{x0:.1f}' y='{padT}' width='{x1-x0:.1f}' height='{plotH}' "
-                     f"fill='rgba(37,99,235,.13)' rx='4'/>")
-        parts.append(f"<text x='{(x0+x1)/2:.0f}' y='{padT+8}' text-anchor='middle' font-size='8' "
-                     f"fill='#2563eb' opacity='.8'>trip</text>")
-    pts, wpts = [], []
-    for i, s in enumerate(series):
-        x = padL + i * bw
-        bh = plotH * (s["precip"] / pmax)
-        col = "#16a34a" if s["precip"] < 3 else "#d97706" if s["precip"] < 8 else "#dc2626"
-        parts.append(f"<rect x='{x+bw*0.2:.1f}' y='{base-bh:.1f}' width='{bw*0.6:.1f}' "
-                     f"height='{max(bh,1.0):.1f}' fill='{col}' opacity='.85' rx='1.5'>"
-                     f"<title>{s['day']} Jul · {s['precip']}mm rain · {s['tmax']}°C · 💨{s.get('wind',0)}km/h</title></rect>")
-        pts.append(f"{x+bw/2:.1f},{padT+plotH*(1-(s['tmax']-tmn)/trng):.1f}")
-        wpts.append(f"{x+bw/2:.1f},{padT+plotH*(1-s.get('wind',0)/wmx):.1f}")
-        parts.append(f"<text x='{x+bw/2:.1f}' y='{H-5}' text-anchor='middle' font-size='8.5' "
-                     f"fill='currentColor' opacity='.55'>{s['day']}</text>")
-    parts.append(f"<polyline points='{' '.join(wpts)}' fill='none' stroke='#3b82f6' "
-                 f"stroke-width='1.4' stroke-dasharray='3 2' opacity='.9'/>")
-    parts.append(f"<polyline points='{' '.join(pts)}' fill='none' stroke='#e6792b' stroke-width='1.8'/>")
-    for p in pts:
-        cx, cy = p.split(",")
-        parts.append(f"<circle cx='{cx}' cy='{cy}' r='1.8' fill='#e6792b'/>")
-    # temp range labels on the right axis
-    parts.append(f"<text x='{W-padR+3}' y='{padT+4}' font-size='8.5' fill='#e6792b'>{tmx}°</text>")
-    parts.append(f"<text x='{W-padR+3}' y='{base}' font-size='8.5' fill='#e6792b'>{tmn}°</text>")
-    return (f"<svg class='wxsvg' viewBox='0 0 {W} {H}' width='100%' preserveAspectRatio='xMidYMid meet' "
-            f"role='img' aria-label='daily rain, temperature and wind'>{''.join(parts)}</svg>")
+    lo, hi = GRADE_ORDER[idx[0]], GRADE_ORDER[idx[-1]]
+    return lo if lo == hi else f"{lo}–{hi}"
 
 
-def graph_legend():
-    return ("<div class='glegend'>"
-            "<span><i class='sw rain'></i>rain (mm)</span>"
-            "<span><i class='sw temp'></i>high °C</span>"
-            "<span><i class='sw wind'></i>wind (km/h)</span>"
-            "<span><i class='sw trip'></i>trip days</span></div>")
+def _climb_flags(c):
+    labels = [("seepage", "Seepage after rain"), ("loose", "Loose rock"), ("abseil", "Abseil descent"),
+              ("tidal", "Tidal"), ("boat", "Boat approach"), ("polished", "Polished rock")]
+    return [txt for key, txt in labels if c.get(key)]
 
 
-def weather_card(r):
+def nearby_climb_cards(v, km=60, limit=6):
+    """Full climb dicts (image + grade + flags) for multi-pitch.com routes near the venue."""
+    out = []
+    for c in MP_CLIMBS:
+        try:
+            la, lo = map(float, c.get("geoLocation", "").split(","))
+        except Exception:
+            continue
+        d = _haversine(v["lat"], v["lon"], la, lo)
+        if d <= km:
+            img = (c.get("tileImage") or {}).get("url")
+            out.append((round(d), {
+                "cliff": c.get("cliff", "?"),
+                "route": c.get("routeName", ""),
+                "grade": c.get("originalGrade") or c.get("tradGrade") or "",
+                "tradGrade": c.get("tradGrade", ""),
+                "pitches": c.get("pitches"),
+                "length": c.get("length"),
+                "approach": c.get("approachTime"),
+                "dist": round(d),
+                "img": (SITE_URL.rstrip("/") + "/" + img) if img else None,
+                "flags": _climb_flags(c),
+            }))
+    out.sort(key=lambda x: x[0])
+    return [c for _, c in out[:limit]]
+
+
+# ---- Accommodation + guidebook: MOCK sample data (flights & weather are live) ----
+# Stays are illustrative placeholders near each venue, labelled "sample" in the UI.
+def _booking(town):
+    return "https://www.booking.com/searchresults.html?ss=" + urllib.parse.quote(town)
+
+
+def _amazon(q):
+    return "https://www.amazon.co.uk/s?k=" + urllib.parse.quote(q)
+
+
+MOCK_STAYS = {
+    "Fair Head": ("Ballycastle", "£", [
+        ("Marine Hotel", "Hotel · Ballycastle · 20min to crag", 4, 98, ["Sea views", "Drying room", "Restaurant"]),
+        ("Fair Head Campsite", "Campsite · Coolanlough · at the crag", 2, 12, ["Climber-run", "Walk to routes", "Basic"]),
+    ], ("Fair Head — A Rock Climbing Guide", "NIMC", 25)),
+    "Mournes": ("Newcastle", "£", [
+        ("Slieve Donard Resort", "Hotel · Newcastle · 20min to crags", 5, 115, ["Mountain views", "Spa", "Restaurant"]),
+        ("Meelmore Lodge", "Bunkhouse · Bryansford · 10min to crags", 2, 28, ["Climber-friendly", "Campsite", "Café"]),
+    ], ("Mourne Mountains — Rock Climbs", "NIMC", 20)),
+    "Dolomites": ("Cortina d'Ampezzo", "€", [
+        ("Rifugio Scoiattoli", "Mountain hut · Cinque Torri · at the routes", 3, 65, ["Half-board", "At the crag", "Cable car"]),
+        ("Camping Cortina", "Campsite · Cortina · valley base", 2, 30, ["Cheap base", "Shuttle", "Restaurant"]),
+    ], ("Dolomites — Rockfax", "Rockfax", 30)),
+    "East Tyrol": ("Lienz", "€", [
+        ("Hotel Traube", "Hotel · Lienz · valley base", 4, 105, ["Central", "Breakfast", "Restaurant"]),
+        ("Camping Falken", "Campsite · Lienz · 5min to centre", 2, 26, ["Cheap base", "Pool", "Family-run"]),
+    ], ("Osttirol — Alpinkletterfuehrer", "Panico", 34)),
+    "Lake District": ("Keswick", "£", [
+        ("The Borrowdale Hotel", "Hotel · Borrowdale · 10min to crags", 4, 110, ["Valley base", "Drying room", "Restaurant"]),
+        ("Borrowdale YHA", "Hostel · Borrowdale · under the crags", 2, 32, ["Climber classic", "Self-catering", "Cheap"]),
+    ], ("Lake District — Rockfax", "Rockfax", 28)),
+    "Snowdonia": ("Llanberis", "£", [
+        ("The Heights", "Inn · Llanberis · 10min to the Pass", 3, 78, ["Climber pub", "Drying room", "Bar"]),
+        ("Ynys Ettws (CC hut)", "Hut · Llanberis Pass · at the crags", 2, 15, ["Members' hut", "Walk to routes", "Basic"]),
+    ], ("Llanberis — Climbers Club Guide", "Climbers Club", 25)),
+    "Arran": ("Brodick", "£", [
+        ("Auchrannie Resort", "Hotel · Brodick · 40min to Cir Mhor", 4, 120, ["Pool", "Restaurant", "Spa"]),
+        ("Glen Rosa Campsite", "Campsite · Glen Rosa · start of the walk-in", 1, 10, ["At the glen", "Basic", "Cheap"]),
+    ], ("Arran — SMC Climbers Guide", "SMC", 24)),
+    "Picos": ("Arenas de Cabrales", "€", [
+        ("Hotel Picos de Europa", "Hotel · Arenas de Cabrales · gorge base", 3, 72, ["Mountain base", "Breakfast", "Bar"]),
+        ("Refugio de Urriellu", "Mountain hut · below Naranjo · at the routes", 2, 18, ["Half-board", "At the wall", "Alpine"]),
+    ], ("Picos de Europa — Rockfax", "Rockfax", 30)),
+    "Paklenica": ("Starigrad", "€", [
+        ("Hotel Alan", "Hotel · Starigrad · 10min to the canyon", 4, 88, ["Sea + mountains", "Pool", "Restaurant"]),
+        ("NP Paklenica Camp", "Campsite · canyon mouth · at the crag", 2, 22, ["At the crag", "Cheap", "Shaded"]),
+    ], ("Paklenica — Climbing Guide", "Astroida", 28)),
+}
+
+
+def mock_stays(v):
+    key = next((k for k in MOCK_STAYS if k in v["name"]), None)
+    if not key:
+        return [], None
+    town, cur, rows, guide = MOCK_STAYS[key]
+    hotels = [{"name": n, "type": t, "stars": s, "price": f"{cur}{p}",
+               "tags": tags, "book": _booking(town)} for (n, t, s, p, tags) in rows]
+    g = {"title": guide[0], "pub": guide[1], "price": f"£{guide[2]}", "url": _amazon(guide[0])}
+    return hotels, g
+
+
+def _short_name(name):
+    return name.split("(")[0].split(",")[0].strip()
+
+
+def venue_payload(n, r):
+    """One venue's data as a plain dict → embedded as JSON and rendered client-side."""
+    v = r["venue"]
+    ok = bool(r.get("ok") and r["score"] >= 0)
     c = r.get("climo") or {}
     fc = r.get("fc")
     sea = r.get("seasonal")
-    num = (f"<b>{c.get('tmax','?')}°C</b> · {c.get('rain_pct','?')}% wet days · 💨{c.get('wind','?')} km/h"
-           if c else "—")
-    live = (f" · live: {fc['sky']} {fc['tmax']}°C/{fc['rain_prob']}%" if fc and fc.get("in_window") else "")
-    outlook = ""
-    if sea and not (fc and fc.get("in_window")):
-        dry = "mostly dry" if sea["rain_pct"] <= 30 else "mixed" if sea["rain_pct"] <= 55 else "wet"
-        outlook = (f"<div class='outlook'>🔭 <b>45-day outlook:</b> {sea['tmax']}°C · {sea['rain_pct']}% wet days · "
-                   f"{dry} <span class='vsub'>(experimental {sea['members']}-member ensemble)</span></div>")
-    graph = weather_mini_svg(c.get("series"), W=340, H=140) if c.get("series") else ""
-    return (f"<div class='wxnum'>{num}{live} · "
-            f"<a class='flink' href='{weather_url(r['venue'])}' target='_blank' rel='noopener'>full forecast ↗</a></div>"
-            f"{outlook}{graph_legend()}{graph}")
-
-
-def flights_card(r):
+    cards = nearby_climb_cards(v) if ok else []
+    rain = c.get("rain_pct")
+    tag, tcls = wx_band(rain)
+    grades = grade_range(cards)
+    live = bool(fc and fc.get("in_window"))
     fl = r.get("flights") or {}
-    cols = ""
-    for who, lbl in (("michel", "✈️ Michel — from London"),
-                     ("dan", "✈️ Dan — from Belfast / Dublin")):
-        cols += f"<div class='fcol'><h4>{lbl}</h4>{flight_html(fl.get(who))}</div>"
-    return f"<div class='flights'>{cols}</div>"
+
+    def fallback_flight(who):
+        cfg = v.get("travel", {}).get(who, {})
+        m = cfg.get("mode")
+        if m in ("local", "drive"):
+            return {"mode": m}
+        if m == "fly" and cfg.get("to"):
+            return {"mode": "fly", "options": [], "to": cfg["to"],
+                    "book_url": skyscanner_url(ORIGIN[who].split(",")[0], cfg["to"], REP["out"], REP["back"])}
+        return {"mode": "unknown"}
+
+    mf = fl.get("michel") or fallback_flight("michel")
+    md = fl.get("dan") or fallback_flight("dan")
+
+    # quick-facts strip (data-driven; capped at 5)
+    facts = []
+    if cards:
+        tallest = max(cards, key=lambda x: x.get("length") or 0)
+        if tallest.get("length"):
+            facts.append({"lbl": "Max height", "val": f"{tallest['length']}m", "sub": tallest["cliff"]})
+
+    def travel_fact(who, label, f):
+        cfg = v.get("travel", {}).get(who, {})
+        mode = cfg.get("mode")
+        if mode == "local":
+            return {"lbl": label, "val": "Local", "sub": "£0 transport"}
+        if mode == "drive":
+            return {"lbl": label, "val": "Drive", "sub": "self-drive"}
+        opts = (f or {}).get("options") or []
+        if opts:
+            return {"lbl": label, "val": f"£{opts[0]['price']}", "sub": "return flight"}
+        return {"lbl": label, "val": "Fly", "sub": f"to {cfg.get('to', '?')}"}
+
+    facts.append(travel_fact("michel", "Travel · Michel", mf))
+    facts.append(travel_fact("dan", "Travel · Dan", md))
+    if cards:
+        facts.append({"lbl": "Routes", "val": str(len(cards)), "sub": "on multi-pitch.com"})
+    if grades:
+        facts.append({"lbl": "Grades", "val": grades, "sub": "trad"})
+    facts = facts[:5]
+
+    # weather chart series: enrich climatology days with weekday labels
+    series = []
+    for s in (c.get("series") or []):
+        try:
+            wd = date(TARGET_START.year, TARGET_START.month, s["day"]).strftime("%a")
+        except Exception:
+            wd = str(s["day"])
+        series.append({"day": s["day"], "lbl": wd, "tmax": s["tmax"],
+                       "precip": s["precip"], "wind": s.get("wind", 0), "trip": s["trip"]})
+
+    hotels, guide = mock_stays(v)
+    return {
+        "rank": n, "name": v["name"], "shortName": _short_name(v["name"]),
+        "country": v["country"], "flag": flag(v["country"]), "rock": v.get("rock", ""),
+        "style": v.get("style", ""), "why": v.get("why", ""), "basis": r.get("basis", ""),
+        "score": r["score"] if ok else -1, "tag": tag, "tagCls": tcls, "arcColor": arc_color(tcls),
+        "wx": {"tmax": c.get("tmax"), "rain": rain, "wind": c.get("wind"),
+               "sky": (fc.get("sky") if live else ""), "live": live,
+               "liveTemp": (fc.get("tmax") if live else None),
+               "liveRain": (fc.get("rain_prob") if live else None)},
+        "seasonal": ({"tmax": sea["tmax"], "rain": sea["rain_pct"], "members": sea["members"]}
+                     if sea and not live else None),
+        "series": series,
+        "chartLabel": ("Live forecast — trip window" if live
+                       else f"Typical late-July daily pattern (avg {CLIMO_YEARS[0]}–{CLIMO_YEARS[-1]})"),
+        "grades": grades, "hero": (cards[0]["img"] if cards else None), "climbs": cards,
+        "facts": facts,
+        "flights": {"michel": mf, "dan": md},
+        "hotels": hotels, "guide": guide,
+        "maps": maps_url(v), "weather": weather_url(v), "mpMap": MP_MAP_URL,
+    }
 
 
-def venue_card(n, r):
-    v = r["venue"]
-    if not r.get("ok") or r["score"] < 0:
-        return (f"<div class='vcard'><div class='vhead'><span class='rank'>{n}</span>"
-                f"<span class='vname'>{flag(v['country'])} {v['name']}<small>{v['country']}</small></span>"
-                f"<span class='pill' style='background:#9aa4b2'>n/a</span></div>"
-                f"<p class='why dim'>No weather data available right now.</p></div>")
-    medal = {1: "🥇", 2: "🥈", 3: "🥉"}.get(n, f"{n}")
-    best = n == 1
-    tag = "<span class='tag'>📍 best option right now</span>" if best else ""
-    why = f"<p class='why'>{v.get('why','')}</p>" if best else ""
-    return (
-        f"<div class='vcard{' best' if best else ''}'>{tag}"
-        f"<div class='vhead'><span class='rank'>{medal}</span>"
-        f"<span class='vname'>{flag(v['country'])} "
-        f"<a href='{maps_url(v)}' target='_blank' rel='noopener'>{v['name']} 🗺️</a>"
-        f"<small>{v['country']} · {v.get('style','')}</small></span>"
-        f"<span class='pill' style='background:{score_color(r['score'])}'>{r['score']}</span></div>"
-        f"{why}{weather_card(r)}{flights_card(r)}"
-        f"<div class='srcs'>{source_links(v)}</div></div>"
-    )
+PAGE_HEAD = """<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>multi·pitch — Live Trip Hub · Michel &amp; Dan · ~24 Jul 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0C0D10; --ink2:#12141B; --ink3:#191C27; --ink4:#20243A; --seam:#252840;
+  --chalk:#EAE6DD; --chalk2:#9B9890; --chalk3:#5A5860;
+  --go:#6CB268; --go-d:rgba(108,178,104,.14); --amb:#C8A44A; --amb-d:rgba(200,164,74,.13);
+  --wet:#B94438; --wet-d:rgba(185,68,56,.13); --spike:#C4FF5C;
+  --r:6px; --r-lg:12px; --left:256px; --right:288px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:var(--ink);color:var(--chalk)}
+body{font-family:'Inter',sans-serif;font-size:13px;line-height:1.5;display:flex;flex-direction:column}
+.top{height:48px;background:var(--ink2);border-bottom:1px solid var(--seam);display:flex;align-items:center;padding:0 16px;gap:12px;flex-shrink:0}
+.logo{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--chalk);letter-spacing:-.2px;white-space:nowrap}
+.logo b{color:var(--go);font-weight:800}
+.divider-v{width:1px;height:20px;background:var(--seam)}
+.ctx{display:flex;align-items:center;gap:5px;overflow:hidden}
+.pill{display:flex;align-items:center;gap:5px;background:var(--ink3);border:1px solid var(--seam);border-radius:20px;padding:4px 11px;font-size:12px;font-weight:500;color:var(--chalk);white-space:nowrap}
+.sep{color:var(--chalk3);font-size:11px}
+.top-right{margin-left:auto;display:flex;gap:7px;flex-shrink:0}
+.btn-g{background:transparent;border:1px solid var(--seam);border-radius:var(--r);padding:5px 12px;font-size:11px;font-weight:500;color:var(--chalk2);cursor:pointer;transition:all .15s;text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap}
+.btn-g:hover{border-color:var(--chalk3);color:var(--chalk)}
+.btn-p{background:var(--go);border:none;border-radius:var(--r);padding:5px 14px;font-size:11px;font-weight:700;color:#0C0D10;cursor:pointer;transition:opacity .15s;text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap}
+.btn-p:hover{opacity:.85}
+.databar{background:var(--ink3);border-bottom:1px solid var(--seam);padding:6px 16px;font-size:11.5px;color:var(--chalk2);display:flex;align-items:center;gap:14px;flex-shrink:0;line-height:1.4}
+.databar .msg{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.databar b{color:var(--chalk);font-weight:600}
+.databar.ok .msg b{color:#86e0a6}
+.databar .upd{color:var(--chalk3);font-size:10px;white-space:nowrap;flex-shrink:0}
+.ws{display:grid;grid-template-columns:var(--left) 1fr var(--right);flex:1;overflow:hidden;min-height:0}
+.left{background:var(--ink2);border-right:1px solid var(--seam);display:flex;flex-direction:column;overflow:hidden}
+.panel-hd{padding:11px 14px 8px;border-bottom:1px solid var(--seam);flex-shrink:0}
+.panel-hd-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px}
+.panel-title{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--chalk3)}
+.panel-meta{font-size:10px;color:var(--chalk3)}
+.legend{display:flex;gap:10px;font-size:9px;color:var(--chalk3)}
+.legend span{display:flex;align-items:center;gap:3px}
+.dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.area-list{overflow-y:auto;flex:1;scrollbar-width:thin;scrollbar-color:var(--seam) transparent}
+.a-row{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--seam);cursor:pointer;transition:background .12s;position:relative}
+.a-row:hover{background:var(--ink3)}
+.a-row.active{background:var(--ink4);border-left:2px solid var(--spike)}
+.a-row.active .a-rank{color:var(--spike)}
+.a-rank{font-family:'Syne',sans-serif;font-size:10px;font-weight:800;color:var(--chalk3);width:16px;flex-shrink:0}
+.arc{position:relative;width:34px;height:34px;flex-shrink:0}
+.arc svg{width:34px;height:34px}
+.arc-n{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:8.5px;font-weight:500;color:var(--chalk);line-height:1}
+.a-body{flex:1;min-width:0}
+.a-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--chalk);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:1px}
+.a-sub{font-size:10px;color:var(--chalk3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.a-wx{font-size:10px;color:var(--chalk2);margin-top:1px}
+.a-tag{font-size:8px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:2px 5px;border-radius:3px;flex-shrink:0;align-self:flex-start;margin-top:2px}
+.tag-go{background:var(--go-d);color:var(--go)}
+.tag-mix{background:var(--amb-d);color:var(--amb)}
+.tag-wet{background:var(--wet-d);color:var(--wet)}
+.centre{display:flex;flex-direction:column;overflow:hidden;background:var(--ink)}
+.hero{position:relative;height:220px;flex-shrink:0;overflow:hidden}
+.hero img{width:100%;height:100%;object-fit:cover;filter:brightness(.55) saturate(.8);display:block}
+.hero-fb{width:100%;height:100%;background:linear-gradient(160deg,#2A3B28,#0C0D10);display:flex;align-items:center;justify-content:center;font-size:56px;opacity:.25}
+.hero-grad{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(12,13,16,0) 10%,rgba(12,13,16,.9) 80%,var(--ink) 100%)}
+.hero-body{position:absolute;bottom:0;left:0;right:0;padding:14px 22px 18px;display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
+.hero-tag{display:flex;align-items:center;gap:7px;margin-bottom:6px;flex-wrap:wrap}
+.hero-badge{background:var(--spike);color:var(--ink);font-size:9px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:2px 7px;border-radius:3px}
+.hero-region{font-size:11px;color:var(--chalk2)}
+.hero-name{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--chalk);line-height:1.05;letter-spacing:-.4px;margin-bottom:5px}
+.hero-info{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--chalk2);flex-wrap:wrap}
+.hero-scores{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0}
+.score-box{background:rgba(12,13,16,.75);backdrop-filter:blur(10px);border:1px solid var(--seam);border-radius:var(--r-lg);padding:9px 13px;text-align:center}
+.score-val{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--spike);line-height:1}
+.score-lbl{font-size:8px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--chalk3);margin-top:2px}
+.wx-pill{background:rgba(12,13,16,.75);backdrop-filter:blur(10px);border:1px solid var(--seam);border-radius:20px;padding:4px 10px;font-size:12px;font-weight:600;color:var(--chalk);display:flex;align-items:center;gap:5px;white-space:nowrap}
+.c-body{flex:1;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--seam) transparent}
+.sec{padding:16px 22px;border-bottom:1px solid var(--seam)}
+.sec:last-child{border-bottom:none}
+.sec-lbl{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--chalk3);margin-bottom:10px}
+.why-text{font-size:13px;line-height:1.7;color:var(--chalk2)}
+.why-text strong{color:var(--chalk);font-weight:500}
+.basis{font-size:10px;color:var(--chalk3);margin-top:9px;font-style:italic}
+.facts{display:flex;gap:0;border:1px solid var(--seam);border-radius:var(--r-lg);overflow:hidden;margin-top:12px}
+.fact{flex:1;padding:9px 11px;background:var(--ink3);border-right:1px solid var(--seam);min-width:0}
+.fact:last-child{border-right:none}
+.fact-lbl{font-size:8px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--chalk3);margin-bottom:3px}
+.fact-val{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--chalk);line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fact-sub{font-size:9px;color:var(--chalk3);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wx-chart{display:flex;gap:3px;align-items:flex-end;height:68px;margin-bottom:6px}
+.wx-col{display:flex;flex-direction:column;align-items:center;flex:1}
+.wx-bar-wrap{width:100%;display:flex;align-items:flex-end;height:44px;background:var(--ink4);border-radius:3px 3px 0 0;overflow:hidden;position:relative}
+.wx-bar-rain{width:100%;background:rgba(90,140,200,.5);position:absolute;bottom:0}
+.wx-bar-temp{width:4px;height:4px;border-radius:50%;background:var(--go);position:absolute;left:50%;transform:translateX(-50%)}
+.wx-col-label{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--chalk3);margin-top:4px;text-align:center;width:100%}
+.wx-col-temp{font-family:'DM Mono',monospace;font-size:9px;color:var(--chalk2);text-align:center}
+.wx-col.trip .wx-bar-wrap{background:rgba(196,255,92,.08);border:1px solid rgba(196,255,92,.25)}
+.wx-col.trip .wx-col-label{color:var(--spike)}
+.wind-row{display:flex;gap:4px;margin-top:2px}
+.wind-col{flex:1;text-align:center;font-size:9px;color:var(--chalk3);font-family:'DM Mono',monospace}
+.wx-legend{display:flex;gap:14px;font-size:9px;color:var(--chalk3);margin-top:8px;flex-wrap:wrap}
+.wx-legend span{display:flex;align-items:center;gap:4px}
+.wx-swatch{width:10px;height:8px;border-radius:2px}
+.outlook-line{font-size:11px;color:var(--chalk2);background:rgba(91,157,255,.08);border:1px solid rgba(91,157,255,.2);border-radius:6px;padding:5px 9px;margin:8px 0 2px}
+.climb-card{display:flex;gap:11px;padding:10px 0;border-bottom:1px solid var(--seam);align-items:flex-start}
+.climb-card:last-child{border-bottom:none}
+.climb-thumb{width:64px;height:52px;border-radius:var(--r);overflow:hidden;flex-shrink:0;background:var(--ink3);border:1px solid var(--seam)}
+.climb-thumb.ph{display:flex;align-items:center;justify-content:center;font-size:22px}
+.climb-thumb img{width:100%;height:100%;object-fit:cover}
+.climb-body{flex:1;min-width:0}
+.climb-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--chalk);margin-bottom:2px}
+.climb-route{font-size:11px;color:var(--chalk2);margin-bottom:4px}
+.climb-pills{display:flex;gap:5px;flex-wrap:wrap}
+.cpill{font-size:9px;font-weight:600;padding:2px 6px;border-radius:3px;background:var(--ink4);color:var(--chalk3)}
+.cpill-g{background:var(--go-d);color:var(--go)}
+.climb-flags{display:flex;gap:4px;margin-top:4px;flex-wrap:wrap}
+.flag-tag{font-size:9px;color:var(--amb);background:var(--amb-d);padding:1px 5px;border-radius:3px}
+.climb-grade{font-family:'DM Mono',monospace;font-size:12px;font-weight:500;color:var(--go);flex-shrink:0;margin-top:2px}
+.right{background:var(--ink2);border-left:1px solid var(--seam);display:flex;flex-direction:column;overflow:hidden}
+.r-body{overflow-y:auto;flex:1;padding:12px;scrollbar-width:thin;scrollbar-color:var(--seam) transparent;display:flex;flex-direction:column;gap:14px}
+.r-sec-lbl{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--chalk3);padding-bottom:6px;border-bottom:1px solid var(--seam);margin-bottom:8px;display:flex;align-items:center}
+.mock-tag{font-size:8px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--chalk3);background:var(--ink4);padding:1px 5px;border-radius:3px;margin-left:6px}
+.fc{background:var(--ink3);border:1px solid var(--seam);border-radius:var(--r-lg);overflow:hidden;margin-bottom:6px}
+.fc:last-of-type{margin-bottom:0}
+.fc-hd{padding:9px 12px 7px;border-bottom:1px solid var(--seam);display:flex;align-items:center;justify-content:space-between}
+.fc-who{font-size:12px;font-weight:600;color:var(--chalk)}
+.fc-from{font-size:10px;color:var(--chalk3);margin-top:1px}
+.fc-best{font-size:8px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--spike);background:rgba(196,255,92,.1);padding:2px 6px;border-radius:3px}
+.fc-bd{padding:9px 12px}
+.fc-price{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--chalk);display:flex;align-items:baseline;gap:4px;margin-bottom:7px}
+.fc-price span{font-family:'Inter',sans-serif;font-size:10px;font-weight:400;color:var(--chalk3)}
+.fc-opt{display:flex;justify-content:space-between;gap:8px;font-size:11px;padding:3px 0;border-bottom:1px solid var(--seam);color:var(--chalk2)}
+.fc-opt:last-of-type{border-bottom:none}
+.fc-opt span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tag-d{color:var(--go);font-size:10px;font-weight:600;flex-shrink:0}
+.tag-s{color:var(--chalk3);font-size:10px;flex-shrink:0}
+.fc-btn{width:100%;margin-top:9px;background:var(--chalk);color:var(--ink);border:none;border-radius:var(--r);padding:7px;font-size:11px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;transition:background .15s;text-decoration:none;display:block;text-align:center}
+.fc-btn:hover{background:var(--go)}
+.fc-btn.sec{background:transparent;border:1px solid var(--seam);color:var(--chalk2);font-weight:500;margin-top:4px}
+.fc-btn.sec:hover{background:var(--ink4);color:var(--chalk);border-color:var(--chalk3)}
+.hc{background:var(--ink3);border:1px solid var(--seam);border-radius:var(--r-lg);padding:10px 12px;margin-bottom:6px}
+.hc:last-child{margin-bottom:0}
+.hc-hd{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:1px}
+.hc-name{font-size:12px;font-weight:600;color:var(--chalk)}
+.hc-stars{font-size:10px;color:var(--amb);white-space:nowrap;flex-shrink:0}
+.hc-type{font-size:10px;color:var(--chalk3);margin-bottom:5px}
+.hc-price{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;color:var(--chalk);margin-bottom:5px}
+.hc-price span{font-family:'Inter',sans-serif;font-size:10px;font-weight:400;color:var(--chalk3)}
+.hc-tags{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:7px}
+.hc-tag{font-size:9px;font-weight:500;padding:2px 5px;border-radius:3px;background:var(--ink4);color:var(--chalk3)}
+.hc-tag.g{background:var(--go-d);color:var(--go)}
+.empty{font-size:12px;color:var(--chalk3);padding:6px 0}
+.flink{color:var(--go);text-decoration:none;font-weight:600}
+.flink:hover{text-decoration:underline}
+::-webkit-scrollbar{width:3px;height:3px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--seam);border-radius:2px}
+@media(max-width:900px){
+  html,body{overflow:auto}
+  .ws{display:block}
+  .left,.right{border-right:none;border-left:none;border-bottom:1px solid var(--seam)}
+  .area-list{max-height:420px}
+  .centre{min-height:auto}
+  .hero{height:200px}
+}
+</style></head>"""
+
+PAGE_BODY = """<body>
+<header class="top">
+  <div class="logo">multi<b>·</b>pitch</div>
+  <div class="divider-v"></div>
+  <div class="ctx" id="ctx"></div>
+  <div class="top-right">
+    <a class="btn-g" id="mapBtn" target="_blank" rel="noopener">\U0001f5fa Map</a>
+    <a class="btn-g" id="sheetBtn" target="_blank" rel="noopener">\U0001f4cb Spreadsheet</a>
+    <a class="btn-p" id="mpBtn" target="_blank" rel="noopener">multi-pitch.com ↗</a>
+  </div>
+</header>
+<div class="databar" id="databar"></div>
+<div class="ws">
+  <aside class="left">
+    <div class="panel-hd">
+      <div class="panel-hd-row"><span class="panel-title">Areas ranked for your trip</span><span class="panel-meta" id="areaCount"></span></div>
+      <div class="legend">
+        <span><div class="dot" style="background:var(--go)"></div>Dry</span>
+        <span><div class="dot" style="background:var(--amb)"></div>Mixed</span>
+        <span><div class="dot" style="background:var(--wet)"></div>Wet</span>
+        <span style="margin-left:auto;font-size:9px;color:var(--chalk3)">Score = weather</span>
+      </div>
+    </div>
+    <div class="area-list" id="areaList"></div>
+  </aside>
+  <main class="centre" id="centre"></main>
+  <aside class="right" id="right"></aside>
+</div>
+"""
+
+PAGE_JS = """
+var D=window.DATA,V=D.venues;
+function esc(s){return s==null?'':String(s);}
+document.getElementById('ctx').innerHTML=D.trip.pills.map(function(p){return '<div class="pill">'+p+'</div>';}).join('<span class="sep">·</span>');
+document.getElementById('mapBtn').href=D.trip.mapUrl;
+document.getElementById('sheetBtn').href=D.trip.sheetUrl;
+document.getElementById('mpBtn').href=D.trip.mpUrl;
+document.getElementById('areaCount').textContent=V.length+' areas';
+var db=document.getElementById('databar');db.className='databar '+(D.banner.cls==='ok'?'ok':'');
+db.innerHTML='<span class="msg">'+D.banner.html+'</span><span class="upd">updated '+D.trip.updated+'</span>';
+
+function heroFail(img){img.style.display='none';var fb=img.nextElementSibling;if(fb)fb.style.display='flex';}
+function thumbFail(img){var p=img.parentElement;p.classList.add('ph');p.textContent='\U0001f3d4';}
+
+function arcSvg(score,color){
+  var C=81.7,off=(C*(1-Math.max(0,score)/100)).toFixed(1);
+  return '<svg viewBox="0 0 34 34" fill="none"><circle cx="17" cy="17" r="13" stroke="#252840" stroke-width="2.5"/>'
+    +'<circle cx="17" cy="17" r="13" stroke="'+color+'" stroke-width="2.5" stroke-dasharray="'+C+'" stroke-dashoffset="'+off+'" stroke-linecap="round" transform="rotate(-90 17 17)"/></svg>'
+    +'<div class="arc-n">'+(score>=0?score:'–')+'</div>';
+}
+function areaRow(v,i){
+  var wx=v.wx.tmax!=null?(v.wx.tmax+'°C · '+v.wx.rain+'% wet · \U0001f4a8'+v.wx.wind+'km/h'):'no weather data';
+  return '<div class="a-row" data-i="'+i+'" onclick="sel('+i+')">'
+    +'<div class="a-rank">'+v.rank+'</div>'
+    +'<div class="arc">'+arcSvg(v.score,v.arcColor)+'</div>'
+    +'<div class="a-body"><div class="a-name">'+v.flag+' '+esc(v.shortName)+'</div>'
+    +'<div class="a-sub">'+esc(v.country)+(v.rock?' · '+v.rock:'')+'</div>'
+    +'<div class="a-wx">'+wx+'</div></div>'
+    +'<div class="a-tag tag-'+v.tagCls+'">'+v.tag+'</div></div>';
+}
+document.getElementById('areaList').innerHTML=V.map(areaRow).join('');
+
+function climbCard(c){
+  var inner=c.img?'<img src="'+c.img+'" alt="" onerror="thumbFail(this)">':'\U0001f3d4';
+  var pills=[];
+  if(c.grade)pills.push('<span class="cpill cpill-g">'+esc(c.grade)+'</span>');
+  if(c.approach!=null)pills.push('<span class="cpill">'+c.approach+' min approach</span>');
+  if(c.dist!=null)pills.push('<span class="cpill">'+c.dist+' km away</span>');
+  var flags=(c.flags||[]).map(function(f){return '<span class="flag-tag">⚠ '+f+'</span>';}).join('');
+  var meta=[c.pitches?c.pitches+' pitches':null,c.length?c.length+'m':null].filter(Boolean).join(' · ');
+  return '<div class="climb-card"><div class="climb-thumb'+(c.img?'':' ph')+'">'+inner+'</div>'
+    +'<div class="climb-body"><div class="climb-name">'+esc(c.cliff)+'</div>'
+    +'<div class="climb-route">'+esc(c.route)+(meta?' — '+meta:'')+'</div>'
+    +'<div class="climb-pills">'+pills.join('')+'</div>'+(flags?'<div class="climb-flags">'+flags+'</div>':'')+'</div>'
+    +'<div class="climb-grade">'+esc(c.tradGrade)+'</div></div>';
+}
+
+function buildChart(series){
+  var chart=document.getElementById('wxChart'),windRow=document.getElementById('windRow');
+  if(!chart)return;chart.innerHTML='';windRow.innerHTML='';
+  if(!series||!series.length){chart.innerHTML='<div class="empty">No daily series available.</div>';return;}
+  var maxRain=Math.max.apply(null,series.map(function(d){return d.precip;}).concat([1]));
+  var maxT=Math.max.apply(null,series.map(function(d){return d.tmax;}));
+  var minT=Math.min.apply(null,series.map(function(d){return d.tmax;}));
+  series.forEach(function(d){
+    var rainH=Math.round((d.precip/maxRain)*36)+2;
+    var pct=maxT===minT?0.5:(d.tmax-minT)/(maxT-minT);
+    var tempTop=Math.round((1-pct)*32)+4;
+    var col=document.createElement('div');col.className='wx-col'+(d.trip?' trip':'');
+    col.innerHTML='<div class="wx-bar-wrap"><div class="wx-bar-rain" style="height:'+rainH+'px"></div><div class="wx-bar-temp" style="bottom:'+tempTop+'px"></div></div><div class="wx-col-label">'+d.lbl+'</div><div class="wx-col-temp">'+d.tmax+'°</div>';
+    chart.appendChild(col);
+    var wc=document.createElement('div');wc.className='wind-col';wc.style.color=d.trip?'rgba(196,255,92,.6)':'var(--chalk3)';wc.textContent='\U0001f4a8'+d.wind;windRow.appendChild(wc);
+  });
+}
+
+function renderCentre(v){
+  var hero=v.hero
+    ?'<img src="'+v.hero+'" alt="" onerror="heroFail(this)"><div class="hero-fb" style="display:none">\U0001f3d4</div>'
+    :'<div class="hero-fb" style="display:flex">\U0001f3d4</div>';
+  var info=[v.style,v.climbs.length?(v.climbs.length+' routes on multi-pitch.com'):null,v.grades?('Grades '+v.grades):null].filter(Boolean).join(' · ');
+  var facts=v.facts.map(function(f){return '<div class="fact"><div class="fact-lbl">'+f.lbl+'</div><div class="fact-val">'+f.val+'</div><div class="fact-sub">'+esc(f.sub)+'</div></div>';}).join('');
+  var climbs=v.climbs.length?v.climbs.map(climbCard).join(''):'<div class="empty">No multi-pitch.com routes indexed near here yet — <a class="flink" href="'+v.mpMap+'" target="_blank" rel="noopener">browse the map ↗</a></div>';
+  var wxpill='<div class="wx-pill">'+(v.wx.sky||'☁')+' '+(v.wx.tmax!=null?v.wx.tmax+'°C':'—')+' · '+v.tag.toLowerCase()+'</div>';
+  var legend='<div class="wx-legend"><span><div class="wx-swatch" style="background:rgba(90,140,200,.5)"></div>Rain (mm)</span><span><div class="wx-swatch" style="background:var(--go);border-radius:50%;width:8px;height:8px"></div>Temp °C</span><span><div class="wx-swatch" style="background:rgba(196,255,92,.25);border:1px solid rgba(196,255,92,.4)"></div>Trip days</span></div>';
+  var outlook=v.seasonal?'<div class="outlook-line">\U0001f52d <b>45-day outlook:</b> '+v.seasonal.tmax+'°C · '+v.seasonal.rain+'% wet days <span style="color:var(--chalk3)">(experimental '+v.seasonal.members+'-member ensemble)</span></div>':'';
+  document.getElementById('centre').innerHTML=
+    '<div class="hero">'+hero+'<div class="hero-grad"></div><div class="hero-body"><div class="hero-left">'
+    +'<div class="hero-tag"><span class="hero-badge">#'+v.rank+' this trip</span><span class="hero-region">'+esc(v.country)+'</span></div>'
+    +'<div class="hero-name">'+esc(v.shortName)+'</div><div class="hero-info">'+info+'</div></div>'
+    +'<div class="hero-scores"><div class="score-box"><div class="score-val">'+(v.score>=0?v.score:'–')+'</div><div class="score-lbl">Trip score</div></div>'+wxpill+'</div></div></div>'
+    +'<div class="c-body">'
+    +'<div class="sec"><div class="sec-lbl">Why go here</div><div class="why-text">'+esc(v.why)+'</div>'+(facts?'<div class="facts">'+facts+'</div>':'')+(v.basis?'<div class="basis">Ranking basis: '+esc(v.basis)+'</div>':'')+'</div>'
+    +'<div class="sec"><div class="sec-lbl">'+esc(v.chartLabel)+'</div><div class="wx-chart" id="wxChart"></div><div class="wind-row" id="windRow"></div>'+outlook+legend+'</div>'
+    +'<div class="sec"><div class="sec-lbl">Climbs in this area — from multi-pitch.com</div>'+climbs+'</div>'
+    +'</div>';
+  buildChart(v.series);
+}
+
+function flightCard(who,f,from){
+  var head='<div class="fc-hd"><div><div class="fc-who">'+who+'</div><div class="fc-from">'+from+'</div></div>';
+  if(!f||f.mode==='local')return '<div class="fc">'+head+'</div><div class="fc-bd" style="padding:10px 12px"><div style="font-size:13px;font-weight:600;color:var(--go);margin-bottom:4px">\U0001f697 Local — no flight needed</div><div style="font-size:11px;color:var(--chalk3)">Lives near the crags.</div></div></div>';
+  if(f.mode==='drive')return '<div class="fc">'+head+'</div><div class="fc-bd" style="padding:10px 12px"><div style="font-size:13px;font-weight:600;color:var(--go);margin-bottom:4px">\U0001f697 Drive / train</div><div style="font-size:11px;color:var(--chalk3)">Drivable — no flight priced.</div></div></div>';
+  var opts=f.options||[];var view=f.view_url||f.book_url;var book=f.book_url||f.view_url;
+  var best=opts.length?'<div class="fc-best">Best value</div>':'';
+  var body;
+  if(!opts.length){
+    body='<div class="fc-bd"><div style="font-size:11px;color:var(--chalk3);margin-bottom:7px">to '+esc(f.to)+' — no live price</div>'+(view?'<a class="fc-btn" href="'+view+'" target="_blank" rel="noopener">Search flights ↗</a>':'')+'</div>';
+  }else{
+    var rows=opts.map(function(o,i){var st=o.stops===0?'Direct':o.stops+'-stop';var lead=i===0?'':'£'+o.price+' ';return '<div class="fc-opt"><span>'+lead+o.dep+'→'+o.arr+' · '+o.from+' · '+esc(o.airline).slice(0,10)+'</span><span class="'+(o.stops===0?'tag-d':'tag-s')+'">'+st+'</span></div>';}).join('');
+    body='<div class="fc-bd"><div class="fc-price">£'+opts[0].price+' <span>return pp</span></div>'+rows+'<a class="fc-btn" href="'+book+'" target="_blank" rel="noopener">Book flight ↗</a>'+(f.view_url?'<a class="fc-btn sec" href="'+f.view_url+'" target="_blank" rel="noopener">See all options</a>':'')+'</div>';
+  }
+  return '<div class="fc">'+head+best+'</div>'+body+'</div>';
+}
+
+function hotelCard(h){
+  return '<div class="hc"><div class="hc-hd"><div class="hc-name">'+esc(h.name)+'</div><div class="hc-stars">'+Array(h.stars+1).join('★')+'</div></div>'
+    +'<div class="hc-type">'+esc(h.type)+'</div><div class="hc-price">'+h.price+' <span>/ room / night</span></div>'
+    +'<div class="hc-tags">'+h.tags.map(function(t,i){return '<div class="hc-tag'+(i===0?' g':'')+'">'+t+'</div>';}).join('')+'</div>'
+    +'<a class="fc-btn" href="'+h.book+'" target="_blank" rel="noopener">Search on Booking.com ↗</a></div>';
+}
+
+function guideCard(g){
+  return '<div class="hc" style="display:flex;gap:11px;align-items:center"><div style="font-size:22px">\U0001f4d7</div><div>'
+    +'<div style="font-size:12px;font-weight:600;color:var(--chalk)">'+esc(g.title)+'</div>'
+    +'<div style="font-size:10px;color:var(--chalk3)">'+esc(g.pub)+'</div>'
+    +'<div style="font-size:10px;margin-top:2px"><a href="'+g.url+'" target="_blank" rel="noopener" class="flink">'+g.price+' → Amazon ↗</a></div></div></div>';
+}
+
+function renderRight(v){
+  var hotels=v.hotels&&v.hotels.length?v.hotels.map(hotelCard).join(''):'<div class="empty">No sample stays for this area.</div>';
+  var guide=v.guide?'<div><div class="r-sec-lbl">Guidebook <span class="mock-tag">sample</span></div>'+guideCard(v.guide)+'</div>':'';
+  document.getElementById('right').innerHTML=
+    '<div class="panel-hd"><div class="panel-hd-row"><span class="panel-title">Plan this trip</span><span class="panel-meta">'+esc(v.shortName)+'</span></div></div>'
+    +'<div class="r-body">'
+    +'<div><div class="r-sec-lbl">Flights · '+D.trip.dates+'</div>'+flightCard('Michel',v.flights.michel,'from London')+flightCard('Dan',v.flights.dan,'from Belfast / Dublin')+'</div>'
+    +'<div><div class="r-sec-lbl">Accommodation near crags <span class="mock-tag">sample</span></div>'+hotels+'</div>'
+    +guide
+    +'</div>';
+}
+
+function sel(i){
+  var rows=document.querySelectorAll('.a-row');
+  for(var k=0;k<rows.length;k++)rows[k].classList.toggle('active',+rows[k].dataset.i===i);
+  renderCentre(V[i]);renderRight(V[i]);
+}
+sel(0);
+"""
 
 
 def build_html(ranked, now, banner):
-    cards = "\n".join(venue_card(n, r) for n, r in enumerate(ranked, 1))
-    return f"""<!doctype html>
-<html lang="en"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Climbing Trip Planner — Michel &amp; Dan · ~24 Jul 2026</title>
-<style>
-:root{{--bg:#eef1f6;--card:#fff;--ink:#1f2733;--dim:#7b8694;--line:#e6eaf0;--accent:#2563eb;
---shadow:0 1px 3px rgba(16,24,40,.08),0 2px 8px rgba(16,24,40,.05);}}
-@media(prefers-color-scheme:dark){{:root{{--bg:#0b0f17;--card:#141a24;--ink:#e7edf5;--dim:#8b97a7;
---line:#222c3a;--accent:#5b9dff;--shadow:0 1px 3px rgba(0,0,0,.5);}}}}
-*{{box-sizing:border-box}}html{{-webkit-text-size-adjust:100%}}
-body{{margin:0;background:var(--bg);color:var(--ink);
-font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;padding:24px 16px}}
-.wrap{{max-width:820px;margin:0 auto}}
-h1{{font-size:22px;line-height:1.25;margin:0 0 6px;letter-spacing:-.01em}}
-.lead{{color:var(--dim);font-size:14px;margin:0}}.lead b{{color:var(--ink)}}
-.links{{margin:8px 0 0;font-size:13.5px}}
-.links a{{color:var(--accent);text-decoration:none;font-weight:600}}.links a:hover{{text-decoration:underline}}
-.banner{{margin:16px 0;padding:12px 15px;border-radius:12px;font-size:13.5px;line-height:1.45;
-background:#fff7e6;border:1px solid #f3d18a;color:#7a5a12}}
-@media(prefers-color-scheme:dark){{.banner{{background:#241d0e;border-color:#5c4a1e;color:#e7cf94}}}}
-.banner.ok{{background:#e9f9ef;border-color:#a6e3bd;color:#176436}}
-@media(prefers-color-scheme:dark){{.banner.ok{{background:#0f2418;border-color:#235c39;color:#86e0a6}}}}
-.vcard{{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);
-padding:16px 18px;margin:0 0 16px}}
-.vcard.best{{border:2px solid var(--accent)}}
-.tag{{display:inline-block;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;
-color:var(--accent);background:rgba(37,99,235,.1);padding:3px 9px;border-radius:20px;margin-bottom:8px}}
-.vhead{{display:flex;align-items:center;gap:10px}}
-.rank{{font-size:21px;font-weight:800;min-width:30px;text-align:center}}
-.vname{{font-weight:800;font-size:17px;flex:1;line-height:1.2}}
-.vname a{{color:inherit;text-decoration:none}}.vname a:hover{{color:var(--accent)}}
-.vname small{{display:block;font-weight:500;font-size:12px;color:var(--dim);margin-top:2px}}
-.pill{{color:#fff;font-weight:800;font-size:16px;padding:5px 12px;border-radius:10px;align-self:flex-start}}
-.why{{font-size:13.5px;line-height:1.5;color:var(--ink);margin:10px 0 4px}}.why.dim{{color:var(--dim)}}
-.wxnum{{font-size:13.5px;margin:10px 0 4px}}
-.outlook{{font-size:12.5px;background:rgba(91,157,255,.1);border:1px solid rgba(91,157,255,.3);
-border-radius:8px;padding:6px 10px;margin:0 0 6px}}
-.glegend{{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--dim);margin:2px 0 2px}}
-.glegend i{{display:inline-block;width:16px;height:9px;border-radius:2px;margin-right:5px;vertical-align:middle}}
-.sw.rain{{background:linear-gradient(90deg,#16a34a,#d97706,#dc2626)}}
-.sw.temp{{height:0;border-top:2px solid #e6792b}}
-.sw.wind{{height:0;border-top:2px dashed #3b82f6}}
-.sw.trip{{background:rgba(37,99,235,.18)}}
-.wxsvg{{display:block;margin:4px 0 8px;width:100%;max-width:520px;height:auto}}
-.flights{{display:flex;gap:12px;flex-wrap:wrap}}
-.fcol{{flex:1;min-width:215px;background:rgba(127,127,127,.05);border:1px solid var(--line);
-border-radius:12px;padding:10px 12px}}
-.fcol h4{{margin:0 0 6px;font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--dim)}}
-.fdates{{font-size:11px;font-weight:700;color:var(--accent);margin-bottom:4px}}
-.opt{{margin-bottom:3px;font-size:13px}}.opt .t{{font-variant-numeric:tabular-nums;color:var(--ink)}}
-.vsub{{color:var(--dim);font-size:12px}}
-.flink{{color:var(--accent);text-decoration:none;font-weight:600;font-size:12.5px}}
-.flink:hover{{text-decoration:underline}}
-.srcs{{margin-top:10px;padding-top:8px;border-top:1px dashed var(--line);font-size:11.5px}}
-.src{{color:var(--accent);text-decoration:none;font-weight:600}}.src:hover{{text-decoration:underline}}
-.src.dim{{color:var(--dim);font-weight:400}}
-.dim{{color:var(--dim)}}
-footer{{color:var(--dim);font-size:12px;text-align:center;margin-top:6px;line-height:1.7}}
-footer a{{color:var(--accent);text-decoration:none}}
-@media(max-width:560px){{.fcol{{min-width:100%}} .wxsvg{{max-width:100%}}}}
-</style></head><body><div class="wrap">
-<header>
-<h1>🧗 Climbing Trip Planner — where should Michel &amp; Dan go?</h1>
-<p class="lead">Multi-pitch trip <b>Fri 24 – Tue 28 Jul 2026</b> · ranked best-first · updated {now:%a %d %b %Y, %H:%M UTC}</p>
-<div class="links"><a href="{SITE_URL}" target="_blank" rel="noopener">🧗 multi-pitch.com</a> ·
-<a href="{SHEET_URL}" target="_blank" rel="noopener">📋 venue spreadsheet</a> ·
-<span class="dim">🗺️ tap a venue name for Maps</span></div>
-</header>
-<div class="banner {banner[0]}">{banner[1]}</div>
-{cards}
-<footer>Score 0–100 (higher = drier). Weather = typical late-July, avg {CLIMO_YEARS[0]}–{CLIMO_YEARS[-1]} (live forecast within 16 days). Flights = top {TOP_N_FLIGHTS} venues, best value, outbound times (book ↗ for return/dates). Dan local in NI.<br>
-Weather: Open-Meteo (free). Flights: Google Flights via SerpApi, updated daily.<br>
-<a href="{SITE_URL}" target="_blank" rel="noopener">multi-pitch.com</a> ·
-<a href="{SHEET_URL}" target="_blank" rel="noopener">venue spreadsheet</a> ·
-<a href="{REPO_URL}" target="_blank" rel="noopener">source &amp; daily history</a></footer>
-</div></body></html>
-"""
+    """Dark 3-panel 'Live Hub' dashboard: left = venues ranked, centre = area detail
+    (hero + weather + multi-pitch.com climbs), right = flights (live) + stays (sample).
+    All per-venue data is embedded as JSON and rendered client-side so one static
+    file (GitHub Pages) supports switching between areas."""
+    payload = [venue_payload(n, r) for n, r in enumerate(ranked, 1)]
+    trip = {
+        "pills": ["✈ Michel · London", "✈ Dan · Belfast / Dublin",
+                  f"📅 {REP_OUT_LBL} – {REP_BACK_LBL}",
+                  f"🧗 {len(payload)} areas ranked"],
+        "dates": f"{REP_OUT_LBL} → {REP_BACK_LBL}",
+        "mapUrl": MP_MAP_URL, "sheetUrl": SHEET_URL, "mpUrl": SITE_URL,
+        "updated": now.strftime("%a %d %b %Y, %H:%M UTC"),
+    }
+    data = {"venues": payload, "trip": trip,
+            "banner": {"cls": (banner[0] or "info"), "html": banner[1]}}
+    blob = json.dumps(data, ensure_ascii=False).replace("</", "<\\/")
+    return (PAGE_HEAD
+            + "\n<script>window.DATA=" + blob + ";</script>\n"
+            + PAGE_BODY
+            + "<script>" + PAGE_JS + "</script>\n</body></html>\n")
 
 
 def build_md(ranked, now, banner):
