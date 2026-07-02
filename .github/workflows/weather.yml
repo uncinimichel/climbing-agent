@@ -13,10 +13,11 @@ on:
 # No workflow-wide permissions: each job requests only what it needs (below).
 permissions: {}
 
-# Avoid overlapping deploys
+# Serialize deploys: queue instead of cancel — cancelling mid-deploy left runs
+# failing whenever two pushes landed close together (bot + human sessions).
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   build:
@@ -37,6 +38,11 @@ jobs:
           SERPAPI_KEY: ${{ secrets.SERPAPI_KEY }}
         run: python3 trip-ni-july-2026/scripts/update_report.py
 
+      - name: Log SerpApi quota (account.json — consumes no search)
+        env:
+          SERPAPI_KEY: ${{ secrets.SERPAPI_KEY }}
+        run: python3 trip-ni-july-2026/scripts/serpapi_quota.py
+
       - name: Build knowledge base (Markdown → HTML for GitHub Pages)
         run: python3 trip-ni-july-2026/scripts/build_knowledge.py
 
@@ -46,6 +52,7 @@ jobs:
           git config user.email "actions@github.com"
           git add index.html .nojekyll trip-ni-july-2026/daily-report.md \
                   trip-ni-july-2026/history/ trip-ni-july-2026/flights-latest.json \
+                  trip-ni-july-2026/serpapi-usage.json \
                   knowledge/
           if git diff --staged --quiet; then
             echo "No changes."

@@ -14,7 +14,7 @@
       "lon": -6.156,
       "rock": "dolerite",
       "style": "long single & multi-pitch trad",
-      "why": "Dan lives in Belfast — cheapest logistics; world-class venue.",
+      "why": "The biggest expanse of climbable rock in Ireland — a sweep of towering dolerite columns above the sea, stacked with steep, juggy crack lines from VS upward. Dan lives down the road, so logistics are trivial: no hire car, no faff, just racks and the Causeway coast. Catches sea fog, but a breeze dries it fast.",
       "hub": "Belfast (BFS/BHD), ~1h flight from London",
       "travel": {
         "michel": {
@@ -34,7 +34,7 @@
       "lon": -6.0,
       "rock": "granite",
       "style": "moderate multi-pitch trad",
-      "why": "In climbing-trips.csv: Moderate, ~150m, Full Range, <4h, 2-day min. Local to Dan.",
+      "why": "Compact granite domes and tors an hour from Belfast — friction slabs, clean cracks and long mountain days with the sea in view from every summit. Local to Dan, moderate grades, and a solid choice when the forecast only gives a short two-day window.",
       "hub": "Belfast (BFS/BHD)",
       "travel": {
         "michel": {
@@ -54,7 +54,7 @@
       "lon": 12.137,
       "rock": "limestone",
       "style": "vast Full-Range multi-pitch",
-      "why": "Confirmed backup if NI is wet. Peak season late July; routes already scoped in dolomites-trip.csv.",
+      "why": "The confirmed backup if Ireland is wet: vast limestone faces around Cortina with multi-pitch routes of every length and grade, and rifugi that put you at the base of the climbs. Late July is peak season — warm rock and settled mornings, with the classic afternoon-thunderstorm rhythm to plan around. Routes already scoped in dolomites-trip.csv.",
       "hub": "Venice/Treviso/Innsbruck + drive",
       "travel": {
         "michel": {
@@ -75,7 +75,7 @@
       "lon": 12.769,
       "rock": "limestone/dolomite",
       "style": "large, medium-to-hard multi-pitch",
-      "why": "Second alpine alternative with a similar settled summer window.",
+      "why": "The quieter alpine alternative — Dolomite-style limestone above the Drau valley without Cortina's crowds, and the same settled high-summer window. Big medium-to-hard multi-pitch with easy valley logistics from Lienz.",
       "hub": "Innsbruck / Salzburg + drive",
       "travel": {
         "michel": {
@@ -96,7 +96,7 @@
       "lon": -3.128,
       "rock": "volcanic rock",
       "style": "large, Full-Range multi-pitch",
-      "why": "Cheap UK backup, drivable for Michel; good when a dry spell hits Cumbria. In climbing-trips.csv.",
+      "why": "Borrowdale packs classic mountain routes at every grade within minutes of the road — perfect for pouncing on a dry spell. Drivable for Michel, cheap, sociable, and Keswick's drying rooms are legendary for a reason. In climbing-trips.csv.",
       "hub": "Kendal (drive/train from London; fly Belfast→Manchester)",
       "travel": {
         "michel": {
@@ -116,7 +116,7 @@
       "lon": -4.043,
       "rock": "rhyolite/dolerite",
       "style": "vast, Full-Range multi-pitch",
-      "why": "Classic UK mountain trad (Dinas Cromlech etc.); drivable, cheap. In climbing-trips.csv as Llanberis.",
+      "why": "The home of classic UK mountain trad: Dinas Cromlech's open-book corners, Cloggy's big serious faces, Tryfan's endless ridges. Drivable and cheap — but rhyolite is slow to dry, so it needs a genuine dry spell to shine. In climbing-trips.csv as Llanberis.",
       "hub": "drive/train from London; fly Belfast→Manchester/Liverpool",
       "travel": {
         "michel": {
@@ -136,7 +136,7 @@
       "lon": -5.2,
       "rock": "granite",
       "style": "mountain multi-pitch (Cìr Mhòr)",
-      "why": "Granite ridges/slabs; reachable via Glasgow + ferry. In climbing-trips.csv as Aaran.",
+      "why": "Coarse-grained granite ridges and slabs rising straight from the sea — Cir Mhor's clean walls are the prize, and the Glasgow-ferry approach makes it feel like an expedition. Bring midge protection and a sense of humour about bog. In climbing-trips.csv as Aaran.",
       "hub": "Glasgow + ferry",
       "travel": {
         "michel": {
@@ -157,7 +157,7 @@
       "lon": -4.821,
       "rock": "limestone",
       "style": "moderate-to-hard alpine multi-pitch (Naranjo de Bulnes)",
-      "why": "Cooler N. Spain alpine rock — better than baking S. Spain in late July. In climbing-trips.csv.",
+      "why": "Alpine limestone in green northern Spain — the huge orange faces of the Naranjo de Bulnes are the objective, with a mountain hut right below the wall. Far cooler than southern Spain in late July, though Atlantic mists can roll in without notice. In climbing-trips.csv.",
       "hub": "Bilbao/Santander + drive",
       "travel": {
         "michel": {
@@ -178,7 +178,7 @@
       "lon": 15.46,
       "rock": "limestone",
       "style": "big-wall multi-pitch up to 350m + sport",
-      "why": "In the Velebit mountains, not too hot in July IF you pick shade — most crags face E/W and Anica Kuk faces NORTH (stays shaded); sea nearby to cool off. Season Apr–Oct. Sources: climbgrades.com/seasons/croatia, mojagear.com Paklenica guide.",
+      "why": "Velebit's big limestone canyon above the Adriatic: routes to 350m on Anica Kuk, bolted belays, and a swim across the road afterwards. Workable in July if you chase shade — the great NORTH face of Anica Kuk stays out of the sun and most crags face E/W. Season Apr–Oct (sources: climbgrades.com, mojagear.com).",
       "hub": "Zadar (ZAD) + ~40 min drive to Starigrad",
       "travel": {
         "michel": {
@@ -188,6 +188,88 @@
         "dan": {
           "mode": "fly",
           "to": "ZAD"
+        }
+      }
+    },
+    {
+      "name": "Donegal (Sail Rock)",
+      "country": "Ireland",
+      "priority": "3 (NI-adjacent)",
+      "lat": 54.626,
+      "lon": -8.685,
+      "rock": "quartzite",
+      "style": "sea cliffs & sea stacks (Cnoc na Mara)",
+      "why": "Ireland's wild west: Sail Rock's perfect corner lines and the Cnoc na Mara sea-stack are as adventurous as trad gets, three hours' drive from Belfast. Remote, free and swell-dependent — a calm, dry window here beats almost anywhere.",
+      "hub": "drive from Belfast (~3h); Michel flies to Belfast",
+      "travel": {
+        "michel": {
+          "mode": "fly",
+          "to": "BFS"
+        },
+        "dan": {
+          "mode": "local"
+        }
+      }
+    },
+    {
+      "name": "West Cornwall (Bosigran)",
+      "country": "England",
+      "priority": "5 (UK alt)",
+      "lat": 50.176,
+      "lon": -5.62,
+      "rock": "granite",
+      "style": "immaculate sea-cliff trad (Bosigran, Chair Ladder)",
+      "why": "Golden granite above the Atlantic — Commando Ridge, Doorpost and Chair Ladder's tiered walls are England's finest sea-cliff trad. It is the warmest, driest corner of the UK in late July, and the rock dries in minutes in a breeze.",
+      "hub": "drive from London (~5h); fly Belfast→Newquay",
+      "travel": {
+        "michel": {
+          "mode": "drive"
+        },
+        "dan": {
+          "mode": "fly",
+          "to": "NQY"
+        }
+      }
+    },
+    {
+      "name": "Écrins (Aiguille Dibona)",
+      "country": "France",
+      "priority": "3 (alpine alt)",
+      "lat": 44.961,
+      "lon": 6.244,
+      "rock": "granite",
+      "style": "alpine rock spire, hut-based multi-pitch",
+      "why": "The Dibona is the prettiest rock spire in the Alps — a clean granite blade with classic routes on every face and a comfortable hut an hour below. High-pressure late-July weather is the norm, and climbing at 3,000m keeps the heat civilised.",
+      "hub": "fly Lyon/Grenoble + drive to Bérarde",
+      "travel": {
+        "michel": {
+          "mode": "fly",
+          "to": "LYS"
+        },
+        "dan": {
+          "mode": "fly",
+          "to": "LYS"
+        }
+      }
+    },
+    {
+      "name": "Stetind (Norway)",
+      "country": "Norway",
+      "priority": "6 (wildcard)",
+      "lat": 68.162,
+      "lon": 16.591,
+      "rock": "granite",
+      "style": "arctic granite big-ridge (Sydpillaren)",
+      "why": "Norway's national mountain: a 1,392m granite obelisk rising straight out of the fjord, with the classic Sydpillaren pillar as the prize. Late July means midnight sun — 24 hours of daylight and no bivvy stress — so weather is the only gatekeeper.",
+      "hub": "fly via Oslo to Evenes (Narvik) + drive",
+      "travel": {
+        "michel": {
+          "mode": "fly",
+          "to": "EVE"
+        },
+        "dan": {
+          "mode": "fly",
+          "to": "EVE"
         }
       }
     }
