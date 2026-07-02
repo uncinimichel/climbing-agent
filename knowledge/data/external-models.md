@@ -50,6 +50,8 @@ Its GraphQL model is the cleanest blueprint available:
   extensible without new columns — style, terrain features, conditions, hazards, ethics.
 - **Ascent-type vocabulary** (for how a climb was done): `onsight`, `flash`, `redpoint`,
   `pinkpoint`, `lead`, `second`, `toprope`, `solo`, `aid`, `firstascent`, `firstfreeascent`…
+  — **defined** in [`taxonomy.md` § Ascent style](taxonomy.md) (e.g. *onsight* = first try,
+  clean, no prior beta).
 - **Quality score**: a 1–100 route-quality number displayed as **0–3 stars**, blending
   *publisher* stars with *ascent-quality* ratings.
 

@@ -1,0 +1,142 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Ingestion Plan · multi-pitch Live</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"><style>
+:root{--ink:#0C0D10;--ink2:#12141B;--ink3:#191C27;--ink4:#20243A;--seam:#252840;
+--chalk:#EAE6DD;--chalk2:#9B9890;--chalk3:#5A5860;--go:#6CB268;--amb:#C8A44A;
+--wet:#B94438;--spike:#C4FF5C;--r:6px;--r-lg:12px}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--ink);color:var(--chalk)}
+body{font-family:'Inter',system-ui,sans-serif;font-size:15px;line-height:1.65;
+-webkit-font-smoothing:antialiased}
+.top{position:sticky;top:0;z-index:10;height:48px;background:var(--ink2);
+border-bottom:1px solid var(--seam);display:flex;align-items:center;gap:12px;padding:0 18px}
+.logo{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--chalk);
+letter-spacing:-.2px;text-decoration:none}
+.top a.btn{margin-left:auto;font-size:12px;color:var(--chalk2);text-decoration:none;
+border:1px solid var(--seam);border-radius:var(--r);padding:5px 12px}
+.top a.btn:hover{color:var(--chalk);border-color:var(--chalk3)}
+.wrap{max-width:860px;margin:0 auto;padding:32px 22px 96px}
+.crumb{font-size:12px;color:var(--chalk3);margin-bottom:22px;font-family:'DM Mono',monospace}
+.crumb a{color:var(--chalk2);text-decoration:none}
+.crumb a:hover{color:var(--spike)}
+h1,h2,h3,h4{font-family:'Syne',sans-serif;letter-spacing:-.3px;line-height:1.25;
+scroll-margin-top:64px}
+h1{font-size:30px;font-weight:800;margin:.2em 0 .6em}
+h2{font-size:21px;font-weight:700;margin:1.8em 0 .5em;padding-top:.4em;
+border-top:1px solid var(--seam)}
+h3{font-size:16.5px;font-weight:700;margin:1.4em 0 .4em;color:var(--chalk)}
+h4{font-size:14px;font-weight:700;margin:1.2em 0 .3em;color:var(--chalk2)}
+p{margin:.7em 0}
+a{color:var(--amb);text-decoration:none;border-bottom:1px solid rgba(200,164,74,.28)}
+a:hover{color:var(--spike);border-bottom-color:var(--spike)}
+strong{color:#fff;font-weight:600}
+code{font-family:'DM Mono',ui-monospace,monospace;font-size:.86em;background:var(--ink3);
+border:1px solid var(--seam);border-radius:4px;padding:1px 5px;color:var(--amb)}
+pre{background:var(--ink2);border:1px solid var(--seam);border-radius:var(--r-lg);
+padding:16px 18px;overflow-x:auto;margin:1em 0}
+pre code{background:none;border:none;padding:0;color:var(--chalk2);font-size:12.5px;
+line-height:1.5;white-space:pre}
+blockquote{margin:1.1em 0;padding:.4em 16px;border-left:3px solid var(--amb);
+background:var(--amb-d,rgba(200,164,74,.07));border-radius:0 var(--r) var(--r) 0;
+color:var(--chalk2)}
+blockquote p{margin:.4em 0}
+hr{border:none;border-top:1px solid var(--seam);margin:2em 0}
+ul,ol{margin:.6em 0;padding-left:1.4em}
+li{margin:.28em 0}
+li>ul,li>ol{margin:.25em 0}
+.tw{overflow-x:auto;margin:1.1em 0;border:1px solid var(--seam);border-radius:var(--r-lg)}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--seam);
+vertical-align:top}
+th{background:var(--ink3);font-family:'Syne',sans-serif;font-weight:700;font-size:12px;
+color:var(--chalk);white-space:nowrap}
+tr:last-child td{border-bottom:none}
+td code{white-space:nowrap}
+.idx-group{margin:1.4em 0}
+.idx-group h3{border-bottom:1px solid var(--seam);padding-bottom:.3em}
+.idx-card{display:block;padding:12px 14px;margin:8px 0;background:var(--ink2);
+border:1px solid var(--seam);border-radius:var(--r-lg);color:var(--chalk);
+border-bottom:1px solid var(--seam)}
+.idx-card:hover{border-color:var(--chalk3);color:var(--chalk)}
+.idx-card b{font-family:'Syne',sans-serif}
+.idx-card span{display:block;color:var(--chalk2);font-size:13px;margin-top:2px}
+@media(max-width:600px){.wrap{padding:22px 15px 80px}h1{font-size:24px}body{font-size:14px}}
+</style></head><body><div class=top><a class=logo href="../../index.html">🧗 multi-pitch <span style="color:var(--spike)">Live</span></a><a class=btn href="../../knowledge/index.html">📚 Knowledge</a><a class=btn href="../../index.html">▶ Dashboard</a></div><div class=wrap><div class=crumb><a href="../index.html">📚 knowledge</a> / roadmap / <b style='color:var(--chalk2)'>ingestion-plan</b></div><h1 id="ingestion-plan-the-free-staged-build-of-phase-1-3">Ingestion Plan — the free, staged build of Phase 1 → 3</h1>
+<blockquote><p><strong>Purpose:</strong> the concrete "how do we actually start scraping every climb ever written down" plan. Turns the <a href="../vision/mission.html"><code>mission</code></a>'s Phase 1 (Scraper) → Phase 2 (AI Taxonomy) → Phase 3 (Curation) from vision into a buildable, <strong>free-tier</strong>, staged pipeline — starting from a short, named list of sources. <strong>Status:</strong> 🔜 <strong>Planned</strong> — nothing here is built yet. This is the blueprint the first slice implements. Live ingestion today is the three structured pulls in <a href="../phases/phase-1-scraper.html"><code>phase-1-scraper.md</code></a>.</p></blockquote>
+<h2 id="decisions-locked-from-the-scoping-session">Decisions locked (from the scoping session)</h2>
+<div class="tw"><table><thead><tr><th>Question</th><th>Decision</th><th>Consequence</th></tr></thead><tbody><tr><td><strong>Scope</strong></td><td>Multi-pitch, worldwide</td><td>Bounded corpus (~30–150k routes, <em>not</em> millions) — keeps repo-as-DB viable.</td></tr><tr><td><strong>Sourcing</strong></td><td>Aggressive, <em>but license-aware</em></td><td>Max effort on clean/durable sources; social = aggregated signal, never raw PII.</td></tr><tr><td><strong>Storage</strong></td><td>Repo-as-database (JSON)</td><td>Two-tier store (below) so a social firehose never enters git.</td></tr><tr><td><strong>Budget</strong></td><td>Free / near-free to start</td><td>DIY scraping; LLM-tag a curated subset; defer paid infra (semantic search, scraping APIs).</td></tr></tbody></table></div>
+<p>These extend <a href="decisions.html"><code>decisions.md</code></a> #1–#13; the ingestion-specific call is logged as <strong>#14</strong>. The honest tension — <em>aggressive + social + repo-as-DB + free</em> pull against each other — is resolved by the <strong>bounded scope</strong> and the <strong>two-tier store</strong>.</p>
+<h2 id="the-two-tier-store-how-aggressive-free-repo-as-db-coexist">The two-tier store (how "aggressive + free + repo-as-DB" coexist)</h2>
+<p>The rule: **the repo is the database for the <em>product</em>; the firehose lives outside it.**</p>
+<div class="tw"><table><thead><tr><th>Tier</th><th>Contents</th><th>Where</th><th>Committed?</th></tr></thead><tbody><tr><td><strong>Durable</strong></td><td>Curated master index + fully-tagged route records + <strong>aggregated, non-personal</strong> condition/buzz summaries</td><td>git — sharded JSON by country, or one committed <strong>SQLite</strong> (R-tree geo index)</td><td>✅ yes</td></tr><tr><td><strong>Ephemeral</strong></td><td>Raw HTML/API captures + the raw social stream</td><td>GitHub Actions cache/artifacts (gitignored local cache)</td><td>❌ never</td></tr></tbody></table></div>
+<p>Phase 2 distils Tier-2 → Tier-1: raw social posts become <em>"Fair Head — reported dry, 3 mentions, last 48 h"</em>, and <strong>only that summary is committed</strong>. Recommendation: move the durable corpus to a <strong>committed SQLite file</strong> once it passes a few thousand routes (still versioned, queryable, R-tree geo, no server, offline) — a smaller step than it sounds, and loss-lessly exportable back to JSON.</p>
+<h2 id="source-registry-sources-json-config-as-truth">Source registry — <code>sources.json</code> (config-as-truth)</h2>
+<p>Every source is a config row, never hard-coded (mirrors <a href="../../trip-ni-july-2026/venues.json"><code>venues.json</code></a>):</p>
+<pre><code>{
+  &quot;id&quot;: &quot;openbeta&quot;,
+  &quot;name&quot;: &quot;OpenBeta&quot;,
+  &quot;type&quot;: &quot;route-db&quot;,
+  &quot;method&quot;: &quot;graphql&quot;,
+  &quot;license&quot;: &quot;CC (open)&quot;,
+  &quot;tos&quot;: &quot;ingestion-encouraged&quot;,
+  &quot;regions&quot;: [&quot;*&quot;],
+  &quot;cadence&quot;: &quot;monthly&quot;,
+  &quot;teaches&quot;: &quot;hierarchical areas, cascading gradeContext, all-systems grades, composable disciplines, structured pitches&quot;
+}</code></pre>
+<p>An LLM <strong>discovery agent</strong> (the [<code>deep-research</code>] pattern) proposes new rows per region; Michel approves; the crawl frontier grows mechanically from each area→crag→route tree.</p>
+<h3 id="starter-set-the-four-route-databases">Starter set — the four route databases</h3>
+<p>Named, in priority order. Each is a <em>blueprint</em> as much as a data source — the schema lessons feed <a href="../data/route-schema.html"><code>route-schema.md</code></a> and <a href="../data/external-models.html"><code>external-models.md</code></a>.</p>
+<div class="tw"><table><thead><tr><th>Source</th><th>Method / licence</th><th>What it teaches / gives us</th></tr></thead><tbody><tr><td><strong>OpenBeta</strong></td><td><strong>GraphQL API · CC-licensed</strong> — <em>built to be ingested</em></td><td>The cleanest blueprint: hierarchical areas, cascading <code>gradeContext</code>, all-systems grade object, composable disciplines, structured pitches. <strong>First source — no ToS risk.</strong></td></tr><tr><td><strong>theCrag</strong> (~1M routes)</td><td>API if granted, else polite public scrape · ToS-restricted</td><td>Grade context at <em>any</em> level + structured tag-sets that cascade down area→crag→route; a 0–100 quality score → <strong>0–3 stars</strong> (adopt for editorial <code>stars</code>).</td></tr><tr><td><strong>UKClimbing</strong> (~150k)</td><td>Polite public scrape · ToS-restricted</td><td>Faceted crag search by <strong>rocktype / aspect / type</strong>; first-class <strong>access notes</strong> (feeds an access/stewardship layer).</td></tr><tr><td><strong>Mountain Project</strong></td><td>Polite public scrape · ToS-restricted (API deprecated)</td><td>Multi-discipline route type; <strong>grade-system auto-detection from leading chars</strong> (<code>5.</code>→YDS, <code>V</code>→V-scale, <code>WI</code>→ice, <code>M</code>→mixed…) — adopt as a cheap deterministic pre-classifier.</td></tr></tbody></table></div>
+<blockquote><p><strong>Sequencing:</strong> OpenBeta is the <em>only</em> clean-licence route DB, so it's the <strong>first slice</strong> end-to-end. theCrag/UKC/MP are grey-area public-page scraping — rate-limited, cached, <code>robots</code>-respecting, no login-walled data — added once the clean pipeline works.</p></blockquote>
+<h3 id="social-sources-signal-not-a-route-db">Social sources (signal, not a route DB)</h3>
+<p>Prefer <strong>official APIs</strong> (durable) over scraping (cat-and-mouse); always aggregate.</p>
+<div class="tw"><table><thead><tr><th>Platform</th><th>Access</th><th>Primary job</th></tr></thead><tbody><tr><td>Reddit (r/climbing, r/tradclimbing…)</td><td>Official API</td><td>Discovery + conditions</td></tr><tr><td>YouTube (descriptions/titles)</td><td>Data API</td><td>Discovery (route beta, topos)</td></tr><tr><td>Instagram / TikTok (geotag + hashtag)</td><td>Scrape (ToS-restricted)</td><td>Conditions + discovery</td></tr><tr><td>Facebook regional climbing groups</td><td>Scrape (ToS-restricted)</td><td>Live conditions</td></tr><tr><td>X · UKC forums · Strava segments</td><td>Scrape / API</td><td>Conditions + access chatter</td></tr></tbody></table></div>
+<h2 id="social-has-three-jobs">Social has three jobs</h2>
+<p>The user's ask, made concrete:</p>
+<ol><li><strong>Discovery</strong> — surface routes/crags <em>not yet in the master index</em> (a mention of an</li></ol>
+<p>   unknown line → a <code>status: draft</code> candidate for curation, never auto-surfaced).</p>
+<ol><li><strong>Enrichment</strong> — attach <em>new tags/info to existing routes</em>: a post saying "seeping badly</li></ol>
+<p>   after the storm" or "the second pitch is polished now" → proposed flag updates    (<code>seepage</code>, <code>polished</code>) with provenance + confidence, pending verification.</p>
+<ol><li><strong>"What people are saying"</strong> — a planner UI section per venue: a distilled <strong>buzz card</strong></li></ol>
+<p>   — recent-mention count, a one-line condition read (<em>"reported dry · 3 mentions · 48 h"</em>),    a couple of <strong>paraphrased, non-personal</strong> beta snippets, and links out. Labelled as    <strong>low-confidence social signal</strong>, clearly separate from the deterministic weather score.</p>
+<p><strong>Data handling (non-negotiable, per <a href="../CONVENTIONS.html"><code>CONVENTIONS.md</code></a> + GDPR):</strong> extract <em>place + condition + timestamp</em>, <strong>aggregate, discard the person, store no raw PII</strong>. The product needs condition truth, not surveillance — and the aggregated form is all that ever touches the public repo.</p>
+<h2 id="triggering-a-github-actions-matrix-event-driven-where-it-counts">Triggering — a GitHub Actions matrix, event-driven where it counts</h2>
+<p>Extends the existing serverless model (<a href="../architecture/overview.html"><code>overview.md</code></a>); no new infra.</p>
+<div class="tw"><table><thead><tr><th>Track</th><th>Trigger</th><th>Cadence</th><th>Why</th></tr></thead><tbody><tr><td>OpenBeta / route DBs</td><td><code>schedule</code> + <code>workflow_dispatch</code></td><td>monthly / on-demand</td><td>Route facts change rarely; full-corpus refresh is expensive.</td></tr><tr><td>Grey-area page scrape</td><td><code>workflow_dispatch</code> backfill</td><td>on-demand</td><td>Politeness + quota; run in bounded batches.</td></tr><tr><td><strong>Social conditions</strong></td><td><strong><code>repository_dispatch</code></strong> fired when a trip/venue is <em>watched</em></td><td>daily <em>during an active trip window only</em></td><td>Ties Phase 1 → Phase 4: scrape "is it dry now" <strong>only for sectors someone cares about this week</strong>. This one rule keeps volume, cost, and repo size sane.</td></tr></tbody></table></div>
+<h2 id="ai-tagging-pipeline-phase-2-hybrid-validated-provenanced">AI tagging pipeline (Phase 2) — hybrid, validated, provenanced</h2>
+<p>Contract (from <a href="../data/route-schema.html"><code>route-schema.md</code></a>): <strong>free text in → validated route record out</strong>, with confidence + source span, <code>status: draft</code> until human-verified.</p>
+<ul><li><strong>Mechanical</strong> for fields that copy cleanly across sources: <code>originalGrade</code> (+ <code>gradeSys</code></li></ul>
+<p>  via MP's leading-char detector), <code>length</code>, <code>pitches</code>, <code>geoLocation</code>, stated <code>face</code>/<code>rock</code>.</p>
+<ul><li><strong>LLM (Claude, structured-output / tool-forced JSON matching the enums)</strong> for the fields</li></ul>
+<p>  that must be <em>inferred from prose</em>: protection <code>G/PG/PG-13/R/X</code>, hazard flags   (<code>seepage</code>/<code>loose</code>/<code>tidal</code>), <code>incline</code>, and the generated description prose.</p>
+<ul><li><strong>Validate-and-repair:</strong> every LLM value is checked against the closed enums in</li></ul>
+<p>  <a href="../data/taxonomy.html"><code>taxonomy.md</code></a>; off-dictionary → repair or quarantine, never surface.</p>
+<ul><li><strong>Model choice / structured outputs:</strong> see the [<code>/claude-api</code>] reference. Cost control</li></ul>
+<p>  under the free budget: LLM-tag only the <strong>curated subset</strong> (routes that map to a verified   sector), not the whole scraped frontier.</p>
+<p><strong>Are the current tags good enough?</strong> Yes — <code>taxonomy.md</code> + <code>route-schema.md</code> are the target as-is. The only additions (already noted in <a href="../data/external-models.html"><code>external-models.md</code></a>) are editorial <code>stars</code> (from theCrag's 0–100), structured first-ascent, <code>boltsCount</code>, and OpenBeta's hierarchical-area model. Refine, don't rebuild.</p>
+<h2 id="curation-dedup-phase-3-one-canonical-record-from-many-sources">Curation &amp; dedup (Phase 3) — one canonical record from many sources</h2>
+<ul><li><strong>Entity resolution:</strong> the same route appears in OpenBeta <em>and</em> UKC <em>and</em> MP <em>and</em> social.</li></ul>
+<p>  Match by <strong>geo proximity + normalised name</strong> into <strong>one canonical record</strong> carrying a   <code>provenance[]</code> array (source, url, span, confidence per field).</p>
+<ul><li><strong>Allow-list, default-deny:</strong> a scraped/tagged route surfaces <em>only</em> if it maps to a</li></ul>
+<p>  verified master-index sector; <strong>unmatched → quarantined</strong> <code>status: draft</code> (Zero-Garbage UGC).</p>
+<ul><li><strong>Editorial <code>stars</code></strong> seed from theCrag's quality score, then human taste overrides.</li></ul>
+<h2 id="retrieval">Retrieval</h2>
+<p>Repo-as-DB → <strong>SQLite R-tree</strong> for geo (the planner already does haversine matching), plus normalised-name lookup for dedup/merge. Semantic search ("what are people saying about X") needs an embeddings index — <strong>deferred</strong> (budget-gated); until then, buzz is keyword/geo-matched.</p>
+<h2 id="the-first-shippable-slice-a-vertical-not-a-layer">The first shippable slice (a vertical, not a layer)</h2>
+<p>Build one thin end-to-end path before widening — proves Phase 1+2+3 together:</p>
+<div class="tw"><table><thead><tr><th>Milestone</th><th>Deliverable</th></tr></thead><tbody><tr><td><strong>M0</strong></td><td><code>sources.json</code> registry + the OpenBeta GraphQL client (clean-licence, keyless).</td></tr><tr><td><strong>M1</strong></td><td>Ingest OpenBeta for <strong>one region</strong> (propose: UK &amp; Ireland) → raw records in the Tier-2 cache.</td></tr><tr><td><strong>M2</strong></td><td>Normalise into the committed <strong>SQLite</strong> corpus against <a href="../data/route-schema.html"><code>route-schema.md</code></a>; mechanical fields only.</td></tr><tr><td><strong>M3</strong></td><td>LLM-tag the inferred fields for that region's routes; validate against the enums; <code>status: draft</code>.</td></tr><tr><td><strong>M4</strong></td><td>Auto-map onto the master index (geo+name); quarantine unmatched; surface matched routes in the planner.</td></tr></tbody></table></div>
+<p>Only after M0–M4 work do we add theCrag/UKC/MP scraping and the social tracks.</p>
+<h2 id="free-tier-constraints-what-s-deferred">Free-tier constraints &amp; what's deferred</h2>
+<ul><li><strong>Free now:</strong> OpenBeta API, GitHub Actions/cache, SQLite in-repo, LLM-tagging a bounded subset.</li><li><strong>Deferred until budget opens:</strong> managed Postgres/PostGIS, a semantic/vector index, a</li></ul>
+<p>  managed scraping API (Apify/Bright Data) for hard/social targets, bulk LLM tagging at   full-corpus scale.</p>
+<ul><li><strong>Guardrails:</strong> cap LLM calls per run; bounded scrape batches; log what was dropped rather</li></ul>
+<p>  than silently truncating (per <a href="../CONVENTIONS.html"><code>CONVENTIONS.md</code></a> quota discipline).</p>
+<h2 id="risks-to-keep-visible">⚠️ Risks to keep visible</h2>
+<ul><li><strong>ToS:</strong> theCrag/UKC/MP and all social platforms restrict scraping — expect blocks; prefer</li></ul>
+<p>  APIs; stay on public, non-login-walled pages; rate-limit and cache.</p>
+<ul><li><strong>GDPR (Michel is UK/EU):</strong> scraping identifiable people = processing personal data.</li></ul>
+<p>  Mitigation is the design itself — <strong>aggregate, non-personal, no raw PII in the repo.</strong></p>
+<h2 id="open-decisions-next-grilling-round">Open decisions (next grilling round)</h2>
+<ol><li><strong>Curation at scale</strong> — stays solo (Michel's taste), or opens to trusted contributors /</li></ol>
+<p>   AI-assisted pre-scoring that Michel approves?</p>
+<ol><li><strong>First region</strong> — UK &amp; Ireland (home turf, best social signal) vs a marquee alpine area?</li><li><strong>LLM tagging cost cap</strong> — a hard per-run call budget once we exceed free-tier comfort.</li></ol>
+<hr>
+<p><em>See also: <a href="../phases/phase-1-scraper.html"><code>phase-1-scraper.md</code></a> (capture), <a href="../phases/phase-2-ai-taxonomy.html"><code>phase-2-ai-taxonomy.md</code></a> (tagging), <a href="../phases/phase-3-curation.html"><code>phase-3-curation.md</code></a> (the moat), <a href="../data/external-models.html"><code>external-models.md</code></a> (source schema analysis).</em></p></div></body></html>

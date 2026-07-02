@@ -42,3 +42,9 @@ sync when new concepts appear in the code or docs.
 | **Hazard / character flags** | Boolean route tags: `tidal`, `seepage`, `abseil`, `traverse`, `boat`, `polished`, `loose`, `grassLedges`. |
 | **`incline`** | Route steepness: `Slab` → `Vertical` → `Overhanging`. |
 | **BAS** | British Adjectival System — a two-part grade: adjectival (`VS`, seriousness) + technical (`5a`, hardest move). |
+| **Ascent style** | *How* a route was climbed (an ascent event, not a rock attribute) — see `data/taxonomy.md`. |
+| **Onsight** | Lead first try, clean (no falls/rests), with **no prior beta** and never having seen it climbed — the purest style. |
+| **Flash** | Lead first try, clean, but **with prior beta** (told the moves / watched someone). |
+| **Redpoint** | Lead clean **after rehearsing** the route over previous attempts. |
+| **Beta** | Prior information about a route's moves/sequence. Having it is what separates a flash from an onsight. |
+| **FA / FFA** | First Ascent (first to climb a line) / First Free Ascent (first to climb it free, no aid). |

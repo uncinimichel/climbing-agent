@@ -91,6 +91,7 @@ border-bottom:1px solid var(--seam)}
 <h2 id="stage-4-the-taxonomy-engine-build-phase-2a">Stage 4 — The Taxonomy Engine (build Phase 2a)</h2>
 <ul><li>NLP/LLM parsing of guidebook prose → the strict data dictionary</li></ul>
 <p>  (<a href="../data/taxonomy.html"><code>data/taxonomy.md</code></a>), validated against enums, with provenance +   confidence. Prefer Claude models (see <code>/claude-api</code>).</p>
+<blockquote><p><strong>Concrete build plan:</strong> the free, staged, source-by-source approach to Stages 3–5 (what to scrape, how to trigger it, where to store it, how to tag and curate it) is specified in <a href="ingestion-plan.html"><code>ingestion-plan.md</code></a>.</p></blockquote>
 <h2 id="stage-5-full-scale-ingestion-build-phase-1">Stage 5 — Full-scale ingestion (build Phase 1)</h2>
 <ul><li><strong>OpenBeta as a first-class, license-clean source.</strong> OpenBeta is CC-licensed open climbing</li></ul>
 <p>  data with a public GraphQL API — <em>meant</em> to be ingested, unlike ToS-restricted UKC/MP   scraping. Ingest it into the master index by geo + name match. See   <a href="../data/external-models.html"><code>../data/external-models.md</code></a>.</p>

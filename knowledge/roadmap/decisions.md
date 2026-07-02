@@ -113,6 +113,24 @@ schema-v2 work**, not yet applied to the live single-trip model; enum extensions
 safety) are documented now in [`../data/taxonomy.md`](../data/taxonomy.md).
 **Status:** ⚠️ Documented + enums extended; structural adoption planned.
 
+### #14 — Ingestion plan: free, staged, four named sources + a two-tier store (2026-07-02)
+**Decision:** build Phase 1→3 as a **free-tier, staged vertical** starting from a short named
+source list — **OpenBeta** (clean CC/GraphQL, first), then **theCrag / UKClimbing / Mountain
+Project** (grey-area public scraping), plus **social as aggregated signal**. Scope is
+**multi-pitch worldwide**; storage stays **repo-as-database** via a **two-tier store** (durable
+tagged corpus in git/SQLite; raw + social firehose in an ephemeral, gitignored cache — only
+*aggregated, non-personal* summaries are committed). Full plan:
+[`ingestion-plan.md`](ingestion-plan.md).
+**Why:** the bounded scope (multi-pitch ≈ 30–150k routes, not millions) plus the two-tier
+store is what lets *aggressive + social + repo-as-DB + free* coexist without a paid database.
+OpenBeta first because it's the only ToS-clean route DB. Social does three jobs — discovery,
+enrichment of existing routes, and a low-confidence *"what people are saying"* planner card —
+always aggregated, no PII in the public repo (GDPR).
+**Scope:** the first slice is one region end-to-end (OpenBeta → SQLite → LLM-tag → map onto the
+master index); grey-area + social tracks follow. Semantic search, managed DB, and paid scraping
+APIs are deferred until budget opens.
+**Status:** 🔜 Planned — nothing built yet; this is the blueprint the first slice implements.
+
 ---
 
 *Template for new entries:*

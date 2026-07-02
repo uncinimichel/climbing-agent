@@ -139,6 +139,33 @@ Boolean tags (`1` = present, absent/`null` = not). Safety-critical ones (`loose`
 | `approachTime` | int (min) | Walk-in time. |
 | `approachDifficulty` | 1–3 | 1 = easy walk · 2 = moderate · 3 = serious (scramble/swim/exposed). |
 
+## Ascent style (how a route was climbed)
+
+Distinct from the intrinsic-route enums above: this describes **an ascent event**, not the
+rock. We use it now to record the **style of a first ascent (`fa`/`ffa`)**, and it's the
+vocabulary a future ticks/logbook feature would need. Values follow theCrag/OpenBeta (see
+[`external-models.md`](external-models.md)). The distinctions turn on two axes: **prior
+knowledge** (did you know the moves?) and **prior practice** (did you rehearse it?).
+
+| Value | Meaning |
+|---|---|
+| `onsight` | Lead **first try, clean** (no falls/rests), with **no prior beta** and never having seen it climbed. The purest style. |
+| `flash` | Lead **first try, clean**, but **with prior beta** (told the sequence / watched someone). |
+| `redpoint` | Lead **clean after rehearsing** it over previous attempts (placing gear / clipping as you go). |
+| `pinkpoint` | A redpoint with gear/quickdraws **pre-placed**; older term, now usually folded into `redpoint`. |
+| `headpoint` | Trad: clean lead **after top-rope practice** — common for bold, hard-to-protect routes (E-grades). |
+| `groundup` | Attempted **from the ground up**, no top-rope rehearsal (may take several ground-up tries). |
+| `second` / `follow` | Climbed **after the leader**, protected by a rope from above. |
+| `toprope` (`tr`) | Climbed on a rope **anchored above** the climber. |
+| `solo` / `free-solo` | Climbed **with no rope** (free-solo = ropeless free climbing). |
+| `aid` | **Weighting gear** to make upward progress (not free climbing). |
+| `clean` | Modifier: **no falls and no resting on gear** — required for onsight/flash/redpoint. |
+| `dog` / `hangdog` | Modifier: **worked the route resting on gear** between moves (not a clean ascent). |
+
+**First-ascent terms:** `firstascent` (`FA`) = the first person to climb the line;
+`firstfreeascent` (`FFA`) = the first to climb it **free** (no aid), used when the line was
+originally aided. Store these with the ascent style, e.g. `fa: { climber, year, style: "groundup" }`.
+
 ## Record shape
 
 This file defines the **controlled vocabularies** (the enums above). The **full route

@@ -61,6 +61,10 @@ Turn the rain-proxy into the vision's **Predictive Condition Algorithm**:
   ([`data/taxonomy.md`](../data/taxonomy.md)), validated against enums, with provenance +
   confidence. Prefer Claude models (see `/claude-api`).
 
+> **Concrete build plan:** the free, staged, source-by-source approach to Stages 3–5 (what
+> to scrape, how to trigger it, where to store it, how to tag and curate it) is specified in
+> [`ingestion-plan.md`](ingestion-plan.md).
+
 ## Stage 5 — Full-scale ingestion (build Phase 1)
 
 - **OpenBeta as a first-class, license-clean source.** OpenBeta is CC-licensed open climbing
