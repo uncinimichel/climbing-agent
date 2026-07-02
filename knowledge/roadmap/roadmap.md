@@ -28,8 +28,10 @@ Enhancements to what already runs. None are required for daily operation. Priori
 7. **"Confidence"** — show climatology spread + seasonal ensemble agreement, not just means.
 8. **Email/Slack digest** — daily top pick + cheapest fares to a channel.
 9. **Bump GitHub Action versions** to Node24 to clear the deprecation warning.
-10. **Tests** — pytest for `day_score`, `climo_score`, seasonal aggregation, flight
-    ranking, and banner logic; run in CI before deploy.
+10. **Tests** — golden-master snapshot of the generated HTML/MD plus stdlib-`unittest`
+    coverage of `day_score`, `climo_score`, seasonal aggregation, flight ranking, and
+    banner logic; run in CI before deploy. Full plan:
+    [`operations/testing-plan.md`](../operations/testing-plan.md).
 
 ## Stage 1 — Real condition intelligence (deepen Phase 2)
 

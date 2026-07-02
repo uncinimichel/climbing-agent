@@ -17,17 +17,19 @@ guidebook prose into queryable structured data.
 
 | Value | Notes (drying / seepage behaviour) |
 |---|---|
-| `granite` | Dries fast; low seepage; good friction when cool. |
-| `limestone` | **Seeps for days**; overhangs stay wet; slick when humid. |
+| `granite` | Dries fast; low seepage; good friction when cool. Poorly-cemented grades shed grains ("ball-bearings"). |
+| `limestone` | **Seeps for days**; overhangs stay wet; slick when humid. Lower hand friction (~0.64) than sandstone. |
 | `dolerite` | Fair Head — grippy, dries reasonably; sea-cliff exposure. |
 | `rhyolite` | Welsh mountain rock; lichenous, slow to dry high up. |
-| `sandstone` | **Fragile when wet — do not climb wet** (holds break); slow to dry. |
+| `sandstone` | **Fragile when wet — do not climb wet** (holds break). Porosity >20%; water kills inter-grain friction and cracks propagate fast when humid. Highest dry friction (~0.74). |
 | `gabbro` | Extremely grippy (Skye); rough. |
 | `quartzite` | Hard, can be polished; variable drying. |
 | `volcanic` | Lake District; broken, mountain drainage. |
 | `dolomite` | Alpine; afternoon convection risk. |
 
 Extend deliberately — a new rock type is a curation decision, not a free-text field.
+Rock-friction/seepage figures are sourced in [`references.md`](references.md) (friction
+science; wet-sandstone hazard).
 
 ## Climbing style
 
@@ -45,7 +47,9 @@ Styles combine (e.g. `trad` + `multi-pitch` + `alpine`).
 
 ## Protection quality (safety grade)
 
-The US-derived R/X system — the single most important safety metadata to isolate.
+The single most important safety metadata to isolate. The `G/PG/PG-13/R/X` suffixes were
+introduced by **Jim Erickson in 1980**, borrowed from the US **movie-rating** system (see
+[`references.md`](references.md)).
 
 | Grade | Meaning |
 |---|---|
@@ -57,7 +61,9 @@ The US-derived R/X system — the single most important safety metadata to isola
 
 Parser guidance: map prose ("bold", "serious", "spaced gear", "committing", "no gear for
 10 m") to the grade **with a rationale and the source span**, then validate against this
-enum.
+enum. **Seed a prior from the grade itself** — for UK trad, the adjectival↔technical gap
+signals protection (well-protected single move vs. serious/sustained); see the "typical
+pairing" rule in [`grade-conversion.md`](grade-conversion.md).
 
 ## Difficulty (grade systems)
 

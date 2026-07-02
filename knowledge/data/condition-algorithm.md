@@ -85,6 +85,21 @@ Output the richer condition record in [`data/schemas.md`](schemas.md) (with
 `friction_window` and `seepage_risk`), and feed the Phase-4 contingency engine so "3 dry
 alternatives" means *actually dry*, not just *low forecast rain*.
 
+### Science basis (what the literature says)
+
+The model above is grounded, not guessed — full citations in
+[`references.md`](references.md):
+
+- **Friction is skin-limited, not rock-temperature-limited.** A rock's friction barely
+  changes with air temperature; what changes is *sweat*. Cool + dry + low humidity = good
+  friction. So model the **friction window** from temp/dew-point/humidity, not rain alone.
+- **Rock type sets grip and drying.** Sandstone (~0.74) grips better dry than limestone
+  (~0.64); limestone/overhangs seep for days; granite dries fast.
+- **Drying = f(sun, wind, humidity).** Sun and wind speed it; humidity prolongs it — and a
+  surface can read dry while the rock beneath is wet (so `antecedent_rain` matters).
+- **Wet sandstone is a hard no** — porous, weak when wet, holds break. A `sandstone` +
+  recent-rain combination should score *unclimbable*, not merely *poor*.
+
 ## When you change the scoring
 
 1. Keep climatology **deterministic** (reproducibility is a verification checkpoint).

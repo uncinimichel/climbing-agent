@@ -1,0 +1,111 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Testing Plan · multi-pitch Live</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"><style>
+:root{--ink:#0C0D10;--ink2:#12141B;--ink3:#191C27;--ink4:#20243A;--seam:#252840;
+--chalk:#EAE6DD;--chalk2:#9B9890;--chalk3:#5A5860;--go:#6CB268;--amb:#C8A44A;
+--wet:#B94438;--spike:#C4FF5C;--r:6px;--r-lg:12px}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--ink);color:var(--chalk)}
+body{font-family:'Inter',system-ui,sans-serif;font-size:15px;line-height:1.65;
+-webkit-font-smoothing:antialiased}
+.top{position:sticky;top:0;z-index:10;height:48px;background:var(--ink2);
+border-bottom:1px solid var(--seam);display:flex;align-items:center;gap:12px;padding:0 18px}
+.logo{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--chalk);
+letter-spacing:-.2px;text-decoration:none}
+.top a.btn{margin-left:auto;font-size:12px;color:var(--chalk2);text-decoration:none;
+border:1px solid var(--seam);border-radius:var(--r);padding:5px 12px}
+.top a.btn:hover{color:var(--chalk);border-color:var(--chalk3)}
+.wrap{max-width:860px;margin:0 auto;padding:32px 22px 96px}
+.crumb{font-size:12px;color:var(--chalk3);margin-bottom:22px;font-family:'DM Mono',monospace}
+.crumb a{color:var(--chalk2);text-decoration:none}
+.crumb a:hover{color:var(--spike)}
+h1,h2,h3,h4{font-family:'Syne',sans-serif;letter-spacing:-.3px;line-height:1.25;
+scroll-margin-top:64px}
+h1{font-size:30px;font-weight:800;margin:.2em 0 .6em}
+h2{font-size:21px;font-weight:700;margin:1.8em 0 .5em;padding-top:.4em;
+border-top:1px solid var(--seam)}
+h3{font-size:16.5px;font-weight:700;margin:1.4em 0 .4em;color:var(--chalk)}
+h4{font-size:14px;font-weight:700;margin:1.2em 0 .3em;color:var(--chalk2)}
+p{margin:.7em 0}
+a{color:var(--amb);text-decoration:none;border-bottom:1px solid rgba(200,164,74,.28)}
+a:hover{color:var(--spike);border-bottom-color:var(--spike)}
+strong{color:#fff;font-weight:600}
+code{font-family:'DM Mono',ui-monospace,monospace;font-size:.86em;background:var(--ink3);
+border:1px solid var(--seam);border-radius:4px;padding:1px 5px;color:var(--amb)}
+pre{background:var(--ink2);border:1px solid var(--seam);border-radius:var(--r-lg);
+padding:16px 18px;overflow-x:auto;margin:1em 0}
+pre code{background:none;border:none;padding:0;color:var(--chalk2);font-size:12.5px;
+line-height:1.5;white-space:pre}
+blockquote{margin:1.1em 0;padding:.4em 16px;border-left:3px solid var(--amb);
+background:var(--amb-d,rgba(200,164,74,.07));border-radius:0 var(--r) var(--r) 0;
+color:var(--chalk2)}
+blockquote p{margin:.4em 0}
+hr{border:none;border-top:1px solid var(--seam);margin:2em 0}
+ul,ol{margin:.6em 0;padding-left:1.4em}
+li{margin:.28em 0}
+li>ul,li>ol{margin:.25em 0}
+.tw{overflow-x:auto;margin:1.1em 0;border:1px solid var(--seam);border-radius:var(--r-lg)}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--seam);
+vertical-align:top}
+th{background:var(--ink3);font-family:'Syne',sans-serif;font-weight:700;font-size:12px;
+color:var(--chalk);white-space:nowrap}
+tr:last-child td{border-bottom:none}
+td code{white-space:nowrap}
+.idx-group{margin:1.4em 0}
+.idx-group h3{border-bottom:1px solid var(--seam);padding-bottom:.3em}
+.idx-card{display:block;padding:12px 14px;margin:8px 0;background:var(--ink2);
+border:1px solid var(--seam);border-radius:var(--r-lg);color:var(--chalk);
+border-bottom:1px solid var(--seam)}
+.idx-card:hover{border-color:var(--chalk3);color:var(--chalk)}
+.idx-card b{font-family:'Syne',sans-serif}
+.idx-card span{display:block;color:var(--chalk2);font-size:13px;margin-top:2px}
+@media(max-width:600px){.wrap{padding:22px 15px 80px}h1{font-size:24px}body{font-size:14px}}
+</style></head><body><div class=top><a class=logo href="../../index.html">🧗 multi-pitch <span style="color:var(--spike)">Live</span></a><a class=btn href="../../knowledge/index.html">📚 Knowledge</a><a class=btn href="../../index.html">▶ Dashboard</a></div><div class=wrap><div class=crumb><a href="../index.html">📚 knowledge</a> / operations / <b style='color:var(--chalk2)'>testing-plan</b></div><h1 id="testing-plan-a-regression-net-for-the-daily-build">Testing plan — a regression net for the daily build</h1>
+<p>**Status: ⛔ <em>(planned)</em> — no tests exist yet.<strong> This is the plan to add them. The goal is narrow and defensive: </strong>let us change <code>update_report.py</code> without breaking the two things that matter — calling the APIs and generating the HTML/Markdown.** Source of truth for all behaviour described here is <a href="../../trip-ni-july-2026/scripts/update_report.py"><code>trip-ni-july-2026/scripts/update_report.py</code></a>.</p>
+<p>Expands roadmap Stage 0 item 10 (<a href="../roadmap/roadmap.html"><code>roadmap/roadmap.md</code></a>). Run the suite as a gate before the deploy step in <a href="../../.github/workflows/weather.yml"><code>weather.yml</code></a>.</p>
+<h2 id="why-this-is-cheap-to-do-here">Why this is cheap to do here</h2>
+<p>The engine already has the two seams testing needs — no big refactor required:</p>
+<ol><li><strong>One network chokepoint.</strong> Every external call — Open-Meteo <code>forecast</code> / <code>climatology</code> /</li></ol>
+<p>   <code>seasonal</code>, SerpApi flights, and the multi-pitch.com climb DB — funnels through    <code>_get(url)</code> (<code>update_report.py:165</code>). Monkeypatch that one function and the whole    pipeline runs <strong>offline and deterministic</strong>.</p>
+<ol><li><strong>Time is already injected.</strong> <code>build_html</code> / <code>build_md</code> take <code>now</code> as a parameter, so</li></ol>
+<p>   the generated output is reproducible once the network is mocked and the date is frozen.    (Only <code>main()</code> calls <code>datetime.now()</code> internally — <code>:1057</code>.)</p>
+<p>This matches the repo's <strong>determinism</strong> convention (<a href="../CONVENTIONS.html"><code>CONVENTIONS.md</code></a>): climatology scoring must give two identical runs, so it is testable by construction.</p>
+<h2 id="framework-dependencies">Framework &amp; dependencies</h2>
+<ul><li><strong>Stdlib <code>unittest</code>, no new dependencies.</strong> The engine is deliberately stdlib-only and CI</li></ul>
+<p>  runs bare <code>python3</code>; <code>python3 -m unittest discover tests</code> needs zero installs. Pytest is a   later option only if we want parametrize/fixtures — not worth a dependency now.</p>
+<ul><li><strong>Offline by default.</strong> The fast suite never touches the network, so it can't consume</li></ul>
+<p>  SerpApi quota or flake on an outage — consistent with <strong>quota discipline</strong> and   <strong>degrade-never-crash</strong>.</p>
+<h2 id="the-five-test-types-most-valuable-first">The five test types (most-valuable first)</h2>
+<ol><li><strong>Golden-master (snapshot) — the primary regression guard.</strong></li></ol>
+<p>   Freeze <code>now</code>, feed recorded API JSON through a fake <code>_get</code>, and assert    <code>build_html(...)</code> / <code>build_md(...)</code> match a checked-in <code>expected_index.html</code> /    <code>expected_report.md</code> byte-for-byte. Any unintended change to the template, a link, or a    score shows up as a failing diff. This is what protects "the HTML still generates."</p>
+<ol><li><strong>Pure-function unit tests — precise logic coverage.</strong> No I/O; test known input → known</li></ol>
+<p>   output on the business logic:</p>
+<ul><li>Scoring: <code>day_score</code>, <code>climo_score</code>, <code>evaluate</code> (rain/storm caps, temp penalties),</li></ul>
+<p>     <code>rank</code> (score order + <code>prio_num</code> tiebreak).</p>
+<ul><li>Text/normalisation: <code>_norm</code>, <code>_grade_norm</code>, <code>grade_range</code>, <code>wx_band</code>, <code>match_sheet_row</code>.</li><li>Geo/format: <code>_haversine</code> (known city pairs), <code>_hhmm</code>, <code>skyscanner_url</code>.</li></ul><ol><li><strong>Parser / API-contract tests — guards the "calling the API" side.</strong> Feed a *recorded</li></ol>
+<p>   real* Open-Meteo and SerpApi response into <code>forecast</code>, <code>climatology</code>, <code>seasonal</code>,    <code>serp_flights</code> and assert the right fields are extracted. Catches parsing regressions;    with fresh fixtures, catches upstream schema drift too.</p>
+<ol><li><strong>End-to-end smoke test.</strong> Run <code>main()</code> with <code>_get</code> mocked and the output path constants</li></ol>
+<p>   (<code>INDEX</code> / <code>DAILY</code> / <code>HISTORY</code>, <code>:35</code>) redirected to a temp dir. Assert: clean exit, a    non-empty <code>index.html</code>, the embedded <code>window.DATA</code> JSON parses, and the HTML is    well-formed (stdlib <code>html.parser</code>). Also assert the <strong>degrade path</strong>: with <code>_get</code> raising,    the build still completes with a weaker basis rather than crashing.</p>
+<ol><li><strong>Opt-in live contract test.</strong> A test that actually hits Open-Meteo/SerpApi to detect</li></ol>
+<p>   real API changes. Skipped by default (env flag); run weekly or on demand — never in the    PR suite, to protect quota.</p>
+<h2 id="layout">Layout</h2>
+<pre><code>tests/
+  fixtures/            # recorded API JSON + expected_index.html / expected_report.md
+  test_scoring.py      # type 2
+  test_parsers.py      # type 3
+  test_golden.py       # types 1 + 4
+  record_fixtures.py   # manual: refresh fixtures from live APIs
+  test_live.py         # type 5 (skipped unless LIVE=1)</code></pre>
+<h2 id="phases">Phases</h2>
+<ul><li><strong>Phase 1 — pure-function unit tests (type 2).</strong> No fixtures, no mocking, no source</li></ul>
+<p>  changes. Immediate safety net.</p>
+<ul><li><strong>Phase 2 — record fixtures + golden-master (types 1, 4).</strong> The real regression guard for</li></ul>
+<p>  API-driven HTML/MD output.</p>
+<ul><li><strong>Phase 3 — parser/contract tests (type 3) + CI.</strong> Add a <strong>separate <code>tests.yml</code></strong> on</li></ul>
+<p>  <code>push</code>/<code>pull_request</code> that runs only the offline suite. Keep it <em>out</em> of the <code>weather.yml</code>   build job so tests never burn SerpApi quota or commit to <code>main</code>; gate deploy on it.</p>
+<ul><li><strong>Phase 4 — opt-in live test (type 5).</strong></li></ul>
+<h2 id="refactor-cost">Refactor cost</h2>
+<p><strong>Phases 1–3 need no source changes</strong> — tests monkeypatch <code>_get</code> and the module-level path constants directly. One <em>optional</em> tidy-up: let <code>main()</code> accept an injected <code>now</code> (default <code>datetime.now(timezone.utc)</code>) so the smoke test is fully deterministic.</p>
+<h2 id="invariants-worth-asserting-beyond-snapshots">Invariants worth asserting (beyond snapshots)</h2>
+<p>These encode the conventions, so a refactor can't silently violate them:</p>
+<ul><li><strong>Determinism:</strong> two <code>rank()</code> runs on the same input give identical order.</li><li><strong>Degrade-never-crash:</strong> any single <code>_get</code> failure still yields a complete page.</li><li><strong>Quota cap:</strong> flights are priced for at most <code>TOP_N_FLIGHTS</code> venues.</li><li><strong>No secrets / key-free build:</strong> with <code>SERPAPI_KEY</code> unset, the build completes and emits</li></ul>
+<p>  search links instead of prices.</p></div></body></html>

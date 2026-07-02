@@ -95,5 +95,15 @@ drying_rate = f(rock_type, aspect, sun, wind, temp)      → granite/S-facing fa
 seepage     = f(rock_type, antecedent_rain_Ndays, aspect)→ limestone/overhang high
 climbability = combine(friction, dryness_now, seepage_risk)  per sector, per window</code></pre>
 <p>Output the richer condition record in <a href="schemas.html"><code>data/schemas.md</code></a> (with <code>friction_window</code> and <code>seepage_risk</code>), and feed the Phase-4 contingency engine so "3 dry alternatives" means <em>actually dry</em>, not just <em>low forecast rain</em>.</p>
+<h3 id="science-basis-what-the-literature-says">Science basis (what the literature says)</h3>
+<p>The model above is grounded, not guessed — full citations in <a href="references.html"><code>references.md</code></a>:</p>
+<ul><li><strong>Friction is skin-limited, not rock-temperature-limited.</strong> A rock's friction barely</li></ul>
+<p>  changes with air temperature; what changes is <em>sweat</em>. Cool + dry + low humidity = good   friction. So model the <strong>friction window</strong> from temp/dew-point/humidity, not rain alone.</p>
+<ul><li><strong>Rock type sets grip and drying.</strong> Sandstone (~0.74) grips better dry than limestone</li></ul>
+<p>  (~0.64); limestone/overhangs seep for days; granite dries fast.</p>
+<ul><li><strong>Drying = f(sun, wind, humidity).</strong> Sun and wind speed it; humidity prolongs it — and a</li></ul>
+<p>  surface can read dry while the rock beneath is wet (so <code>antecedent_rain</code> matters).</p>
+<ul><li><strong>Wet sandstone is a hard no</strong> — porous, weak when wet, holds break. A <code>sandstone</code> +</li></ul>
+<p>  recent-rain combination should score <em>unclimbable</em>, not merely <em>poor</em>.</p>
 <h2 id="when-you-change-the-scoring">When you change the scoring</h2>
 <ol><li>Keep climatology <strong>deterministic</strong> (reproducibility is a verification checkpoint).</li><li>Update the formula here and in <code>update_report.py</code> together.</li><li>Always keep the <strong>basis label</strong> honest in the UI.</li><li>Log the change in <code>roadmap/decisions.md</code> with the rationale.</li></ol></div></body></html>

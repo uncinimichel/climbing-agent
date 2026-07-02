@@ -291,6 +291,7 @@ TITLES = {
     "data/grade-conversion": ("Grade Conversion", "Normalized dataGrade 1–7 across grade systems."),
     "data/schemas": ("Data Schemas", "JSON shapes: venues, flights, conditions."),
     "data/condition-algorithm": ("Condition Algorithm", "The predictive weather-scoring maths."),
+    "data/references": ("References & Authorities", "People, books & encyclopedias behind the taxonomy."),
     "operations/deployment": ("Deployment", "GitHub Actions + Pages + secrets."),
     "operations/external-apis": ("External APIs", "Open-Meteo, SerpApi, multi-pitch data.json."),
     "operations/runbook": ("Runbook", "Run / verify / maintain, day to day."),
@@ -304,7 +305,7 @@ GROUPS = [
     ("Phases", ["phases/phase-1-scraper", "phases/phase-2-ai-taxonomy",
                 "phases/phase-3-curation", "phases/phase-4-trip-planner"]),
     ("Data & Taxonomy", ["data/taxonomy", "data/route-schema", "data/grade-conversion",
-                          "data/schemas", "data/condition-algorithm"]),
+                          "data/schemas", "data/condition-algorithm", "data/references"]),
     ("Operations", ["operations/deployment", "operations/external-apis", "operations/runbook"]),
     ("Roadmap", ["roadmap/roadmap", "roadmap/decisions"]),
 ]

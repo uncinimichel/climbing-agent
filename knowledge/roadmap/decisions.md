@@ -87,6 +87,17 @@ style guide ("the climber", qualify jargon, prefixed reference links).
 extremes deliberately.
 **Status:** ✅ Documented; automated population (parsing) is planned (roadmap Stage 4).
 
+### #12 — Ground the taxonomy in cited authorities (2026-07-02)
+**Decision:** back the Data & Taxonomy docs with recognised sources — UIAA, BMC,
+*Freedom of the Hills*, Samet's *Climbing Dictionary*, and the grade-system originators
+(Welzenbach, O.G. Jones, Robbins/Wilson/Wilts, Ewbank, Devies, Erickson). Captured in
+[`data/references.md`](../data/references.md).
+**Why:** the Taxonomy Engine must map onto a *defensible* standard, not an invented one; and
+two useful, free inference signals fell out of the research — (a) UK trad's adjectival↔
+technical gap seeds the `protection` field, and (b) rock-friction/wet-sandstone science
+grounds the condition model.
+**Status:** ✅ Documented; cross-linked from taxonomy / grade-conversion / condition-algorithm.
+
 ---
 
 *Template for new entries:*
