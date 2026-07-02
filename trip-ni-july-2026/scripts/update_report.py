@@ -21,8 +21,10 @@ import json
 import math
 import os
 import re
+import sys
 import time
 import unicodedata
+import urllib.error
 import urllib.parse
 import urllib.request
 from datetime import date, datetime, timedelta, timezone
@@ -45,6 +47,20 @@ FLIGHTS_DATA = json.loads((ROOT / "flights-latest.json").read_text())
 CLIMO_YEARS = [2021, 2022, 2023, 2024]
 GRAPH_START = TARGET_START - timedelta(days=2)   # 2 days before the trip
 GRAPH_END = TARGET_END + timedelta(days=2)       # 2 days after
+
+
+def _md_range(start, end):
+    """Set of (month, day) tuples covered by [start, end] inclusive — so the trip/graph
+    window logic keeps working when the window straddles a month boundary (e.g. 30 Jul–3 Aug)."""
+    out, d = set(), start
+    while d <= end:
+        out.add((d.month, d.day))
+        d += timedelta(days=1)
+    return out
+
+
+GRAPH_MD = _md_range(GRAPH_START, GRAPH_END)   # graph window as (month, day) keys
+TRIP_MD = _md_range(TARGET_START, TARGET_END)  # trip window as (month, day) keys
 SITE_URL = "https://multi-pitch.com/"
 MP_MAP_URL = "https://multi-pitch.com/map/"
 MP_DATA_URL = "https://multi-pitch.com/data/data.json"   # live climb DB (S3-backed)
@@ -67,8 +83,8 @@ def _load_sheet_rows():
         for i, r in enumerate(csv.reader(CLIMBING_CSV.open()), start=1):
             if i >= 3 and r and r[0].strip():     # rows 1-2 are banner/header
                 rows.append((i, r[0].strip()))
-    except Exception:
-        pass
+    except Exception as e:
+        print(f"[warn] could not read {CLIMBING_CSV.name}: {e}", file=sys.stderr)
     return rows
 
 
@@ -162,17 +178,31 @@ _dotenv()
 SERPAPI_KEY = os.environ.get("SERPAPI_KEY")
 
 
+def _redact(s):
+    """Strip the SerpApi key out of any string before it reaches a log or exception —
+    the key rides in the query string, so raw urllib error text would otherwise leak it."""
+    s = str(s)
+    return s.replace(SERPAPI_KEY, "***") if SERPAPI_KEY else s
+
+
 def _get(url, retries=4):
-    """GET JSON with retries — APIs rate-limit bursts; never silently lose a sample."""
+    """GET JSON with retries — APIs rate-limit bursts; never silently lose a sample.
+    Client errors (4xx: bad key/params) are NOT retried — retrying can't fix them and
+    just burns ~15s × venues. Errors are re-raised with the key redacted."""
     last = None
     for attempt in range(retries):
         try:
             with urllib.request.urlopen(url, timeout=45) as r:
                 return json.load(r)
+        except urllib.error.HTTPError as e:
+            last = e
+            if 400 <= e.code < 500:
+                break
         except Exception as e:
             last = e
+        if attempt < retries - 1:
             time.sleep(1.5 * (attempt + 1))
-    raise last
+    raise RuntimeError(f"GET {_redact(url)} failed: {_redact(last)}")
 
 
 # ---- Weather --------------------------------------------------------------
@@ -187,26 +217,29 @@ def forecast(lat, lon):
 
 
 def climatology(lat, lon):
-    """Typical trip-window conditions over recent years — ONE ranged request, filtered."""
+    """Typical trip-window conditions over recent years — ONE ranged request, filtered.
+    Days are matched by real (month, day) against the graph/trip windows, so this stays
+    correct even when the trip straddles a month boundary (e.g. 30 Jul–3 Aug)."""
     d = _get(
         "https://archive-api.open-meteo.com/v1/archive"
         f"?latitude={lat}&longitude={lon}"
-        f"&start_date={CLIMO_YEARS[0]}-07-15&end_date={CLIMO_YEARS[-1]}-07-31"
+        f"&start_date={CLIMO_YEARS[0]}-{GRAPH_START:%m-%d}&end_date={CLIMO_YEARS[-1]}-{GRAPH_END:%m-%d}"
         "&daily=temperature_2m_max,precipitation_sum,windspeed_10m_max&timezone=auto"
     )["daily"]
     tmaxs, winds, rain_days, total = [], [], 0, 0
-    per_day = {}   # day-of-month -> {"t","p","w"} lists for the graph window
+    per_day = {}   # (month, day) -> {"t","p","w"} lists for the graph window
     for t, tx, pr, wd in zip(d["time"], d["temperature_2m_max"], d["precipitation_sum"],
                              d.get("windspeed_10m_max", [None] * len(d["time"]))):
         dd = date.fromisoformat(t)
-        if dd.month != TARGET_START.month or tx is None:
+        md = (dd.month, dd.day)
+        if tx is None:
             continue
-        if GRAPH_START.day <= dd.day <= GRAPH_END.day:          # graph window (trip ±2)
-            e = per_day.setdefault(dd.day, {"t": [], "p": [], "w": []})
+        if md in GRAPH_MD:                       # graph window (trip ±2)
+            e = per_day.setdefault(md, {"t": [], "p": [], "w": []})
             e["t"].append(tx)
             e["p"].append(pr or 0)
             e["w"].append(wd or 0)
-        if TARGET_START.day <= dd.day <= TARGET_END.day:        # trip window aggregate
+        if md in TRIP_MD:                        # trip window aggregate
             total += 1
             tmaxs.append(tx)
             winds.append(wd or 0)
@@ -214,16 +247,17 @@ def climatology(lat, lon):
                 rain_days += 1
     if not total:
         return None
-    series = []
-    for day in range(GRAPH_START.day, GRAPH_END.day + 1):
-        pd = per_day.get(day)
-        if not pd:
-            continue
-        series.append({"day": day,
-                       "tmax": round(sum(pd["t"]) / len(pd["t"])),
-                       "precip": round(sum(pd["p"]) / len(pd["p"]), 1),
-                       "wind": round(sum(pd["w"]) / len(pd["w"])),
-                       "trip": TARGET_START.day <= day <= TARGET_END.day})
+    series, day = [], GRAPH_START
+    while day <= GRAPH_END:
+        md = (day.month, day.day)
+        pd = per_day.get(md)
+        if pd:
+            series.append({"day": day.day, "month": day.month,
+                           "tmax": round(sum(pd["t"]) / len(pd["t"])),
+                           "precip": round(sum(pd["p"]) / len(pd["p"]), 1),
+                           "wind": round(sum(pd["w"]) / len(pd["w"])),
+                           "trip": md in TRIP_MD})
+        day += timedelta(days=1)
     return {"tmax": round(sum(tmaxs) / len(tmaxs)), "rain_pct": round(100 * rain_days / total),
             "wind": round(sum(winds) / len(winds)), "days": total, "series": series}
 
@@ -279,11 +313,13 @@ def evaluate(v):
     res = {"venue": v, "ok": True, "climo": None, "fc": None, "seasonal": None}
     try:
         res["climo"] = climatology(v["lat"], v["lon"])
-    except Exception:
+    except Exception as e:
+        print(f"[warn] climatology failed for {v['name']}: {_redact(e)}", file=sys.stderr)
         res["climo"] = None
     try:
         res["seasonal"] = seasonal(v["lat"], v["lon"])
-    except Exception:
+    except Exception as e:
+        print(f"[warn] seasonal failed for {v['name']}: {_redact(e)}", file=sys.stderr)
         res["seasonal"] = None
     try:
         d = forecast(v["lat"], v["lon"])
@@ -303,7 +339,8 @@ def evaluate(v):
             }
         else:
             res["fc"] = {"in_window": False, "horizon": days[-1] if days else "?"}
-    except Exception:
+    except Exception as e:
+        print(f"[warn] forecast failed for {v['name']}: {_redact(e)}", file=sys.stderr)
         res["fc"] = None
 
     fc, sea = res["fc"], res["seasonal"]
@@ -333,7 +370,8 @@ def prio_num(v):
 def rank(results):
     ok = [r for r in results if r.get("ok") and r["score"] >= 0]
     ok.sort(key=lambda r: (-r["score"], prio_num(r["venue"])))
-    return ok + [r for r in results if r not in ok]
+    ok_ids = {id(r) for r in ok}   # identity, not dict equality
+    return ok + [r for r in results if id(r) not in ok_ids]
 
 
 # ---- Flights (SerpApi / Google Flights) -----------------------------------
@@ -403,8 +441,8 @@ def traveller_flight(venue, who):
             f = serp_flights(ORIGIN[who], t["to"], REP["out"], REP["back"])
             if f:
                 return f
-        except Exception:
-            pass
+        except Exception as e:
+            print(f"[warn] flight lookup failed ({who} -> {t.get('to')}): {_redact(e)}", file=sys.stderr)
     # no key / no result / error: still offer a search link so it's actionable
     if mode == "fly":
         return {"mode": "fly", "options": [], "to": t.get("to"),
@@ -413,13 +451,24 @@ def traveller_flight(venue, who):
 
 
 def attach_flights(ranked):
-    """Price flights for the top-N venues (both travellers); cache to flights-latest.json."""
+    """Price flights for the top-N venues (both travellers); cache to flights-latest.json.
+    A run with no live price (no SerpApi key, or a failed/empty lookup) reuses the last
+    good prices from the previous run's cache instead of falling back to bare links."""
+    prev = FLIGHTS_DATA.get("venues") or {}   # last run's prices (loaded from disk at import)
     cache = {}
     for r in ranked[:TOP_N_FLIGHTS]:
         if not r.get("ok") or r["score"] < 0:
             continue
         v = r["venue"]
-        r["flights"] = {w: traveller_flight(v, w) for w in ("michel", "dan")}
+        flights = {}
+        for w in ("michel", "dan"):
+            f = traveller_flight(v, w)
+            if not f.get("options"):
+                cached = (prev.get(v["name"]) or {}).get(w)
+                if cached and cached.get("options"):
+                    f = dict(cached, cached=True)   # reuse last-known prices
+            flights[w] = f
+        r["flights"] = flights
         cache[v["name"]] = r["flights"]
     # persist (so history captures prices and a no-key run can reuse them)
     FLIGHTS_DATA["rep_combo"] = REP
@@ -620,7 +669,7 @@ def venue_payload(n, r):
     series = []
     for s in (c.get("series") or []):
         try:
-            wd = date(TARGET_START.year, TARGET_START.month, s["day"]).strftime("%a")
+            wd = date(TARGET_START.year, s.get("month", TARGET_START.month), s["day"]).strftime("%a")
         except Exception:
             wd = str(s["day"])
         series.append({"day": s["day"], "lbl": wd, "tmax": s["tmax"],
@@ -652,345 +701,419 @@ def venue_payload(n, r):
 PAGE_HEAD = """<!doctype html>
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>multi·pitch — Live Trip Hub · Michel &amp; Dan · ~24 Jul 2026</title>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src https: data:">
+<title>multi·pitch — Trip planner · Michel &amp; Dan · ~24 Jul 2026</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
-  --ink:#0C0D10; --ink2:#12141B; --ink3:#191C27; --ink4:#20243A; --seam:#252840;
-  --chalk:#EAE6DD; --chalk2:#9B9890; --chalk3:#5A5860;
-  --go:#6CB268; --go-d:rgba(108,178,104,.14); --amb:#C8A44A; --amb-d:rgba(200,164,74,.13);
-  --wet:#B94438; --wet-d:rgba(185,68,56,.13); --spike:#C4FF5C;
-  --r:6px; --r-lg:12px; --left:256px; --right:288px;
+  --paper:#F7F6F1; --card:#FFFFFF; --ink:#23261F; --muted:#71736A; --faint:#9C9E94;
+  --line:#E4E2D8; --line2:#D6D4C8;
+  --dry:#2E7D3A; --dry-bg:#E9F1E4; --mixed:#A97614; --mixed-bg:#F4EDDB; --wet:#B3402F; --wet-bg:#F4E7E1;
+  --rain:#2a78d6; --temp:#eb6834;
+  --disp:'Bricolage Grotesque',sans-serif; --body:'IBM Plex Sans',sans-serif; --mono:'IBM Plex Mono',monospace;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;overflow:hidden;background:var(--ink);color:var(--chalk)}
-body{font-family:'Inter',sans-serif;font-size:13px;line-height:1.5;display:flex;flex-direction:column}
-.top{height:48px;background:var(--ink2);border-bottom:1px solid var(--seam);display:flex;align-items:center;padding:0 16px;gap:12px;flex-shrink:0}
-.logo{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--chalk);letter-spacing:-.2px;white-space:nowrap}
-.logo b{color:var(--go);font-weight:800}
-.divider-v{width:1px;height:20px;background:var(--seam)}
-.ctx{display:flex;align-items:center;gap:5px;overflow:hidden}
-.pill{display:flex;align-items:center;gap:5px;background:var(--ink3);border:1px solid var(--seam);border-radius:20px;padding:4px 11px;font-size:12px;font-weight:500;color:var(--chalk);white-space:nowrap}
-.sep{color:var(--chalk3);font-size:11px}
-.top-right{margin-left:auto;display:flex;gap:7px;flex-shrink:0}
-.btn-g{background:transparent;border:1px solid var(--seam);border-radius:var(--r);padding:5px 12px;font-size:11px;font-weight:500;color:var(--chalk2);cursor:pointer;transition:all .15s;text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap}
-.btn-g:hover{border-color:var(--chalk3);color:var(--chalk)}
-.btn-p{background:var(--go);border:none;border-radius:var(--r);padding:5px 14px;font-size:11px;font-weight:700;color:#0C0D10;cursor:pointer;transition:opacity .15s;text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap}
-.btn-p:hover{opacity:.85}
-.databar{background:var(--ink3);border-bottom:1px solid var(--seam);padding:6px 16px;font-size:11.5px;color:var(--chalk2);display:flex;align-items:center;gap:14px;flex-shrink:0;line-height:1.4}
-.databar .msg{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.databar b{color:var(--chalk);font-weight:600}
-.databar.ok .msg b{color:#86e0a6}
-.databar .upd{color:var(--chalk3);font-size:10px;white-space:nowrap;flex-shrink:0}
-.ws{display:grid;grid-template-columns:var(--left) 1fr var(--right);flex:1;overflow:hidden;min-height:0}
-.left{background:var(--ink2);border-right:1px solid var(--seam);display:flex;flex-direction:column;overflow:hidden}
-.panel-hd{padding:11px 14px 8px;border-bottom:1px solid var(--seam);flex-shrink:0}
-.panel-hd-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px}
-.panel-title{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--chalk3)}
-.panel-meta{font-size:10px;color:var(--chalk3)}
-.legend{display:flex;gap:10px;font-size:9px;color:var(--chalk3)}
-.legend span{display:flex;align-items:center;gap:3px}
-.dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
-.area-list{overflow-y:auto;flex:1;scrollbar-width:thin;scrollbar-color:var(--seam) transparent}
-.a-row{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--seam);cursor:pointer;transition:background .12s;position:relative}
-.a-row:hover{background:var(--ink3)}
-.a-row.active{background:var(--ink4);border-left:2px solid var(--spike)}
-.a-row.active .a-rank{color:var(--spike)}
-.a-rank{font-family:'Syne',sans-serif;font-size:10px;font-weight:800;color:var(--chalk3);width:16px;flex-shrink:0}
-.arc{position:relative;width:34px;height:34px;flex-shrink:0}
-.arc svg{width:34px;height:34px}
-.arc-n{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:8.5px;font-weight:500;color:var(--chalk);line-height:1}
-.a-body{flex:1;min-width:0}
-.a-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--chalk);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:1px}
-.a-sub{font-size:10px;color:var(--chalk3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.a-wx{font-size:10px;color:var(--chalk2);margin-top:1px}
-.a-tag{font-size:8px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:2px 5px;border-radius:3px;flex-shrink:0;align-self:flex-start;margin-top:2px}
-.tag-go{background:var(--go-d);color:var(--go)}
-.tag-mix{background:var(--amb-d);color:var(--amb)}
-.tag-wet{background:var(--wet-d);color:var(--wet)}
-.centre{display:flex;flex-direction:column;overflow:hidden;background:var(--ink)}
-.hero{position:relative;height:220px;flex-shrink:0;overflow:hidden}
-.hero img{width:100%;height:100%;object-fit:cover;filter:brightness(.55) saturate(.8);display:block}
-.hero-fb{width:100%;height:100%;background:linear-gradient(160deg,#2A3B28,#0C0D10);display:flex;align-items:center;justify-content:center;font-size:56px;opacity:.25}
-.hero-grad{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(12,13,16,0) 10%,rgba(12,13,16,.9) 80%,var(--ink) 100%)}
-.hero-body{position:absolute;bottom:0;left:0;right:0;padding:14px 22px 18px;display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
-.hero-tag{display:flex;align-items:center;gap:7px;margin-bottom:6px;flex-wrap:wrap}
-.hero-badge{background:var(--spike);color:var(--ink);font-size:9px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:2px 7px;border-radius:3px}
-.hero-region{font-size:11px;color:var(--chalk2)}
-.hero-name{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--chalk);line-height:1.05;letter-spacing:-.4px;margin-bottom:5px}
-.hero-info{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--chalk2);flex-wrap:wrap}
-.hero-scores{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0}
-.score-box{background:rgba(12,13,16,.75);backdrop-filter:blur(10px);border:1px solid var(--seam);border-radius:var(--r-lg);padding:9px 13px;text-align:center}
-.score-val{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:var(--spike);line-height:1}
-.score-lbl{font-size:8px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--chalk3);margin-top:2px}
-.wx-pill{background:rgba(12,13,16,.75);backdrop-filter:blur(10px);border:1px solid var(--seam);border-radius:20px;padding:4px 10px;font-size:12px;font-weight:600;color:var(--chalk);display:flex;align-items:center;gap:5px;white-space:nowrap}
-.c-body{flex:1;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--seam) transparent}
-.sec{padding:16px 22px;border-bottom:1px solid var(--seam)}
-.sec:last-child{border-bottom:none}
-.sec-lbl{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--chalk3);margin-bottom:10px}
-.why-text{font-size:13px;line-height:1.7;color:var(--chalk2)}
-.why-text strong{color:var(--chalk);font-weight:500}
-.basis{font-size:10px;color:var(--chalk3);margin-top:9px;font-style:italic}
-.facts{display:flex;gap:0;border:1px solid var(--seam);border-radius:var(--r-lg);overflow:hidden;margin-top:12px}
-.fact{flex:1;padding:9px 11px;background:var(--ink3);border-right:1px solid var(--seam);min-width:0}
-.fact:last-child{border-right:none}
-.fact-lbl{font-size:8px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--chalk3);margin-bottom:3px}
-.fact-val{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--chalk);line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.fact-sub{font-size:9px;color:var(--chalk3);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.wx-chart{display:flex;gap:3px;align-items:flex-end;height:68px;margin-bottom:6px}
-.wx-col{display:flex;flex-direction:column;align-items:center;flex:1}
-.wx-bar-wrap{width:100%;display:flex;align-items:flex-end;height:44px;background:var(--ink4);border-radius:3px 3px 0 0;overflow:hidden;position:relative}
-.wx-bar-rain{width:100%;background:rgba(90,140,200,.5);position:absolute;bottom:0}
-.wx-bar-temp{width:4px;height:4px;border-radius:50%;background:var(--go);position:absolute;left:50%;transform:translateX(-50%)}
-.wx-col-label{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--chalk3);margin-top:4px;text-align:center;width:100%}
-.wx-col-temp{font-family:'DM Mono',monospace;font-size:9px;color:var(--chalk2);text-align:center}
-.wx-col.trip .wx-bar-wrap{background:rgba(196,255,92,.08);border:1px solid rgba(196,255,92,.25)}
-.wx-col.trip .wx-col-label{color:var(--spike)}
-.wind-row{display:flex;gap:4px;margin-top:2px}
-.wind-col{flex:1;text-align:center;font-size:9px;color:var(--chalk3);font-family:'DM Mono',monospace}
-.wx-legend{display:flex;gap:14px;font-size:9px;color:var(--chalk3);margin-top:8px;flex-wrap:wrap}
-.wx-legend span{display:flex;align-items:center;gap:4px}
-.wx-swatch{width:10px;height:8px;border-radius:2px}
-.outlook-line{font-size:11px;color:var(--chalk2);background:rgba(91,157,255,.08);border:1px solid rgba(91,157,255,.2);border-radius:6px;padding:5px 9px;margin:8px 0 2px}
-.climb-card{display:flex;gap:11px;padding:10px 0;border-bottom:1px solid var(--seam);align-items:flex-start}
-.climb-card:last-child{border-bottom:none}
-.climb-thumb{width:64px;height:52px;border-radius:var(--r);overflow:hidden;flex-shrink:0;background:var(--ink3);border:1px solid var(--seam)}
-.climb-thumb.ph{display:flex;align-items:center;justify-content:center;font-size:22px}
-.climb-thumb img{width:100%;height:100%;object-fit:cover}
-.climb-body{flex:1;min-width:0}
-.climb-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--chalk);margin-bottom:2px}
-.climb-route{font-size:11px;color:var(--chalk2);margin-bottom:4px}
-.climb-pills{display:flex;gap:5px;flex-wrap:wrap}
-.cpill{font-size:9px;font-weight:600;padding:2px 6px;border-radius:3px;background:var(--ink4);color:var(--chalk3)}
-.cpill-g{background:var(--go-d);color:var(--go)}
-.climb-flags{display:flex;gap:4px;margin-top:4px;flex-wrap:wrap}
-.flag-tag{font-size:9px;color:var(--amb);background:var(--amb-d);padding:1px 5px;border-radius:3px}
-.climb-grade{font-family:'DM Mono',monospace;font-size:12px;font-weight:500;color:var(--go);flex-shrink:0;margin-top:2px}
-.right{background:var(--ink2);border-left:1px solid var(--seam);display:flex;flex-direction:column;overflow:hidden}
-.r-body{overflow-y:auto;flex:1;padding:12px;scrollbar-width:thin;scrollbar-color:var(--seam) transparent;display:flex;flex-direction:column;gap:14px}
-.r-sec-lbl{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--chalk3);padding-bottom:6px;border-bottom:1px solid var(--seam);margin-bottom:8px;display:flex;align-items:center}
-.mock-tag{font-size:8px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--chalk3);background:var(--ink4);padding:1px 5px;border-radius:3px;margin-left:6px}
-.fc{background:var(--ink3);border:1px solid var(--seam);border-radius:var(--r-lg);overflow:hidden;margin-bottom:6px}
-.fc:last-of-type{margin-bottom:0}
-.fc-hd{padding:9px 12px 7px;border-bottom:1px solid var(--seam);display:flex;align-items:center;justify-content:space-between}
-.fc-who{font-size:12px;font-weight:600;color:var(--chalk)}
-.fc-from{font-size:10px;color:var(--chalk3);margin-top:1px}
-.fc-best{font-size:8px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--spike);background:rgba(196,255,92,.1);padding:2px 6px;border-radius:3px}
-.fc-bd{padding:9px 12px}
-.fc-price{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--chalk);display:flex;align-items:baseline;gap:4px;margin-bottom:7px}
-.fc-price span{font-family:'Inter',sans-serif;font-size:10px;font-weight:400;color:var(--chalk3)}
-.fc-opt{display:flex;justify-content:space-between;gap:8px;font-size:11px;padding:3px 0;border-bottom:1px solid var(--seam);color:var(--chalk2)}
-.fc-opt:last-of-type{border-bottom:none}
-.fc-opt span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.tag-d{color:var(--go);font-size:10px;font-weight:600;flex-shrink:0}
-.tag-s{color:var(--chalk3);font-size:10px;flex-shrink:0}
-.fc-btn{width:100%;margin-top:9px;background:var(--chalk);color:var(--ink);border:none;border-radius:var(--r);padding:7px;font-size:11px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;transition:background .15s;text-decoration:none;display:block;text-align:center}
-.fc-btn:hover{background:var(--go)}
-.fc-btn.sec{background:transparent;border:1px solid var(--seam);color:var(--chalk2);font-weight:500;margin-top:4px}
-.fc-btn.sec:hover{background:var(--ink4);color:var(--chalk);border-color:var(--chalk3)}
-.hc{background:var(--ink3);border:1px solid var(--seam);border-radius:var(--r-lg);padding:10px 12px;margin-bottom:6px}
-.hc:last-child{margin-bottom:0}
-.hc-hd{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:1px}
-.hc-name{font-size:12px;font-weight:600;color:var(--chalk)}
-.hc-stars{font-size:10px;color:var(--amb);white-space:nowrap;flex-shrink:0}
-.hc-type{font-size:10px;color:var(--chalk3);margin-bottom:5px}
-.hc-price{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;color:var(--chalk);margin-bottom:5px}
-.hc-price span{font-family:'Inter',sans-serif;font-size:10px;font-weight:400;color:var(--chalk3)}
-.hc-tags{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:7px}
-.hc-tag{font-size:9px;font-weight:500;padding:2px 5px;border-radius:3px;background:var(--ink4);color:var(--chalk3)}
-.hc-tag.g{background:var(--go-d);color:var(--go)}
-.empty{font-size:12px;color:var(--chalk3);padding:6px 0}
-.flink{color:var(--go);text-decoration:none;font-weight:600}
-.flink:hover{text-decoration:underline}
-::-webkit-scrollbar{width:3px;height:3px}
-::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:var(--seam);border-radius:2px}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:14px;line-height:1.55}
+.top{display:flex;align-items:center;flex-wrap:wrap;gap:10px 18px;padding:14px 22px;border-bottom:1px solid var(--line2)}
+.wordmark{font-family:var(--disp);font-weight:800;font-size:19px;letter-spacing:-.02em;white-space:nowrap}
+.wordmark em{font-style:normal;font-weight:500;font-size:10px;font-family:var(--mono);color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-left:8px}
+.trip-line{font-size:12.5px;color:var(--muted)}
+.trip-line b{color:var(--ink);font-weight:600}
+.top-links{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.tl{font-size:12px;font-weight:500;text-decoration:none;color:var(--ink);border:1px solid var(--line2);border-radius:7px;padding:5px 11px;background:var(--card);white-space:nowrap}
+.tl:hover{border-color:var(--ink)}
+.tl.strong{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.tl.strong:hover{opacity:.88}
+.basis{padding:9px 22px;font-size:12.5px;color:var(--muted);background:#EFEEE6;border-bottom:1px solid var(--line2)}
+.basis b{color:var(--ink)}
+.layout{display:grid;grid-template-columns:minmax(300px,370px) minmax(0,1fr);align-items:start}
+.board{border-right:1px solid var(--line2);position:sticky;top:0;max-height:100vh;overflow-y:auto;background:var(--paper);scrollbar-width:thin}
+.board-hd{padding:16px 18px 10px}
+.eyebrow{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.eyebrow a{color:inherit}
+.board-sub{font-size:11.5px;color:var(--faint);margin-top:3px}
+.row{display:grid;grid-template-columns:30px minmax(0,1fr);column-gap:12px;width:100%;text-align:left;border:0;border-top:1px solid var(--line);background:none;padding:13px 18px;cursor:pointer;font:inherit;color:inherit}
+.row:hover{background:#F0EFE8}
+.row.active{background:var(--card);box-shadow:inset 3px 0 0 var(--ink)}
+.rnum{grid-row:1/4;font-family:var(--disp);font-weight:800;font-size:21px;line-height:1.1;color:var(--ink);opacity:.3}
+.row.active .rnum{opacity:1}
+.rname{font-family:var(--disp);font-weight:700;font-size:15.5px;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rsub{font-size:11.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rbar-line{display:flex;align-items:center;gap:8px;margin-top:6px}
+.rbar-track{flex:1;height:6px;background:var(--line);border-radius:3px;overflow:hidden}
+.rbar{height:100%;border-radius:3px}
+.rsc{font-family:var(--mono);font-size:12px;font-weight:600;min-width:20px;text-align:right}
+.rsc.dim{color:var(--faint);font-weight:400}
+.board-ft{padding:12px 18px;font-size:10.5px;color:var(--faint);border-top:1px solid var(--line);line-height:1.5}
+.detail{background:var(--card);min-height:100vh}
+.band{position:relative;overflow:hidden;padding:30px 30px 26px;border-bottom:1px solid var(--line2);min-height:214px;display:flex;align-items:flex-end}
+.band svg.topo{position:absolute;top:50%;right:-30px;transform:translateY(-50%);height:135%;pointer-events:none}
+.band-body{position:relative;max-width:60%}
+.vname{font-family:var(--disp);font-weight:800;font-size:clamp(26px,4.5vw,40px);letter-spacing:-.02em;line-height:1.05;margin:6px 0 5px}
+.vmeta{font-size:13px;color:var(--muted)}
+.vpills{display:flex;gap:7px;margin-top:13px;flex-wrap:wrap}
+.pill{display:inline-flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--line2);border-radius:16px;padding:4px 11px;font-size:11.5px;font-weight:600}
+.pill .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.sec{padding:22px 30px;border-bottom:1px solid var(--line)}
+.sec:last-child{border-bottom:0}
+.sec>.eyebrow{margin-bottom:14px}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{background:var(--paper);border:1px solid var(--line);border-radius:9px;padding:9px 13px;min-width:96px}
+.chip-l{font-family:var(--mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.chip-v{font-family:var(--disp);font-weight:700;font-size:16px;margin-top:2px;white-space:nowrap}
+.chip-s{font-size:10.5px;color:var(--faint);white-space:nowrap}
+.why{max-width:620px;font-size:14px;line-height:1.7;color:#3E4138}
+.basis-note{font-size:11px;color:var(--faint);margin-top:10px;font-style:italic}
+.wx-take{font-size:14px;margin-bottom:16px;max-width:620px}
+.wx-take b{font-weight:600}
+.wxgrid{display:grid;grid-template-columns:64px minmax(0,1fr);row-gap:2px;max-width:720px}
+.wxlbl{font-family:var(--mono);font-size:9.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);display:flex;align-items:flex-end;padding:0 8px 6px 0}
+.wxlbl .sw{width:8px;height:8px;border-radius:2px;margin-right:5px;flex-shrink:0}
+.wxrow{display:flex}
+.wcol{flex:1;min-width:0;text-align:center;position:relative;padding:0 1px}
+.wcol.trip::before{content:'';position:absolute;inset:0;background:rgba(46,125,58,.07)}
+.bktrow{height:16px;font-family:var(--mono);font-size:9px;color:var(--dry);letter-spacing:.08em;text-transform:uppercase}
+.bktrow .wcol.trip{border-top:2px solid var(--dry)}
+.bktrow .wcol span{position:relative;top:3px;white-space:nowrap}
+.temparea{position:relative;height:72px}
+.temparea svg{position:absolute;inset:0;width:100%;height:100%}
+.temparea .wxrow{height:100%}
+.tdot{position:absolute;left:50%;transform:translate(-50%,50%);width:7px;height:7px;border-radius:50%;background:var(--temp);border:2px solid var(--card)}
+.tval{position:absolute;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:9.5px;color:var(--ink)}
+.wcol:not(.trip) .tdot{opacity:.45}
+.wcol:not(.trip) .tval{color:var(--faint)}
+.rainarea .wcol{display:flex;flex-direction:column;justify-content:flex-end;height:64px}
+.mm{font-family:var(--mono);font-size:9px;color:var(--muted);height:13px;white-space:nowrap}
+.rbarv{width:60%;max-width:26px;margin:0 auto;background:var(--rain);border-radius:3px 3px 0 0}
+.wcol:not(.trip) .rbarv{opacity:.38}
+.daysrow .wcol{font-family:var(--mono);font-size:9.5px;color:var(--faint);padding-top:5px;white-space:nowrap;overflow:hidden}
+.daysrow .wcol.trip{color:var(--ink);font-weight:600}
+.windrow .wcol{font-family:var(--mono);font-size:9.5px;color:var(--faint);padding-top:2px}
+.windrow .hi{color:var(--mixed);font-weight:600}
+.outlook{margin-top:14px;font-size:12px;color:var(--muted);border:1px dashed var(--line2);border-radius:8px;padding:8px 12px;max-width:620px}
+.outlook b{color:var(--ink)}
+.fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px;max-width:720px}
+.fcard{background:var(--paper);border:1px solid var(--line);border-radius:11px;padding:15px 16px}
+.fwho{font-family:var(--disp);font-weight:700;font-size:15px}
+.ffrom{font-size:11px;color:var(--muted);margin-bottom:10px}
+.fprice{font-family:var(--mono);font-weight:600;font-size:24px;letter-spacing:-.02em;margin-bottom:4px}
+.fprice span{font-family:var(--body);font-size:11px;font-weight:400;color:var(--muted)}
+.fopt{display:flex;justify-content:space-between;gap:8px;font-size:12px;padding:5px 0;border-bottom:1px solid var(--line);color:var(--muted)}
+.fopt:last-of-type{border-bottom:0}
+.fopt>span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fopt b{color:var(--ink);font-weight:500}
+.fstop{font-family:var(--mono);font-size:10.5px;flex-shrink:0}
+.fstop.direct{color:var(--dry);font-weight:600}
+.fmode{font-size:13px;font-weight:600;color:var(--dry)}
+.fmode-sub{font-size:11.5px;color:var(--muted);margin-top:2px}
+.btn{display:block;text-align:center;text-decoration:none;font-size:12px;font-weight:600;border-radius:8px;padding:8px 10px;margin-top:10px;background:var(--ink);color:var(--paper)}
+.btn:hover{opacity:.88}
+.btn.ghost{background:none;border:1px solid var(--line2);color:var(--ink);font-weight:500;margin-top:6px}
+.btn.ghost:hover{border-color:var(--ink)}
+.climb{display:flex;gap:13px;padding:12px 0;border-bottom:1px solid var(--line);max-width:720px;align-items:flex-start}
+.climb:first-of-type{padding-top:0}
+.climb:last-of-type{border-bottom:0;padding-bottom:0}
+.cthumb{width:78px;height:60px;border-radius:8px;overflow:hidden;background:var(--paper);border:1px solid var(--line);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:22px}
+.cthumb img{width:100%;height:100%;object-fit:cover}
+.cname{font-family:var(--disp);font-weight:700;font-size:14px}
+.croute{font-size:12px;color:var(--muted);margin:1px 0 6px}
+.cpills{display:flex;gap:5px;flex-wrap:wrap}
+.cp{font-family:var(--mono);font-size:9.5px;padding:2px 7px;border-radius:4px;background:var(--paper);border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.cp.warn{color:var(--mixed);border-color:#E7D9B8;background:var(--mixed-bg)}
+.cgrade{margin-left:auto;font-family:var(--mono);font-weight:600;font-size:13px;flex-shrink:0;padding-top:2px}
+.empty{font-size:13px;color:var(--muted)}
+.lk{color:var(--ink);font-weight:600}
+.hgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;max-width:720px}
+.hcard{background:var(--paper);border:1px solid var(--line);border-radius:11px;padding:14px 15px}
+.hname{font-weight:600;font-size:13.5px}
+.hstars{color:var(--mixed);font-size:11px;white-space:nowrap}
+.htype{font-size:11px;color:var(--muted);margin:2px 0 7px}
+.hprice{font-family:var(--mono);font-weight:600;font-size:18px}
+.hprice span{font-family:var(--body);font-size:10.5px;font-weight:400;color:var(--muted)}
+.htags{display:flex;gap:4px;flex-wrap:wrap;margin-top:7px}
+.htag{font-size:10px;background:var(--card);border:1px solid var(--line);border-radius:4px;padding:2px 6px;color:var(--muted)}
+.sample{font-family:var(--mono);font-size:8.5px;letter-spacing:.08em;background:var(--paper);border:1px solid var(--line2);border-radius:4px;padding:2px 6px;color:var(--muted);margin-left:6px}
+.guide{display:flex;gap:12px;align-items:center;background:var(--paper);border:1px solid var(--line);border-radius:11px;padding:12px 15px;max-width:460px;margin-top:12px}
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+@media(prefers-reduced-motion:no-preference){.row,.tl,.btn{transition:background .12s,border-color .12s,opacity .12s}}
 @media(max-width:900px){
-  html,body{overflow:auto}
-  .ws{display:block}
-  .left,.right{border-right:none;border-left:none;border-bottom:1px solid var(--seam)}
-  .area-list{max-height:420px}
-  .centre{min-height:auto}
-  .hero{height:200px}
+  .layout{display:block}
+  .board{position:static;max-height:none;border-right:0;border-bottom:1px solid var(--line2)}
+  .top{padding:12px 16px;gap:8px 14px}
+  .basis{padding:8px 16px}
+  .band{padding:22px 16px 20px;min-height:172px}
+  .band-body{max-width:100%}
+  .band svg.topo{right:-70px}
+  .band svg.topo .rings{opacity:.5}
+  .sec{padding:18px 16px}
+  .row{padding:11px 16px}
+  .wxgrid{grid-template-columns:48px minmax(0,1fr)}
+  .daysrow .wcol{font-size:8.5px}
+  .chip{min-width:84px;padding:8px 10px}
 }
 </style></head>"""
 
 PAGE_BODY = """<body>
 <header class="top">
-  <div class="logo">multi<b>·</b>pitch</div>
-  <div class="divider-v"></div>
-  <div class="ctx" id="ctx"></div>
-  <div class="top-right">
-    <a class="btn-g" href="knowledge/index.html">\U0001f4da Knowledge</a>
-    <a class="btn-g" id="mapBtn" target="_blank" rel="noopener">\U0001f5fa Map</a>
-    <a class="btn-g" id="sheetBtn" target="_blank" rel="noopener">\U0001f4cb Spreadsheet</a>
-    <a class="btn-p" id="mpBtn" target="_blank" rel="noopener">multi-pitch.com ↗</a>
-  </div>
+  <div class="wordmark">multi<b>·</b>pitch<em>trip planner</em></div>
+  <div class="trip-line" id="tripline"></div>
+  <nav class="top-links">
+    <a class="tl" href="knowledge/index.html">Knowledge</a>
+    <a class="tl" id="mapBtn" target="_blank" rel="noopener">Map</a>
+    <a class="tl" id="sheetBtn" target="_blank" rel="noopener">Spreadsheet</a>
+    <a class="tl strong" id="mpBtn" target="_blank" rel="noopener">multi-pitch.com ↗</a>
+  </nav>
 </header>
-<div class="databar" id="databar"></div>
-<div class="ws">
-  <aside class="left">
-    <div class="panel-hd">
-      <div class="panel-hd-row"><span class="panel-title">Areas ranked for your trip</span><span class="panel-meta" id="areaCount"></span></div>
-      <div class="legend">
-        <span><div class="dot" style="background:var(--go)"></div>Dry</span>
-        <span><div class="dot" style="background:var(--amb)"></div>Mixed</span>
-        <span><div class="dot" style="background:var(--wet)"></div>Wet</span>
-        <span style="margin-left:auto;font-size:9px;color:var(--chalk3)">Score = weather</span>
-      </div>
+<div class="basis" id="basis"></div>
+<div class="layout">
+  <aside class="board" aria-label="Climbing areas ranked by trip weather">
+    <div class="board-hd">
+      <div class="eyebrow">Ranked · best weather first</div>
+      <div class="board-sub">Score = expected trip-window weather, 0–100. Select an area for details.</div>
     </div>
-    <div class="area-list" id="areaList"></div>
+    <div id="rows"></div>
+    <div class="board-ft" id="updated"></div>
   </aside>
-  <main class="centre" id="centre"></main>
-  <aside class="right" id="right"></aside>
-</div>
-"""
+  <main class="detail" id="detail"></main>
+</div>"""
 
-PAGE_JS = """
+PAGE_JS = r"""
 var D=window.DATA,V=D.venues;
-function esc(s){return s==null?'':String(s);}
-document.getElementById('ctx').innerHTML=D.trip.pills.map(function(p){return '<div class="pill">'+p+'</div>';}).join('<span class="sep">·</span>');
-document.getElementById('mapBtn').href=D.trip.mapUrl;
-document.getElementById('sheetBtn').href=D.trip.sheetUrl;
-document.getElementById('mpBtn').href=D.trip.mpUrl;
-document.getElementById('areaCount').textContent=V.length+' areas';
-var db=document.getElementById('databar');db.className='databar '+(D.banner.cls==='ok'?'ok':'');
-db.innerHTML='<span class="msg">'+D.banner.html+'</span><span class="upd">updated '+D.trip.updated+'</span>';
+var EM={'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'};
+function esc(s){return s==null?'':String(s).replace(/[&<>"']/g,function(c){return EM[c];});}
+function num(x){x=Number(x);return isFinite(x)?x:0;}
+function safeUrl(u){u=String(u==null?'':u);return /^https:\/\//i.test(u)?esc(u):'';}
+var COND={go:['Dry','var(--dry)','var(--dry-bg)'],mix:['Mixed','var(--mixed)','var(--mixed-bg)'],wet:['Wet','var(--wet)','var(--wet-bg)']};
+function cond(v){return COND[v.tagCls]||COND.mix;}
 
-function heroFail(img){img.style.display='none';var fb=img.nextElementSibling;if(fb)fb.style.display='flex';}
-function thumbFail(img){var p=img.parentElement;p.classList.add('ph');p.textContent='\U0001f3d4';}
+document.getElementById('tripline').innerHTML=D.trip.pills.map(esc).join(' · ');
+document.getElementById('mapBtn').href=safeUrl(D.trip.mapUrl);
+document.getElementById('sheetBtn').href=safeUrl(D.trip.sheetUrl);
+document.getElementById('mpBtn').href=safeUrl(D.trip.mpUrl);
+document.getElementById('basis').innerHTML=D.banner.html;
+document.getElementById('updated').textContent='Updated '+D.trip.updated+' · weather: Open-Meteo · flights: Google Flights';
 
-function arcSvg(score,color){
-  var C=81.7,off=(C*(1-Math.max(0,score)/100)).toFixed(1);
-  return '<svg viewBox="0 0 34 34" fill="none"><circle cx="17" cy="17" r="13" stroke="#252840" stroke-width="2.5"/>'
-    +'<circle cx="17" cy="17" r="13" stroke="'+color+'" stroke-width="2.5" stroke-dasharray="'+C+'" stroke-dashoffset="'+off+'" stroke-linecap="round" transform="rotate(-90 17 17)"/></svg>'
-    +'<div class="arc-n">'+(score>=0?score:'–')+'</div>';
+function rowHtml(v,i){
+  var c=cond(v),sc=num(v.score);
+  var bar=v.score>=0
+    ?'<div class="rbar-line"><div class="rbar-track"><div class="rbar" style="width:'+Math.max(4,sc)+'%;background:'+c[1]+'"></div></div><span class="rsc">'+sc+'</span></div>'
+    :'<div class="rbar-line"><span class="rsc dim">no data yet</span></div>';
+  return '<button class="row" data-i="'+i+'" onclick="sel('+i+')">'
+    +'<span class="rnum">'+num(v.rank)+'</span>'
+    +'<span class="rname">'+esc(v.flag)+' '+esc(v.shortName)+'</span>'
+    +'<span class="rsub">'+esc(v.country)+(v.rock?' · '+esc(v.rock):'')+' · <b style="color:'+c[1]+';font-weight:600">'+c[0].toLowerCase()+'</b></span>'
+    +bar+'</button>';
 }
-function areaRow(v,i){
-  var wx=v.wx.tmax!=null?(v.wx.tmax+'°C · '+v.wx.rain+'% wet · \U0001f4a8'+v.wx.wind+'km/h'):'no weather data';
-  return '<div class="a-row" data-i="'+i+'" onclick="sel('+i+')">'
-    +'<div class="a-rank">'+v.rank+'</div>'
-    +'<div class="arc">'+arcSvg(v.score,v.arcColor)+'</div>'
-    +'<div class="a-body"><div class="a-name">'+v.flag+' '+esc(v.shortName)+'</div>'
-    +'<div class="a-sub">'+esc(v.country)+(v.rock?' · '+v.rock:'')+'</div>'
-    +'<div class="a-wx">'+wx+'</div></div>'
-    +'<div class="a-tag tag-'+v.tagCls+'">'+v.tag+'</div></div>';
-}
-document.getElementById('areaList').innerHTML=V.map(areaRow).join('');
+document.getElementById('rows').innerHTML=V.map(rowHtml).join('');
 
-function climbCard(c){
-  var inner=c.img?'<img src="'+c.img+'" alt="" onerror="thumbFail(this)">':'\U0001f3d4';
-  var pills=[];
-  if(c.grade)pills.push('<span class="cpill cpill-g">'+esc(c.grade)+'</span>');
-  if(c.approach!=null)pills.push('<span class="cpill">'+c.approach+' min approach</span>');
-  if(c.dist!=null)pills.push('<span class="cpill">'+c.dist+' km away</span>');
-  var flags=(c.flags||[]).map(function(f){return '<span class="flag-tag">⚠ '+f+'</span>';}).join('');
-  var meta=[c.pitches?c.pitches+' pitches':null,c.length?c.length+'m':null].filter(Boolean).join(' · ');
-  return '<div class="climb-card"><div class="climb-thumb'+(c.img?'':' ph')+'">'+inner+'</div>'
-    +'<div class="climb-body"><div class="climb-name">'+esc(c.cliff)+'</div>'
-    +'<div class="climb-route">'+esc(c.route)+(meta?' — '+meta:'')+'</div>'
-    +'<div class="climb-pills">'+pills.join('')+'</div>'+(flags?'<div class="climb-flags">'+flags+'</div>':'')+'</div>'
-    +'<div class="climb-grade">'+esc(c.tradGrade)+'</div></div>';
-}
-
-function buildChart(series){
-  var chart=document.getElementById('wxChart'),windRow=document.getElementById('windRow');
-  if(!chart)return;chart.innerHTML='';windRow.innerHTML='';
-  if(!series||!series.length){chart.innerHTML='<div class="empty">No daily series available.</div>';return;}
-  var maxRain=Math.max.apply(null,series.map(function(d){return d.precip;}).concat([1]));
-  var maxT=Math.max.apply(null,series.map(function(d){return d.tmax;}));
-  var minT=Math.min.apply(null,series.map(function(d){return d.tmax;}));
-  series.forEach(function(d){
-    var rainH=Math.round((d.precip/maxRain)*36)+2;
-    var pct=maxT===minT?0.5:(d.tmax-minT)/(maxT-minT);
-    var tempTop=Math.round((1-pct)*32)+4;
-    var col=document.createElement('div');col.className='wx-col'+(d.trip?' trip':'');
-    col.innerHTML='<div class="wx-bar-wrap"><div class="wx-bar-rain" style="height:'+rainH+'px"></div><div class="wx-bar-temp" style="bottom:'+tempTop+'px"></div></div><div class="wx-col-label">'+d.lbl+'</div><div class="wx-col-temp">'+d.tmax+'°</div>';
-    chart.appendChild(col);
-    var wc=document.createElement('div');wc.className='wind-col';wc.style.color=d.trip?'rgba(196,255,92,.6)':'var(--chalk3)';wc.textContent='\U0001f4a8'+d.wind;windRow.appendChild(wc);
-  });
-}
-
-function renderCentre(v){
-  var hero=v.hero
-    ?'<img src="'+v.hero+'" alt="" onerror="heroFail(this)"><div class="hero-fb" style="display:none">\U0001f3d4</div>'
-    :'<div class="hero-fb" style="display:flex">\U0001f3d4</div>';
-  var info=[v.style,v.climbs.length?(v.climbs.length+' routes on multi-pitch.com'):null,v.grades?('Grades '+v.grades):null].filter(Boolean).join(' · ');
-  var facts=v.facts.map(function(f){return '<div class="fact"><div class="fact-lbl">'+f.lbl+'</div><div class="fact-val">'+f.val+'</div><div class="fact-sub">'+esc(f.sub)+'</div></div>';}).join('');
-  var climbs=v.climbs.length?v.climbs.map(climbCard).join(''):'<div class="empty">No multi-pitch.com routes indexed near here yet — <a class="flink" href="'+v.mpMap+'" target="_blank" rel="noopener">browse the map ↗</a></div>';
-  var wxpill='<div class="wx-pill">'+(v.wx.sky||'☁')+' '+(v.wx.tmax!=null?v.wx.tmax+'°C':'—')+' · '+v.tag.toLowerCase()+'</div>';
-  var legend='<div class="wx-legend"><span><div class="wx-swatch" style="background:rgba(90,140,200,.5)"></div>Rain (mm)</span><span><div class="wx-swatch" style="background:var(--go);border-radius:50%;width:8px;height:8px"></div>Temp °C</span><span><div class="wx-swatch" style="background:rgba(196,255,92,.25);border:1px solid rgba(196,255,92,.4)"></div>Trip days</span></div>';
-  var outlook=v.seasonal?'<div class="outlook-line">\U0001f52d <b>45-day outlook:</b> '+v.seasonal.tmax+'°C · '+v.seasonal.rain+'% wet days <span style="color:var(--chalk3)">(experimental '+v.seasonal.members+'-member ensemble)</span></div>':'';
-  document.getElementById('centre').innerHTML=
-    '<div class="hero">'+hero+'<div class="hero-grad"></div><div class="hero-body"><div class="hero-left">'
-    +'<div class="hero-tag"><span class="hero-badge">#'+v.rank+' this trip</span><span class="hero-region">'+esc(v.country)+'</span></div>'
-    +'<div class="hero-name">'+esc(v.shortName)+'</div><div class="hero-info">'+info+'</div></div>'
-    +'<div class="hero-scores"><div class="score-box"><div class="score-val">'+(v.score>=0?v.score:'–')+'</div><div class="score-lbl">Trip score</div></div>'+wxpill+'</div></div></div>'
-    +'<div class="c-body">'
-    +'<div class="sec"><div class="sec-lbl">Why go here</div><div class="why-text">'+esc(v.why)+'</div>'+(facts?'<div class="facts">'+facts+'</div>':'')+(v.basis?'<div class="basis">Ranking basis: '+esc(v.basis)+'</div>':'')+'</div>'
-    +'<div class="sec"><div class="sec-lbl">'+esc(v.chartLabel)+'</div><div class="wx-chart" id="wxChart"></div><div class="wind-row" id="windRow"></div>'+outlook+legend+'</div>'
-    +'<div class="sec"><div class="sec-lbl">Climbs in this area — from multi-pitch.com</div>'+climbs+'</div>'
-    +'</div>';
-  buildChart(v.series);
-}
-
-function flightCard(who,f,from){
-  var head='<div class="fc-hd"><div><div class="fc-who">'+who+'</div><div class="fc-from">'+from+'</div></div>';
-  if(!f||f.mode==='local')return '<div class="fc">'+head+'</div><div class="fc-bd" style="padding:10px 12px"><div style="font-size:13px;font-weight:600;color:var(--go);margin-bottom:4px">\U0001f697 Local — no flight needed</div><div style="font-size:11px;color:var(--chalk3)">Lives near the crags.</div></div></div>';
-  if(f.mode==='drive')return '<div class="fc">'+head+'</div><div class="fc-bd" style="padding:10px 12px"><div style="font-size:13px;font-weight:600;color:var(--go);margin-bottom:4px">\U0001f697 Drive / train</div><div style="font-size:11px;color:var(--chalk3)">Drivable — no flight priced.</div></div></div>';
-  var opts=f.options||[];var view=f.view_url||f.book_url;var book=f.book_url||f.view_url;
-  var best=opts.length?'<div class="fc-best">Best value</div>':'';
-  var body;
-  if(!opts.length){
-    body='<div class="fc-bd"><div style="font-size:11px;color:var(--chalk3);margin-bottom:7px">to '+esc(f.to)+' — no live price</div>'+(view?'<a class="fc-btn" href="'+view+'" target="_blank" rel="noopener">Search flights ↗</a>':'')+'</div>';
-  }else{
-    var rows=opts.map(function(o,i){var st=o.stops===0?'Direct':o.stops+'-stop';var lead=i===0?'':'£'+o.price+' ';return '<div class="fc-opt"><span>'+lead+o.dep+'→'+o.arr+' · '+o.from+' · '+esc(o.airline).slice(0,10)+'</span><span class="'+(o.stops===0?'tag-d':'tag-s')+'">'+st+'</span></div>';}).join('');
-    body='<div class="fc-bd"><div class="fc-price">£'+opts[0].price+' <span>return pp</span></div>'+rows+'<a class="fc-btn" href="'+book+'" target="_blank" rel="noopener">Book flight ↗</a>'+(f.view_url?'<a class="fc-btn sec" href="'+f.view_url+'" target="_blank" rel="noopener">See all options</a>':'')+'</div>';
+function hashSeed(s){s=String(s);var h=2166136261;for(var i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619);}return h>>>0;}
+function mulberry(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function ringPath(p){
+  var n=p.length;
+  var d='M'+((p[n-1][0]+p[0][0])/2).toFixed(1)+' '+((p[n-1][1]+p[0][1])/2).toFixed(1);
+  for(var i=0;i<n;i++){
+    var nx=p[(i+1)%n];
+    d+='Q'+p[i][0].toFixed(1)+' '+p[i][1].toFixed(1)+' '+((p[i][0]+nx[0])/2).toFixed(1)+' '+((p[i][1]+nx[1])/2).toFixed(1);
   }
-  return '<div class="fc">'+head+best+'</div>'+body+'</div>';
+  return d+'Z';
+}
+function topoSvg(v){
+  var c=cond(v),rnd=mulberry(hashSeed(v.name));
+  var W=520,H=300,cx=W*0.52+rnd()*W*0.1,cy=H*0.48+rnd()*H*0.08;
+  var P=40,noise=[],ph1=rnd()*6.28,ph2=rnd()*6.28,ph3=rnd()*6.28;
+  for(var q=0;q<P;q++){
+    var a=q/P*6.2832;
+    noise.push(0.5*Math.sin(a*2+ph1)+0.3*Math.sin(a*3+ph2)+0.2*Math.sin(a*5+ph3)+(rnd()-0.5)*0.18);
+  }
+  var rings='';
+  for(var i=6;i>=1;i--){
+    var r=38+(i-1)*20,pts=[];
+    for(q=0;q<P;q++){
+      var a2=q/P*6.2832,rr=r*(1+0.2*noise[q]);
+      pts.push([cx+Math.cos(a2)*rr*1.28,cy+Math.sin(a2)*rr]);
+    }
+    rings+='<path d="'+ringPath(pts)+'" fill="'+(i===1?'var(--card)':'none')+'" stroke="'+c[1]+'" stroke-opacity="'+(i===1?0.9:(0.58-i*0.06).toFixed(2))+'" stroke-width="'+(i===1?1.8:1.1)+'"/>';
+  }
+  var sc=v.score>=0?num(v.score):'–';
+  var summit='<text x="'+cx.toFixed(1)+'" y="'+(cy-1).toFixed(1)+'" text-anchor="middle" dominant-baseline="middle" style="font:600 26px var(--mono);fill:var(--ink)">'+sc+'</text>'
+    +'<text x="'+cx.toFixed(1)+'" y="'+(cy+17).toFixed(1)+'" text-anchor="middle" style="font:600 7px var(--mono);letter-spacing:.18em;fill:var(--muted)">WEATHER /100</text>';
+  return '<svg class="topo" viewBox="0 0 '+W+' '+H+'" aria-hidden="true"><g class="rings">'+rings+'</g>'+summit+'</svg>';
 }
 
-function hotelCard(h){
-  return '<div class="hc"><div class="hc-hd"><div class="hc-name">'+esc(h.name)+'</div><div class="hc-stars">'+Array(h.stars+1).join('★')+'</div></div>'
-    +'<div class="hc-type">'+esc(h.type)+'</div><div class="hc-price">'+h.price+' <span>/ room / night</span></div>'
-    +'<div class="hc-tags">'+h.tags.map(function(t,i){return '<div class="hc-tag'+(i===0?' g':'')+'">'+t+'</div>';}).join('')+'</div>'
-    +'<a class="fc-btn" href="'+h.book+'" target="_blank" rel="noopener">Search on Booking.com ↗</a></div>';
+function bandHtml(v){
+  var c=cond(v);
+  var pills='<span class="pill"><span class="dot" style="background:'+c[1]+'"></span>'+c[0]
+    +(v.wx.rain!=null?' · '+num(v.wx.rain)+'% wet days':'')+'</span>';
+  if(v.wx.live)pills+='<span class="pill">⚡ live forecast for your dates</span>';
+  if(v.grades)pills+='<span class="pill">Trad '+esc(v.grades)+'</span>';
+  return '<header class="band" style="background:'+c[2]+'">'+topoSvg(v)
+    +'<div class="band-body">'
+    +'<div class="eyebrow">No.'+num(v.rank)+' of '+V.length+' · '+esc(v.flag)+' '+esc(v.country)+'</div>'
+    +'<h1 class="vname">'+esc(v.shortName)+'</h1>'
+    +'<div class="vmeta">'+esc(v.style||'')+'</div>'
+    +'<div class="vpills">'+pills+'</div></div></header>';
 }
 
-function guideCard(g){
-  return '<div class="hc" style="display:flex;gap:11px;align-items:center"><div style="font-size:22px">\U0001f4d7</div><div>'
-    +'<div style="font-size:12px;font-weight:600;color:var(--chalk)">'+esc(g.title)+'</div>'
-    +'<div style="font-size:10px;color:var(--chalk3)">'+esc(g.pub)+'</div>'
-    +'<div style="font-size:10px;margin-top:2px"><a href="'+g.url+'" target="_blank" rel="noopener" class="flink">'+g.price+' → Amazon ↗</a></div></div></div>';
+function takeaway(v){
+  var t=(v.series||[]).filter(function(s){return s.trip;});
+  if(!t.length)return '';
+  var wet=t.filter(function(s){return num(s.precip)>=3;}).length;
+  var avgT=Math.round(t.reduce(function(a,s){return a+num(s.tmax);},0)/t.length);
+  var maxW=Math.max.apply(null,t.map(function(s){return num(s.wind);}));
+  var head=v.wx.live?'Forecast for your dates: ':'Typical late July here: ';
+  var wetTxt=wet===0?'<b>rain unlikely</b>':'<b>'+wet+' of '+t.length+' days wet</b>';
+  return '<p class="wx-take">'+head+wetTxt+' · highs around <b>'+avgT+'°C</b> · wind up to <b>'+maxW+' km/h</b>.</p>';
+}
+function wxHtml(v){
+  var s=v.series||[];
+  if(!s.length)return '<div class="sec"><div class="eyebrow">Weather</div><div class="empty">No weather data for this area yet.</div></div>';
+  var n=s.length;
+  var maxR=Math.max.apply(null,s.map(function(d){return num(d.precip);}).concat([1]));
+  var ts=s.map(function(d){return num(d.tmax);});
+  var maxT=Math.max.apply(null,ts),minT=Math.min.apply(null,ts);
+  function cols(fn,cls){
+    return '<div class="wxrow '+(cls||'')+'">'+s.map(function(d,i){
+      return '<div class="wcol'+(d.trip?' trip':'')+'" title="'+esc(d.lbl)+' '+num(d.day)+': '+num(d.tmax)+'°C · '+num(d.precip)+'mm rain · wind '+num(d.wind)+' km/h">'+fn(d,i)+'</div>';
+    }).join('')+'</div>';
+  }
+  var firstTrip=-1;
+  s.forEach(function(d,i){if(d.trip&&firstTrip<0)firstTrip=i;});
+  var bkt=cols(function(d,i){return d.trip&&i===firstTrip?'<span>your dates</span>':'';},'bktrow');
+  var pp=s.map(function(d,i){
+    var pct=maxT===minT?0.5:(num(d.tmax)-minT)/(maxT-minT);
+    return [(i+0.5)/n*1000,88-pct*64];
+  });
+  var line='<svg viewBox="0 0 1000 100" preserveAspectRatio="none"><polyline points="'
+    +pp.map(function(p){return p[0].toFixed(1)+','+p[1].toFixed(1);}).join(' ')
+    +'" fill="none" stroke="var(--temp)" stroke-width="2" stroke-opacity=".7" vector-effect="non-scaling-stroke"/></svg>';
+  var temp='<div class="temparea">'+line+cols(function(d,i){
+    var b=(100-pp[i][1]).toFixed(1);
+    return '<span class="tdot" style="bottom:'+b+'%"></span><span class="tval" style="bottom:calc('+b+'% + 7px)">'+num(d.tmax)+'°</span>';
+  })+'</div>';
+  var rain='<div class="rainarea">'+cols(function(d){
+    var mm=Math.round(num(d.precip)*10)/10;
+    return '<span class="mm">'+(mm>0?mm:'')+'</span><span class="rbarv" style="height:'+(Math.round(num(d.precip)/maxR*46)+2)+'px"></span>';
+  })+'</div>';
+  var days=cols(function(d){return esc(d.lbl)+' '+num(d.day);},'daysrow');
+  var wind=cols(function(d){return '<span class="'+(num(d.wind)>=25?'hi':'')+'">'+num(d.wind)+'</span>';},'windrow');
+  var out=v.seasonal?'<div class="outlook">45-day outlook for your dates: <b>'+num(v.seasonal.tmax)+'°C</b> · <b>'+num(v.seasonal.rain)+'% wet days</b> <span style="color:var(--faint)">(experimental '+num(v.seasonal.members)+'-member ensemble)</span></div>':'';
+  return '<div class="sec"><div class="eyebrow">'+esc(v.chartLabel)+'</div>'+takeaway(v)
+    +'<div class="wxgrid">'
+    +'<div class="wxlbl"></div>'+bkt
+    +'<div class="wxlbl"><span class="sw" style="background:var(--temp)"></span>High °C</div>'+temp
+    +'<div class="wxlbl"><span class="sw" style="background:var(--rain)"></span>Rain mm</div>'+rain
+    +'<div class="wxlbl"></div>'+days
+    +'<div class="wxlbl">Wind km/h</div>'+wind
+    +'</div>'+out+'</div>';
 }
 
-function renderRight(v){
-  var hotels=v.hotels&&v.hotels.length?v.hotels.map(hotelCard).join(''):'<div class="empty">No sample stays for this area.</div>';
-  var guide=v.guide?'<div><div class="r-sec-lbl">Guidebook <span class="mock-tag">sample</span></div>'+guideCard(v.guide)+'</div>':'';
-  document.getElementById('right').innerHTML=
-    '<div class="panel-hd"><div class="panel-hd-row"><span class="panel-title">Plan this trip</span><span class="panel-meta">'+esc(v.shortName)+'</span></div></div>'
-    +'<div class="r-body">'
-    +'<div><div class="r-sec-lbl">Flights · '+D.trip.dates+'</div>'+flightCard('Michel',v.flights.michel,'from London')+flightCard('Dan',v.flights.dan,'from Belfast / Dublin')+'</div>'
-    +'<div><div class="r-sec-lbl">Accommodation near crags <span class="mock-tag">sample</span></div>'+hotels+'</div>'
-    +guide
+function flightCard(who,from,f){
+  var inner;
+  if(!f||f.mode==='unknown'){
+    inner='<div class="empty">No travel info for this area.</div>';
+  }else if(f.mode==='local'){
+    inner='<div class="fmode">Local — no flight needed</div><div class="fmode-sub">Lives near the crags. £0 transport.</div>';
+  }else if(f.mode==='drive'){
+    inner='<div class="fmode">Drive / train</div><div class="fmode-sub">Reachable without flying — nothing to book.</div>';
+  }else{
+    var opts=f.options||[],book=safeUrl(f.book_url||f.view_url),view=safeUrl(f.view_url||f.book_url);
+    if(!opts.length){
+      inner='<div class="fmode-sub">To '+esc(f.to||'?')+' — no live price today.</div>'
+        +(view?'<a class="btn" target="_blank" rel="noopener" href="'+view+'">Search flights ↗</a>':'');
+    }else{
+      var rows=opts.map(function(o,i){
+        var st=num(o.stops)===0?'Direct':num(o.stops)+'-stop';
+        return '<div class="fopt"><span>'+(i?'£'+num(o.price)+' · ':'')+'<b>'+esc(o.dep)+'→'+esc(o.arr)+'</b> '+esc(o.from)+' · '+esc(String(o.airline||'').slice(0,12))+'</span><span class="fstop'+(num(o.stops)===0?' direct':'')+'">'+st+'</span></div>';
+      }).join('');
+      inner='<div class="fprice">£'+num(opts[0].price)+' <span>return · per person</span></div>'+rows
+        +(book?'<a class="btn" target="_blank" rel="noopener" href="'+book+'">Book ↗</a>':'')
+        +(view&&view!==book?'<a class="btn ghost" target="_blank" rel="noopener" href="'+view+'">All options</a>':'');
+    }
+  }
+  return '<div class="fcard"><div class="fwho">'+esc(who)+'</div><div class="ffrom">from '+esc(from)+'</div>'+inner+'</div>';
+}
+
+function climbHtml(c){
+  var img=safeUrl(c.img),pills=[];
+  if(c.pitches)pills.push(num(c.pitches)+' pitches');
+  if(c.length)pills.push(num(c.length)+'m');
+  if(c.approach!=null)pills.push(num(c.approach)+' min walk-in');
+  if(c.dist!=null)pills.push(num(c.dist)+' km away');
+  var ph='<div class="cpills">'+pills.map(function(p){return '<span class="cp">'+p+'</span>';}).join('')
+    +(c.flags||[]).map(function(f){return '<span class="cp warn">⚠ '+esc(f)+'</span>';}).join('')+'</div>';
+  return '<div class="climb"><div class="cthumb">'+(img?'<img src="'+img+'" alt="" loading="lazy" onerror="this.parentElement.textContent=\'🏔\'">':'🏔')+'</div>'
+    +'<div style="min-width:0;flex:1"><div class="cname">'+esc(c.cliff)+'</div><div class="croute">'+esc(c.route)+'</div>'+ph+'</div>'
+    +'<div class="cgrade">'+esc(c.tradGrade||c.grade||'')+'</div></div>';
+}
+
+function hotelHtml(h){
+  var stars='';for(var i=0;i<num(h.stars);i++)stars+='★';
+  return '<div class="hcard"><div style="display:flex;justify-content:space-between;gap:8px"><span class="hname">'+esc(h.name)+'</span><span class="hstars">'+stars+'</span></div>'
+    +'<div class="htype">'+esc(h.type)+'</div><div class="hprice">'+esc(h.price)+' <span>/ room / night</span></div>'
+    +'<div class="htags">'+(h.tags||[]).map(function(t){return '<span class="htag">'+esc(t)+'</span>';}).join('')+'</div>'
+    +(safeUrl(h.book)?'<a class="btn ghost" target="_blank" rel="noopener" href="'+safeUrl(h.book)+'">Search Booking.com ↗</a>':'')+'</div>';
+}
+
+function detailHtml(v){
+  var chips=(v.facts||[]).map(function(f){
+    return '<div class="chip"><div class="chip-l">'+esc(f.lbl)+'</div><div class="chip-v">'+esc(f.val)+'</div><div class="chip-s">'+esc(f.sub)+'</div></div>';
+  }).join('');
+  var climbs=(v.climbs&&v.climbs.length)
+    ?v.climbs.map(climbHtml).join('')
+    :'<div class="empty">multi-pitch.com has not indexed routes here yet — <a class="lk" target="_blank" rel="noopener" href="'+safeUrl(v.mpMap)+'">browse the map ↗</a></div>';
+  var hotels=(v.hotels&&v.hotels.length)
+    ?'<div class="hgrid">'+v.hotels.map(hotelHtml).join('')+'</div>'
+    :'<div class="empty">No stay ideas for this area yet.</div>';
+  var guide=v.guide?'<div class="guide"><div style="font-size:22px">📗</div><div style="flex:1"><div class="hname">'+esc(v.guide.title)+'</div><div class="htype" style="margin-bottom:0">'+esc(v.guide.pub)+' · '+esc(v.guide.price)+'</div></div>'
+    +(safeUrl(v.guide.url)?'<a class="lk" style="font-size:12px;flex-shrink:0" target="_blank" rel="noopener" href="'+safeUrl(v.guide.url)+'">Amazon ↗</a>':'')+'</div>':'';
+  return bandHtml(v)
+    +(chips?'<div class="sec"><div class="chips">'+chips+'</div></div>':'')
+    +wxHtml(v)
+    +'<div class="sec"><div class="eyebrow">Getting there · '+esc(D.trip.dates)+'</div><div class="fgrid">'
+      +flightCard('Michel','London',v.flights&&v.flights.michel)
+      +flightCard('Dan','Belfast / Dublin',v.flights&&v.flights.dan)+'</div></div>'
+    +'<div class="sec"><div class="eyebrow">Why go here</div><div class="why">'+esc(v.why)+'</div>'
+      +(v.basis?'<div class="basis-note">Ranking basis: '+esc(v.basis)+'</div>':'')+'</div>'
+    +'<div class="sec"><div class="eyebrow">Climbs nearby · from multi-pitch.com</div>'+climbs+'</div>'
+    +'<div class="sec"><div class="eyebrow">Stay near the crag<span class="sample">sample data</span></div>'+hotels+guide+'</div>'
+    +'<div class="sec" style="display:flex;gap:8px;flex-wrap:wrap">'
+      +(safeUrl(v.maps)?'<a class="tl" target="_blank" rel="noopener" href="'+safeUrl(v.maps)+'">📍 Google Maps</a>':'')
+      +(safeUrl(v.weather)?'<a class="tl" target="_blank" rel="noopener" href="'+safeUrl(v.weather)+'">🌦 Detailed forecast — Windy</a>':'')
     +'</div>';
 }
 
+var _booted=false;
 function sel(i){
-  var rows=document.querySelectorAll('.a-row');
-  for(var k=0;k<rows.length;k++)rows[k].classList.toggle('active',+rows[k].dataset.i===i);
-  renderCentre(V[i]);renderRight(V[i]);
+  var rows=document.querySelectorAll('.row');
+  for(var k=0;k<rows.length;k++)rows[k].classList.toggle('active',+rows[k].getAttribute('data-i')===i);
+  document.getElementById('detail').innerHTML=detailHtml(V[i]);
+  if(_booted&&window.innerWidth<900)document.getElementById('detail').scrollIntoView({behavior:'smooth',block:'start'});
 }
 sel(0);
+_booted=true;
 """
+
+
+def render_page(data):
+    """Assemble the final page from the embedded-data dict. Kept separate from
+    build_html so the page can be re-rendered from an existing index.html's
+    window.DATA without re-hitting any API."""
+    blob = json.dumps(data, ensure_ascii=False).replace("</", "<\\/")
+    return (PAGE_HEAD
+            + "\n<script>window.DATA=" + blob + ";</script>\n"
+            + PAGE_BODY
+            + "<script>" + PAGE_JS + "</script>\n</body></html>\n")
 
 
 def build_html(ranked, now, banner):
-    """Dark 3-panel 'Live Hub' dashboard: left = venues ranked, centre = area detail
-    (hero + weather + multi-pitch.com climbs), right = flights (live) + stays (sample).
-    All per-venue data is embedded as JSON and rendered client-side so one static
-    file (GitHub Pages) supports switching between areas."""
+    """Light 'guidebook' dashboard: left = ranked leaderboard (score bars), right =
+    area detail (contour-map header with the weather score at the summit, weather
+    rows, flights, climbs, sample stays). All per-venue data is embedded as JSON
+    and rendered client-side so one static file (GitHub Pages) supports switching
+    between areas."""
     payload = [venue_payload(n, r) for n, r in enumerate(ranked, 1)]
     trip = {
         "pills": ["✈ Michel · London", "✈ Dan · Belfast / Dublin",
@@ -1002,11 +1125,7 @@ def build_html(ranked, now, banner):
     }
     data = {"venues": payload, "trip": trip,
             "banner": {"cls": (banner[0] or "info"), "html": banner[1]}}
-    blob = json.dumps(data, ensure_ascii=False).replace("</", "<\\/")
-    return (PAGE_HEAD
-            + "\n<script>window.DATA=" + blob + ";</script>\n"
-            + PAGE_BODY
-            + "<script>" + PAGE_JS + "</script>\n</body></html>\n")
+    return render_page(data)
 
 
 def build_md(ranked, now, banner):
