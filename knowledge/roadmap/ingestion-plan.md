@@ -1,7 +1,7 @@
 # Ingestion Plan — the free, staged build of Phase 1 → 3
 
 > **Purpose:** the concrete "how do we actually start scraping every climb ever written
-> down" plan. Turns the [`mission`](../vision/mission.md)'s Phase 1 (Scraper) → Phase 2
+> down" plan. Turns the [mission](../vision/mission.md)'s Phase 1 (Scraper) → Phase 2
 > (AI Taxonomy) → Phase 3 (Curation) from vision into a buildable, **free-tier**, staged
 > pipeline — starting from a short, named list of sources.
 > **Status:** 🔜 **Planned** — nothing here is built yet. This is the blueprint the first
@@ -23,7 +23,7 @@ other — is resolved by the **bounded scope** and the **two-tier store**.
 
 ## The two-tier store (how "aggressive + free + repo-as-DB" coexist)
 
-The rule: **the repo is the database for the *product*; the firehose lives outside it.**
+The rule: **the repo is the database for the product; the firehose lives outside it.**
 
 | Tier | Contents | Where | Committed? |
 |---|---|---|---|

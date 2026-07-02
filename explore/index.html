@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Route Index — Curated vs Uncurated · multi-pitch Live</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0C0D10;--ink2:#12141B;--ink3:#191C27;--ink4:#20243A;--seam:#252840;
+  --chalk:#EAE6DD;--chalk2:#9B9890;--chalk3:#5A5860;
+  --go:#6CB268;--go-d:rgba(108,178,104,.14);--amb:#C8A44A;--amb-d:rgba(200,164,74,.13);
+  --wet:#B94438;--wet-d:rgba(185,68,56,.13);--spike:#C4FF5C;
+  --r:6px;--r-lg:12px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:var(--ink);color:var(--chalk)}
+body{font-family:'Inter',system-ui,sans-serif;font-size:13px;line-height:1.5;
+display:flex;flex-direction:column;overflow:hidden;-webkit-font-smoothing:antialiased}
+a{color:var(--amb);text-decoration:none}
+/* topbar */
+.top{height:48px;background:var(--ink2);border-bottom:1px solid var(--seam);display:flex;
+align-items:center;gap:12px;padding:0 18px;flex-shrink:0}
+.logo{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--chalk);letter-spacing:-.2px}
+.logo span{color:var(--spike)}
+.top nav{margin-left:auto;display:flex;gap:7px}
+.top nav a{font-size:12px;color:var(--chalk2);border:1px solid var(--seam);border-radius:var(--r);padding:5px 12px}
+.top nav a:hover{color:var(--chalk);border-color:var(--chalk3)}
+.top nav a.on{color:var(--ink);background:var(--spike);border-color:var(--spike);font-weight:700}
+/* controls bar */
+.bar{background:var(--ink2);border-bottom:1px solid var(--seam);padding:10px 18px;display:flex;
+align-items:center;gap:12px;flex-wrap:wrap;flex-shrink:0}
+.bar h1{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;letter-spacing:-.2px;white-space:nowrap}
+.bar .note{font-size:10.5px;color:var(--chalk3)}
+.bar .note a{color:var(--amb)}
+.search{flex:1;min-width:180px;display:flex;align-items:center;gap:7px;background:var(--ink3);
+border:1px solid var(--seam);border-radius:20px;padding:6px 13px;max-width:340px}
+.search input{flex:1;background:none;border:none;color:var(--chalk);font-size:12.5px;font-family:'Inter',sans-serif;outline:none}
+.search input::placeholder{color:var(--chalk3)}
+.tabs{display:flex;gap:4px;background:var(--ink3);border:1px solid var(--seam);border-radius:20px;padding:3px}
+.tab{border:none;background:none;color:var(--chalk2);font-family:'Inter',sans-serif;font-size:11.5px;
+font-weight:600;padding:5px 12px;border-radius:16px;cursor:pointer;white-space:nowrap}
+.tab.on{background:var(--ink4);color:var(--chalk)}
+.tab b{color:var(--spike);margin-left:3px;font-family:'DM Mono',monospace;font-size:10.5px}
+.reset{font-size:10.5px;color:var(--chalk3);cursor:pointer;background:none;border:none;font-family:'Inter',sans-serif}
+.reset:hover{color:var(--wet)}
+/* workspace */
+.ws{flex:1;display:grid;grid-template-columns:minmax(320px,420px) 1fr;overflow:hidden;min-height:0}
+.list{overflow-y:auto;border-right:1px solid var(--seam);padding:12px;display:flex;flex-direction:column;gap:9px;
+scrollbar-width:thin;scrollbar-color:var(--seam) transparent}
+.empty{color:var(--chalk3);font-size:12px;text-align:center;padding:28px 10px}
+/* route card */
+.card{background:var(--ink2);border:1px solid var(--seam);border-radius:var(--r-lg);padding:11px 12px;cursor:pointer;
+transition:border-color .12s,background .12s;position:relative}
+.card:hover{border-color:var(--chalk3)}
+.card.sel{border-color:var(--spike);background:var(--ink3)}
+.card-hd{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.badge{font-size:8px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:2px 6px;border-radius:3px}
+.badge.pub{background:var(--go-d);color:var(--go)}
+.badge.draft{background:var(--amb-d);color:var(--amb)}
+.stars{margin-left:auto;color:var(--amb);font-size:11px;letter-spacing:1px}
+.stars .off{color:var(--seam)}
+.card-name{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--chalk);line-height:1.15}
+.card-sub{font-size:10.5px;color:var(--chalk3);margin-top:1px}
+.chips{display:flex;gap:4px;flex-wrap:wrap;margin-top:7px}
+.chip{font-size:9px;font-weight:600;padding:2px 6px;border-radius:3px;background:var(--ink4);color:var(--chalk2);white-space:nowrap}
+.chip.grade{background:rgba(196,255,92,.1);color:var(--spike);font-family:'DM Mono',monospace}
+.chip.rock{background:var(--go-d);color:var(--go)}
+.chip.danger{background:var(--wet-d);color:var(--wet)}
+.chip.warn{background:var(--amb-d);color:var(--amb)}
+.conf{margin-top:8px;display:flex;align-items:center;gap:7px;font-size:9px;color:var(--chalk3)}
+.conf-bar{flex:1;height:4px;background:var(--ink4);border-radius:2px;overflow:hidden}
+.conf-bar i{display:block;height:100%;background:var(--amb)}
+/* editor */
+.editor{overflow-y:auto;padding:0;scrollbar-width:thin;scrollbar-color:var(--seam) transparent;position:relative}
+.ed-empty{height:100%;display:flex;align-items:center;justify-content:center;color:var(--chalk3);font-size:13px}
+.ed-hero{padding:16px 22px 14px;border-bottom:1px solid var(--seam);display:flex;gap:14px;align-items:flex-start;
+position:sticky;top:0;background:var(--ink);z-index:5}
+.ed-thumb{width:76px;height:62px;border-radius:var(--r);overflow:hidden;flex-shrink:0;background:var(--ink3);
+border:1px solid var(--seam);display:flex;align-items:center;justify-content:center;font-size:26px}
+.ed-thumb img{width:100%;height:100%;object-fit:cover}
+.ed-hero-body{flex:1;min-width:0}
+.ed-title{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--chalk);letter-spacing:-.3px;line-height:1.1}
+.ed-crag{font-size:11.5px;color:var(--chalk2);margin-top:3px}
+.ed-actions{display:flex;gap:7px;margin-top:9px;flex-wrap:wrap}
+.btn{font-family:'Inter',sans-serif;font-size:11px;font-weight:700;border-radius:var(--r);padding:6px 12px;cursor:pointer;border:1px solid var(--seam);background:transparent;color:var(--chalk2)}
+.btn:hover{border-color:var(--chalk3);color:var(--chalk)}
+.btn.promote{background:var(--go);border-color:var(--go);color:var(--ink)}
+.btn.promote:hover{opacity:.88;color:var(--ink)}
+.btn.quarantine{background:var(--amb);border-color:var(--amb);color:var(--ink)}
+.btn.quarantine:hover{opacity:.88;color:var(--ink)}
+.saved{font-size:10px;color:var(--go);margin-left:auto;align-self:center;opacity:0;transition:opacity .2s}
+.saved.show{opacity:1}
+.sec{padding:14px 22px;border-bottom:1px solid var(--seam)}
+.sec-lbl{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--chalk3);margin-bottom:11px;display:flex;align-items:center;gap:6px}
+.sec-lbl .mut{color:var(--chalk3);font-weight:400;letter-spacing:0;text-transform:none;font-size:10px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:11px}
+.f{display:flex;flex-direction:column;gap:4px;min-width:0}
+.f label{font-size:9px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--chalk3)}
+.f input,.f select{background:var(--ink3);border:1px solid var(--seam);border-radius:var(--r);padding:7px 9px;
+color:var(--chalk);font-family:'Inter',sans-serif;font-size:12.5px;outline:none;width:100%}
+.f input:focus,.f select:focus{border-color:var(--chalk3)}
+.f input[type=number]{font-family:'DM Mono',monospace}
+.f .unset{color:var(--chalk3);font-style:italic}
+select option{background:var(--ink2);color:var(--chalk)}
+/* chips-multiselect */
+.pickrow{display:flex;flex-wrap:wrap;gap:5px}
+.pick{font-size:10.5px;font-weight:600;padding:4px 9px;border-radius:14px;border:1px solid var(--seam);
+background:var(--ink3);color:var(--chalk3);cursor:pointer;user-select:none}
+.pick:hover{border-color:var(--chalk3)}
+.pick.on{background:var(--go-d);border-color:var(--go);color:var(--go)}
+/* flags */
+.flags{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:7px}
+.flag{display:flex;align-items:center;gap:8px;background:var(--ink3);border:1px solid var(--seam);border-radius:var(--r);
+padding:7px 10px;cursor:pointer;user-select:none;font-size:11.5px;color:var(--chalk2)}
+.flag:hover{border-color:var(--chalk3)}
+.flag .sw{width:26px;height:15px;border-radius:8px;background:var(--seam);position:relative;flex-shrink:0;transition:background .15s}
+.flag .sw::after{content:"";position:absolute;top:2px;left:2px;width:11px;height:11px;border-radius:50%;background:var(--chalk3);transition:transform .15s,background .15s}
+.flag.on{color:var(--chalk);border-color:var(--amb)}
+.flag.on .sw{background:var(--amb)}
+.flag.on .sw::after{transform:translateX(11px);background:var(--ink)}
+.flag.danger.on{border-color:var(--wet)}
+.flag.danger.on .sw{background:var(--wet)}
+/* stars picker */
+.starpick{display:flex;gap:4px;font-size:22px;color:var(--seam);cursor:pointer;line-height:1}
+.starpick i{cursor:pointer;transition:color .1s}
+.starpick i.on{color:var(--amb)}
+.prov{background:var(--ink3);border:1px solid var(--seam);border-radius:var(--r-lg);padding:11px 13px;margin-top:2px}
+.prov .row{display:flex;gap:8px;align-items:baseline;font-size:11px;margin-bottom:5px}
+.prov .row:last-child{margin-bottom:0}
+.prov .k{color:var(--chalk3);width:74px;flex-shrink:0;font-size:9px;font-weight:700;letter-spacing:.05em;text-transform:uppercase}
+.prov .v{color:var(--chalk2);word-break:break-word}
+.foot{padding:14px 22px 40px;color:var(--chalk3);font-size:10.5px;line-height:1.6}
+@media(max-width:820px){
+  html,body{overflow:auto}
+  .ws{grid-template-columns:1fr;overflow:visible}
+  .list{border-right:none;border-bottom:1px solid var(--seam);max-height:none}
+  .ed-hero{position:static}
+}
+</style></head>
+<body>
+<header class="top">
+  <div class="logo">multi<span>·</span>pitch <span>Live</span></div>
+  <nav>
+    <a href="../index.html">▶ Dashboard</a>
+    <a href="../knowledge/index.html">📚 Knowledge</a>
+    <a class="on" href="index.html">🧭 Explore</a>
+  </nav>
+</header>
+
+<div class="bar">
+  <h1>Route Index</h1>
+  <span class="note">Curated master index vs uncurated scrape candidates · <b style="color:var(--amb)">mock</b> ·
+    edits saved locally · tags follow <a href="../knowledge/data/taxonomy.html">the taxonomy ↗</a></span>
+  <div class="search">🔍<input id="q" type="search" placeholder="Search name, crag, country, grade, rock, tag…" autocomplete="off"></div>
+  <div class="tabs" id="tabs">
+    <button class="tab on" data-tab="all">All<b id="c-all">0</b></button>
+    <button class="tab" data-tab="publish">Curated<b id="c-pub">0</b></button>
+    <button class="tab" data-tab="draft">Uncurated<b id="c-draft">0</b></button>
+  </div>
+  <button class="reset" id="reset" title="Clear local edits and restore the mock data">↺ Reset mock</button>
+</div>
+
+<div class="ws">
+  <div class="list" id="list"></div>
+  <div class="editor" id="editor"><div class="ed-empty">Select a route to view &amp; edit its tags</div></div>
+</div>
+
+<script>
+"use strict";
+
+// ── controlled vocabularies (from knowledge/data/taxonomy.md) ────────────────
+const ENUMS = {
+  rock: ['granite','limestone','dolerite','rhyolite','sandstone','gabbro','quartzite','volcanic','dolomite'],
+  incline: ['Slab','Slab & Vertical','Vertical','Vertical & Overhanging','Overhanging'],
+  face: ['N','NE','E','SE','S','SW','W','NW'],
+  gradeSys: ['BAS','UIAA','YDS','ALP','FS','N'],
+  protection: ['G','PG','PG-13','R','X','runout','terrain','UNSPECIFIED'],
+  approachDifficulty: [1,2,3],
+};
+const STYLES = ['trad','sport','multi-pitch','single-pitch','alpine','big-wall','bouldering',
+  'ice','mixed','snow','aid','deepwatersolo','tr','via-ferrata','slab','face','crack','ridge','arete','chimney'];
+const FLAGS = [
+  ['tidal','Tidal',1],['seepage','Seepage after rain',1],['abseil','Abseil descent',0],
+  ['traverse','Traverse',0],['boat','Boat / swim approach',0],['polished','Polished rock',0],
+  ['loose','Loose rock',1],['grassLedges','Grass ledges',0]
+];
+const CFLAG = {"Scotland":"🏴󠁧󠁢󠁳󠁣󠁴󠁿","England":"🏴󠁧󠁢󠁥󠁮󠁧󠁿","Wales":"🏴󠁧󠁢󠁷󠁬󠁳󠁿","Northern Ireland":"🇬🇧",
+  "Ireland":"🇮🇪","Italy":"🇮🇹","Austria":"🇦🇹","Spain":"🇪🇸","Croatia":"🇭🇷","France":"🇫🇷"};
+
+// ── mock data: 4 curated (fully tagged) + 3 uncurated (sparse, low confidence) ─
+const SEED = [
+  { id:1, status:'publish', routeName:'Original Route', cliff:'Old Man of Stoer', country:'Scotland',
+    county:'Sutherland', geoLocation:'58.246,-5.393', length:67, pitches:5, rock:'sandstone',
+    incline:'Vertical', face:'SE', gradeSys:'BAS', originalGrade:'VS 5a', tradGrade:'VS', techGrade:'5a',
+    dataGrade:5, approachTime:50, approachDifficulty:3, style:['trad','multi-pitch'], protection:'PG',
+    flags:{tidal:1,abseil:1,traverse:1,boat:1}, stars:3, sector_id:'old-man-of-stoer',
+    source:{url:'https://multi-pitch.com/',span:'sea stack, Tyrolean traverse',confidence:0.95}, img:'' },
+  { id:2, status:'publish', routeName:'Poetic Justice', cliff:'Slieve Beg', country:'Northern Ireland',
+    county:'County Down', geoLocation:'54.179,-5.948', length:80, pitches:4, rock:'granite',
+    incline:'Slab & Vertical', face:'NE', gradeSys:'BAS', originalGrade:'VS 4b', tradGrade:'VS', techGrade:'4b',
+    dataGrade:5, approachTime:90, approachDifficulty:2, style:['trad','multi-pitch'], protection:'PG',
+    flags:{seepage:1}, stars:2, sector_id:'slieve-beg',
+    source:{url:'https://multi-pitch.com/',span:'mountain trad, The Devils Coachroad',confidence:0.9},
+    img:'https://multi-pitch.com/img/tiles/slieve-beg-crag-in-the-mourne-mountains.jpg' },
+  { id:3, status:'publish', routeName:'Mosoraški', cliff:'Anica Kuk', country:'Croatia',
+    county:'Paklenica', geoLocation:'44.323,15.451', length:350, pitches:12, rock:'limestone',
+    incline:'Vertical & Overhanging', face:'N', gradeSys:'ALP', originalGrade:'TD (f6a+)', tradGrade:'', techGrade:'',
+    dataGrade:6, approachTime:40, approachDifficulty:2, style:['trad','sport','multi-pitch','big-wall'],
+    protection:'PG-13', flags:{}, stars:3, sector_id:'anica-kuk',
+    source:{url:'https://multi-pitch.com/',span:'north face stays shaded in July',confidence:0.88}, img:'' },
+  { id:4, status:'publish', routeName:'Fedele', cliff:'Sass Pordoi', country:'Italy',
+    county:'Dolomites', geoLocation:'46.500,11.812', length:250, pitches:7, rock:'dolomite',
+    incline:'Vertical', face:'S', gradeSys:'UIAA', originalGrade:'VI+', tradGrade:'', techGrade:'',
+    dataGrade:6, approachTime:35, approachDifficulty:2, style:['trad','multi-pitch','alpine'],
+    protection:'R', flags:{loose:1}, stars:3, sector_id:'sass-pordoi',
+    source:{url:'https://multi-pitch.com/',span:'afternoon convection risk',confidence:0.86},
+    img:'https://multi-pitch.com/img/tiles/fedele-on-sass-pordoi-in-the-alps.jpg' },
+
+  { id:101, status:'draft', routeName:'Unnamed NE Arête (?)', cliff:'Fair Head — east section', country:'Northern Ireland',
+    county:'County Antrim', geoLocation:'55.222,-6.156', length:null, pitches:null, rock:'dolerite',
+    incline:'', face:'', gradeSys:'BAS', originalGrade:'E2 5c (unconfirmed)', tradGrade:'E2', techGrade:'5c',
+    dataGrade:null, approachTime:null, approachDifficulty:null, style:['trad'], protection:'UNSPECIFIED',
+    flags:{}, stars:0, sector_id:null,
+    source:{url:'https://instagram.com/p/…',span:'“stunning arête left of the descent gully, bone dry”',confidence:0.4} },
+  { id:102, status:'draft', routeName:'Direct Finish (beta unverified)', cliff:'Cwm Idwal', country:'Wales',
+    county:'Snowdonia', geoLocation:'53.103,-4.043', length:null, pitches:3, rock:'rhyolite',
+    incline:'Slab', face:'', gradeSys:'BAS', originalGrade:'HS 4b?', tradGrade:'HS', techGrade:'4b',
+    dataGrade:null, approachTime:25, approachDifficulty:1, style:['trad','multi-pitch'], protection:'UNSPECIFIED',
+    flags:{seepage:1}, stars:0, sector_id:null,
+    source:{url:'https://reddit.com/r/climbing/…',span:'“slab was seeping after the storm, gave up p2”',confidence:0.5} },
+  { id:103, status:'draft', routeName:'The Overhang Project', cliff:'Klanci', country:'Croatia',
+    county:'Paklenica', geoLocation:'44.300,15.470', length:null, pitches:null, rock:'',
+    incline:'Overhanging', face:'', gradeSys:'FS', originalGrade:'f7a+', tradGrade:'', techGrade:'',
+    dataGrade:null, approachTime:null, approachDifficulty:null, style:['sport'], protection:'UNSPECIFIED',
+    flags:{}, stars:0, sector_id:null,
+    source:{url:'https://mountainproject.com/…',span:'grade auto-detected from “f7a+” (French sport)',confidence:0.6} },
+];
+
+// ── state + persistence (localStorage; mock only) ────────────────────────────
+const KEY='routeIndexMock.v1';
+let state, sel=null, tab='all', query='';
+function load(){ try{const s=localStorage.getItem(KEY); state=s?JSON.parse(s):structuredClone(SEED);}catch(e){state=structuredClone(SEED);} }
+function save(){ try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){} flashSaved(); }
+function byId(id){ return state.find(r=>r.id===id); }
+
+// ── safety: escape everything that reaches innerHTML ─────────────────────────
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+// ── list rendering ───────────────────────────────────────────────────────────
+const $=id=>document.getElementById(id);
+function matches(r){
+  if(tab!=='all' && r.status!==tab) return false;
+  if(!query) return true;
+  const hay=[r.routeName,r.cliff,r.county,r.country,r.originalGrade,r.rock,r.protection,...(r.style||[])]
+    .join(' ').toLowerCase();
+  return query.toLowerCase().split(/\s+/).every(t=>hay.includes(t));
+}
+function starHtml(n){ n=n||0; let o=''; for(let i=0;i<3;i++)o+=i<n?'★':'<span class="off">★</span>'; return o; }
+function card(r){
+  const chips=[];
+  chips.push(`<span class="chip grade">${esc(r.originalGrade||'—')}</span>`);
+  if(r.rock) chips.push(`<span class="chip rock">${esc(r.rock)}</span>`);
+  (r.style||[]).slice(0,2).forEach(s=>chips.push(`<span class="chip">${esc(s)}</span>`));
+  if(r.protection==='R'||r.protection==='X') chips.push(`<span class="chip danger">${esc(r.protection)}</span>`);
+  const haz=Object.keys(r.flags||{}).filter(k=>r.flags[k]).length;
+  if(haz) chips.push(`<span class="chip warn">⚠ ${haz} flag${haz>1?'s':''}</span>`);
+  const badge=r.status==='publish'?'<span class="badge pub">✓ curated</span>':'<span class="badge draft">draft · quarantined</span>';
+  let conf='';
+  if(r.status==='draft' && r.source){
+    const pct=Math.round((r.source.confidence||0)*100);
+    conf=`<div class="conf">src ${esc(new URL(r.source.url,'https://x/').hostname||'source').replace('www.','')} · confidence
+      <div class="conf-bar"><i style="width:${pct}%"></i></div>${pct}%</div>`;
+  }
+  return `<div class="card${sel===r.id?' sel':''}" data-id="${r.id}">
+    <div class="card-hd">${badge}<div class="stars">${starHtml(r.stars)}</div></div>
+    <div class="card-name">${esc(r.routeName)}</div>
+    <div class="card-sub">${esc(CFLAG[r.country]||'📍')} ${esc(r.cliff)} · ${esc(r.county||r.country)}</div>
+    <div class="chips">${chips.join('')}</div>${conf}</div>`;
+}
+function renderList(){
+  const rows=state.filter(matches);
+  $('c-all').textContent=state.length;
+  $('c-pub').textContent=state.filter(r=>r.status==='publish').length;
+  $('c-draft').textContent=state.filter(r=>r.status==='draft').length;
+  $('list').innerHTML = rows.length
+    ? rows.map(card).join('')
+    : '<div class="empty">No routes match.</div>';
+}
+
+// ── editor rendering ─────────────────────────────────────────────────────────
+function opts(list,val){ return ['<option value="">— unset —</option>']
+  .concat(list.map(o=>`<option value="${esc(o)}"${String(o)===String(val)?' selected':''}>${esc(o)}</option>`)).join(''); }
+function field(label,name,val,type='text',ph=''){
+  return `<div class="f"><label>${esc(label)}</label>
+    <input data-field="${name}" type="${type}" value="${esc(val==null?'':val)}" placeholder="${esc(ph)}"></div>`;
+}
+function selField(label,name,list,val){
+  return `<div class="f"><label>${esc(label)}</label>
+    <select data-field="${name}">${opts(list,val)}</select></div>`;
+}
+function renderEditor(){
+  const ed=$('editor');
+  if(sel==null){ ed.innerHTML='<div class="ed-empty">Select a route to view &amp; edit its tags</div>'; return; }
+  const r=byId(sel); if(!r){ sel=null; return renderEditor(); }
+  const thumb=r.img?`<img src="${esc(r.img)}" alt="" onerror="this.parentElement.textContent='🏔'">`:'🏔';
+  const promoteBtn=r.status==='draft'
+    ? `<button class="btn promote" data-act="promote">✓ Promote to curated</button>`
+    : `<button class="btn quarantine" data-act="quarantine">⤵ Quarantine (draft)</button>`;
+  const styleChips=STYLES.map(s=>`<span class="pick${(r.style||[]).includes(s)?' on':''}" data-style="${esc(s)}">${esc(s)}</span>`).join('');
+  const flagRows=FLAGS.map(([k,lbl,danger])=>`<div class="flag${r.flags&&r.flags[k]?' on':''}${danger?' danger':''}" data-flag="${k}"><span class="sw"></span>${esc(lbl)}</div>`).join('');
+  const starRow=[0,1,2].map(i=>`<i data-star="${i+1}" class="${(r.stars||0)>i?'on':''}">★</i>`).join('');
+  const prov = r.source ? `<div class="prov">
+      <div class="row"><span class="k">Source</span><span class="v"><a href="${esc(r.source.url)}" target="_blank" rel="noopener">${esc(r.source.url)}</a></span></div>
+      <div class="row"><span class="k">Extracted</span><span class="v">${esc(r.source.span)}</span></div>
+      <div class="row"><span class="k">Confidence</span><span class="v">${Math.round((r.source.confidence||0)*100)}%</span></div>
+    </div>` : '';
+
+  ed.innerHTML = `
+  <div class="ed-hero">
+    <div class="ed-thumb">${thumb}</div>
+    <div class="ed-hero-body">
+      <div class="ed-title">${esc(r.routeName)}</div>
+      <div class="ed-crag">${esc(CFLAG[r.country]||'📍')} ${esc(r.cliff)} · ${esc(r.county||'')} · ${esc(r.country)}</div>
+      <div class="ed-actions">${promoteBtn}
+        <button class="btn" data-act="revert">↺ Revert route</button>
+        <span class="saved" id="saved">✓ saved locally</span></div>
+    </div>
+  </div>
+
+  <div class="sec"><div class="sec-lbl">Identity &amp; location</div>
+    <div class="grid">
+      ${field('Route name','routeName',r.routeName)}
+      ${field('Cliff / sector','cliff',r.cliff)}
+      ${field('Country','country',r.country)}
+      ${field('County / region','county',r.county)}
+      ${field('Geo (lat,lon)','geoLocation',r.geoLocation,'text','54.1,-6.0')}
+      <div class="f"><label>Sector ID <span style="color:var(--chalk3)">(master-index FK)</span></label>
+        <input data-field="sector_id" value="${esc(r.sector_id||'')}" placeholder="unmatched — quarantined"></div>
+    </div></div>
+
+  <div class="sec"><div class="sec-lbl">Physical character</div>
+    <div class="grid">
+      ${field('Length (m)','length',r.length,'number')}
+      ${field('Pitches','pitches',r.pitches,'number')}
+      ${selField('Rock','rock',ENUMS.rock,r.rock)}
+      ${selField('Incline','incline',ENUMS.incline,r.incline)}
+      ${selField('Face / aspect','face',ENUMS.face,r.face)}
+    </div></div>
+
+  <div class="sec"><div class="sec-lbl">Difficulty <span class="mut">— keep the raw grade + its system</span></div>
+    <div class="grid">
+      ${selField('Grade system','gradeSys',ENUMS.gradeSys,r.gradeSys)}
+      ${field('Original grade','originalGrade',r.originalGrade)}
+      ${field('Trad (adjectival)','tradGrade',r.tradGrade)}
+      ${field('Tech','techGrade',r.techGrade)}
+      ${field('dataGrade (1–7)','dataGrade',r.dataGrade,'number')}
+    </div></div>
+
+  <div class="sec"><div class="sec-lbl">Approach</div>
+    <div class="grid">
+      ${field('Approach time (min)','approachTime',r.approachTime,'number')}
+      ${selField('Approach difficulty (1–3)','approachDifficulty',ENUMS.approachDifficulty,r.approachDifficulty)}
+    </div></div>
+
+  <div class="sec"><div class="sec-lbl">Discipline / style <span class="mut">— composable, pick any</span></div>
+    <div class="pickrow" id="styles">${styleChips}</div></div>
+
+  <div class="sec"><div class="sec-lbl">Protection &amp; hazard flags</div>
+    <div class="grid" style="margin-bottom:12px">
+      ${selField('Protection (safety grade)','protection',ENUMS.protection,r.protection)}
+    </div>
+    <div class="flags" id="flags">${flagRows}</div></div>
+
+  <div class="sec"><div class="sec-lbl">Curation</div>
+    <div class="grid" style="align-items:center">
+      <div class="f"><label>Quality (editorial stars)</label><div class="starpick" id="starpick">${starRow}</div></div>
+      <div class="f"><label>Status</label><input data-field="status" value="${esc(r.status)}" readonly style="color:${r.status==='publish'?'var(--go)':'var(--amb)'}"></div>
+    </div>
+    <div style="margin-top:11px"><label style="font-size:9px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--chalk3)">Provenance</label>${prov}</div>
+  </div>
+
+  <div class="foot">Mock data. Every field above is the tagging target from
+    <a href="../knowledge/data/route-schema.html">route-schema.md</a>; enums come from
+    <a href="../knowledge/data/taxonomy.html">taxonomy.md</a>. Edits persist in your browser only
+    (localStorage) — “Reset mock” restores the seed. Curated = <span style="color:var(--go)">status: publish</span>,
+    mapped to a verified sector. Uncurated = <span style="color:var(--amb)">status: draft</span>, quarantined until it maps to the master index (Zero-Garbage UGC).</div>`;
+}
+
+// ── mutations ────────────────────────────────────────────────────────────────
+function setField(name,value){
+  const r=byId(sel); if(!r) return;
+  if(['length','pitches','dataGrade','approachTime'].includes(name)) value = value===''?null:Number(value);
+  if(name==='approachDifficulty') value = value===''?null:Number(value);
+  r[name]=value; save();
+}
+function flashSaved(){ const s=$('saved'); if(s){ s.classList.add('show'); clearTimeout(flashSaved._t); flashSaved._t=setTimeout(()=>s.classList.remove('show'),1200);} }
+
+// ── events ───────────────────────────────────────────────────────────────────
+$('list').addEventListener('click',e=>{ const c=e.target.closest('.card'); if(!c)return; sel=Number(c.dataset.id); renderList(); renderEditor(); });
+
+$('editor').addEventListener('input',e=>{ const f=e.target.dataset.field; if(f && f!=='status'){ setField(f,e.target.value); if(['routeName','cliff','county','country','originalGrade','rock','protection'].includes(f)) renderList(); } });
+$('editor').addEventListener('change',e=>{ const f=e.target.dataset.field; if(f && e.target.tagName==='SELECT'){ setField(f,e.target.value); renderList(); if(f==='protection') renderEditor(); } });
+
+$('editor').addEventListener('click',e=>{
+  const r=byId(sel); if(!r) return;
+  const st=e.target.closest('[data-style]');
+  if(st){ const v=st.dataset.style; r.style=r.style||[]; const i=r.style.indexOf(v);
+    if(i<0)r.style.push(v); else r.style.splice(i,1); save(); st.classList.toggle('on'); renderList(); return; }
+  const fl=e.target.closest('[data-flag]');
+  if(fl){ const k=fl.dataset.flag; r.flags=r.flags||{}; r.flags[k]=r.flags[k]?0:1; if(!r.flags[k])delete r.flags[k];
+    save(); fl.classList.toggle('on'); renderList(); return; }
+  const str=e.target.closest('[data-star]');
+  if(str){ const n=Number(str.dataset.star); r.stars=(r.stars===n)?0:n; save(); renderEditor(); renderList(); return; }
+  const act=e.target.closest('[data-act]'); if(!act) return;
+  const a=act.dataset.act;
+  if(a==='promote'){ r.status='publish'; if(!r.sector_id) r.sector_id=(r.cliff||'sector').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''); save(); renderEditor(); renderList(); }
+  else if(a==='quarantine'){ r.status='draft'; save(); renderEditor(); renderList(); }
+  else if(a==='revert'){ const seed=SEED.find(s=>s.id===r.id); if(seed){ Object.assign(r,structuredClone(seed)); save(); renderEditor(); renderList(); } }
+});
+
+$('q').addEventListener('input',e=>{ query=e.target.value.trim(); renderList(); });
+$('tabs').addEventListener('click',e=>{ const t=e.target.closest('.tab'); if(!t)return;
+  tab=t.dataset.tab; document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===t)); renderList(); });
+$('reset').addEventListener('click',()=>{ if(confirm('Discard local edits and restore the mock seed data?')){ localStorage.removeItem(KEY); load(); sel=null; renderList(); renderEditor(); } });
+
+// ── boot ─────────────────────────────────────────────────────────────────────
+load();
+sel = state.length ? state[0].id : null;
+renderList();
+renderEditor();
+</script>
+</body></html>

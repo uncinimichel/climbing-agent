@@ -297,6 +297,7 @@ TITLES = {
     "operations/external-apis": ("External APIs", "Open-Meteo, SerpApi, multi-pitch data.json."),
     "operations/runbook": ("Runbook", "Run / verify / maintain, day to day."),
     "roadmap/roadmap": ("Roadmap", "Prototype → platform, staged."),
+    "roadmap/ingestion-plan": ("Ingestion Plan", "The free, staged build of Phase 1→3 — sources, scraping, tagging, curation."),
     "roadmap/decisions": ("Decision Log", "Lightweight ADRs — why we chose X."),
 }
 GROUPS = [
@@ -309,7 +310,7 @@ GROUPS = [
                           "data/schemas", "data/condition-algorithm", "data/references",
                           "data/external-models"]),
     ("Operations", ["operations/deployment", "operations/external-apis", "operations/runbook"]),
-    ("Roadmap", ["roadmap/roadmap", "roadmap/decisions"]),
+    ("Roadmap", ["roadmap/roadmap", "roadmap/ingestion-plan", "roadmap/decisions"]),
 ]
 
 
