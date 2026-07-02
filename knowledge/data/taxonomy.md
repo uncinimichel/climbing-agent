@@ -31,7 +31,10 @@ Extend deliberately — a new rock type is a curation decision, not a free-text 
 Rock-friction/seepage figures are sourced in [`references.md`](references.md) (friction
 science; wet-sandstone hazard).
 
-## Climbing style
+## Climbing style / discipline
+
+**Composable, not exclusive** — a route carries a *set* of these (following OpenBeta's
+`ClimbType`, where a route can be e.g. sport *and* top-rope). Store as an array.
 
 | Value | Meaning |
 |---|---|
@@ -41,9 +44,19 @@ science; wet-sandstone hazard).
 | `single-pitch` | One rope-length. |
 | `alpine` | Mountain approach, altitude, mixed commitment. |
 | `big-wall` | Multi-day / very long (e.g. Paklenica's Anica Kuk up to 350 m). |
-| `slab` / `face` / `crack` / `ridge` | Feature type, optional secondary tag. |
+| `bouldering` | Ropeless, low, over pads. |
+| `ice` | Frozen falls/ice (WI grades). |
+| `mixed` | Rock + ice (M grades). |
+| `snow` | Snow climbing. |
+| `aid` | Weighting gear to progress (A/C grades). |
+| `deepwatersolo` | Ropeless over water (DWS). |
+| `tr` | Top-rope. |
+| `via-ferrata` | Protected cabled route. |
+| `slab` / `face` / `crack` / `ridge` / `arête` / `chimney` | Feature type, optional secondary tag. |
 
-Styles combine (e.g. `trad` + `multi-pitch` + `alpine`).
+Styles combine (e.g. `trad` + `multi-pitch` + `alpine`). The extended disciplines
+(`bouldering`…`via-ferrata`) are adopted from external models —
+see [`external-models.md`](external-models.md).
 
 ## Protection quality (safety grade)
 
@@ -58,6 +71,12 @@ introduced by **Jim Erickson in 1980**, borrowed from the US **movie-rating** sy
 | `PG-13` | Mostly good; some runouts or marginal placements. |
 | `R` | **Serious** — runout; a fall risks injury. |
 | `X` | **Extreme** — ground-fall / death potential; essentially unprotected. |
+| `runout` | A stretch with no protection below you (from OpenBeta's `SafetyEnum`). |
+| `terrain` | Danger from the terrain itself (loose ground, ledges) rather than fall distance. |
+| `UNSPECIFIED` | Protection not yet assessed — the honest default, don't guess. |
+
+The `runout` / `terrain` / `UNSPECIFIED` values are adopted from OpenBeta — see
+[`external-models.md`](external-models.md).
 
 Parser guidance: map prose ("bold", "serious", "spaced gear", "committing", "no gear for
 10 m") to the grade **with a rationale and the source span**, then validate against this

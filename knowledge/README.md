@@ -47,7 +47,8 @@ knowledge/
 │   ├── grade-conversion.md   ← normalized dataGrade 1–7 ladder across grade systems
 │   ├── schemas.md            ← JSON shapes: venues, flights, conditions
 │   ├── condition-algorithm.md← the predictive condition scoring maths
-│   └── references.md         ← authorities: people, books, encyclopedias + grade origins
+│   ├── references.md         ← authorities: people, books, encyclopedias + grade origins
+│   └── external-models.md    ← how UKC/theCrag/MP/OpenBeta model data + what to adopt
 │
 ├── operations/
 │   ├── deployment.md         ← GitHub Actions + Pages + secrets

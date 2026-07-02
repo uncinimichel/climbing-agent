@@ -98,6 +98,21 @@ technical gap seeds the `protection` field, and (b) rock-friction/wet-sandstone 
 grounds the condition model.
 **Status:** ✅ Documented; cross-linked from taxonomy / grade-conversion / condition-algorithm.
 
+### #13 — Learn from the world's climbing databases; target OpenBeta for interop (2026-07-02)
+**Decision:** benchmark our taxonomy against UKClimbing, theCrag, Mountain Project, and
+**OpenBeta**, and adopt their proven ideas — hierarchical areas with inheritance, a
+cascading `gradeContext`, an all-systems `grades{}` object, composable disciplines,
+structured `pitches[]`, richer safety (`runout`/`terrain`), editorial stars, structured
+first-ascent, and an access/stewardship layer. Captured in
+[`../data/external-models.md`](../data/external-models.md).
+**Why:** these are battle-tested at 150k–1M-route scale. Crucially, **OpenBeta is open,
+CC-licensed data with a GraphQL API** — a license-clean ingestion source (safer than
+scraping ToS-restricted UGC sites) and a schema worth aligning to for loss-less interop.
+**Scope:** structural changes (hierarchy, gradeContext, multi-system grades) are **Stage-5
+schema-v2 work**, not yet applied to the live single-trip model; enum extensions (disciplines,
+safety) are documented now in [`../data/taxonomy.md`](../data/taxonomy.md).
+**Status:** ⚠️ Documented + enums extended; structural adoption planned.
+
 ---
 
 *Template for new entries:*

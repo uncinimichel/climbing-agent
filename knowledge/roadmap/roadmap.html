@@ -92,6 +92,10 @@ border-bottom:1px solid var(--seam)}
 <ul><li>NLP/LLM parsing of guidebook prose → the strict data dictionary</li></ul>
 <p>  (<a href="../data/taxonomy.html"><code>data/taxonomy.md</code></a>), validated against enums, with provenance +   confidence. Prefer Claude models (see <code>/claude-api</code>).</p>
 <h2 id="stage-5-full-scale-ingestion-build-phase-1">Stage 5 — Full-scale ingestion (build Phase 1)</h2>
+<ul><li><strong>OpenBeta as a first-class, license-clean source.</strong> OpenBeta is CC-licensed open climbing</li></ul>
+<p>  data with a public GraphQL API — <em>meant</em> to be ingested, unlike ToS-restricted UKC/MP   scraping. Ingest it into the master index by geo + name match. See   <a href="../data/external-models.html"><code>../data/external-models.md</code></a>.</p>
+<ul><li><strong>Schema v2 aligned to OpenBeta</strong> — hierarchical areas + inheritance, <code>gradeContext</code>,</li></ul>
+<p>  all-systems <code>grades{}</code>, composable <code>ClimbType</code>, structured <code>pitches[]</code>, <code>SafetyEnum</code>   (+<code>runout</code>/<code>terrain</code>), access/stewardship layer. Enables loss-less import/export.</p>
 <ul><li><strong>Social condition scrapers</strong> (Meta/X/TikTok geotags, guide whitelists) — respecting</li></ul>
 <p>  ToS + privacy; aggregated, non-personal summaries only.</p>
 <ul><li><strong>Static guidebook/register crawlers</strong> at web scale, writing to a raw-record store.</li></ul>

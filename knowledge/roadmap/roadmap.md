@@ -63,6 +63,13 @@ Turn the rain-proxy into the vision's **Predictive Condition Algorithm**:
 
 ## Stage 5 — Full-scale ingestion (build Phase 1)
 
+- **OpenBeta as a first-class, license-clean source.** OpenBeta is CC-licensed open climbing
+  data with a public GraphQL API — *meant* to be ingested, unlike ToS-restricted UKC/MP
+  scraping. Ingest it into the master index by geo + name match. See
+  [`../data/external-models.md`](../data/external-models.md).
+- **Schema v2 aligned to OpenBeta** — hierarchical areas + inheritance, `gradeContext`,
+  all-systems `grades{}`, composable `ClimbType`, structured `pitches[]`, `SafetyEnum`
+  (+`runout`/`terrain`), access/stewardship layer. Enables loss-less import/export.
 - **Social condition scrapers** (Meta/X/TikTok geotags, guide whitelists) — respecting
   ToS + privacy; aggregated, non-personal summaries only.
 - **Static guidebook/register crawlers** at web scale, writing to a raw-record store.

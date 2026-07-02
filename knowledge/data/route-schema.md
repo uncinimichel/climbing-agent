@@ -135,3 +135,12 @@ else (flags, prose, media, references) enriches it toward guidebook quality.
    source evidence; carry the source span.
 5. **Prose to the style rules above**, with provenance + confidence.
 6. **`status: draft`** anything not yet human-verified — only `publish` surfaces.
+
+## Proposed extensions (from the world's climbing databases)
+
+This schema is the *curated depth* baseline. A review of UKClimbing, theCrag, Mountain
+Project, and **OpenBeta** yielded concrete upgrades — a hierarchical area model with
+inheritance, a `gradeContext`, an all-systems `grades{}` object, composable disciplines,
+structured `pitches[]`, `boltsCount`/rack, editorial `stars`, structured first-ascent, and
+an access/stewardship layer. Full analysis and priorities in
+[`external-models.md`](external-models.md).
