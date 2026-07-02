@@ -1,0 +1,103 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Conventions · multi-pitch Live</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"><style>
+:root{--ink:#0C0D10;--ink2:#12141B;--ink3:#191C27;--ink4:#20243A;--seam:#252840;
+--chalk:#EAE6DD;--chalk2:#9B9890;--chalk3:#5A5860;--go:#6CB268;--amb:#C8A44A;
+--wet:#B94438;--spike:#C4FF5C;--r:6px;--r-lg:12px}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--ink);color:var(--chalk)}
+body{font-family:'Inter',system-ui,sans-serif;font-size:15px;line-height:1.65;
+-webkit-font-smoothing:antialiased}
+.top{position:sticky;top:0;z-index:10;height:48px;background:var(--ink2);
+border-bottom:1px solid var(--seam);display:flex;align-items:center;gap:12px;padding:0 18px}
+.logo{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--chalk);
+letter-spacing:-.2px;text-decoration:none}
+.top a.btn{margin-left:auto;font-size:12px;color:var(--chalk2);text-decoration:none;
+border:1px solid var(--seam);border-radius:var(--r);padding:5px 12px}
+.top a.btn:hover{color:var(--chalk);border-color:var(--chalk3)}
+.wrap{max-width:860px;margin:0 auto;padding:32px 22px 96px}
+.crumb{font-size:12px;color:var(--chalk3);margin-bottom:22px;font-family:'DM Mono',monospace}
+.crumb a{color:var(--chalk2);text-decoration:none}
+.crumb a:hover{color:var(--spike)}
+h1,h2,h3,h4{font-family:'Syne',sans-serif;letter-spacing:-.3px;line-height:1.25;
+scroll-margin-top:64px}
+h1{font-size:30px;font-weight:800;margin:.2em 0 .6em}
+h2{font-size:21px;font-weight:700;margin:1.8em 0 .5em;padding-top:.4em;
+border-top:1px solid var(--seam)}
+h3{font-size:16.5px;font-weight:700;margin:1.4em 0 .4em;color:var(--chalk)}
+h4{font-size:14px;font-weight:700;margin:1.2em 0 .3em;color:var(--chalk2)}
+p{margin:.7em 0}
+a{color:var(--amb);text-decoration:none;border-bottom:1px solid rgba(200,164,74,.28)}
+a:hover{color:var(--spike);border-bottom-color:var(--spike)}
+strong{color:#fff;font-weight:600}
+code{font-family:'DM Mono',ui-monospace,monospace;font-size:.86em;background:var(--ink3);
+border:1px solid var(--seam);border-radius:4px;padding:1px 5px;color:var(--amb)}
+pre{background:var(--ink2);border:1px solid var(--seam);border-radius:var(--r-lg);
+padding:16px 18px;overflow-x:auto;margin:1em 0}
+pre code{background:none;border:none;padding:0;color:var(--chalk2);font-size:12.5px;
+line-height:1.5;white-space:pre}
+blockquote{margin:1.1em 0;padding:.4em 16px;border-left:3px solid var(--amb);
+background:var(--amb-d,rgba(200,164,74,.07));border-radius:0 var(--r) var(--r) 0;
+color:var(--chalk2)}
+blockquote p{margin:.4em 0}
+hr{border:none;border-top:1px solid var(--seam);margin:2em 0}
+ul,ol{margin:.6em 0;padding-left:1.4em}
+li{margin:.28em 0}
+li>ul,li>ol{margin:.25em 0}
+.tw{overflow-x:auto;margin:1.1em 0;border:1px solid var(--seam);border-radius:var(--r-lg)}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--seam);
+vertical-align:top}
+th{background:var(--ink3);font-family:'Syne',sans-serif;font-weight:700;font-size:12px;
+color:var(--chalk);white-space:nowrap}
+tr:last-child td{border-bottom:none}
+td code{white-space:nowrap}
+.idx-group{margin:1.4em 0}
+.idx-group h3{border-bottom:1px solid var(--seam);padding-bottom:.3em}
+.idx-card{display:block;padding:12px 14px;margin:8px 0;background:var(--ink2);
+border:1px solid var(--seam);border-radius:var(--r-lg);color:var(--chalk);
+border-bottom:1px solid var(--seam)}
+.idx-card:hover{border-color:var(--chalk3);color:var(--chalk)}
+.idx-card b{font-family:'Syne',sans-serif}
+.idx-card span{display:block;color:var(--chalk2);font-size:13px;margin-top:2px}
+@media(max-width:600px){.wrap{padding:22px 15px 80px}h1{font-size:24px}body{font-size:14px}}
+</style></head><body><div class=top><a class=logo href="../index.html">🧗 multi-pitch <span style="color:var(--spike)">Live</span></a><a class=btn href="../knowledge/index.html">📚 Knowledge</a><a class=btn href="../index.html">▶ Dashboard</a></div><div class=wrap><div class=crumb><a href="index.html">📚 knowledge</a> / <b style='color:var(--chalk2)'>CONVENTIONS</b></div><h1 id="conventions">Conventions</h1>
+<p>How to write docs and code in this repo, so the knowledge base stays trustworthy and the engine stays maintainable. Read this before contributing (human or agent).</p>
+<h2 id="documentation-conventions">Documentation conventions</h2>
+<ul><li><strong>Vision vs reality, always separated.</strong> State the North Star, then label what's real</li></ul>
+<p>  with ✅ live · ⚠️ partial · ⛔ <em>(planned)</em>. Never let aspiration read as fact — the   antidote is <a href="architecture/current-state.html"><code>architecture/current-state.md</code></a>.</p>
+<ul><li><strong>This folder is reference, not a changelog.</strong> Durable "how/why" lives here; the trip's</li></ul>
+<p>  running state lives in <code>trip-ni-july-2026/</code> (report, history, log). Don't duplicate.</p>
+<ul><li><strong>One concept per file</strong>, cross-linked. Prefer linking to repeating.</li><li><strong>Keep it in sync with code.</strong> If you change scoring, the workflow, or a schema, update</li></ul>
+<p>  the matching doc in the same change. Stale docs are worse than none.</p>
+<ul><li><strong>Cite the source of truth.</strong> When a doc describes behaviour, point at the file that</li></ul>
+<p>  implements it (<code>update_report.py</code>, <code>weather.yml</code>, <code>venues.json</code>).</p>
+<ul><li><strong>Log non-obvious calls</strong> in <a href="roadmap/decisions.html"><code>roadmap/decisions.md</code></a>.</li><li><strong>Honest uncertainty.</strong> Where a number is a weak signal (sub-seasonal outlook), say so.</li></ul>
+<h2 id="code-conventions">Code conventions</h2>
+<ul><li><strong>Config over code.</strong> Add venues/dates/routes by editing <code>venues.json</code> / <code>flights.json</code>,</li></ul>
+<p>  never by hard-coding in the script. The script reads config to decide what to do.</p>
+<ul><li><strong>Outputs are generated — never hand-edit</strong> <code>index.html</code>, <code>daily-report.md</code>,</li></ul>
+<p>  <code>history/*</code>, or <code>*-latest.json</code>. Edit the generator (<code>update_report.py</code>) instead.</p>
+<ul><li><strong>Determinism where it's verified.</strong> Climatology scoring must be reproducible (two runs</li></ul>
+<p>  → identical order). Don't introduce nondeterminism into the ranking base.</p>
+<ul><li><strong>Degrade, never crash.</strong> Any external source can fail; define the fallback (weaker</li></ul>
+<p>  basis, search link, cached value). The daily build must not hard-fail on an outage.</p>
+<ul><li><strong>Quota discipline.</strong> Guard paid APIs with a constant cap (<code>TOP_N_FLIGHTS</code>); log what</li></ul>
+<p>  was dropped rather than silently truncating.</p>
+<ul><li><strong>Match the surrounding style.</strong> Mirror the existing naming, comment density, and idiom</li></ul>
+<p>  in <code>update_report.py</code>.</p>
+<h2 id="secrets-privacy">Secrets &amp; privacy</h2>
+<ul><li><strong>No secrets in committed files.</strong> <code>SERPAPI_KEY</code> lives in a GitHub Actions secret +</li></ul>
+<p>  gitignored <code>.env</code>. The build must run without it.</p>
+<ul><li><strong>No personal data in the public repo.</strong> The repo is public for free Pages; PII (e.g.</li></ul>
+<p>  home address) stays in Claude's local memory only.</p>
+<ul><li><strong>Social scraping (planned):</strong> respect platform ToS + privacy; emit only aggregated,</li></ul>
+<p>  non-personal condition summaries — never raw personal captures into the repo.</p>
+<h2 id="git-workflow">Git / workflow</h2>
+<ul><li><strong>Docs-only commits skip the expensive build</strong> (<code>paths-ignore: [&#x27;**.md&#x27;]</code> in the</li></ul>
+<p>  workflow) — so editing this knowledge base won't burn SerpApi quota. Good.</p>
+<ul><li>Commit or push only when asked; branch off <code>main</code> first if you do.</li><li>The daily job commits as <code>trip-bot</code>; a no-change run commits nothing.</li></ul>
+<h2 id="naming">Naming</h2>
+<ul><li>Knowledge files: lowercase-kebab, grouped by the numbered/topic folders above.</li><li>Data dictionary values: closed enums from <a href="data/taxonomy.html"><code>data/taxonomy.md</code></a> — never</li></ul>
+<p>  invent an off-dictionary value.</p>
+<ul><li>Venues: keep a stable <code>name</code>; carry <code>lat</code>/<code>lon</code>, <code>priority</code>, <code>rock</code>, <code>style</code>, <code>why</code>.</li></ul>
+<h2 id="for-ai-agents-picking-up-this-repo">For AI agents picking up this repo</h2>
+<ol><li>Read <code>README.md</code> → <code>architecture/current-state.md</code> → the relevant <code>phases/</code> file.</li><li>Check <code>data/schemas.md</code> and <code>operations/</code> before writing code.</li><li>Prefer config edits to code edits.</li><li>Run the <a href="operations/runbook.html">verification checklist</a> after changes.</li><li>Log decisions; keep vision and reality clearly separated.</li><li>When the task touches Claude/Anthropic APIs, consult the <code>/claude-api</code> reference.</li></ol></div></body></html>

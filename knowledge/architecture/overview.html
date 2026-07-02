@@ -1,0 +1,113 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Architecture Overview · multi-pitch Live</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"><style>
+:root{--ink:#0C0D10;--ink2:#12141B;--ink3:#191C27;--ink4:#20243A;--seam:#252840;
+--chalk:#EAE6DD;--chalk2:#9B9890;--chalk3:#5A5860;--go:#6CB268;--amb:#C8A44A;
+--wet:#B94438;--spike:#C4FF5C;--r:6px;--r-lg:12px}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--ink);color:var(--chalk)}
+body{font-family:'Inter',system-ui,sans-serif;font-size:15px;line-height:1.65;
+-webkit-font-smoothing:antialiased}
+.top{position:sticky;top:0;z-index:10;height:48px;background:var(--ink2);
+border-bottom:1px solid var(--seam);display:flex;align-items:center;gap:12px;padding:0 18px}
+.logo{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--chalk);
+letter-spacing:-.2px;text-decoration:none}
+.top a.btn{margin-left:auto;font-size:12px;color:var(--chalk2);text-decoration:none;
+border:1px solid var(--seam);border-radius:var(--r);padding:5px 12px}
+.top a.btn:hover{color:var(--chalk);border-color:var(--chalk3)}
+.wrap{max-width:860px;margin:0 auto;padding:32px 22px 96px}
+.crumb{font-size:12px;color:var(--chalk3);margin-bottom:22px;font-family:'DM Mono',monospace}
+.crumb a{color:var(--chalk2);text-decoration:none}
+.crumb a:hover{color:var(--spike)}
+h1,h2,h3,h4{font-family:'Syne',sans-serif;letter-spacing:-.3px;line-height:1.25;
+scroll-margin-top:64px}
+h1{font-size:30px;font-weight:800;margin:.2em 0 .6em}
+h2{font-size:21px;font-weight:700;margin:1.8em 0 .5em;padding-top:.4em;
+border-top:1px solid var(--seam)}
+h3{font-size:16.5px;font-weight:700;margin:1.4em 0 .4em;color:var(--chalk)}
+h4{font-size:14px;font-weight:700;margin:1.2em 0 .3em;color:var(--chalk2)}
+p{margin:.7em 0}
+a{color:var(--amb);text-decoration:none;border-bottom:1px solid rgba(200,164,74,.28)}
+a:hover{color:var(--spike);border-bottom-color:var(--spike)}
+strong{color:#fff;font-weight:600}
+code{font-family:'DM Mono',ui-monospace,monospace;font-size:.86em;background:var(--ink3);
+border:1px solid var(--seam);border-radius:4px;padding:1px 5px;color:var(--amb)}
+pre{background:var(--ink2);border:1px solid var(--seam);border-radius:var(--r-lg);
+padding:16px 18px;overflow-x:auto;margin:1em 0}
+pre code{background:none;border:none;padding:0;color:var(--chalk2);font-size:12.5px;
+line-height:1.5;white-space:pre}
+blockquote{margin:1.1em 0;padding:.4em 16px;border-left:3px solid var(--amb);
+background:var(--amb-d,rgba(200,164,74,.07));border-radius:0 var(--r) var(--r) 0;
+color:var(--chalk2)}
+blockquote p{margin:.4em 0}
+hr{border:none;border-top:1px solid var(--seam);margin:2em 0}
+ul,ol{margin:.6em 0;padding-left:1.4em}
+li{margin:.28em 0}
+li>ul,li>ol{margin:.25em 0}
+.tw{overflow-x:auto;margin:1.1em 0;border:1px solid var(--seam);border-radius:var(--r-lg)}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--seam);
+vertical-align:top}
+th{background:var(--ink3);font-family:'Syne',sans-serif;font-weight:700;font-size:12px;
+color:var(--chalk);white-space:nowrap}
+tr:last-child td{border-bottom:none}
+td code{white-space:nowrap}
+.idx-group{margin:1.4em 0}
+.idx-group h3{border-bottom:1px solid var(--seam);padding-bottom:.3em}
+.idx-card{display:block;padding:12px 14px;margin:8px 0;background:var(--ink2);
+border:1px solid var(--seam);border-radius:var(--r-lg);color:var(--chalk);
+border-bottom:1px solid var(--seam)}
+.idx-card:hover{border-color:var(--chalk3);color:var(--chalk)}
+.idx-card b{font-family:'Syne',sans-serif}
+.idx-card span{display:block;color:var(--chalk2);font-size:13px;margin-top:2px}
+@media(max-width:600px){.wrap{padding:22px 15px 80px}h1{font-size:24px}body{font-size:14px}}
+</style></head><body><div class=top><a class=logo href="../../index.html">🧗 multi-pitch <span style="color:var(--spike)">Live</span></a><a class=btn href="../../knowledge/index.html">📚 Knowledge</a><a class=btn href="../../index.html">▶ Dashboard</a></div><div class=wrap><div class=crumb><a href="../index.html">📚 knowledge</a> / architecture / <b style='color:var(--chalk2)'>overview</b></div><h1 id="architecture-overview">Architecture Overview</h1>
+<p>How the four vision layers map onto concrete components. This is the <strong>target</strong> architecture; components that don't exist yet are marked <em>(planned)</em>. For what actually runs today, see <a href="current-state.html"><code>current-state.md</code></a>.</p>
+<h2 id="the-pipeline">The pipeline</h2>
+<pre><code>┌── PHASE 1: SCRAPER ──────────┐  ┌── PHASE 2: AI TAXONOMY ─────┐  ┌── PHASE 3: CURATION ───┐  ┌── PHASE 4: PLANNER ──────┐
+│ Static crawlers   (planned)  │  │ Taxonomy Engine  (planned)  │  │ Master index of        │  │ Split-screen dashboard   │
+│ Social scrapers   (planned)  │  │  NLP → strict data dict     │  │  classic sectors        │  │  (index.html) ✅         │
+│ Weather pulls     ✅         │──▶│ Predictive Condition Algo   │──▶│ Zero-garbage filter     │──▶│ Contingency engine       │
+│ Flight pulls      ✅         │  │  friction/dry/seepage ⚠️     │  │  (manual venues.json ⚠️)│  │  (3 dry alts) (planned)  │
+│ Climb geo-match   ✅         │  │  weather scoring  ✅         │  │                         │  │ Daily rebuild ✅         │
+└──────────────────────────────┘  └─────────────────────────────┘  └─────────────────────────┘  └──────────────────────────┘
+        raw JSON / text                normalized records              curated venue set            rendered HTML + history</code></pre>
+<p>Legend: ✅ live · ⚠️ partial / simplified · <em>(planned)</em> not built.</p>
+<h2 id="component-layer-map">Component ↔ layer map</h2>
+<div class="tw"><table><thead><tr><th>Vision layer</th><th>Concrete component (today or planned)</th><th>File / location</th></tr></thead><tbody><tr><td>1 · Scraper</td><td>Open-Meteo weather pulls (archive/forecast/seasonal)</td><td><code>scripts/update_report.py</code></td></tr><tr><td>1 · Scraper</td><td>SerpApi Google Flights pulls</td><td><code>scripts/update_report.py</code></td></tr><tr><td>1 · Scraper</td><td>multi-pitch.com <code>data.json</code> climb geo-match</td><td><code>scripts/update_report.py</code></td></tr><tr><td>1 · Scraper</td><td>Static guidebook crawlers <em>(planned)</em></td><td>—</td></tr><tr><td>1 · Scraper</td><td>Social condition scrapers (Meta/X/TikTok) <em>(planned)</em></td><td>—</td></tr><tr><td>2 · Taxonomy</td><td>Strict data dictionary</td><td><code>knowledge/data/taxonomy.md</code></td></tr><tr><td>2 · Taxonomy</td><td>NLP text→metadata parser <em>(planned)</em></td><td>—</td></tr><tr><td>2 · Condition Algo</td><td><code>day_score</code> / <code>climo_score</code> / seasonal blend ✅</td><td><code>scripts/update_report.py</code></td></tr><tr><td>2 · Condition Algo</td><td>Friction / seepage / drying model ⚠️ (rain-proxy only)</td><td><code>knowledge/data/condition-algorithm.md</code></td></tr><tr><td>3 · Curation</td><td>Master index of classic sectors ⚠️ (hand-curated)</td><td><code>venues.json</code>, <code>climbing-trips.csv</code></td></tr><tr><td>4 · Planner</td><td>Live dashboard ✅</td><td><code>index.html</code> (GitHub Pages)</td></tr><tr><td>4 · Planner</td><td>Per-venue weather mini-graph + flights ✅</td><td><code>index.html</code></td></tr><tr><td>4 · Contingency</td><td>"3 dry alternatives" auto-flag <em>(planned)</em></td><td>—</td></tr><tr><td>— Orchestration</td><td>Daily serverless rebuild ✅</td><td><code>.github/workflows/weather.yml</code></td></tr></tbody></table></div>
+<h2 id="runtime-model-fully-serverless-free">Runtime model: fully serverless &amp; free</h2>
+<p>Everything runs inside <strong>GitHub Actions on a schedule</strong> — no laptop, no Claude in the daily loop, no paid server.</p>
+<pre><code>                  ┌─────────────────── GitHub Actions (cloud) ───────────────────┐
+ cron 06:00 UTC   │ build job:                                                    │
+ (or push, or ──  │   1. checkout repo                                            │
+  manual run)     │   2. python update_report.py                                 │
+                  │        ├─ Open-Meteo archive   → July climatology + graph    │
+                  │        ├─ Open-Meteo forecast  → 16-day live forecast        │
+                  │        ├─ Open-Meteo seasonal  → 45-day outlook / venue      │
+                  │        ├─ multi-pitch.com data.json → nearby climbs          │
+                  │        ├─ rank venues (live ▸ climatology+45d blend)         │
+                  │        └─ SerpApi Google Flights → top-N venues × travellers │
+                  │   3. write index.html + daily-report.md + history/&lt;date&gt;.md  │
+                  │   4. git commit + push  (the commit IS the history)          │
+                  │   5. upload-pages-artifact                                   │
+                  │ deploy job:                                                  │
+                  │   6. deploy-pages ───────────────────────────┐              │
+                  └──────────────────────────────────────────── │ ─────────────┘
+                                                                 ▼
+                          https://uncinimichel.github.io/climbing-agent/  (public)</code></pre>
+<ul><li><strong>Triggers:</strong> <code>schedule</code> (daily 06:00 UTC), <code>push</code> to <code>main</code> (non-docs), and manual</li></ul>
+<p>  <code>workflow_dispatch</code>. All run the same build.</p>
+<ul><li><strong>State:</strong> the repo <em>is</em> the database. <code>flights-latest.json</code> = latest snapshot;</li></ul>
+<p>  <code>history/</code> + git log = the permanent archive.</p>
+<ul><li><strong>Secrets:</strong> only <code>SERPAPI_KEY</code> (GitHub Actions secret, mirrored in gitignored <code>.env</code>).</li></ul>
+<p>  Weather APIs need no key.</p>
+<ul><li><strong>Failure modes:</strong> weather APIs retry; if SerpApi is unavailable the build still</li></ul>
+<p>  succeeds and flight cells fall back to search links; a no-change run commits nothing   and just redeploys.</p>
+<h2 id="key-architectural-decisions">Key architectural decisions</h2>
+<p>See <a href="../roadmap/decisions.html"><code>roadmap/decisions.md</code></a> for the full log. The load-bearing ones:</p>
+<ol><li><strong>Config-driven, not code-driven.</strong> <code>venues.json</code> and <code>flights.json</code> are single</li></ol>
+<p>   sources of truth; the script reads them to decide what to query and price.</p>
+<ol><li><strong>Three weather horizons, all free.</strong> Live 16-day forecast › climatology (ERA5) ›</li></ol>
+<p>   45-day seasonal outlook, blended and clearly labelled by basis.</p>
+<ol><li><strong>Repo-as-database.</strong> No external DB; versioned JSON + git history give reproducibility</li></ol>
+<p>   and a free audit trail.</p>
+<ol><li><strong>Quota discipline.</strong> Only the top-N venues are priced for flights to stay within the</li></ol>
+<p>   SerpApi free quota.</p></div></body></html>

@@ -1,0 +1,105 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Deployment · multi-pitch Live</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"><style>
+:root{--ink:#0C0D10;--ink2:#12141B;--ink3:#191C27;--ink4:#20243A;--seam:#252840;
+--chalk:#EAE6DD;--chalk2:#9B9890;--chalk3:#5A5860;--go:#6CB268;--amb:#C8A44A;
+--wet:#B94438;--spike:#C4FF5C;--r:6px;--r-lg:12px}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--ink);color:var(--chalk)}
+body{font-family:'Inter',system-ui,sans-serif;font-size:15px;line-height:1.65;
+-webkit-font-smoothing:antialiased}
+.top{position:sticky;top:0;z-index:10;height:48px;background:var(--ink2);
+border-bottom:1px solid var(--seam);display:flex;align-items:center;gap:12px;padding:0 18px}
+.logo{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--chalk);
+letter-spacing:-.2px;text-decoration:none}
+.top a.btn{margin-left:auto;font-size:12px;color:var(--chalk2);text-decoration:none;
+border:1px solid var(--seam);border-radius:var(--r);padding:5px 12px}
+.top a.btn:hover{color:var(--chalk);border-color:var(--chalk3)}
+.wrap{max-width:860px;margin:0 auto;padding:32px 22px 96px}
+.crumb{font-size:12px;color:var(--chalk3);margin-bottom:22px;font-family:'DM Mono',monospace}
+.crumb a{color:var(--chalk2);text-decoration:none}
+.crumb a:hover{color:var(--spike)}
+h1,h2,h3,h4{font-family:'Syne',sans-serif;letter-spacing:-.3px;line-height:1.25;
+scroll-margin-top:64px}
+h1{font-size:30px;font-weight:800;margin:.2em 0 .6em}
+h2{font-size:21px;font-weight:700;margin:1.8em 0 .5em;padding-top:.4em;
+border-top:1px solid var(--seam)}
+h3{font-size:16.5px;font-weight:700;margin:1.4em 0 .4em;color:var(--chalk)}
+h4{font-size:14px;font-weight:700;margin:1.2em 0 .3em;color:var(--chalk2)}
+p{margin:.7em 0}
+a{color:var(--amb);text-decoration:none;border-bottom:1px solid rgba(200,164,74,.28)}
+a:hover{color:var(--spike);border-bottom-color:var(--spike)}
+strong{color:#fff;font-weight:600}
+code{font-family:'DM Mono',ui-monospace,monospace;font-size:.86em;background:var(--ink3);
+border:1px solid var(--seam);border-radius:4px;padding:1px 5px;color:var(--amb)}
+pre{background:var(--ink2);border:1px solid var(--seam);border-radius:var(--r-lg);
+padding:16px 18px;overflow-x:auto;margin:1em 0}
+pre code{background:none;border:none;padding:0;color:var(--chalk2);font-size:12.5px;
+line-height:1.5;white-space:pre}
+blockquote{margin:1.1em 0;padding:.4em 16px;border-left:3px solid var(--amb);
+background:var(--amb-d,rgba(200,164,74,.07));border-radius:0 var(--r) var(--r) 0;
+color:var(--chalk2)}
+blockquote p{margin:.4em 0}
+hr{border:none;border-top:1px solid var(--seam);margin:2em 0}
+ul,ol{margin:.6em 0;padding-left:1.4em}
+li{margin:.28em 0}
+li>ul,li>ol{margin:.25em 0}
+.tw{overflow-x:auto;margin:1.1em 0;border:1px solid var(--seam);border-radius:var(--r-lg)}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--seam);
+vertical-align:top}
+th{background:var(--ink3);font-family:'Syne',sans-serif;font-weight:700;font-size:12px;
+color:var(--chalk);white-space:nowrap}
+tr:last-child td{border-bottom:none}
+td code{white-space:nowrap}
+.idx-group{margin:1.4em 0}
+.idx-group h3{border-bottom:1px solid var(--seam);padding-bottom:.3em}
+.idx-card{display:block;padding:12px 14px;margin:8px 0;background:var(--ink2);
+border:1px solid var(--seam);border-radius:var(--r-lg);color:var(--chalk);
+border-bottom:1px solid var(--seam)}
+.idx-card:hover{border-color:var(--chalk3);color:var(--chalk)}
+.idx-card b{font-family:'Syne',sans-serif}
+.idx-card span{display:block;color:var(--chalk2);font-size:13px;margin-top:2px}
+@media(max-width:600px){.wrap{padding:22px 15px 80px}h1{font-size:24px}body{font-size:14px}}
+</style></head><body><div class=top><a class=logo href="../../index.html">🧗 multi-pitch <span style="color:var(--spike)">Live</span></a><a class=btn href="../../knowledge/index.html">📚 Knowledge</a><a class=btn href="../../index.html">▶ Dashboard</a></div><div class=wrap><div class=crumb><a href="../index.html">📚 knowledge</a> / operations / <b style='color:var(--chalk2)'>deployment</b></div><h1 id="deployment">Deployment</h1>
+<p>The engine is <strong>fully serverless and free</strong> — it runs in GitHub Actions on a schedule and publishes to GitHub Pages. No laptop, no paid server, no Claude in the daily loop.</p>
+<h2 id="the-daily-job-github-workflows-weather-yml">The daily job — <code>.github/workflows/weather.yml</code></h2>
+<h3 id="triggers">Triggers</h3>
+<ul><li><code>schedule: &quot;0 6 * * *&quot;</code> — daily at <strong>06:00 UTC</strong>.</li><li><code>push</code> to <code>main</code> — rebuild + redeploy, but <code>paths-ignore: [&#x27;**.md&#x27;]</code> so docs-only</li></ul>
+<p>  commits don't burn SerpApi quota.</p>
+<ul><li><code>workflow_dispatch</code> — manual "Run workflow" button.</li></ul>
+<p>All three run the same build.</p>
+<h3 id="permissions-concurrency">Permissions &amp; concurrency</h3>
+<pre><code>permissions:
+  contents: write   # commit the updated report back
+  pages: write      # deploy to GitHub Pages
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: true   # avoid overlapping deploys</code></pre>
+<h3 id="jobs">Jobs</h3>
+<ol><li><strong>build</strong> (<code>ubuntu-latest</code>):<ul><li><code>actions/checkout@v4</code></li><li><code>actions/setup-python@v5</code> (Python 3.12)</li><li>Run <code>python3 trip-ni-july-2026/scripts/update_report.py</code> with</li></ul></li></ol>
+<p>     <code>SERPAPI_KEY</code> from secrets in <code>env</code>.</p>
+<ul><li>Commit changed outputs (<code>index.html</code>, <code>.nojekyll</code>, <code>daily-report.md</code>, <code>history/</code>,</li></ul>
+<p>     <code>flights-latest.json</code>) as user <code>trip-bot</code>; <strong>no-change → no commit</strong>.</p>
+<ul><li><code>actions/upload-pages-artifact@v3</code> (path <code>.</code>).</li></ul><ol><li><strong>deploy</strong> (<code>needs: build</code>): <code>actions/deploy-pages@v4</code> → publishes to Pages.</li></ol>
+<h3 id="output">Output</h3>
+<p>&lt;https://uncinimichel.github.io/climbing-agent/&gt; — public, mobile.</p>
+<h2 id="secrets">Secrets</h2>
+<div class="tw"><table><thead><tr><th>Secret</th><th>Where</th><th>Purpose</th></tr></thead><tbody><tr><td><code>SERPAPI_KEY</code></td><td>GitHub Actions secret <strong>+</strong> gitignored local <code>.env</code></td><td>Google Flights via SerpApi. Masked in logs.</td></tr></tbody></table></div>
+<ul><li><strong>Weather APIs need no key</strong> (Open-Meteo).</li><li><code>.env</code> is <strong>gitignored</strong> — never commit it. No secret should appear in any committed</li></ul>
+<p>  file.</p>
+<ul><li><strong>Rotate the key:</strong></li></ul>
+<p>  <code>gh secret set SERPAPI_KEY --repo uncinimichel/climbing-agent</code> and update local <code>.env</code>.   (The key was once pasted in chat → rotating is advisable.)</p>
+<h2 id="hosting-pages">Hosting / Pages</h2>
+<ul><li><strong>GitHub Pages</strong>, <code>build_type = workflow</code> (deploy from the Action, not a branch).</li><li>The repo is <strong>public</strong> (required for free rendered Pages). No personal data lives in the</li></ul>
+<p>  repo — the home address is only in Claude's local memory, never committed.</p>
+<ul><li><code>.nojekyll</code> disables Jekyll processing so the raw HTML is served as-is.</li></ul>
+<h2 id="state-model">State model</h2>
+<p>The <strong>repo is the database</strong>:</p>
+<ul><li><code>flights-latest.json</code> — latest snapshot (persists across weather-only runs).</li><li><code>history/YYYY-MM-DD.md</code> + git log — the permanent, append-only archive.</li></ul>
+<h2 id="operational-cautions">Operational cautions</h2>
+<ul><li><strong>SerpApi quota</strong> — top-4 venues × 2 travellers ≈ up to 8 searches/day. Balance is</li></ul>
+<p>  finite; top up near the trip, or lower <code>TOP_N_FLIGHTS</code> / run less often to throttle.</p>
+<ul><li><strong>Scheduled jobs can lag</strong> a few minutes and are **paused after ~60 days of repo</li></ul>
+<p>  inactivity** — not a risk here (it commits daily).</p>
+<ul><li><strong>Node20→24 deprecation</strong> on some actions is a warning only; bump versions when</li></ul>
+<p>  convenient (backlog item).</p></div></body></html>

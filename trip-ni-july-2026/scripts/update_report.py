@@ -822,6 +822,7 @@ PAGE_BODY = """<body>
   <div class="divider-v"></div>
   <div class="ctx" id="ctx"></div>
   <div class="top-right">
+    <a class="btn-g" href="knowledge/index.html">\U0001f4da Knowledge</a>
     <a class="btn-g" id="mapBtn" target="_blank" rel="noopener">\U0001f5fa Map</a>
     <a class="btn-g" id="sheetBtn" target="_blank" rel="noopener">\U0001f4cb Spreadsheet</a>
     <a class="btn-p" id="mpBtn" target="_blank" rel="noopener">multi-pitch.com ↗</a>

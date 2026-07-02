@@ -35,12 +35,16 @@ jobs:
           SERPAPI_KEY: ${{ secrets.SERPAPI_KEY }}
         run: python3 trip-ni-july-2026/scripts/update_report.py
 
+      - name: Build knowledge base (Markdown → HTML for GitHub Pages)
+        run: python3 trip-ni-july-2026/scripts/build_knowledge.py
+
       - name: Commit changes if any
         run: |
           git config user.name  "trip-bot"
           git config user.email "actions@github.com"
           git add index.html .nojekyll trip-ni-july-2026/daily-report.md \
-                  trip-ni-july-2026/history/ trip-ni-july-2026/flights-latest.json
+                  trip-ni-july-2026/history/ trip-ni-july-2026/flights-latest.json \
+                  knowledge/
           if git diff --staged --quiet; then
             echo "No changes."
           else

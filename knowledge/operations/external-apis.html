@@ -1,0 +1,93 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>External APIs · multi-pitch Live</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"><style>
+:root{--ink:#0C0D10;--ink2:#12141B;--ink3:#191C27;--ink4:#20243A;--seam:#252840;
+--chalk:#EAE6DD;--chalk2:#9B9890;--chalk3:#5A5860;--go:#6CB268;--amb:#C8A44A;
+--wet:#B94438;--spike:#C4FF5C;--r:6px;--r-lg:12px}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--ink);color:var(--chalk)}
+body{font-family:'Inter',system-ui,sans-serif;font-size:15px;line-height:1.65;
+-webkit-font-smoothing:antialiased}
+.top{position:sticky;top:0;z-index:10;height:48px;background:var(--ink2);
+border-bottom:1px solid var(--seam);display:flex;align-items:center;gap:12px;padding:0 18px}
+.logo{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--chalk);
+letter-spacing:-.2px;text-decoration:none}
+.top a.btn{margin-left:auto;font-size:12px;color:var(--chalk2);text-decoration:none;
+border:1px solid var(--seam);border-radius:var(--r);padding:5px 12px}
+.top a.btn:hover{color:var(--chalk);border-color:var(--chalk3)}
+.wrap{max-width:860px;margin:0 auto;padding:32px 22px 96px}
+.crumb{font-size:12px;color:var(--chalk3);margin-bottom:22px;font-family:'DM Mono',monospace}
+.crumb a{color:var(--chalk2);text-decoration:none}
+.crumb a:hover{color:var(--spike)}
+h1,h2,h3,h4{font-family:'Syne',sans-serif;letter-spacing:-.3px;line-height:1.25;
+scroll-margin-top:64px}
+h1{font-size:30px;font-weight:800;margin:.2em 0 .6em}
+h2{font-size:21px;font-weight:700;margin:1.8em 0 .5em;padding-top:.4em;
+border-top:1px solid var(--seam)}
+h3{font-size:16.5px;font-weight:700;margin:1.4em 0 .4em;color:var(--chalk)}
+h4{font-size:14px;font-weight:700;margin:1.2em 0 .3em;color:var(--chalk2)}
+p{margin:.7em 0}
+a{color:var(--amb);text-decoration:none;border-bottom:1px solid rgba(200,164,74,.28)}
+a:hover{color:var(--spike);border-bottom-color:var(--spike)}
+strong{color:#fff;font-weight:600}
+code{font-family:'DM Mono',ui-monospace,monospace;font-size:.86em;background:var(--ink3);
+border:1px solid var(--seam);border-radius:4px;padding:1px 5px;color:var(--amb)}
+pre{background:var(--ink2);border:1px solid var(--seam);border-radius:var(--r-lg);
+padding:16px 18px;overflow-x:auto;margin:1em 0}
+pre code{background:none;border:none;padding:0;color:var(--chalk2);font-size:12.5px;
+line-height:1.5;white-space:pre}
+blockquote{margin:1.1em 0;padding:.4em 16px;border-left:3px solid var(--amb);
+background:var(--amb-d,rgba(200,164,74,.07));border-radius:0 var(--r) var(--r) 0;
+color:var(--chalk2)}
+blockquote p{margin:.4em 0}
+hr{border:none;border-top:1px solid var(--seam);margin:2em 0}
+ul,ol{margin:.6em 0;padding-left:1.4em}
+li{margin:.28em 0}
+li>ul,li>ol{margin:.25em 0}
+.tw{overflow-x:auto;margin:1.1em 0;border:1px solid var(--seam);border-radius:var(--r-lg)}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--seam);
+vertical-align:top}
+th{background:var(--ink3);font-family:'Syne',sans-serif;font-weight:700;font-size:12px;
+color:var(--chalk);white-space:nowrap}
+tr:last-child td{border-bottom:none}
+td code{white-space:nowrap}
+.idx-group{margin:1.4em 0}
+.idx-group h3{border-bottom:1px solid var(--seam);padding-bottom:.3em}
+.idx-card{display:block;padding:12px 14px;margin:8px 0;background:var(--ink2);
+border:1px solid var(--seam);border-radius:var(--r-lg);color:var(--chalk);
+border-bottom:1px solid var(--seam)}
+.idx-card:hover{border-color:var(--chalk3);color:var(--chalk)}
+.idx-card b{font-family:'Syne',sans-serif}
+.idx-card span{display:block;color:var(--chalk2);font-size:13px;margin-top:2px}
+@media(max-width:600px){.wrap{padding:22px 15px 80px}h1{font-size:24px}body{font-size:14px}}
+</style></head><body><div class=top><a class=logo href="../../index.html">🧗 multi-pitch <span style="color:var(--spike)">Live</span></a><a class=btn href="../../knowledge/index.html">📚 Knowledge</a><a class=btn href="../../index.html">▶ Dashboard</a></div><div class=wrap><div class=crumb><a href="../index.html">📚 knowledge</a> / operations / <b style='color:var(--chalk2)'>external-apis</b></div><h1 id="external-apis">External APIs</h1>
+<p>Every external source the engine touches, with keys, quotas, and failure behaviour. Golden rule: <strong>any single source failing must not fail the build</strong> — degrade to a weaker basis or a search link.</p>
+<h2 id="open-meteo-weather-free-no-key">Open-Meteo — weather (free, no key)</h2>
+<p>Three endpoints, one provider, consistent format. The backbone of the ranking.</p>
+<div class="tw"><table><thead><tr><th>Endpoint</th><th>Host</th><th>Gives</th><th>Used for</th></tr></thead><tbody><tr><td><strong>Archive</strong></td><td><code>archive-api.open-meteo.com</code></td><td>ERA5 historical (July averages)</td><td>Climatology base ranking + per-venue mini-graph. One ranged request/venue → deterministic.</td></tr><tr><td><strong>Forecast</strong></td><td><code>api.open-meteo.com</code></td><td>16-day live forecast</td><td>Ranks the trip once in range (~8 July); supersedes other bases.</td></tr><tr><td><strong>Seasonal</strong></td><td><code>seasonal-api.open-meteo.com</code></td><td>CFS ensemble, ~45 days–9 months</td><td>Sub-seasonal outlook; blended 70/30 into ranking beyond live range.</td></tr></tbody></table></div>
+<ul><li><strong>Key:</strong> none. <strong>Retry:</strong> 4× on failure.</li><li><strong>Degradation:</strong> seasonal failure → climatology-only; the banner stays honest about the</li></ul>
+<p>  basis.</p>
+<h2 id="serpapi-google-flights-keyed-quota-limited">SerpApi — Google Flights (keyed, quota-limited)</h2>
+<ul><li><strong>Host:</strong> <code>serpapi.com</code> (Google Flights engine).</li><li><strong>Key:</strong> <code>SERPAPI_KEY</code> — GitHub Actions secret + gitignored <code>.env</code>. Never committed.</li><li><strong>What:</strong> a representative round-trip per venue for Michel (from London) and Dan (from</li></ul>
+<p>  Belfast/Dublin) into the venue airport; 3 best-value options with <strong>outbound</strong> times +   book links.</p>
+<ul><li><strong>Quota discipline:</strong> only the <strong>top-N (=4)</strong> ranked venues are priced, one combo each</li></ul>
+<p>  → ≤ 8 searches/day. <code>TOP_N_FLIGHTS</code> throttles this.</p>
+<ul><li><strong>Degradation:</strong> missing/exhausted key → flight cells fall back to "search ↗" links; the</li></ul>
+<p>  build still succeeds.</p>
+<ul><li><strong>NI special case:</strong> Dan is <code>local</code> → no flight priced for him at NI venues.</li></ul>
+<h2 id="multi-pitch-com-data-json-curated-climbs-free">multi-pitch.com <code>data.json</code> — curated climbs (free)</h2>
+<ul><li>The platform's own climb dataset, pre-cleaned. Nearby climbs are <strong>geo-matched</strong> to each</li></ul>
+<p>  venue's <code>lat</code>/<code>lon</code> and linked from the card.</p>
+<ul><li>No key. Feeds the "source links" and (future) the curated master index.</li></ul>
+<h2 id="windy-forecast-deep-link-no-api">Windy — forecast deep-link (no API)</h2>
+<ul><li>The card's "forecast ↗" links to Windy for the venue coordinates. Presentation only, no</li></ul>
+<p>  data pulled.</p>
+<h2 id="longer-range-weather-researched-alternatives">Longer-range weather — researched alternatives</h2>
+<p>If more sub-seasonal skill/resolution is ever needed (all beyond the current free stack):</p>
+<div class="tw"><table><thead><tr><th>Option</th><th>Notes</th></tr></thead><tbody><tr><td><strong>Open-Meteo Seasonal</strong></td><td><strong>Chosen</strong> — free, no key, same provider/format. Already wired in.</td></tr><tr><td>Visual Crossing Timeline</td><td>Free tier w/ key; one call returns near-date forecast + statistical estimate beyond.</td></tr><tr><td>OpenWeather One Call <code>day_summary</code></td><td>Statistical estimate for any future date (the old multi-pitch project's key).</td></tr><tr><td>Meteomatics / AccuWeather 45-day</td><td>Paid, higher skill.</td></tr></tbody></table></div>
+<h2 id="planned-sources-phase-1-gaps">Planned sources ⛔ (Phase 1 gaps)</h2>
+<ul><li><strong>Social condition scrapers</strong> — Meta groups, X, TikTok geotags, guide whitelists.</li></ul>
+<p>  Respect platform ToS + privacy; emit only aggregated, non-personal summaries.</p>
+<ul><li><strong>Static guidebook/register crawlers</strong> — web-scale ingestion of unstructured guides.</li><li><strong>Tides</strong> — a free/low-cost tide source for sea-cliff venues (Fair Head, Gower,</li></ul>
+<p>  Cornwall) to flag non-tidal climbing windows.</p>
+<h2 id="rules-for-adding-an-api">Rules for adding an API</h2>
+<ol><li>Wrap in a <strong>retrying</strong> fetch; never let it hard-fail the build.</li><li><strong>Degrade gracefully</strong> — define the fallback (weaker basis, search link, cached value).</li><li>Keys go in <strong>secrets + gitignored <code>.env</code></strong>, never in code or committed files.</li><li><strong>Quota-guard</strong> paid sources (cap the number of calls; make the cap a constant).</li><li>Document it <strong>here</strong> — endpoint, key, quota, degradation.</li></ol></div></body></html>

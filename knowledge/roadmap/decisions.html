@@ -1,0 +1,93 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Decision Log · multi-pitch Live</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"><style>
+:root{--ink:#0C0D10;--ink2:#12141B;--ink3:#191C27;--ink4:#20243A;--seam:#252840;
+--chalk:#EAE6DD;--chalk2:#9B9890;--chalk3:#5A5860;--go:#6CB268;--amb:#C8A44A;
+--wet:#B94438;--spike:#C4FF5C;--r:6px;--r-lg:12px}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--ink);color:var(--chalk)}
+body{font-family:'Inter',system-ui,sans-serif;font-size:15px;line-height:1.65;
+-webkit-font-smoothing:antialiased}
+.top{position:sticky;top:0;z-index:10;height:48px;background:var(--ink2);
+border-bottom:1px solid var(--seam);display:flex;align-items:center;gap:12px;padding:0 18px}
+.logo{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--chalk);
+letter-spacing:-.2px;text-decoration:none}
+.top a.btn{margin-left:auto;font-size:12px;color:var(--chalk2);text-decoration:none;
+border:1px solid var(--seam);border-radius:var(--r);padding:5px 12px}
+.top a.btn:hover{color:var(--chalk);border-color:var(--chalk3)}
+.wrap{max-width:860px;margin:0 auto;padding:32px 22px 96px}
+.crumb{font-size:12px;color:var(--chalk3);margin-bottom:22px;font-family:'DM Mono',monospace}
+.crumb a{color:var(--chalk2);text-decoration:none}
+.crumb a:hover{color:var(--spike)}
+h1,h2,h3,h4{font-family:'Syne',sans-serif;letter-spacing:-.3px;line-height:1.25;
+scroll-margin-top:64px}
+h1{font-size:30px;font-weight:800;margin:.2em 0 .6em}
+h2{font-size:21px;font-weight:700;margin:1.8em 0 .5em;padding-top:.4em;
+border-top:1px solid var(--seam)}
+h3{font-size:16.5px;font-weight:700;margin:1.4em 0 .4em;color:var(--chalk)}
+h4{font-size:14px;font-weight:700;margin:1.2em 0 .3em;color:var(--chalk2)}
+p{margin:.7em 0}
+a{color:var(--amb);text-decoration:none;border-bottom:1px solid rgba(200,164,74,.28)}
+a:hover{color:var(--spike);border-bottom-color:var(--spike)}
+strong{color:#fff;font-weight:600}
+code{font-family:'DM Mono',ui-monospace,monospace;font-size:.86em;background:var(--ink3);
+border:1px solid var(--seam);border-radius:4px;padding:1px 5px;color:var(--amb)}
+pre{background:var(--ink2);border:1px solid var(--seam);border-radius:var(--r-lg);
+padding:16px 18px;overflow-x:auto;margin:1em 0}
+pre code{background:none;border:none;padding:0;color:var(--chalk2);font-size:12.5px;
+line-height:1.5;white-space:pre}
+blockquote{margin:1.1em 0;padding:.4em 16px;border-left:3px solid var(--amb);
+background:var(--amb-d,rgba(200,164,74,.07));border-radius:0 var(--r) var(--r) 0;
+color:var(--chalk2)}
+blockquote p{margin:.4em 0}
+hr{border:none;border-top:1px solid var(--seam);margin:2em 0}
+ul,ol{margin:.6em 0;padding-left:1.4em}
+li{margin:.28em 0}
+li>ul,li>ol{margin:.25em 0}
+.tw{overflow-x:auto;margin:1.1em 0;border:1px solid var(--seam);border-radius:var(--r-lg)}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--seam);
+vertical-align:top}
+th{background:var(--ink3);font-family:'Syne',sans-serif;font-weight:700;font-size:12px;
+color:var(--chalk);white-space:nowrap}
+tr:last-child td{border-bottom:none}
+td code{white-space:nowrap}
+.idx-group{margin:1.4em 0}
+.idx-group h3{border-bottom:1px solid var(--seam);padding-bottom:.3em}
+.idx-card{display:block;padding:12px 14px;margin:8px 0;background:var(--ink2);
+border:1px solid var(--seam);border-radius:var(--r-lg);color:var(--chalk);
+border-bottom:1px solid var(--seam)}
+.idx-card:hover{border-color:var(--chalk3);color:var(--chalk)}
+.idx-card b{font-family:'Syne',sans-serif}
+.idx-card span{display:block;color:var(--chalk2);font-size:13px;margin-top:2px}
+@media(max-width:600px){.wrap{padding:22px 15px 80px}h1{font-size:24px}body{font-size:14px}}
+</style></head><body><div class=top><a class=logo href="../../index.html">🧗 multi-pitch <span style="color:var(--spike)">Live</span></a><a class=btn href="../../knowledge/index.html">📚 Knowledge</a><a class=btn href="../../index.html">▶ Dashboard</a></div><div class=wrap><div class=crumb><a href="../index.html">📚 knowledge</a> / roadmap / <b style='color:var(--chalk2)'>decisions</b></div><h1 id="decision-log-adr-lite">Decision Log (ADR-lite)</h1>
+<p>Lightweight record of non-obvious decisions and <em>why</em> — so future work (human or agent) doesn't re-litigate settled calls or silently reverse them. Add an entry when you make a choice that wasn't forced. Newest at the bottom.</p>
+<p>Format: <code>#N — Title (date) · Decision · Why · Status</code>.</p>
+<hr>
+<h3 id="1-fully-serverless-on-github-actions-pages-2026-06">#1 — Fully serverless on GitHub Actions + Pages (2026-06)</h3>
+<p><strong>Decision:</strong> run the daily build in GitHub Actions and serve the dashboard from GitHub Pages; no laptop, no paid server. <strong>Why:</strong> free, always-on, zero-maintenance; the trip must update daily regardless of whether Michel's Mac is on. <strong>Status:</strong> ✅ Live.</p>
+<h3 id="2-the-repo-is-the-database-2026-06">#2 — The repo is the database (2026-06)</h3>
+<p><strong>Decision:</strong> persist all state as versioned JSON + git history; no external DB. <code>flights-latest.json</code> = latest snapshot, <code>history/</code> + git log = permanent archive. <strong>Why:</strong> free, reproducible, auditable; no hidden server state; every run is a diff. <strong>Status:</strong> ✅ Live.</p>
+<h3 id="3-config-as-single-source-of-truth-2026-06">#3 — Config as single source of truth (2026-06)</h3>
+<p><strong>Decision:</strong> <code>venues.json</code> and <code>flights.json</code> drive what gets queried/priced; the script reads them rather than hard-coding venues. <strong>Why:</strong> change behaviour by editing data, not code; safer, clearer, agent-friendly. <strong>Status:</strong> ✅ Live.</p>
+<h3 id="4-three-free-weather-horizons-honest-basis-2026-06">#4 — Three free weather horizons, honest basis (2026-06)</h3>
+<p><strong>Decision:</strong> rank on live 16-day forecast › climatology (ERA5) › 45-day seasonal, blended <strong>70/30</strong> (climatology dominant) beyond live range; always state the active basis in the UI. <strong>Why:</strong> free and keyless (Open-Meteo); sub-seasonal skill is weak so it can't be trusted alone; users must know how much to trust a ranking. <strong>Status:</strong> ✅ Live.</p>
+<h3 id="5-deterministic-rain-proxy-scoring-for-now-2026-06">#5 — Deterministic rain-proxy scoring, for now (2026-06)</h3>
+<p><strong>Decision:</strong> <code>day_score = 100 − 0.8·rain% − 6·precip_mm</code> (capped for rain/thunder), mean over trip days; keep it deterministic. <strong>Why:</strong> simple, reproducible (two runs → identical order = a verification checkpoint), good enough to rank. A true friction/seepage model is deferred to Stage 1. <strong>Trade-off:</strong> ignores rock/aspect/humidity → penalises alpine afternoon-convection venues. <strong>Status:</strong> ✅ Live; superseding model planned (see <code>data/condition-algorithm.md</code>).</p>
+<h3 id="6-flights-top-n-venues-only-outbound-times-only-2026-06">#6 — Flights: top-N venues only, outbound times only (2026-06)</h3>
+<p><strong>Decision:</strong> price only the <strong>top-4</strong> ranked venues, one representative round-trip each, outbound leg times only. <strong>Why:</strong> SerpApi free quota (~8 searches/day). Return-leg times need a 2nd call/option. <strong>Status:</strong> ✅ Live; return-leg times are Stage-0 backlog item #1.</p>
+<h3 id="7-public-repo-for-free-pages-2026-06">#7 — Public repo for free Pages (2026-06)</h3>
+<p><strong>Decision:</strong> make the repo public to get free rendered GitHub Pages. <strong>Why:</strong> free hosting requires it. Mitigation: <strong>no personal data in the repo</strong> — the home address lives only in Claude's local memory, never committed. <strong>Status:</strong> ✅ Live.</p>
+<h3 id="8-single-secret-gitignored-env-2026-06">#8 — Single secret, gitignored <code>.env</code> (2026-06)</h3>
+<p><strong>Decision:</strong> only <code>SERPAPI_KEY</code> as a secret; store in GitHub Actions secret + gitignored <code>.env</code>; weather APIs need no key. <strong>Why:</strong> minimise secret surface; keep the build runnable without a key (flights degrade). <strong>Note:</strong> key was once pasted in chat → rotation advisable. <strong>Status:</strong> ✅ Live.</p>
+<h3 id="9-chose-open-meteo-seasonal-for-sub-seasonal-2026-06">#9 — Chose Open-Meteo Seasonal for sub-seasonal (2026-06)</h3>
+<p><strong>Decision:</strong> use Open-Meteo Seasonal API for the 45-day outlook. <strong>Why:</strong> free, no key, CFS ensemble, same provider/format as the rest. Alternatives (Visual Crossing, OpenWeather day_summary, Meteomatics/AccuWeather) are keyed/paid. <strong>Status:</strong> ✅ Live.</p>
+<h3 id="10-card-per-venue-ui-over-a-table-2026-06">#10 — Card-per-venue UI over a table (2026-06)</h3>
+<p><strong>Decision:</strong> dashboard is one card per venue (big mini-graph + flights), not a table. <strong>Why:</strong> mobile-first readability, best-first scanning, room for the weather graph; no horizontal scroll at 390 px. (Chose design A over the accordion prototype.) <strong>Status:</strong> ✅ Live.</p>
+<h3 id="11-adopt-the-multi-pitch-com-route-data-model-as-the-tagging-target-2026-07-02">#11 — Adopt the multi-pitch.com route data model as the tagging target (2026-07-02)</h3>
+<p><strong>Decision:</strong> base the climbing taxonomy on the mature <strong>multi-pitch.com</strong> dataset (<code>/dev/multi-pitch</code>, ~40 fully-tagged routes) — its route schema (<a href="../data/route-schema.html"><code>data/route-schema.md</code></a>), controlled vocabularies (<a href="../data/taxonomy.html"><code>data/taxonomy.md</code></a>), and normalized <code>dataGrade</code> 1–7 ladder (<a href="../data/grade-conversion.html"><code>data/grade-conversion.md</code></a>). <strong>Why:</strong> it's a real, battle-tested model behind guidebook-quality descriptions — no need to invent one. It gives the Phase-2 Taxonomy Engine a concrete output contract for tagging a found climb, a cross-system grade normalization for ranking, and a proven description style guide ("the climber", qualify jargon, prefixed reference links). <strong>Note:</strong> the grade ladder is calibrated to the Diff→E1 band in that dataset; extend at the extremes deliberately. <strong>Status:</strong> ✅ Documented; automated population (parsing) is planned (roadmap Stage 4).</p>
+<hr>
+<p><em>Template for new entries:</em></p>
+<pre><code>### #N — Title (date)
+**Decision:** …
+**Why:** …
+**Status:** ✅ Live | ⚠️ Partial | 🔜 Planned | ❌ Reversed (see #M)</code></pre></div></body></html>

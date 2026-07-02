@@ -1,0 +1,83 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Grade Conversion · multi-pitch Live</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"><style>
+:root{--ink:#0C0D10;--ink2:#12141B;--ink3:#191C27;--ink4:#20243A;--seam:#252840;
+--chalk:#EAE6DD;--chalk2:#9B9890;--chalk3:#5A5860;--go:#6CB268;--amb:#C8A44A;
+--wet:#B94438;--spike:#C4FF5C;--r:6px;--r-lg:12px}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--ink);color:var(--chalk)}
+body{font-family:'Inter',system-ui,sans-serif;font-size:15px;line-height:1.65;
+-webkit-font-smoothing:antialiased}
+.top{position:sticky;top:0;z-index:10;height:48px;background:var(--ink2);
+border-bottom:1px solid var(--seam);display:flex;align-items:center;gap:12px;padding:0 18px}
+.logo{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--chalk);
+letter-spacing:-.2px;text-decoration:none}
+.top a.btn{margin-left:auto;font-size:12px;color:var(--chalk2);text-decoration:none;
+border:1px solid var(--seam);border-radius:var(--r);padding:5px 12px}
+.top a.btn:hover{color:var(--chalk);border-color:var(--chalk3)}
+.wrap{max-width:860px;margin:0 auto;padding:32px 22px 96px}
+.crumb{font-size:12px;color:var(--chalk3);margin-bottom:22px;font-family:'DM Mono',monospace}
+.crumb a{color:var(--chalk2);text-decoration:none}
+.crumb a:hover{color:var(--spike)}
+h1,h2,h3,h4{font-family:'Syne',sans-serif;letter-spacing:-.3px;line-height:1.25;
+scroll-margin-top:64px}
+h1{font-size:30px;font-weight:800;margin:.2em 0 .6em}
+h2{font-size:21px;font-weight:700;margin:1.8em 0 .5em;padding-top:.4em;
+border-top:1px solid var(--seam)}
+h3{font-size:16.5px;font-weight:700;margin:1.4em 0 .4em;color:var(--chalk)}
+h4{font-size:14px;font-weight:700;margin:1.2em 0 .3em;color:var(--chalk2)}
+p{margin:.7em 0}
+a{color:var(--amb);text-decoration:none;border-bottom:1px solid rgba(200,164,74,.28)}
+a:hover{color:var(--spike);border-bottom-color:var(--spike)}
+strong{color:#fff;font-weight:600}
+code{font-family:'DM Mono',ui-monospace,monospace;font-size:.86em;background:var(--ink3);
+border:1px solid var(--seam);border-radius:4px;padding:1px 5px;color:var(--amb)}
+pre{background:var(--ink2);border:1px solid var(--seam);border-radius:var(--r-lg);
+padding:16px 18px;overflow-x:auto;margin:1em 0}
+pre code{background:none;border:none;padding:0;color:var(--chalk2);font-size:12.5px;
+line-height:1.5;white-space:pre}
+blockquote{margin:1.1em 0;padding:.4em 16px;border-left:3px solid var(--amb);
+background:var(--amb-d,rgba(200,164,74,.07));border-radius:0 var(--r) var(--r) 0;
+color:var(--chalk2)}
+blockquote p{margin:.4em 0}
+hr{border:none;border-top:1px solid var(--seam);margin:2em 0}
+ul,ol{margin:.6em 0;padding-left:1.4em}
+li{margin:.28em 0}
+li>ul,li>ol{margin:.25em 0}
+.tw{overflow-x:auto;margin:1.1em 0;border:1px solid var(--seam);border-radius:var(--r-lg)}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--seam);
+vertical-align:top}
+th{background:var(--ink3);font-family:'Syne',sans-serif;font-weight:700;font-size:12px;
+color:var(--chalk);white-space:nowrap}
+tr:last-child td{border-bottom:none}
+td code{white-space:nowrap}
+.idx-group{margin:1.4em 0}
+.idx-group h3{border-bottom:1px solid var(--seam);padding-bottom:.3em}
+.idx-card{display:block;padding:12px 14px;margin:8px 0;background:var(--ink2);
+border:1px solid var(--seam);border-radius:var(--r-lg);color:var(--chalk);
+border-bottom:1px solid var(--seam)}
+.idx-card:hover{border-color:var(--chalk3);color:var(--chalk)}
+.idx-card b{font-family:'Syne',sans-serif}
+.idx-card span{display:block;color:var(--chalk2);font-size:13px;margin-top:2px}
+@media(max-width:600px){.wrap{padding:22px 15px 80px}h1{font-size:24px}body{font-size:14px}}
+</style></head><body><div class=top><a class=logo href="../../index.html">🧗 multi-pitch <span style="color:var(--spike)">Live</span></a><a class=btn href="../../knowledge/index.html">📚 Knowledge</a><a class=btn href="../../index.html">▶ Dashboard</a></div><div class=wrap><div class=crumb><a href="../index.html">📚 knowledge</a> / data / <b style='color:var(--chalk2)'>grade-conversion</b></div><h1 id="grade-conversion-the-normalized-difficulty-ladder">Grade Conversion — the normalized difficulty ladder</h1>
+<p>Climbing grades come in incompatible systems. To rank and compare routes across venues we normalize every grade onto a single <strong><code>dataGrade</code> 1–7</strong> integer scale, keeping the raw grade + system alongside it (never lose the original).</p>
+<blockquote><p><strong>Provenance:</strong> the <code>dataGrade</code> scale and this mapping are learned from the <strong>multi-pitch.com</strong> dataset (<code>/dev/multi-pitch</code>), reverse-engineered from ~40 routes whose <code>originalGrade</code> and <code>dataGrade</code> were both recorded. It targets the <strong>easy→moderate multi-pitch trad</strong> band the platform focuses on; extend it deliberately at the extremes.</p></blockquote>
+<h2 id="the-datagrade-scale">The <code>dataGrade</code> scale</h2>
+<p><code>1</code> = very easy (Diff) · <code>7</code> = hard end of the current dataset (E1 / VI+ / TD). Higher = harder. Used only for <strong>sorting/comparison</strong> — always show the <code>originalGrade</code> to humans.</p>
+<h2 id="conversion-table-observed">Conversion table (observed)</h2>
+<div class="tw"><table><thead><tr><th>dataGrade</th><th>BAS (British Adjectival + tech)</th><th>UIAA</th><th>YDS</th><th>Alpine (ALP)</th><th>French Sport (FS)</th><th>Norwegian (N)</th></tr></thead><tbody><tr><td><strong>1</strong></td><td><code>D 3a</code>, <code>D 3b</code> (Difficult)</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr><tr><td><strong>2</strong></td><td><code>VD 3c</code> (Very Difficult)</td><td><code>IV−</code></td><td>—</td><td>—</td><td>—</td><td>—</td></tr><tr><td><strong>3</strong></td><td><code>S 3c</code>, <code>S 4a</code>, <code>S 4b</code> (Severe)</td><td>—</td><td><code>5.7</code></td><td>—</td><td><code>f4c</code></td><td>—</td></tr><tr><td><strong>4</strong></td><td><code>HS 4a</code>, <code>HS 4b</code> (Hard Severe)</td><td><code>IV+</code></td><td>—</td><td><code>Difficile</code> (D)</td><td>—</td><td>—</td></tr><tr><td><strong>5</strong></td><td><code>VS 4b</code>, <code>VS 4c</code>, <code>VS 5a</code> (Very Severe)</td><td><code>V+</code></td><td><code>5.8</code></td><td>—</td><td><code>f5a</code></td><td>—</td></tr><tr><td><strong>6</strong></td><td><code>HVS 5b</code>, <code>HVS 5c</code> (Hard Very Severe)</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr><tr><td><strong>7</strong></td><td><code>E1 5b</code> (Extreme 1)</td><td><code>VI+</code></td><td>—</td><td><code>TD</code> (f6a+)</td><td><code>f6b</code></td><td><code>N6−</code></td></tr></tbody></table></div>
+<p>Notes:</p>
+<ul><li>The BAS grade has <strong>two parts</strong>: the adjectival (<code>VS</code>) = overall seriousness/quality, and</li></ul>
+<p>  the technical (<code>5a</code>) = hardest single move. Store both (<code>tradGrade</code>, <code>techGrade</code>).</p>
+<ul><li><code>V+ (f5c)</code> and <code>VI+ (f6b)</code> show UIAA↔French cross-annotations kept in the raw data.</li><li>Alpine grades (<code>AD</code>/<code>D</code>/<code>TD</code>/<code>ED</code>…) describe overall commitment; a French sport grade in</li></ul>
+<p>  parentheses gives the technical crux.</p>
+<h2 id="grading-system-codes">Grading system codes</h2>
+<div class="tw"><table><thead><tr><th>Code</th><th>System</th><th>Looks like</th></tr></thead><tbody><tr><td><code>BAS</code></td><td>British Adjectival System</td><td><code>VS 4c</code>, <code>HVS 5b</code>, <code>E1 5b</code></td></tr><tr><td><code>UIAA</code></td><td>UIAA (Alps/Germany)</td><td><code>IV−</code>, <code>V+</code>, <code>VI+</code></td></tr><tr><td><code>YDS</code></td><td>Yosemite Decimal (US)</td><td><code>5.7</code>, <code>5.8</code>, <code>5.10a</code></td></tr><tr><td><code>ALP</code></td><td>Alpine (overall commitment)</td><td><code>PD</code>, <code>AD</code>, <code>D</code>, <code>TD</code>, <code>ED</code> (+ optional Fr sport crux)</td></tr><tr><td><code>FS</code></td><td>French Sport</td><td><code>f4c</code>, <code>f5a</code>, <code>f6a+</code></td></tr><tr><td><code>N</code></td><td>Norwegian</td><td><code>N6−</code></td></tr></tbody></table></div>
+<h2 id="how-to-use-it-in-the-engine">How to use it in the engine</h2>
+<ol><li><strong>Parse</strong> the raw grade string → detect <code>gradeSys</code> → store <code>originalGrade</code>.</li><li><strong>Map</strong> to <code>dataGrade</code> via the table (nearest band; interpolate for grades between rows).</li><li><strong>Sort/compare</strong> venues and routes by <code>dataGrade</code>; <strong>display</strong> <code>originalGrade</code>.</li><li><strong>Filter</strong> by ability: "show me ≤ dataGrade 5" = up to VS / 5.8 / V+.</li></ol>
+<h2 id="caveats">Caveats</h2>
+<ul><li>The table is <strong>calibrated to this dataset's band</strong> (Diff→E1). Above E1 / below Diff it</li></ul>
+<p>  needs extending — do so from a reference conversion chart, and log it in   <a href="../roadmap/decisions.html"><code>../roadmap/decisions.md</code></a>.</p>
+<ul><li>Grade conversion is <strong>inherently approximate</strong> — systems weight danger, sustained</li></ul>
+<p>  difficulty, and single-move crux differently. <code>dataGrade</code> is a <em>sortable proxy</em>, not an   equivalence claim.</p>
+<ul><li>Keep the raw <code>originalGrade</code> forever; never let the normalization overwrite it.</li></ul></div></body></html>

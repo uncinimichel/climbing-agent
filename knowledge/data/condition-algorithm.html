@@ -1,0 +1,99 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Condition Algorithm · multi-pitch Live</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"><style>
+:root{--ink:#0C0D10;--ink2:#12141B;--ink3:#191C27;--ink4:#20243A;--seam:#252840;
+--chalk:#EAE6DD;--chalk2:#9B9890;--chalk3:#5A5860;--go:#6CB268;--amb:#C8A44A;
+--wet:#B94438;--spike:#C4FF5C;--r:6px;--r-lg:12px}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--ink);color:var(--chalk)}
+body{font-family:'Inter',system-ui,sans-serif;font-size:15px;line-height:1.65;
+-webkit-font-smoothing:antialiased}
+.top{position:sticky;top:0;z-index:10;height:48px;background:var(--ink2);
+border-bottom:1px solid var(--seam);display:flex;align-items:center;gap:12px;padding:0 18px}
+.logo{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--chalk);
+letter-spacing:-.2px;text-decoration:none}
+.top a.btn{margin-left:auto;font-size:12px;color:var(--chalk2);text-decoration:none;
+border:1px solid var(--seam);border-radius:var(--r);padding:5px 12px}
+.top a.btn:hover{color:var(--chalk);border-color:var(--chalk3)}
+.wrap{max-width:860px;margin:0 auto;padding:32px 22px 96px}
+.crumb{font-size:12px;color:var(--chalk3);margin-bottom:22px;font-family:'DM Mono',monospace}
+.crumb a{color:var(--chalk2);text-decoration:none}
+.crumb a:hover{color:var(--spike)}
+h1,h2,h3,h4{font-family:'Syne',sans-serif;letter-spacing:-.3px;line-height:1.25;
+scroll-margin-top:64px}
+h1{font-size:30px;font-weight:800;margin:.2em 0 .6em}
+h2{font-size:21px;font-weight:700;margin:1.8em 0 .5em;padding-top:.4em;
+border-top:1px solid var(--seam)}
+h3{font-size:16.5px;font-weight:700;margin:1.4em 0 .4em;color:var(--chalk)}
+h4{font-size:14px;font-weight:700;margin:1.2em 0 .3em;color:var(--chalk2)}
+p{margin:.7em 0}
+a{color:var(--amb);text-decoration:none;border-bottom:1px solid rgba(200,164,74,.28)}
+a:hover{color:var(--spike);border-bottom-color:var(--spike)}
+strong{color:#fff;font-weight:600}
+code{font-family:'DM Mono',ui-monospace,monospace;font-size:.86em;background:var(--ink3);
+border:1px solid var(--seam);border-radius:4px;padding:1px 5px;color:var(--amb)}
+pre{background:var(--ink2);border:1px solid var(--seam);border-radius:var(--r-lg);
+padding:16px 18px;overflow-x:auto;margin:1em 0}
+pre code{background:none;border:none;padding:0;color:var(--chalk2);font-size:12.5px;
+line-height:1.5;white-space:pre}
+blockquote{margin:1.1em 0;padding:.4em 16px;border-left:3px solid var(--amb);
+background:var(--amb-d,rgba(200,164,74,.07));border-radius:0 var(--r) var(--r) 0;
+color:var(--chalk2)}
+blockquote p{margin:.4em 0}
+hr{border:none;border-top:1px solid var(--seam);margin:2em 0}
+ul,ol{margin:.6em 0;padding-left:1.4em}
+li{margin:.28em 0}
+li>ul,li>ol{margin:.25em 0}
+.tw{overflow-x:auto;margin:1.1em 0;border:1px solid var(--seam);border-radius:var(--r-lg)}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--seam);
+vertical-align:top}
+th{background:var(--ink3);font-family:'Syne',sans-serif;font-weight:700;font-size:12px;
+color:var(--chalk);white-space:nowrap}
+tr:last-child td{border-bottom:none}
+td code{white-space:nowrap}
+.idx-group{margin:1.4em 0}
+.idx-group h3{border-bottom:1px solid var(--seam);padding-bottom:.3em}
+.idx-card{display:block;padding:12px 14px;margin:8px 0;background:var(--ink2);
+border:1px solid var(--seam);border-radius:var(--r-lg);color:var(--chalk);
+border-bottom:1px solid var(--seam)}
+.idx-card:hover{border-color:var(--chalk3);color:var(--chalk)}
+.idx-card b{font-family:'Syne',sans-serif}
+.idx-card span{display:block;color:var(--chalk2);font-size:13px;margin-top:2px}
+@media(max-width:600px){.wrap{padding:22px 15px 80px}h1{font-size:24px}body{font-size:14px}}
+</style></head><body><div class=top><a class=logo href="../../index.html">🧗 multi-pitch <span style="color:var(--spike)">Live</span></a><a class=btn href="../../knowledge/index.html">📚 Knowledge</a><a class=btn href="../../index.html">▶ Dashboard</a></div><div class=wrap><div class=crumb><a href="../index.html">📚 knowledge</a> / data / <b style='color:var(--chalk2)'>condition-algorithm</b></div><h1 id="the-predictive-condition-algorithm">The Predictive Condition Algorithm</h1>
+<p>How the engine scores weather into a climbability ranking. This documents the <strong>live, deterministic</strong> scoring today and the <strong>physical model</strong> the vision calls for.</p>
+<p>Source of truth for the maths: <code>trip-ni-july-2026/scripts/update_report.py</code>. Keep this file in sync when the formula changes, and log formula changes in <a href="../roadmap/decisions.html"><code>roadmap/decisions.md</code></a>.</p>
+<h2 id="today-deterministic-rain-proxy-scoring">Today: deterministic rain-proxy scoring ✅</h2>
+<h3 id="per-day-score">Per-day score</h3>
+<pre><code>day_score = 100 − 0.8·(rain_prob_%) − 6·(precip_mm)
+          capped at 25  if weather_code ≥ 61   (rain)
+          capped at 15  if thunderstorm</code></pre>
+<ul><li>Higher is better; 100 = perfect dry day.</li><li>Rain probability and precipitation both penalise; heavy/coded rain hard-caps the score</li></ul>
+<p>  so a wet day can't look mediocre-but-okay.</p>
+<h3 id="venue-score">Venue score</h3>
+<pre><code>venue_score = mean(day_score over the trip days used)</code></pre>
+<p>Ranking: <strong>sort by <code>venue_score</code> desc, tie-break by <code>priority</code></strong> (NI preferred when tied).</p>
+<h3 id="three-weather-horizons-all-free-no-key">Three weather horizons (all free, no key)</h3>
+<div class="tw"><table><thead><tr><th>Horizon</th><th>Source</th><th>Role</th></tr></thead><tbody><tr><td><strong>Live forecast</strong></td><td>Open-Meteo 16-day</td><td>Ranks the trip once in range (~8 July); <strong>supersedes</strong> the others.</td></tr><tr><td><strong>Climatology</strong></td><td>Open-Meteo Archive (ERA5 July averages)</td><td>Deterministic base ranking + the per-venue rain/temp/wind mini-graph.</td></tr><tr><td><strong>Sub-seasonal</strong></td><td>Open-Meteo Seasonal (CFS, ~45 d)</td><td>Weak signal; <strong>blended 70/30</strong> (climatology dominant) while beyond live range.</td></tr></tbody></table></div>
+<p><strong>Basis selection:</strong> while the trip is beyond the 16-day window, rank on <code>0.7·climatology + 0.3·seasonal</code>, labelled "typical July + 45-day outlook". Once the live forecast reaches the trip window, it supersedes both. The active basis is always stated in the dashboard banner (honest-uncertainty principle).</p>
+<h3 id="properties-that-matter">Properties that matter</h3>
+<ul><li><strong>Reproducible.</strong> Climatology scoring is deterministic — two runs give identical rain%</li></ul>
+<p>  and ordering. This is a verification checkpoint (see <code>operations/runbook.md</code>).</p>
+<ul><li><strong>Graceful degradation.</strong> Seasonal-API failure → climatology-only, not a crash.</li></ul>
+<h3 id="known-limitations-accepted">Known limitations (accepted)</h3>
+<ul><li><strong>"Wet day" = ≥3 mm/day</strong> from ERA5. Penalises alpine venues (Dolomites, Tyrol) whose</li></ul>
+<p>  brief afternoon convection still leaves climbable mornings.</p>
+<ul><li><strong>Sub-seasonal skill is modest</strong> (~30 days) — hence the cautious 70/30 blend, labelled</li></ul>
+<p>  "experimental".</p>
+<ul><li><strong>One point per venue</strong> — a single representative coordinate, not per-crag.</li></ul>
+<h2 id="the-gap-this-is-not-yet-a-friction-seepage-model">The gap: this is not yet a <em>friction/seepage</em> model ⚠️</h2>
+<p>The vision's Predictive Condition Algorithm scores <strong>friction windows, drying rate, and seepage</strong> from micro-climate × rock physics. Today's score uses none of that physics — it's a rain proxy. Factors currently ignored:</p>
+<div class="tw"><table><thead><tr><th>Factor</th><th>Why it matters</th><th>Data available</th></tr></thead><tbody><tr><td><strong>Rock type</strong></td><td>limestone seeps for days; granite dries in hours</td><td>in <code>venues.json</code></td></tr><tr><td><strong>Aspect</strong></td><td>S-facing dries/bakes; N-facing stays cool/shaded</td><td><em>planned field</em></td></tr><tr><td><strong>Humidity / dew point</strong></td><td>the crux of a real friction window</td><td>Open-Meteo hourly</td></tr><tr><td><strong>Wind</strong></td><td>accelerates drying</td><td>Open-Meteo (shown, not scored)</td></tr><tr><td><strong>Antecedent rain</strong></td><td>yesterday's rain drives today's seepage</td><td>Open-Meteo archive/forecast</td></tr></tbody></table></div>
+<h2 id="target-the-physical-condition-model-planned">Target: the physical condition model <em>(planned)</em></h2>
+<p>A sketch to build toward — combine hourly micro-climate with per-sector rock parameters:</p>
+<pre><code>friction    = f(temp, dew_point, humidity, wind)         → best when cool &amp; dry
+drying_rate = f(rock_type, aspect, sun, wind, temp)      → granite/S-facing fast
+seepage     = f(rock_type, antecedent_rain_Ndays, aspect)→ limestone/overhang high
+climbability = combine(friction, dryness_now, seepage_risk)  per sector, per window</code></pre>
+<p>Output the richer condition record in <a href="schemas.html"><code>data/schemas.md</code></a> (with <code>friction_window</code> and <code>seepage_risk</code>), and feed the Phase-4 contingency engine so "3 dry alternatives" means <em>actually dry</em>, not just <em>low forecast rain</em>.</p>
+<h2 id="when-you-change-the-scoring">When you change the scoring</h2>
+<ol><li>Keep climatology <strong>deterministic</strong> (reproducibility is a verification checkpoint).</li><li>Update the formula here and in <code>update_report.py</code> together.</li><li>Always keep the <strong>basis label</strong> honest in the UI.</li><li>Log the change in <code>roadmap/decisions.md</code> with the rationale.</li></ol></div></body></html>

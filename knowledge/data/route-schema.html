@@ -1,0 +1,107 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Route Schema · multi-pitch Live</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"><style>
+:root{--ink:#0C0D10;--ink2:#12141B;--ink3:#191C27;--ink4:#20243A;--seam:#252840;
+--chalk:#EAE6DD;--chalk2:#9B9890;--chalk3:#5A5860;--go:#6CB268;--amb:#C8A44A;
+--wet:#B94438;--spike:#C4FF5C;--r:6px;--r-lg:12px}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--ink);color:var(--chalk)}
+body{font-family:'Inter',system-ui,sans-serif;font-size:15px;line-height:1.65;
+-webkit-font-smoothing:antialiased}
+.top{position:sticky;top:0;z-index:10;height:48px;background:var(--ink2);
+border-bottom:1px solid var(--seam);display:flex;align-items:center;gap:12px;padding:0 18px}
+.logo{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--chalk);
+letter-spacing:-.2px;text-decoration:none}
+.top a.btn{margin-left:auto;font-size:12px;color:var(--chalk2);text-decoration:none;
+border:1px solid var(--seam);border-radius:var(--r);padding:5px 12px}
+.top a.btn:hover{color:var(--chalk);border-color:var(--chalk3)}
+.wrap{max-width:860px;margin:0 auto;padding:32px 22px 96px}
+.crumb{font-size:12px;color:var(--chalk3);margin-bottom:22px;font-family:'DM Mono',monospace}
+.crumb a{color:var(--chalk2);text-decoration:none}
+.crumb a:hover{color:var(--spike)}
+h1,h2,h3,h4{font-family:'Syne',sans-serif;letter-spacing:-.3px;line-height:1.25;
+scroll-margin-top:64px}
+h1{font-size:30px;font-weight:800;margin:.2em 0 .6em}
+h2{font-size:21px;font-weight:700;margin:1.8em 0 .5em;padding-top:.4em;
+border-top:1px solid var(--seam)}
+h3{font-size:16.5px;font-weight:700;margin:1.4em 0 .4em;color:var(--chalk)}
+h4{font-size:14px;font-weight:700;margin:1.2em 0 .3em;color:var(--chalk2)}
+p{margin:.7em 0}
+a{color:var(--amb);text-decoration:none;border-bottom:1px solid rgba(200,164,74,.28)}
+a:hover{color:var(--spike);border-bottom-color:var(--spike)}
+strong{color:#fff;font-weight:600}
+code{font-family:'DM Mono',ui-monospace,monospace;font-size:.86em;background:var(--ink3);
+border:1px solid var(--seam);border-radius:4px;padding:1px 5px;color:var(--amb)}
+pre{background:var(--ink2);border:1px solid var(--seam);border-radius:var(--r-lg);
+padding:16px 18px;overflow-x:auto;margin:1em 0}
+pre code{background:none;border:none;padding:0;color:var(--chalk2);font-size:12.5px;
+line-height:1.5;white-space:pre}
+blockquote{margin:1.1em 0;padding:.4em 16px;border-left:3px solid var(--amb);
+background:var(--amb-d,rgba(200,164,74,.07));border-radius:0 var(--r) var(--r) 0;
+color:var(--chalk2)}
+blockquote p{margin:.4em 0}
+hr{border:none;border-top:1px solid var(--seam);margin:2em 0}
+ul,ol{margin:.6em 0;padding-left:1.4em}
+li{margin:.28em 0}
+li>ul,li>ol{margin:.25em 0}
+.tw{overflow-x:auto;margin:1.1em 0;border:1px solid var(--seam);border-radius:var(--r-lg)}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--seam);
+vertical-align:top}
+th{background:var(--ink3);font-family:'Syne',sans-serif;font-weight:700;font-size:12px;
+color:var(--chalk);white-space:nowrap}
+tr:last-child td{border-bottom:none}
+td code{white-space:nowrap}
+.idx-group{margin:1.4em 0}
+.idx-group h3{border-bottom:1px solid var(--seam);padding-bottom:.3em}
+.idx-card{display:block;padding:12px 14px;margin:8px 0;background:var(--ink2);
+border:1px solid var(--seam);border-radius:var(--r-lg);color:var(--chalk);
+border-bottom:1px solid var(--seam)}
+.idx-card:hover{border-color:var(--chalk3);color:var(--chalk)}
+.idx-card b{font-family:'Syne',sans-serif}
+.idx-card span{display:block;color:var(--chalk2);font-size:13px;margin-top:2px}
+@media(max-width:600px){.wrap{padding:22px 15px 80px}h1{font-size:24px}body{font-size:14px}}
+</style></head><body><div class=top><a class=logo href="../../index.html">🧗 multi-pitch <span style="color:var(--spike)">Live</span></a><a class=btn href="../../knowledge/index.html">📚 Knowledge</a><a class=btn href="../../index.html">▶ Dashboard</a></div><div class=wrap><div class=crumb><a href="../index.html">📚 knowledge</a> / data / <b style='color:var(--chalk2)'>route-schema</b></div><h1 id="route-schema-the-tagging-target">Route Schema — the tagging target</h1>
+<p><strong>The canonical record for one multi-pitch route.</strong> When Phase 1/2 finds a climb on the web, <em>this</em> is the shape we tag it into and the set of facts we need to describe it.</p>
+<blockquote><p><strong>Provenance:</strong> learned from the mature <strong>multi-pitch.com</strong> project (<code>/dev/multi-pitch</code>) — a battle-tested data model behind ~40 fully-described routes. This is the real "compendium of terms" that guidebook-quality descriptions are built from. Controlled vocabularies live in <a href="taxonomy.html"><code>taxonomy.md</code></a>; the normalized difficulty ladder in <a href="grade-conversion.html"><code>grade-conversion.md</code></a>.</p></blockquote>
+<h2 id="why-this-matters-for-the-engine">Why this matters for the engine</h2>
+<p>The vision's <strong>Taxonomy Engine</strong> (Phase 2) takes messy guidebook/UKC/MountainProject prose and must emit a clean, complete route record. This schema <em>is</em> the output contract. Every field is either a <strong>closed enum</strong> (validate hard), a <strong>number</strong>, a <strong>boolean flag</strong>, or <strong>prose</strong> (generated to the style rules below). A found climb is "fully tagged" when these fields are populated with provenance.</p>
+<h2 id="field-reference">Field reference</h2>
+<h3 id="identity-location">Identity &amp; location</h3>
+<div class="tw"><table><thead><tr><th>Field</th><th>Type</th><th>Notes</th></tr></thead><tbody><tr><td><code>id</code></td><td>int</td><td>Stable unique id.</td></tr><tr><td><code>routeName</code></td><td>string</td><td>The route (e.g. "Original Route").</td></tr><tr><td><code>cliff</code></td><td>string</td><td>The crag / cliff / sector (e.g. "Old Man of Stoer").</td></tr><tr><td><code>country</code></td><td>enum-ish</td><td>Normalize spelling (the source data had <code>&#x27;Spain &#x27;</code>, <code>&#x27;Jodan&#x27;</code> typos — clean these).</td></tr><tr><td><code>county</code></td><td>string</td><td>Region within country.</td></tr><tr><td><code>geoLocation</code></td><td><code>&quot;lat,lon&quot;</code></td><td>The geo join key (weather, nearby-climbs).</td></tr><tr><td><code>timeZone</code></td><td>IANA tz</td><td>e.g. <code>Europe/London</code> — for local forecast alignment.</td></tr><tr><td><code>status</code></td><td><code>publish</code>\</td><td><code>draft</code></td><td>Curation gate — only <code>publish</code> surfaces (Zero-Garbage UGC).</td></tr></tbody></table></div>
+<h3 id="physical-character">Physical character</h3>
+<div class="tw"><table><thead><tr><th>Field</th><th>Type</th><th>Notes</th></tr></thead><tbody><tr><td><code>length</code></td><td>int (m)</td><td>Total route length.</td></tr><tr><td><code>pitches</code></td><td>int</td><td>Number of pitches.</td></tr><tr><td><code>rock</code></td><td>enum</td><td>See <a href="taxonomy.html"><code>taxonomy.md</code> § Rock type</a>. Drives seepage/drying.</td></tr><tr><td><code>incline</code></td><td>enum</td><td>Steepness: <code>Slab</code> \</td><td><code>Slab &amp; Vertical</code> \</td><td><code>Vertical</code> \</td><td><code>… &amp; Overhanging</code>.</td></tr><tr><td><code>face</code></td><td>enum</td><td>Aspect the route faces: <code>N NE E SE S SW W NW</code>. Drives sun/shade &amp; drying.</td></tr></tbody></table></div>
+<h3 id="difficulty-grade-always-keep-the-system">Difficulty (grade — always keep the system!)</h3>
+<div class="tw"><table><thead><tr><th>Field</th><th>Type</th><th>Notes</th></tr></thead><tbody><tr><td><code>gradeSys</code></td><td>enum</td><td>Which system: <code>BAS</code> (British Adjectival), <code>UIAA</code>, <code>YDS</code>, <code>ALP</code> (Alpine), <code>FS</code> (French Sport), <code>N</code> (Norwegian).</td></tr><tr><td><code>originalGrade</code></td><td>string</td><td>The raw grade verbatim (e.g. <code>&quot;VS 5a&quot;</code>, <code>&quot;TD (f6a+)&quot;</code>). Never lose this.</td></tr><tr><td><code>tradGrade</code></td><td>string</td><td>Adjectival part for BAS (<code>VD S HS VS HVS E1…</code>).</td></tr><tr><td><code>techGrade</code></td><td>string</td><td>Technical part for BAS (<code>4a 4b 4c 5a 5b 5c…</code>).</td></tr><tr><td><code>dataGrade</code></td><td>int 1–7</td><td><strong>Normalized cross-system difficulty</strong> for sorting/comparison. See <a href="grade-conversion.html"><code>grade-conversion.md</code></a>.</td></tr></tbody></table></div>
+<h3 id="approach-logistics">Approach &amp; logistics</h3>
+<div class="tw"><table><thead><tr><th>Field</th><th>Type</th><th>Notes</th></tr></thead><tbody><tr><td><code>approachTime</code></td><td>int (min)</td><td>Walk-in time.</td></tr><tr><td><code>approachDifficulty</code></td><td>int 1–3</td><td>1 = easy walk, 3 = serious (scramble/swim/exposed).</td></tr></tbody></table></div>
+<h3 id="route-character-hazard-flags">Route character &amp; hazard flags</h3>
+<p>Boolean-ish (<code>1</code> = present, <code>null</code>/absent = not). These are the tags that most change how a route <em>feels and is planned</em> — and several feed the condition/tide logic directly.</p>
+<div class="tw"><table><thead><tr><th>Flag</th><th>Meaning</th><th>Engine relevance</th></tr></thead><tbody><tr><td><code>tidal</code></td><td>Access/base is tide-dependent (sea cliffs)</td><td>⟶ needs a tide window (backlog: tides).</td></tr><tr><td><code>seepage</code></td><td>Route holds water / weeps after rain</td><td>⟶ Predictive Condition Algorithm.</td></tr><tr><td><code>abseil</code></td><td>Requires an abseil (approach or descent)</td><td>Gear/planning.</td></tr><tr><td><code>traverse</code></td><td>Significant traverse (rope-management / commitment)</td><td>Planning.</td></tr><tr><td><code>boat</code></td><td>Reached by boat/swim</td><td>Logistics.</td></tr><tr><td><code>tidal</code>+<code>boat</code></td><td>Sea-stack style access</td><td>e.g. Old Man of Stoer.</td></tr><tr><td><code>polished</code></td><td>Rock polished (holds slick)</td><td>Difficulty-in-practice.</td></tr><tr><td><code>loose</code></td><td>Loose/friable rock</td><td>Safety.</td></tr><tr><td><code>grassLedges</code></td><td>Vegetated ledges (wet/awkward belays)</td><td>Conditions.</td></tr></tbody></table></div>
+<h3 id="prose-content-generated-to-the-style-guide-below">Prose content (generated to the style guide below)</h3>
+<div class="tw"><table><thead><tr><th>Field</th><th>Type</th><th>Notes</th></tr></thead><tbody><tr><td><code>intro</code></td><td>HTML prose</td><td>The hook: setting, quality, history, geology, notable ascents.</td></tr><tr><td><code>approach</code></td><td>HTML prose</td><td>Contains <code>&lt;strong&gt;Approach&lt;/strong&gt;:</code> and <code>&lt;strong&gt;Descent&lt;/strong&gt;:</code> sections.</td></tr><tr><td><code>pitchInfo</code></td><td>HTML prose</td><td>Pitch-by-pitch: each <code>Pitch N – &lt;length&gt;m &lt;grade&gt;</code> then the moves.</td></tr></tbody></table></div>
+<h3 id="media">Media</h3>
+<div class="tw"><table><thead><tr><th>Field</th><th>Type</th><th>Notes</th></tr></thead><tbody><tr><td><code>tileImage</code></td><td>obj</td><td>Inspirational crag tile (600×300, ~100 KB jpg) + attribution.</td></tr><tr><td><code>topo</code></td><td>obj</td><td>Photo-topo <code>{url, alt, dataFile}</code> — <code>dataFile</code> 2–5 = how many responsive sizes exist.</td></tr><tr><td><code>mapImg</code></td><td>obj</td><td>Location map.</td></tr></tbody></table></div>
+<h3 id="external-references">External references</h3>
+<div class="tw"><table><thead><tr><th>Field</th><th>Type</th><th>Notes</th></tr></thead><tbody><tr><td><code>references</code></td><td>list</td><td>Prefixed links (see style rules): <code>{url, text}</code> with <code>Video:</code>/<code>Info:</code>/<code>Tides:</code>… prefix.</td></tr><tr><td><code>guideBooks</code></td><td>list</td><td><code>{isbn, title, pg, description, rrp, imgURL, link}</code> — provenance to print guides.</td></tr></tbody></table></div>
+<h3 id="climate-per-route-monthly-climatology">Climate (per-route monthly climatology)</h3>
+<div class="tw"><table><thead><tr><th>Field</th><th>Type</th><th>Notes</th></tr></thead><tbody><tr><td><code>weatherData</code></td><td>obj</td><td><code>rainyDays[12]</code>, <code>tempH[12]</code>, <code>tempL[12]</code> — one value per month (Jan→Dec). A compact per-route climatology, computed once.</td></tr></tbody></table></div>
+<h3 id="meta">Meta</h3>
+<div class="tw"><table><thead><tr><th>Field</th><th>Type</th><th>Notes</th></tr></thead><tbody><tr><td><code>lastUpdate</code></td><td>ISO date</td><td>Freshness of the record.</td></tr></tbody></table></div>
+<h2 id="describing-the-route-content-style-rules">Describing the route — content style rules</h2>
+<p>Learned from multi-pitch.com's content rules. When the Taxonomy Engine <em>writes</em> the prose fields, follow these so generated descriptions read like the curated site:</p>
+<ol><li><strong>Voice:</strong> never "I" or "we" — say <strong>"the climber"</strong>.</li><li><strong>Plain language:</strong> avoid unqualified mountain jargon, or qualify it. Not *"follow the</li></ol>
+<p>   col to the dihedral before the arête"<em> → </em>"follow the gully between the rocks until you    see the corner before the exposed edge on the left."*</p>
+<ol><li><strong>Informal is fine.</strong></li><li><strong>Facts earn their place:</strong> include geology, first/notable ascent, and history — these</li></ol>
+<p>   are what make a description worth reading.</p>
+<ol><li><strong>Pitch format:</strong> <code>Pitch N – &lt;length&gt;m &lt;grade&gt;</code> then the moves, one block per pitch.</li><li><strong>Reference-link prefixes</strong> (for scannability): <code>Video:</code>, <code>Travel:</code>, <code>Article:</code>,</li></ol>
+<p>   <code>Info:</code>, <code>Tides:</code>. e.g. <code>Video: Chris Bonington Climbs the Old Man of Hoy</code>.</p>
+<ol><li><strong>Approach block</strong> always splits into <code>Approach:</code> and <code>Descent:</code>.</li></ol>
+<h2 id="minimal-vs-full-tagging">Minimal vs full tagging</h2>
+<p>A found climb is <strong>usable</strong> once it has: <code>routeName</code>, <code>cliff</code>, <code>geoLocation</code>, <code>originalGrade</code>+<code>gradeSys</code>, <code>length</code>, <code>pitches</code>, <code>rock</code>, and a mapped <code>dataGrade</code>. Everything else (flags, prose, media, references) enriches it toward guidebook quality.</p>
+<h2 id="rules-for-the-parser-phase-2">Rules for the parser (Phase 2)</h2>
+<ol><li><strong>Keep <code>originalGrade</code> verbatim</strong> and always store <code>gradeSys</code> — never a bare number.</li><li><strong>Map to <code>dataGrade</code></strong> via <a href="grade-conversion.html"><code>grade-conversion.md</code></a> for cross-venue</li></ol>
+<p>   sorting.</p>
+<ol><li><strong>Validate enums</strong> (<code>rock</code>, <code>incline</code>, <code>face</code>, <code>gradeSys</code>) against <a href="taxonomy.html"><code>taxonomy.md</code></a>;</li></ol>
+<p>   repair or quarantine off-dictionary values.</p>
+<ol><li><strong>Hazard flags are safety-critical</strong> — only set <code>loose</code>/<code>tidal</code>/<code>seepage</code> from explicit</li></ol>
+<p>   source evidence; carry the source span.</p>
+<ol><li><strong>Prose to the style rules above</strong>, with provenance + confidence.</li><li><strong><code>status: draft</code></strong> anything not yet human-verified — only <code>publish</code> surfaces.</li></ol></div></body></html>
