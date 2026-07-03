@@ -73,12 +73,10 @@ jobs:
             echo "No changes."
           else
             git commit -m "report: daily update ($(date -u +%Y-%m-%d))"
-            # main may have moved while this run was building (humans + agents
-            # push too) — rebase our report commit on top instead of failing.
-            # -X theirs: on conflict in the generated report files, this run's
-            # freshly built version wins (they're regenerated every run anyway)
-            git pull --rebase -X theirs origin main
-            git push
+            # If main moved while this run was building, DO NOT merge in CI —
+            # no automated conflict decisions. Everything in this commit is
+            # regenerated next run anyway, so just skip it.
+            git push || echo "main moved during this run - report commit skipped (regenerated next run)"
           fi
 
       - name: Stage site/ (publish only the page + knowledge — not scripts, CSVs, PLAN.md)

@@ -1149,8 +1149,6 @@ def venue_payload(n, r):
 
     # quick-facts strip (travel lives in "Getting there" — not duplicated here)
     facts = []
-    if v.get("rock"):
-        facts.append({"lbl": "Rock", "val": v["rock"].split("/")[0].capitalize(), "sub": v.get("rock", "")})
     if cards:
         tallest = max(cards, key=lambda x: x.get("length") or 0)
         if tallest.get("length"):
@@ -1158,8 +1156,6 @@ def venue_payload(n, r):
         facts.append({"lbl": "Routes", "val": str(len(cards)), "sub": "on multi-pitch.com"})
     if grades:
         facts.append({"lbl": "Grades", "val": grades, "sub": "trad"})
-    if rain is not None:
-        facts.append({"lbl": "Wet days", "val": f"{rain}%", "sub": f"typical {PERIOD_LBL}"})
     facts = facts[:5]
 
     # weather chart series: typical (climatology) days enriched with weekday labels,
@@ -1287,7 +1283,8 @@ svg.topo .dseg{pointer-events:stroke}
 .rsc.dim{color:var(--faint);font-weight:400}
 .board-ft{padding:12px 18px;font-size:10.5px;color:var(--faint);border-top:1px solid var(--line);line-height:1.5}
 .detail{background:var(--bg);min-height:100vh}
-.band{position:relative;overflow:hidden;padding:30px 30px 26px;border-bottom:1px solid var(--line2);min-height:214px;display:flex;align-items:flex-end}
+.band{position:relative;overflow:hidden;padding:26px 30px 20px;border-bottom:1px solid var(--line2);min-height:214px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.brkchart.hdr{height:240px;width:min(430px,100%);flex-shrink:0;position:relative;z-index:1;margin-left:auto}
 .band svg.topo{position:absolute;top:50%;right:-30px;transform:translateY(-50%);height:135%;pointer-events:none}
 .band-body{position:relative;max-width:60%}
 .vname{font-family:var(--disp);font-weight:800;font-size:clamp(26px,4.5vw,40px);letter-spacing:-.02em;line-height:1.05;margin:6px 0 5px}
@@ -1576,37 +1573,9 @@ function topoSvg(v){
   // summit disc: a donut whose segments are the score's weather/travel/fit
   // contributions (cake-chart breakdown lives here, not in a separate section)
   rings+='<circle cx="'+cx.toFixed(1)+'" cy="'+cy.toFixed(1)+'" r="46" fill="var(--card)" stroke="'+c[1]+'" stroke-opacity=".9" stroke-width="1.8"/>';
-  var sc=v.score>=0?num(v.score):'–';
-  var donut='',b=v.breakdown;
-  var SEGNAME={weather:'Weather',travel:'Travel',fit:'Venue fit'};
-  if(b&&v.score>=0){
-    var rD=36,C=2*Math.PI*rD,acc=0;
-    donut='<circle cx="'+cx.toFixed(1)+'" cy="'+cy.toFixed(1)+'" r="'+rD+'" fill="none" stroke="var(--line)" stroke-width="7"/>';
-    [['weather','var(--rain)'],['travel','var(--temp)'],['fit','var(--dry)']].forEach(function(sg){
-      var w=num((b.weights||{})[sg[0]]||0);
-      var frac=(num(b[sg[0]])*w)/10000;   // contribution 0..1
-      if(frac<=0)return;
-      var dash=Math.max(0.5,frac*C-2);
-      donut+='<circle class="dseg" onclick="dsel(\''+sg[0]+'\')" cx="'+cx.toFixed(1)+'" cy="'+cy.toFixed(1)+'" r="'+rD+'" fill="none" stroke="'+sg[1]+'" stroke-width="7" stroke-dasharray="'+dash.toFixed(1)+' '+(C-dash).toFixed(1)+'" stroke-dashoffset="'+(C*0.25-acc*C).toFixed(1)+'">'
-        +'<title>'+SEGNAME[sg[0]]+' '+num(b[sg[0]])+'/100 × '+w+'% = '+(num(b[sg[0]])*w/100).toFixed(1)+' pts — click for details</title></circle>';
-      acc+=frac;
-    });
-  }
-  var summit=donut
-    +'<text x="'+cx.toFixed(1)+'" y="'+(cy-1).toFixed(1)+'" text-anchor="middle" dominant-baseline="middle" style="font:600 21px var(--mono);fill:var(--ink)">'+sc+'</text>'
-    +'<text x="'+cx.toFixed(1)+'" y="'+(cy+15).toFixed(1)+'" text-anchor="middle" style="font:600 6px var(--mono);letter-spacing:.16em;fill:var(--muted)">TRIP /100</text>';
-  return '<svg class="topo" viewBox="0 0 '+W+' '+H+'"><g class="rings">'+rings+'</g>'+summit+'</svg>';
+  return '<svg class="topo" viewBox="0 0 '+W+' '+H+'"><g class="rings">'+rings+'</g></svg>';
 }
 
-function dsel(k){
-  var v=V[_cur],b=v&&v.breakdown;
-  if(!b)return;
-  var names={weather:'Weather',travel:'Travel',fit:'Venue fit'};
-  var notes={weather:b.weather_note,travel:b.travel_note,fit:b.fit_note};
-  var w=num((b.weights||{})[k]||0);
-  var el=document.getElementById('bdcap');
-  if(el)el.innerHTML='<b>'+names[k]+' '+num(b[k])+'/100</b> × '+w+'% = <b>'+(num(b[k])*w/100).toFixed(1)+'</b> of '+num(v.score)+' pts — '+esc(notes[k]||'');
-}
 
 function bandHtml(v){
   var c=cond(v);
@@ -1616,18 +1585,12 @@ function bandHtml(v){
   if(v.wx.live)pills+='<span class="pill">'+sky+' live forecast for your dates</span>';
   if(v.grades)pills+='<span class="pill">Trad '+esc(v.grades)+'</span>';
   if(v.auto)pills+='<span class="pill" title="Generated from a row in the venue spreadsheet — edit the sheet to refine it">📄 from your sheet</span>';
-  var b=v.breakdown;
-  var leg=b?'<div class="bd-leg">'
-    +'<span onclick="dsel(\'weather\')"><i style="background:var(--rain)"></i>Weather '+num(b.weather)+'</span>'
-    +'<span onclick="dsel(\'travel\')"><i style="background:var(--temp)"></i>Travel '+num(b.travel)+'</span>'
-    +'<span onclick="dsel(\'fit\')"><i style="background:var(--dry)"></i>Venue fit '+num(b.fit)+'</span></div>'
-    +'<div class="bd-cap" id="bdcap">Tap a donut segment or a label for the maths.</div>':'';
   return '<header class="band" style="background:'+c[2]+'">'+topoSvg(v)
     +'<div class="band-body">'
     +'<div class="eyebrow">No.'+num(v.rank)+' of '+V.length+' · '+esc(v.flag)+' '+esc(v.country)+'</div>'
     +'<h1 class="vname">'+esc(v.shortName)+'</h1>'
     +'<div class="vmeta">'+esc(v.style||'')+'</div>'
-    +'<div class="vpills">'+pills+'</div>'+leg+'</div></header>';
+    +'<div class="vpills">'+pills+'</div></div>'+(v.breakdown?'<div id="brkChart" class="brkchart hdr"></div>':'')+'</header>';
 }
 
 function highlightHtml(v){
@@ -1651,9 +1614,7 @@ function verdictHtml(v){
   var note=v.score>=0
     ?'<p class="score-note">Why score <b>'+num(v.score)+'/100</b>: ranked on '+esc(v.basis||'weather')+' — '+bits.join('; ')+'.</p>'
     :'<p class="score-note">No weather data yet for this area, so it is unranked.</p>';
-  var b=v.breakdown;
-  var comps=b?'<p class="score-note">The donut in the header splits the score: <b style="color:var(--rain)">weather '+num(b.weather)+'/100</b> × '+num((b.weights||{}).weather)+'% · <b style="color:var(--temp)">travel '+num(b.travel)+'/100</b> × '+num((b.weights||{}).travel)+'% ('+esc(b.travel_note||'')+') · <b style="color:var(--dry)">venue fit '+num(b.fit)+'/100</b> × '+num((b.weights||{}).fit)+'% ('+esc(b.fit_note||'')+').</p>':'';
-  return '<div class="sec"><div class="eyebrow">Why go · why score '+(v.score>=0?num(v.score):'—')+'</div>'+why+note+comps+'</div>';
+  return '<div class="sec"><div class="eyebrow">Why go · why score '+(v.score>=0?num(v.score):'—')+'</div>'+why+note+'</div>';
 }
 
 function takeaway(v){
@@ -1766,13 +1727,14 @@ function renderBrk(v){
   var narrow=window.innerWidth<640;
   var c=echarts.init(el,null,{renderer:'svg'});
   c.setOption({backgroundColor:'transparent',textStyle:{fontFamily:'IBM Plex Mono, monospace'},
+    graphic:[{type:'text',left:'center',top:'middle',style:{text:num(v.score)+'\nTRIP /100',textAlign:'center',fill:'#E9E7E1',font:'600 15px IBM Plex Mono',lineHeight:17}}],
     tooltip:{trigger:'item',backgroundColor:'#20242B',borderColor:'#353A44',textStyle:{color:'#E9E7E1',fontSize:12},
       formatter:function(pr){var notes={'Weather':b.weather_note,'Travel':b.travel_note,'Venue fit':b.fit_note,
         'Headroom':'points not earned — a perfect venue would score 100'};
         return '<b>'+pr.name+'</b>: '+pr.value+' pts of 100'+(notes[pr.name]?'<br><span style="color:#A0A19A;font-size:11px">'+notes[pr.name]+'</span>':'');}},
-    series:[{type:'pie',radius:narrow?['36%','60%']:['42%','66%'],center:['50%','54%'],
+    series:[{type:'pie',radius:narrow?['36%','60%']:['42%','66%'],center:['50%','50%'],
       itemStyle:{borderRadius:8,borderColor:'#14161A',borderWidth:3},
-      label:{color:'#E9E7E1',fontSize:narrow?10:12,lineHeight:16,formatter:'{b}\n{c} pts · {d}%'},
+      label:{color:'#E9E7E1',fontSize:narrow?10:12,lineHeight:16,formatter:'{b}\n{c} pts'},
       labelLine:{lineStyle:{color:'#6E7069'},length:narrow?8:16,length2:narrow?6:12},
       emphasis:{scale:true,scaleSize:5},
       data:[
@@ -1874,7 +1836,6 @@ function detailHtml(v){
     +(safeUrl(v.guide.url)?'<a class="lk" style="font-size:12px;flex-shrink:0" target="_blank" rel="noopener" href="'+safeUrl(v.guide.url)+'">Amazon ↗</a>':'')+'</div>':'';
   return bandHtml(v)
     +(chips?'<div class="sec"><div class="chips">'+chips+'</div></div>':'')
-    +(v.breakdown?'<div class="sec"><div class="eyebrow">Score breakdown · '+num(v.score)+'/100 · hover or tap a slice</div><div id="brkChart" class="brkchart"></div></div>':'')
     +tagsHtml(v)
     +wxHtml(v)
     +hl
