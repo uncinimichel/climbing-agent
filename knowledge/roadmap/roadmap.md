@@ -24,6 +24,19 @@ Enhancements to what already runs. None are required for daily operation. Priori
 4. **Overlay live/seasonal forecast on the mini-graph** once in range (currently
    climatology) — show the actual forecast line for the trip window from ~8 July.
 5. **Tides for sea-cliff venues** (Fair Head, Gower, Cornwall) — flag non-tidal windows.
+   Some approaches to tidal crags are only safe/possible at low tide, so this needs
+   actual tide **times**, not just a yes/no flag. **Not started (noted 3 Jul 2026):**
+   multi-pitch.com already solves this for its own climb pages — see
+   `~/dev/multi-pitch/lambda-node/get-tides/getTides.js`, which calls the RapidAPI
+   "tides" endpoint (`tides.p.rapidapi.com`, needs a `TIDES_HOOD_KEY`) per climb
+   lat/lon and returns tide extremes/heights, filtered to climbs already flagged
+   `tidal == 1` in multi-pitch.com's own data. Our `_climb_flags()` in
+   `update_report.py` already surfaces that same `tidal` flag as a hazard chip on
+   climb cards (see `TAGT['hazard']`) — the plumbing to know *which* climbs need
+   this exists, just not the tide-times lookup or a low-tide-window callout in the
+   weather section. When this gets built: reuse the same RapidAPI tides endpoint
+   (or an equivalent free source) rather than re-deriving tide tables from scratch,
+   and surface it per-venue only when at least one nearby climb is tidal.
 6. **Per-crag detail** — link each venue to its UKC/theCrag/Mountain-Project page. **In
    progress (3 Jul 2026):** shipped as a new "More climbing in the area" section, rendered
    below the multi-pitch.com climbs list and explicitly labelled as *not curated* (unlike
