@@ -11,10 +11,13 @@ Three endpoints, one provider, consistent format. The backbone of the ranking.
 | Endpoint | Host | Gives | Used for |
 |---|---|---|---|
 | **Archive** | `archive-api.open-meteo.com` | ERA5 historical (July averages) | Climatology base ranking + per-venue mini-graph. One ranged request/venue → deterministic. |
-| **Forecast** | `api.open-meteo.com` | 16-day live forecast | Ranks the trip once in range (~8 July); supersedes other bases. |
+| **Forecast** | `api.open-meteo.com` | 16-day live forecast — sky/temp/precip **plus** gusts, sunshine, precip-hours (daily) and dew point/humidity (hourly) | Ranks the trip once in range (~8 July); supersedes other bases. Extra fields feed the friction/drying score terms — see [condition-algorithm](../data/condition-algorithm.html). |
 | **Seasonal** | `seasonal-api.open-meteo.com` | CFS ensemble, ~45 days–9 months | Sub-seasonal outlook; blended 70/30 into ranking beyond live range. |
 
 - **Key:** none. **Retry:** 4× on failure.
+- **Limits:** free non-commercial tier ≈ **10,000 calls/day** (~5,000/hour, ~600/minute).
+  Our load is 3 calls × venues × 1 run/day → well under 1% of the cap; effectively
+  unlimited for us. No usage endpoint exists, so the only signal is HTTP 429.
 - **Degradation:** seasonal failure → climatology-only; the banner stays honest about the
   basis.
 
@@ -25,8 +28,13 @@ Three endpoints, one provider, consistent format. The backbone of the ranking.
 - **What:** a representative round-trip per venue for Michel (from London) and Dan (from
   Belfast/Dublin) into the venue airport; 3 best-value options with **outbound** times +
   book links.
+- **Quota:** free plan = **250 searches/month**, **250/hour** rate limit. This is the one
+  hard ceiling in the stack (Open-Meteo is effectively unlimited for our volume).
 - **Quota discipline:** only the **top-N (=4)** ranked venues are priced, one combo each
   → ≤ 8 searches/day. `TOP_N_FLIGHTS` throttles this.
+- **Monitoring:** every build logs remaining quota via `account.json` (which consumes **no**
+  search) → [live quota page](serpapi-quota.html), history in
+  `trip-ni-july-2026/serpapi-usage.json`. Script: `scripts/serpapi_quota.py`.
 - **Degradation:** missing/exhausted key → flight cells fall back to "search ↗" links; the
   build still succeeds.
 - **NI special case:** Dan is `local` → no flight priced for him at NI venues.

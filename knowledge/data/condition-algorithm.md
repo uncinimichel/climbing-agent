@@ -15,11 +15,21 @@ file in sync when the formula changes, and log formula changes in
 day_score = 100 − 0.8·(rain_prob_%) − 6·(precip_mm)
           capped at 25  if weather_code ≥ 61   (rain)
           capped at 15  if thunderstorm
+   # live-forecast horizon only — gentle, bounded climbing-quality nudges:
+          − 0.6·max(0, gust_kmh − 30)          (exposure; ~−12 at 50 km/h)
+          − 0.8·min(precip_hours, 12)          (drizzle-all-day vs one burst)
+          + 10·(sunshine_frac − 0.5)           (sun dries rock, ±5)
+          − 1.2·max(0, daytime_dewpoint − 12)  (friction / grease; ~−10 at dew 20)
 ```
 
 - Higher is better; 100 = perfect dry day.
 - Rain probability and precipitation both penalise; heavy/coded rain hard-caps the score
   so a wet day can't look mediocre-but-okay.
+- The four extra terms apply **only when the live 16-day forecast is in range** (they need
+  fields climatology/seasonal don't carry). Each is small and clamped so ranking never
+  swings wildly — they refine ties, they don't overturn a rain verdict. `daytime_dewpoint`
+  is the mean of hourly dew point 09–18 local; `sunshine_frac = sunshine ÷ daylight`.
+  Surfaced on the dashboard as a friction/gusts/dry-mornings chip strip + hover tooltips.
 
 ### Venue score
 
@@ -59,16 +69,18 @@ in the dashboard banner (honest-uncertainty principle).
 ## The gap: this is not yet a *friction/seepage* model ⚠️
 
 The vision's Predictive Condition Algorithm scores **friction windows, drying rate, and
-seepage** from micro-climate × rock physics. Today's score uses none of that physics —
-it's a rain proxy. Factors currently ignored:
+seepage** from micro-climate × rock physics. The live-forecast horizon now takes a **first
+cut** at friction (dew point) and drying (sunshine + gusts); climatology/seasonal remain a
+rain proxy, and the physics below is still coarse (no rock type, aspect, or seepage yet):
 
-| Factor | Why it matters | Data available |
+| Factor | Why it matters | Status |
 |---|---|---|
-| **Rock type** | limestone seeps for days; granite dries in hours | in `venues.json` |
+| **Humidity / dew point** | the crux of a real friction window | **scored (live)** — daytime dew point → friction band + score term |
+| **Sunshine / precip-hours** | drying rate; distinguishes drizzle-all-day from one burst | **scored (live)** — sunshine fraction + wet-hours terms |
+| **Wind gusts** | exposure on multi-pitch / sea-cliffs; also drying | **scored (live)** — gust penalty above 30 km/h |
+| **Rock type** | limestone seeps for days; granite dries in hours | in `venues.json`, *not yet scored* |
 | **Aspect** | S-facing dries/bakes; N-facing stays cool/shaded | *planned field* |
-| **Humidity / dew point** | the crux of a real friction window | Open-Meteo hourly |
-| **Wind** | accelerates drying | Open-Meteo (shown, not scored) |
-| **Antecedent rain** | yesterday's rain drives today's seepage | Open-Meteo archive/forecast |
+| **Antecedent rain** | yesterday's rain drives today's seepage | Open-Meteo archive/forecast, *not yet scored* |
 
 ## Target: the physical condition model *(planned)*
 
