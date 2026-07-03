@@ -1,6 +1,6 @@
 {
   "comment": "Latest flight prices per combo (round-trip, 1 pax, GBP). Updated on demand by Claude or by an API script. null = not yet checked.",
-  "checked_at": "2026-07-03 17:01 UTC (Google Flights/SerpApi)",
+  "checked_at": "2026-07-03 19:13 UTC (Google Flights/SerpApi)",
   "currency": "GBP",
   "rep_combo": {
     "id": "fri-tue",
@@ -87,7 +87,7 @@
         "to": "LYS",
         "options": [
           {
-            "price": 156,
+            "price": 151,
             "airline": "easyJet",
             "from": "LTN",
             "to": "LYS",
@@ -96,22 +96,22 @@
             "stops": 0
           },
           {
-            "price": 192,
-            "airline": "KLM",
-            "from": "LHR",
-            "to": "LYS",
-            "dep": "19:15",
-            "arr": "09:20",
-            "stops": 1
-          },
-          {
-            "price": 234,
+            "price": 236,
             "airline": "easyJet",
             "from": "LGW",
             "to": "LYS",
             "dep": "19:55",
             "arr": "22:35",
             "stops": 0
+          },
+          {
+            "price": 206,
+            "airline": "KLM",
+            "from": "LHR",
+            "to": "LYS",
+            "dep": "19:15",
+            "arr": "09:20",
+            "stops": 1
           }
         ],
         "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTA3LTI0agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDTFlTGkISCjIwMjYtMDctMjhqBwgBEgNMWVNyBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ",
@@ -122,12 +122,21 @@
         "to": "LYS",
         "options": [
           {
-            "price": 189,
+            "price": 168,
             "airline": "Aer Lingus",
             "from": "DUB",
             "to": "LYS",
             "dep": "06:15",
             "arr": "09:30",
+            "stops": 0
+          },
+          {
+            "price": 210,
+            "airline": "Aer Lingus",
+            "from": "DUB",
+            "to": "LYS",
+            "dep": "12:50",
+            "arr": "16:05",
             "stops": 0
           },
           {
@@ -137,15 +146,6 @@
             "to": "LYS",
             "dep": "05:55",
             "arr": "17:50",
-            "stops": 1
-          },
-          {
-            "price": 239,
-            "airline": "KLM",
-            "from": "DUB",
-            "to": "LYS",
-            "dep": "11:10",
-            "arr": "17:35",
             "stops": 1
           }
         ],
@@ -172,17 +172,17 @@
             "airline": "AJet",
             "from": "STN",
             "to": "ASR",
-            "dep": "23:00",
-            "arr": "09:15",
+            "dep": "15:40",
+            "arr": "02:25",
             "stops": 1
           },
           {
-            "price": 308,
-            "airline": "AJet",
+            "price": 313,
+            "airline": "Pegasus",
             "from": "STN",
             "to": "ASR",
-            "dep": "15:40",
-            "arr": "02:25",
+            "dep": "14:40",
+            "arr": "01:15",
             "stops": 1
           }
         ],
@@ -212,7 +212,7 @@
             "stops": 1
           },
           {
-            "price": 483,
+            "price": 482,
             "airline": "Turkish Airlines",
             "from": "DUB",
             "to": "ASR",
@@ -266,7 +266,7 @@
         "to": "BIO",
         "options": [
           {
-            "price": 173,
+            "price": 152,
             "airline": "Vueling",
             "from": "DUB",
             "to": "BIO",
@@ -275,21 +275,21 @@
             "stops": 1
           },
           {
-            "price": 229,
+            "price": 223,
+            "airline": "Vueling",
+            "from": "DUB",
+            "to": "BIO",
+            "dep": "22:05",
+            "arr": "09:55",
+            "stops": 1
+          },
+          {
+            "price": 232,
             "airline": "Lufthansa",
             "from": "DUB",
             "to": "BIO",
             "dep": "06:05",
             "arr": "17:00",
-            "stops": 1
-          },
-          {
-            "price": 240,
-            "airline": "KLM",
-            "from": "DUB",
-            "to": "BIO",
-            "dep": "05:55",
-            "arr": "16:30",
             "stops": 1
           }
         ],
