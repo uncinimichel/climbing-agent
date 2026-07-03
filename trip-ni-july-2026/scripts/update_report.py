@@ -515,17 +515,26 @@ def day_score(code, mm, prob, m=None):
             s += (m["sun_frac"] - 0.5) * 10        # ±5
         if m.get("dew") is not None:              # friction / grease
             s -= max(0, m["dew"] - 12) * 1.2       # dew 20 ≈ −10
+        if m.get("tmax") is not None:             # same climbing heat curve as climatology
+            s -= heat_penalty(m["tmax"])
     return max(0.0, min(100.0, s))
+
+
+def heat_penalty(tmax):
+    """Climbing-specific heat curve. Friction research puts ideal sending temps at
+    ~7–18°C (climbing.com 'Science of Friction'; UKC conditions threads agree);
+    rubber and skin grease out past ~20–25°C, and multi-pitch means HOURS exposed
+    on the wall with no shade retreat. Cumulative slopes: gentle from 20°C, steep
+    from 25°C, brutal from 30°C — a 31°C coastal venue loses ~36 points."""
+    return (max(0, tmax - 20) * 1.2
+            + max(0, tmax - 25) * 3
+            + max(0, tmax - 30) * 5)
 
 
 def climo_score(c):
     s = 100 - c["rain_pct"] * 0.9
-    s -= max(0, 10 - c["tmax"]) * 1.5
-    # Heat matters for climbing long before it matters for the beach: friction and
-    # long sunny pitches degrade past ~27°C, and 33°C+ (Costa Blanca / desert venues
-    # in July) is effectively out of condition regardless of dryness.
-    s -= max(0, c["tmax"] - 27) * 2.5
-    s -= max(0, c["tmax"] - 33) * 4
+    s -= max(0, 8 - c["tmax"]) * 2      # too cold: numb fingers below ~8°C
+    s -= heat_penalty(c["tmax"])
     return max(0, min(100, round(s)))
 
 
@@ -557,12 +566,14 @@ def forecast_metrics(d):
         if 7 <= hr <= 12 and j < len(hpre) and (hpre[j] or 0) >= 0.2:
             am_wet[date_s] = True
 
+    tmaxs = daily.get("temperature_2m_max") or [None] * len(times)
     out = {}
     for i, ds in enumerate(times):
         dew = round(sum(day_dew[ds]) / len(day_dew[ds]), 1) if day_dew.get(ds) else None
         hum = round(sum(day_hum[ds]) / len(day_hum[ds])) if day_hum.get(ds) else None
         sf = (sun[i] / daylt[i]) if (sun[i] is not None and daylt[i]) else None
         out[ds] = {
+            "tmax": tmaxs[i],
             "gust": round(gusts[i]) if gusts[i] is not None else None,
             "sun_frac": round(sf, 2) if sf is not None else None,
             "precip_hours": round(phours[i], 1) if phours[i] is not None else None,
@@ -1024,9 +1035,18 @@ def _short_name(name):
 
 
 def _list_info(v, r, cards):
-    """Compact extra line for the leaderboard: total flight cost when priced,
-    route count on multi-pitch.com, and the sheet's difficulty band."""
+    """Compact extra line for the leaderboard: expected trip temperature, total
+    flight cost when priced, route count, and the sheet's difficulty band."""
     parts = []
+    sea, c = r.get("seasonal"), r.get("climo")
+    fc = r.get("fc") or {}
+    t = (fc.get("tmax") if fc.get("in_window") else None)
+    if t is None:
+        t = (sea or {}).get("tmax") if sea else None
+    if t is None:
+        t = (c or {}).get("tmax") if c else None
+    if t is not None:
+        parts.append(f"🌡 {t}°C avg")
     prices = []
     for who in ("michel", "dan"):
         mode = (v.get("travel", {}).get(who) or {}).get("mode")
@@ -1184,6 +1204,14 @@ body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:14p
 .rinfo{font-size:10.5px;color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;font-family:var(--mono)}
 .bd-leg{display:flex;gap:13px;margin-top:11px;font-family:var(--mono);font-size:10.5px;color:var(--muted);flex-wrap:wrap}
 .bd-leg i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:5px}
+.bd-leg span{cursor:pointer}
+.bd-leg span:hover{color:var(--ink)}
+.bd-cap{margin-top:8px;font-size:11.5px;color:var(--faint);max-width:520px;line-height:1.5;min-height:17px}
+.bd-cap b{color:var(--ink)}
+.dseg{cursor:pointer;pointer-events:stroke}
+svg.topo{pointer-events:none}
+svg.topo .dseg{pointer-events:stroke}
+.updstamp{color:var(--faint);font-size:11px;white-space:nowrap}
 .wdir{font-size:9px;color:var(--muted);margin-left:2px}
 .row.active .rnum{opacity:1}
 .rname{font-family:var(--disp);font-weight:700;font-size:15.5px;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -1401,7 +1429,7 @@ document.getElementById('tripline').innerHTML=D.trip.pills.map(esc).join(' · ')
 document.getElementById('mapBtn').href=safeUrl(D.trip.mapUrl);
 document.getElementById('sheetBtn').href=safeUrl(D.trip.sheetUrl);
 document.getElementById('mpBtn').href=safeUrl(D.trip.mpUrl);
-document.getElementById('basis').innerHTML=D.banner.html;
+document.getElementById('basis').innerHTML=D.banner.html+' <span class="updstamp">· page updated '+esc(D.trip.updated)+'</span>';
 document.getElementById('updated').textContent='Updated '+D.trip.updated+' · weather: Open-Meteo · flights: Google Flights';
 
 function rowHtml(v,i){
@@ -1451,21 +1479,34 @@ function topoSvg(v){
   rings+='<circle cx="'+cx.toFixed(1)+'" cy="'+cy.toFixed(1)+'" r="46" fill="var(--card)" stroke="'+c[1]+'" stroke-opacity=".9" stroke-width="1.8"/>';
   var sc=v.score>=0?num(v.score):'–';
   var donut='',b=v.breakdown;
+  var SEGNAME={weather:'Weather',travel:'Travel',fit:'Venue fit'};
   if(b&&v.score>=0){
     var rD=36,C=2*Math.PI*rD,acc=0;
     donut='<circle cx="'+cx.toFixed(1)+'" cy="'+cy.toFixed(1)+'" r="'+rD+'" fill="none" stroke="var(--line)" stroke-width="7"/>';
     [['weather','var(--rain)'],['travel','var(--temp)'],['fit','var(--dry)']].forEach(function(sg){
-      var frac=(num(b[sg[0]])*num((b.weights||{})[sg[0]]||0))/10000;   // contribution 0..1
+      var w=num((b.weights||{})[sg[0]]||0);
+      var frac=(num(b[sg[0]])*w)/10000;   // contribution 0..1
       if(frac<=0)return;
       var dash=Math.max(0.5,frac*C-2);
-      donut+='<circle cx="'+cx.toFixed(1)+'" cy="'+cy.toFixed(1)+'" r="'+rD+'" fill="none" stroke="'+sg[1]+'" stroke-width="7" stroke-dasharray="'+dash.toFixed(1)+' '+(C-dash).toFixed(1)+'" stroke-dashoffset="'+(C*0.25-acc*C).toFixed(1)+'"/>';
+      donut+='<circle class="dseg" onclick="dsel(\''+sg[0]+'\')" cx="'+cx.toFixed(1)+'" cy="'+cy.toFixed(1)+'" r="'+rD+'" fill="none" stroke="'+sg[1]+'" stroke-width="7" stroke-dasharray="'+dash.toFixed(1)+' '+(C-dash).toFixed(1)+'" stroke-dashoffset="'+(C*0.25-acc*C).toFixed(1)+'">'
+        +'<title>'+SEGNAME[sg[0]]+' '+num(b[sg[0]])+'/100 × '+w+'% = '+(num(b[sg[0]])*w/100).toFixed(1)+' pts — click for details</title></circle>';
       acc+=frac;
     });
   }
   var summit=donut
     +'<text x="'+cx.toFixed(1)+'" y="'+(cy-1).toFixed(1)+'" text-anchor="middle" dominant-baseline="middle" style="font:600 21px var(--mono);fill:var(--ink)">'+sc+'</text>'
     +'<text x="'+cx.toFixed(1)+'" y="'+(cy+15).toFixed(1)+'" text-anchor="middle" style="font:600 6px var(--mono);letter-spacing:.16em;fill:var(--muted)">TRIP /100</text>';
-  return '<svg class="topo" viewBox="0 0 '+W+' '+H+'" aria-hidden="true"><g class="rings">'+rings+'</g>'+summit+'</svg>';
+  return '<svg class="topo" viewBox="0 0 '+W+' '+H+'"><g class="rings">'+rings+'</g>'+summit+'</svg>';
+}
+
+function dsel(k){
+  var v=V[_cur],b=v&&v.breakdown;
+  if(!b)return;
+  var names={weather:'Weather',travel:'Travel',fit:'Venue fit'};
+  var notes={weather:b.weather_note,travel:b.travel_note,fit:b.fit_note};
+  var w=num((b.weights||{})[k]||0);
+  var el=document.getElementById('bdcap');
+  if(el)el.innerHTML='<b>'+names[k]+' '+num(b[k])+'/100</b> × '+w+'% = <b>'+(num(b[k])*w/100).toFixed(1)+'</b> of '+num(v.score)+' pts — '+esc(notes[k]||'');
 }
 
 function bandHtml(v){
@@ -1478,9 +1519,10 @@ function bandHtml(v){
   if(v.auto)pills+='<span class="pill" title="Generated from a row in the venue spreadsheet — edit the sheet to refine it">📄 from your sheet</span>';
   var b=v.breakdown;
   var leg=b?'<div class="bd-leg">'
-    +'<span><i style="background:var(--rain)"></i>Weather '+num(b.weather)+'</span>'
-    +'<span><i style="background:var(--temp)"></i>Travel '+num(b.travel)+'</span>'
-    +'<span><i style="background:var(--dry)"></i>Venue fit '+num(b.fit)+'</span></div>':'';
+    +'<span onclick="dsel(\'weather\')"><i style="background:var(--rain)"></i>Weather '+num(b.weather)+'</span>'
+    +'<span onclick="dsel(\'travel\')"><i style="background:var(--temp)"></i>Travel '+num(b.travel)+'</span>'
+    +'<span onclick="dsel(\'fit\')"><i style="background:var(--dry)"></i>Venue fit '+num(b.fit)+'</span></div>'
+    +'<div class="bd-cap" id="bdcap">Tap a donut segment or a label for the maths.</div>':'';
   return '<header class="band" style="background:'+c[2]+'">'+topoSvg(v)
     +'<div class="band-body">'
     +'<div class="eyebrow">No.'+num(v.rank)+' of '+V.length+' · '+esc(v.flag)+' '+esc(v.country)+'</div>'
@@ -1745,8 +1787,9 @@ function detailHtml(v){
     +'</div>';
 }
 
-var _booted=false;
+var _booted=false,_cur=0;
 function sel(i){
+  _cur=i;
   var rows=document.querySelectorAll('.row');
   for(var k=0;k<rows.length;k++)rows[k].classList.toggle('active',+rows[k].getAttribute('data-i')===i);
   document.getElementById('detail').innerHTML=detailHtml(V[i]);
