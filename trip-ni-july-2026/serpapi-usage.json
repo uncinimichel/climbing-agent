@@ -154,6 +154,17 @@
       "month_usage": 152,
       "hour": 3,
       "hour_limit": 250
+    },
+    {
+      "at": "2026-07-03 14:40 UTC",
+      "ok": true,
+      "plan": "Free Plan",
+      "per_month": 250,
+      "left": 90,
+      "total_left": 90,
+      "month_usage": 160,
+      "hour": 8,
+      "hour_limit": 250
     }
   ]
 }
