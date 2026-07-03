@@ -40,7 +40,6 @@ _cfg = json.loads((ROOT / "venues.json").read_text())
 TRIP_NAME = _cfg["trip"]
 TARGET_START = date.fromisoformat(_cfg["target_window"]["start"])
 TARGET_END = date.fromisoformat(_cfg["target_window"]["end"])
-VENUES = _cfg["venues"]
 FLIGHTS_CFG = json.loads((ROOT / "flights.json").read_text())
 FLIGHTS_DATA = json.loads((ROOT / "flights-latest.json").read_text())
 
@@ -90,6 +89,134 @@ def _load_sheet_rows():
 
 SHEET_ROWS = _load_sheet_rows()
 MP_CLIMBS = []   # populated at build time from MP_DATA_URL
+
+
+# ---- Master venue list: the Google Sheet drives the ranking ---------------
+# Michel curates areas in the spreadsheet (downloaded as climbing-trips.csv each
+# CI run). Every sheet row becomes a ranked venue: curated venues.json entries
+# are enriched with their sheet columns; unmatched rows are generated from the
+# GAZETTEER below (coords + airports), falling back to free geocoding.
+def _key(s):
+    s = unicodedata.normalize("NFKD", s or "").encode("ascii", "ignore").decode().lower()
+    return " ".join(s.split())
+
+
+def _load_sheet_full():
+    """All venue rows with the judgment columns (volume/difficulty/travel/min-trip)."""
+    rows = []
+    try:
+        rdr = list(csv.reader(CLIMBING_CSV.open()))
+    except Exception as e:
+        print(f"[warn] could not read {CLIMBING_CSV.name}: {e}", file=sys.stderr)
+        return rows
+
+    def g(r, j):
+        return r[j].strip() if j < len(r) else ""
+    for i, r in enumerate(rdr, 1):
+        if i < 3 or not r or not r[0].strip():    # rows 1-2 are banner/header
+            continue
+        rows.append({"row": i, "area": g(r, 0), "country": g(r, 1), "volume": g(r, 2),
+                     "max_height": g(r, 4), "difficulty": g(r, 5), "travel_time": g(r, 6),
+                     "hub": g(r, 7), "min_trip": g(r, 8), "cost": g(r, 9), "link": g(r, 22)})
+    return rows
+
+
+def _fly(m_to, d_to=None):
+    return {"michel": {"mode": "fly", "to": m_to}, "dan": {"mode": "fly", "to": d_to or m_to}}
+
+
+# Coords + airports for sheet areas (keys = accent-stripped lowercase sheet names,
+# in the sheet's own spellings). New sheet rows missing here are geocoded.
+GAZETTEER = {
+    "tenerife": dict(lat=28.27, lon=-16.64, rock="volcanic", style="Cañadas del Teide multi-pitch", travel=_fly("TFS")),
+    "mallorca": dict(lat=39.72, lon=2.77, rock="limestone", style="Sa Gubia + sea cliffs", travel=_fly("PMI")),
+    "riglos": dict(lat=42.35, lon=-0.73, rock="conglomerate", style="huge overhanging towers", travel=_fly("BCN")),
+    "vratsa": dict(lat=43.20, lon=23.55, rock="limestone", style="big limestone walls", travel=_fly("SOF")),
+    "elbsandstein": dict(lat=50.91, lon=14.06, rock="sandstone", style="historic sandstone towers", travel=_fly("PRG")),
+    "montserrat": dict(lat=41.60, lon=1.81, rock="conglomerate", style="pocketed conglomerate spires", travel=_fly("BCN")),
+    "freyr": dict(lat=50.22, lon=4.89, rock="limestone", style="Meuse valley slab classics", travel=_fly("BRU")),
+    "meteora": dict(lat=39.72, lon=21.63, rock="conglomerate", style="monastery towers, bold conglomerate", travel=_fly("SKG")),
+    "anti atlas": dict(lat=29.72, lon=-8.98, rock="quartzite", style="vast desert trad (Tafraout)", travel=_fly("AGA")),
+    "bruggler": dict(lat=47.12, lon=8.99, rock="limestone", style="plated limestone slabs", travel=_fly("ZRH")),
+    "setesdal": dict(lat=58.9, lon=7.4, rock="granite", style="granite walls & slabs", travel=_fly("KRS")),
+    "loften": dict(lat=68.12, lon=13.6, rock="granite", style="arctic granite (Presten, Svolvær)", travel=_fly("BOO")),
+    "wadi rum": dict(lat=29.57, lon=35.42, rock="sandstone", style="desert big walls, Bedouin routes", travel=_fly("AQJ")),
+    "triglav": dict(lat=46.38, lon=13.84, rock="limestone", style="north-face alpine limestone", travel=_fly("LJU")),
+    "lundy": dict(lat=51.18, lon=-4.67, rock="granite", style="island sea-cliff granite",
+                  travel={"michel": {"mode": "drive"}, "dan": {"mode": "fly", "to": "BRS"}}),
+    "costa blanca": dict(lat=38.63, lon=0.07, rock="limestone", style="Peñón d'Ifach + big ridges", travel=_fly("ALC")),
+    "zadiel": dict(lat=48.62, lon=20.83, rock="limestone", style="karst gorge towers", travel=_fly("KSC")),
+    "calanques": dict(lat=43.21, lon=5.45, rock="limestone", style="sea cliffs above turquoise coves", travel=_fly("MRS")),
+    "gredos": dict(lat=40.27, lon=-5.17, rock="granite", style="Galayos granite spires", travel=_fly("MAD")),
+    "sicilly": dict(lat=38.17, lon=12.74, rock="limestone", style="San Vito lo Capo sea cliffs", travel=_fly("PMO")),
+    "campanile basso": dict(lat=46.16, lon=10.87, rock="dolomite", style="Brenta's free-standing tower", travel=_fly("VRN")),
+    "mont blonc": dict(lat=45.88, lon=6.89, rock="granite", style="high alpine granite (Chamonix)", travel=_fly("GVA")),
+    "spitzkoppe": dict(lat=-21.83, lon=15.19, rock="granite", style="desert granite dome", travel=_fly("WDH")),
+    "hoy": dict(lat=58.88, lon=-3.43, rock="sandstone", style="Old Man of Hoy sea stack", travel=_fly("KOI")),
+    "isle of white": dict(lat=50.66, lon=-1.30, rock="chalk", style="south-coast sea cliffs",
+                          travel={"michel": {"mode": "drive"}, "dan": {"mode": "fly", "to": "SOU"}}),
+    "devon": dict(lat=50.92, lon=-4.56, rock="culm sandstone", style="Culm coast slabs (Wreckers Slab)",
+                  travel={"michel": {"mode": "drive"}, "dan": {"mode": "fly", "to": "EXT"}}),
+    "carcassonne": dict(lat=43.21, lon=2.35, rock="limestone", style="southern France crags", travel=_fly("CCF")),
+    "medina": dict(lat=24.47, lon=39.61, rock="granite", style="desert granite", travel=_fly("MED")),
+    "aladaglar": dict(lat=37.80, lon=35.15, rock="limestone", style="Turkish alpine limestone", travel=_fly("ASR")),
+}
+
+# sheet spelling -> curated venues.json name
+SHEET_ALIAS = {
+    "east tyrol": "East Tyrol (Lienz)", "picos europa": "Picos de Europa",
+    "dolomites": "Dolomites (Cortina)", "aaran": "Isle of Arran",
+    "mournes": "Mournes, NI", "lake district": "Lake District (Borrowdale)",
+    "llanberis": "Snowdonia (Llanberis Pass)", "cornwall": "West Cornwall (Bosigran)",
+}
+
+
+def _geocode(name):
+    """Open-Meteo's free geocoder — fallback for sheet rows not in the GAZETTEER."""
+    try:
+        d = _get("https://geocoding-api.open-meteo.com/v1/search?count=1&name="
+                 + urllib.parse.quote(name))
+        res = (d.get("results") or [None])[0]
+        if res:
+            return dict(lat=res["latitude"], lon=res["longitude"],
+                        country=res.get("country", ""), rock="", style="",
+                        travel={"michel": {"mode": "fly", "to": ""}, "dan": {"mode": "fly", "to": ""}})
+    except Exception as e:
+        print(f"[warn] geocode failed for {name}: {_redact(e)}", file=sys.stderr)
+    return None
+
+
+def build_venues():
+    """Sheet rows (deduped, in sheet order) merged with curated venues.json entries;
+    curated venues without a sheet row (e.g. Paklenica) are appended after."""
+    curated = {v["name"]: v for v in _cfg["venues"]}
+    out, used, seen = [], set(), set()
+    for sh in _load_sheet_full():
+        k = _key(sh["area"])
+        if not k or k in seen:
+            continue
+        seen.add(k)
+        cname = SHEET_ALIAS.get(k)
+        if cname and cname in curated:
+            v = dict(curated[cname])
+            used.add(cname)
+        else:
+            g = GAZETTEER.get(k) or _geocode(sh["area"])
+            if not g:
+                print(f"[warn] sheet area '{sh['area']}' has no coords — skipped", file=sys.stderr)
+                continue
+            v = {"name": sh["area"], "country": sh["country"] or g.get("country", ""),
+                 "priority": "7 (from sheet)", "lat": g["lat"], "lon": g["lon"],
+                 "rock": g.get("rock", ""), "style": g.get("style", ""), "why": "",
+                 "travel": g["travel"], "auto": True}
+        v["sheet"] = sh
+        out.append(v)
+    for name, v in curated.items():
+        if name not in used:
+            v = dict(v)
+            v["sheet"] = None
+            out.append(v)
+    return out
 
 
 def match_sheet_row(name):
@@ -174,9 +301,13 @@ def wmo_icon(code):
     return MP_ICONS + name + ".svg"
 
 FLAGS = {
-    "Northern Ireland": "🇬🇧", "England": "🏴󠁧󠁢󠁥󠁮󠁧󠁿", "Wales": "🏴󠁧󠁢󠁷󠁬󠁳󠁿", "Scotland": "🏴󠁧󠁢󠁳󠁣󠁴󠁿",
+    "Northern Ireland": "🇬🇧", "England": "🇬🇧", "Wales": "🏴󠁧󠁢󠁷󠁬󠁳󠁿", "Scotland": "🏴󠁧󠁢󠁳󠁣󠁴󠁿",
     "Italy": "🇮🇹", "Austria": "🇦🇹", "Spain": "🇪🇸", "Croatia": "🇭🇷", "France": "🇫🇷", "Ireland": "🇮🇪",
-    "Norway": "🇳🇴",
+    "Norway": "🇳🇴", "Germany": "🇩🇪", "Belgium": "🇧🇪", "Bulgaria": "🇧🇬", "Greece": "🇬🇷",
+    "Turkey": "🇹🇷", "Slovakia": "🇸🇰", "Slovenia": "🇸🇮", "Portugal": "🇵🇹", "Switzerland": "🇨🇭",
+    "Morocco": "🇲🇦", "Jordan": "🇯🇴", "Jodan": "🇯🇴", "Namibia": "🇳🇦", "Saudi Arabia": "🇸🇦",
+    # the sheet's own spellings
+    "Slovinia": "🇸🇮", "Swizzerland": "🇨🇭",
 }
 
 
@@ -225,22 +356,45 @@ def _get(url, retries=4):
     raise RuntimeError(f"GET {_redact(url)} failed: {_redact(last)}")
 
 
+# The ranked venue list: every sheet row + curated extras. Built after _get is
+# defined because the geocoder fallback for unknown sheet rows uses it.
+VENUES = build_venues()
+
+
 # ---- Weather --------------------------------------------------------------
 def forecast(lat, lon):
+    """16-day live forecast (Open-Meteo's max). Beyond the sky/temp/wind basics we pull
+    climbing-quality signals — gusts (exposed multi-pitch), sunshine + precip_hours (rock
+    drying), and hourly dewpoint/humidity (friction / 'grease'). All free, one request."""
     return _get(
         "https://api.open-meteo.com/v1/forecast"
         f"?latitude={lat}&longitude={lon}"
         "&daily=weathercode,temperature_2m_max,temperature_2m_min,"
-        "precipitation_sum,precipitation_probability_max,windspeed_10m_max,"
-        "winddirection_10m_dominant"
+        "precipitation_sum,precipitation_probability_max,precipitation_hours,"
+        "windspeed_10m_max,wind_gusts_10m_max,winddirection_10m_dominant,"
+        "sunshine_duration,daylight_duration"
+        "&hourly=dewpoint_2m,relative_humidity_2m,precipitation"
         "&timezone=auto&forecast_days=16"
-    )["daily"]
+    )
+
+
+# Climatology never changes (fixed 2021–24 archive), so it's cached to disk and
+# committed — repeated runs then skip the weight-heavy archive API entirely
+# (which rate-limits after a few full 42-venue runs in an hour).
+CLIMO_CACHE_F = ROOT / "climo-cache.json"
+try:
+    _CLIMO_CACHE = json.loads(CLIMO_CACHE_F.read_text())
+except Exception:
+    _CLIMO_CACHE = {}
 
 
 def climatology(lat, lon):
     """Typical trip-window conditions over recent years — ONE ranged request, filtered.
     Days are matched by real (month, day) against the graph/trip windows, so this stays
     correct even when the trip straddles a month boundary (e.g. 30 Jul–3 Aug)."""
+    ck = f"{lat},{lon}|{CLIMO_YEARS[0]}-{CLIMO_YEARS[-1]}|{GRAPH_START:%m%d}-{GRAPH_END:%m%d}"
+    if ck in _CLIMO_CACHE:
+        return _CLIMO_CACHE[ck]
     d = _get(
         "https://archive-api.open-meteo.com/v1/archive"
         f"?latitude={lat}&longitude={lon}"
@@ -279,8 +433,14 @@ def climatology(lat, lon):
                            "wind": round(sum(pd["w"]) / len(pd["w"])),
                            "trip": md in TRIP_MD})
         day += timedelta(days=1)
-    return {"tmax": round(sum(tmaxs) / len(tmaxs)), "rain_pct": round(100 * rain_days / total),
-            "wind": round(sum(winds) / len(winds)), "days": total, "series": series}
+    out = {"tmax": round(sum(tmaxs) / len(tmaxs)), "rain_pct": round(100 * rain_days / total),
+           "wind": round(sum(winds) / len(winds)), "days": total, "series": series}
+    _CLIMO_CACHE[ck] = out
+    try:
+        CLIMO_CACHE_F.write_text(json.dumps(_CLIMO_CACHE))   # persist as we go
+    except Exception:
+        pass
+    return out
 
 
 def seasonal(lat, lon):
@@ -323,20 +483,94 @@ def seasonal(lat, lon):
             "daily": daily}
 
 
-def day_score(code, mm, prob):
+def friction_label(dew):
+    """Rock friction from daytime dewpoint (°C). Low dewpoint = crisp, grippy rock;
+    high dewpoint = humid, greasy. The single best rock-quality signal we have."""
+    if dew is None:
+        return None
+    if dew < 8:
+        return "crisp"
+    if dew < 13:
+        return "good"
+    if dew < 17:
+        return "humid"
+    return "greasy"
+
+
+def day_score(code, mm, prob, m=None):
+    """0–100 for a single forecast day. Base = rain probability + amount + storm caps.
+    `m` (optional) carries the richer signals — gusts, wet-hours, sunshine (drying) and
+    dewpoint (friction) — each a gentle, bounded nudge so ranking never swings wildly."""
     s = 100.0 - (prob or 0) * 0.8 - (mm or 0) * 6
     if code is not None and code >= 61:
         s = min(s, 25)
     if code in (95, 96, 99):
         s = min(s, 15)
+    if m:
+        if m.get("gust") is not None:            # gusts bite on exposed routes / sea-cliffs
+            s -= max(0, m["gust"] - 30) * 0.6     # 50 km/h ≈ −12
+        if m.get("precip_hours") is not None:     # hours of rain, not just total mm
+            s -= min(m["precip_hours"], 12) * 0.8  # up to ≈ −10
+        if m.get("sun_frac") is not None:         # sun dries rock → reward, dull → penalise
+            s += (m["sun_frac"] - 0.5) * 10        # ±5
+        if m.get("dew") is not None:              # friction / grease
+            s -= max(0, m["dew"] - 12) * 1.2       # dew 20 ≈ −10
     return max(0.0, min(100.0, s))
 
 
 def climo_score(c):
     s = 100 - c["rain_pct"] * 0.9
     s -= max(0, 10 - c["tmax"]) * 1.5
-    s -= max(0, c["tmax"] - 32) * 1.5
+    # Heat matters for climbing long before it matters for the beach: friction and
+    # long sunny pitches degrade past ~27°C, and 33°C+ (Costa Blanca / desert venues
+    # in July) is effectively out of condition regardless of dryness.
+    s -= max(0, c["tmax"] - 27) * 2.5
+    s -= max(0, c["tmax"] - 33) * 4
     return max(0, min(100, round(s)))
+
+
+def forecast_metrics(d):
+    """Per-day derived climbing signals from a forecast response, keyed by ISO date.
+    Daily gives gusts / sunshine / precip-hours; hourly dewpoint+humidity are averaged
+    over daytime (09–18 local) for friction, and 07–12 dryness flags an AM window.
+    Everything is best-effort — any missing field just yields None for that signal."""
+    daily = d.get("daily", {})
+    times = daily.get("time", [])
+    gusts = daily.get("wind_gusts_10m_max") or [None] * len(times)
+    sun = daily.get("sunshine_duration") or [None] * len(times)
+    daylt = daily.get("daylight_duration") or [None] * len(times)
+    phours = daily.get("precipitation_hours") or [None] * len(times)
+
+    # aggregate hourly dewpoint/humidity/precip into per-date daytime means
+    h = d.get("hourly", {})
+    htime = h.get("time", [])
+    hdew, hhum, hpre = (h.get("dewpoint_2m") or [], h.get("relative_humidity_2m") or [],
+                        h.get("precipitation") or [])
+    day_dew, day_hum, am_wet = {}, {}, {}
+    for j, ts in enumerate(htime):
+        date_s, hr = ts[:10], int(ts[11:13]) if len(ts) >= 13 else 0
+        if 9 <= hr <= 18:
+            if j < len(hdew) and hdew[j] is not None:
+                day_dew.setdefault(date_s, []).append(hdew[j])
+            if j < len(hhum) and hhum[j] is not None:
+                day_hum.setdefault(date_s, []).append(hhum[j])
+        if 7 <= hr <= 12 and j < len(hpre) and (hpre[j] or 0) >= 0.2:
+            am_wet[date_s] = True
+
+    out = {}
+    for i, ds in enumerate(times):
+        dew = round(sum(day_dew[ds]) / len(day_dew[ds]), 1) if day_dew.get(ds) else None
+        hum = round(sum(day_hum[ds]) / len(day_hum[ds])) if day_hum.get(ds) else None
+        sf = (sun[i] / daylt[i]) if (sun[i] is not None and daylt[i]) else None
+        out[ds] = {
+            "gust": round(gusts[i]) if gusts[i] is not None else None,
+            "sun_frac": round(sf, 2) if sf is not None else None,
+            "precip_hours": round(phours[i], 1) if phours[i] is not None else None,
+            "dew": dew, "humid": hum,
+            "am_dry": (ds in am_wet) is False if htime else None,
+            "friction": friction_label(dew),
+        }
+    return out
 
 
 def evaluate(v):
@@ -353,33 +587,47 @@ def evaluate(v):
         res["seasonal"] = None
     try:
         d = forecast(v["lat"], v["lon"])
-        days = d["time"]
-        valid = [i for i in range(len(days)) if d["temperature_2m_max"][i] is not None]
+        daily = d["daily"]
+        days = daily["time"]
+        met = forecast_metrics(d)                     # per-ISO-date derived signals
+        valid = [i for i in range(len(days)) if daily["temperature_2m_max"][i] is not None]
         in_win = [i for i in valid if TARGET_START <= date.fromisoformat(days[i]) <= TARGET_END]
-        winds = d.get("windspeed_10m_max") or [None] * len(days)
-        dirs = d.get("winddirection_10m_dominant") or [None] * len(days)
+        winds = daily.get("windspeed_10m_max") or [None] * len(days)
+        dirs = daily.get("winddirection_10m_dominant") or [None] * len(days)
         # per-day live forecast for graph-window days (overlaid on the typical chart)
         res["fc_days"] = {}
         for i in valid:
             dd = date.fromisoformat(days[i])
             if (dd.month, dd.day) in GRAPH_MD:
+                mi = met.get(days[i], {})
                 res["fc_days"][(dd.month, dd.day)] = {
-                    "tmax": round(d["temperature_2m_max"][i]),
-                    "precip": round(d["precipitation_sum"][i] or 0, 1),
-                    "icon": wmo_icon(d["weathercode"][i]),
+                    "tmax": round(daily["temperature_2m_max"][i]),
+                    "precip": round(daily["precipitation_sum"][i] or 0, 1),
+                    "icon": wmo_icon(daily["weathercode"][i]),
                     "wind": round(winds[i]) if winds[i] is not None else None,
                     "dir": round(dirs[i]) if dirs[i] is not None else None,
+                    "gust": mi.get("gust"), "dew": mi.get("dew"),
+                    "friction": mi.get("friction"), "sunFrac": mi.get("sun_frac"),
                 }
         if in_win:
-            scores = [day_score(d["weathercode"][i], d["precipitation_sum"][i],
-                                d["precipitation_probability_max"][i]) for i in in_win]
-            codes = [d["weathercode"][i] for i in in_win]
+            scores = [day_score(daily["weathercode"][i], daily["precipitation_sum"][i],
+                                daily["precipitation_probability_max"][i], met.get(days[i]))
+                      for i in in_win]
+            codes = [daily["weathercode"][i] for i in in_win]
             dom = max(set(codes), key=codes.count)
+            wm = [met.get(days[i], {}) for i in in_win]
+            gusts_w = [x["gust"] for x in wm if x.get("gust") is not None]
+            dews_w = [x["dew"] for x in wm if x.get("dew") is not None]
+            am_flags = [x["am_dry"] for x in wm if x.get("am_dry") is not None]
+            mean_dew = round(sum(dews_w) / len(dews_w), 1) if dews_w else None
             res["fc"] = {
                 "score": round(sum(scores) / len(scores)),
-                "tmax": round(sum(d["temperature_2m_max"][i] for i in in_win) / len(in_win)),
-                "rain_prob": max((d["precipitation_probability_max"][i] or 0) for i in in_win),
+                "tmax": round(sum(daily["temperature_2m_max"][i] for i in in_win) / len(in_win)),
+                "rain_prob": max((daily["precipitation_probability_max"][i] or 0) for i in in_win),
                 "sky": WMO.get(dom, "?"), "sky_icon": wmo_icon(dom),
+                "gust_max": max(gusts_w) if gusts_w else None,
+                "friction": friction_label(mean_dew), "dew": mean_dew,
+                "am_dry_days": (sum(1 for a in am_flags if a), len(am_flags)) if am_flags else None,
                 "in_window": True, "horizon": days[-1],
             }
         else:
@@ -402,6 +650,7 @@ def evaluate(v):
             res["score"], res["basis"] = cs, "typical July (climatology)"
     else:
         res["score"], res["basis"] = -1, "no data"
+    res["wscore"] = res["score"]   # weather-only score; composite overwrites score
     return res
 
 
@@ -410,6 +659,79 @@ def prio_num(v):
         if ch.isdigit():
             return int(ch)
     return 9
+
+
+# ---- Composite score: weather + travel + venue fit -------------------------
+# Weather stays dominant; travel uses live/cached flight prices when known plus
+# the sheet's travel-time band; venue fit comes from the sheet's judgment
+# columns (volume of multi-pitch, difficulty spread, minimum-trip length).
+W_WEATHER, W_TRAVEL, W_FIT = 55, 25, 20
+TRIP_DAYS = (TARGET_END - TARGET_START).days + 1
+TIME_BAND = {"< 4": 95, "2-4": 95, "4-6": 85, "6-8": 70, "8-10": 55, "10-12": 45, "12-24": 30}
+VOL_BAND = {"vast": 100, "large": 85, "moderate": 65, "smaller": 45}
+DIFF_BAND = {"full range": 100, "moderate": 90, "medium to hard": 75, "hard": 50}
+
+
+def _band(txt, table, default):
+    t = (txt or "").lower()
+    for k, s in table.items():
+        if k in t:
+            return s
+    return default
+
+
+def apply_composite(r):
+    """Attach r['score'] (composite 0-100) + r['breakdown'] for the UI."""
+    v = r["venue"]
+    sh = v.get("sheet") or {}
+    w = r.get("wscore", -1)
+    if w < 0:
+        r["score"], r["breakdown"] = -1, None
+        return
+    # travel: known flight prices (live or cached) per traveller; drive/local are cheap
+    fl = r.get("flights") or {}
+    costs, cost_bits = [], []
+    for who, label in (("michel", "Michel"), ("dan", "Dan")):
+        mode = (v.get("travel", {}).get(who) or {}).get("mode")
+        opts = ((fl.get(who) or {}).get("options")) or []
+        if mode == "local":
+            costs.append(0)
+            cost_bits.append(f"{label} local £0")
+        elif mode == "drive":
+            costs.append(90)
+            cost_bits.append(f"{label} drives ~£90")
+        elif opts:
+            costs.append(opts[0]["price"])
+            cost_bits.append(f"{label} £{opts[0]['price']} return")
+        else:
+            costs.append(None)
+    known = [c for c in costs if c is not None]
+    cost_s = round(max(0, min(100, 100 - (sum(known) / len(known)) / 4))) if known else None
+    time_s = _band(sh.get("travel_time"), TIME_BAND, 65)
+    tparts = [s for s in (cost_s, time_s) if s is not None]
+    travel = round(sum(tparts) / len(tparts))
+    travel_note = ("; ".join(cost_bits) if cost_bits else "no priced flights yet") \
+        + (f" · {sh['travel_time']} from UK (sheet)" if sh.get("travel_time") else "")
+    # venue fit from the sheet's judgment columns
+    vol_s = _band(sh.get("volume"), VOL_BAND, 60)
+    diff_s = _band(sh.get("difficulty"), DIFF_BAND, 70)
+    mt = re.search(r"\d+", sh.get("min_trip") or "")
+    trip_s = 100 if not mt else max(0, 100 - max(0, int(mt.group()) - TRIP_DAYS) * 25)
+    fit = round((vol_s + diff_s + trip_s) / 3)
+    fit_bits = []
+    if sh.get("volume"):
+        fit_bits.append(f"{sh['volume'].lower()} multi-pitch volume")
+    if sh.get("difficulty"):
+        fit_bits.append(f"difficulty: {sh['difficulty'].lower()}")
+    if sh.get("min_trip"):
+        fit_bits.append(f"min trip {sh['min_trip'].lower()} vs your {TRIP_DAYS} days")
+    fit_note = "; ".join(fit_bits) if fit_bits else "not in the sheet — neutral defaults"
+    r["score"] = round((W_WEATHER * w + W_TRAVEL * travel + W_FIT * fit) / 100)
+    r["breakdown"] = {
+        "weather": w, "travel": travel, "fit": fit,
+        "weights": {"weather": W_WEATHER, "travel": W_TRAVEL, "fit": W_FIT},
+        "weather_note": r.get("basis", ""), "travel_note": travel_note, "fit_note": fit_note,
+    }
 
 
 def rank(results):
@@ -583,12 +905,57 @@ def nearby_climb_cards(v, km=60, limit=6):
                 "pitches": c.get("pitches"),
                 "length": c.get("length"),
                 "approach": c.get("approachTime"),
+                "appDiff": c.get("approachDifficulty"),
                 "dist": round(d),
                 "img": (SITE_URL.rstrip("/") + "/" + img) if img else None,
+                "url": climb_url(c),
                 "flags": _climb_flags(c),
             }))
     out.sort(key=lambda x: x[0])
     return [c for _, c in out[:limit]]
+
+
+def climb_url(c):
+    """Route page on multi-pitch.com — slug pattern '<route>-on-<cliff>'."""
+    s = f"{c.get('routeName', '')} on {c.get('cliff', '')}"
+    s = unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode().lower()
+    s = re.sub(r"[^a-z0-9]+", "-", s).strip("-")
+    return SITE_URL + "climbs/" + s + "/" if s else None
+
+
+def venue_tags(v, cards, grades):
+    """Colored tag chips: the sheet's judgment columns + flagship-climbing traits
+    derived from nearby multi-pitch.com routes, named after the knowledge-base
+    taxonomy (route character & hazard flags, approach)."""
+    sh = v.get("sheet") or {}
+    tags = []
+
+    def add(kind, text):
+        if text:
+            tags.append({"k": kind, "t": text})
+    add("vol", sh.get("volume") and f"{sh['volume']} volume")
+    add("diff", sh.get("difficulty"))
+    add("time", sh.get("travel_time") and f"{sh['travel_time']} from UK")
+    add("trip", sh.get("min_trip") and f"min trip {sh['min_trip']}")
+    add("height", sh.get("max_height") and f"walls to {sh['max_height']}m")
+    add("rock", v.get("rock"))
+    if grades:
+        add("grade", f"Trad {grades}")
+    if cards:
+        pitches = [x.get("pitches") or 0 for x in cards]
+        if max(pitches) >= 6:
+            add("grade", f"up to {max(pitches)} pitches")
+        # taxonomy hazard/character flags aggregated over the area's routes
+        seen_flags = {f for x in cards for f in (x.get("flags") or [])}
+        for f in sorted(seen_flags):
+            add("hazard", f)
+        walks = [x.get("approach") for x in cards if x.get("approach") is not None]
+        if walks:
+            med = sorted(walks)[len(walks) // 2]
+            add("appr", "long walk-ins" if med >= 60 else ("roadside cragging" if med <= 20 else f"~{med} min walk-ins"))
+        if any((x.get("appDiff") or 0) >= 3 for x in cards):
+            add("hazard", "serious approach")
+    return tags[:14]
 
 
 # ---- Accommodation + guidebook: MOCK sample data (flights & weather are live) ----
@@ -654,6 +1021,30 @@ def mock_stays(v):
 
 def _short_name(name):
     return name.split("(")[0].split(",")[0].strip()
+
+
+def _list_info(v, r, cards):
+    """Compact extra line for the leaderboard: total flight cost when priced,
+    route count on multi-pitch.com, and the sheet's difficulty band."""
+    parts = []
+    prices = []
+    for who in ("michel", "dan"):
+        mode = (v.get("travel", {}).get(who) or {}).get("mode")
+        opts = (((r.get("flights") or {}).get(who)) or {}).get("options") or []
+        if mode in ("local", "drive"):
+            prices.append(0)
+        elif opts:
+            prices.append(opts[0]["price"])
+        else:
+            prices.append(None)
+    if None not in prices and sum(prices) > 0:
+        parts.append(f"✈ £{sum(prices)} flights total")
+    if cards:
+        parts.append(f"{len(cards)} route" + ("s" if len(cards) != 1 else ""))
+    diff = (v.get("sheet") or {}).get("difficulty")
+    if diff:
+        parts.append(diff)
+    return " · ".join(parts)
 
 
 def venue_payload(n, r):
@@ -729,7 +1120,10 @@ def venue_payload(n, r):
                "sky": (fc.get("sky") if live else ""), "live": live,
                "skyIcon": (fc.get("sky_icon") if live else None),
                "liveTemp": (fc.get("tmax") if live else None),
-               "liveRain": (fc.get("rain_prob") if live else None)},
+               "liveRain": (fc.get("rain_prob") if live else None),
+               "friction": (fc.get("friction") if live else None),
+               "gustMax": (fc.get("gust_max") if live else None),
+               "amDry": (fc.get("am_dry_days") if live else None)},
         "seasonal": ({"tmax": sea["tmax"], "rain": sea["rain_pct"], "members": sea["members"]}
                      if sea and not live else None),
         "series": series,
@@ -740,6 +1134,10 @@ def venue_payload(n, r):
         "flights": {"michel": mf, "dan": md},
         "hotels": hotels, "guide": guide,
         "maps": maps_url(v), "weather": weather_url(v), "mpMap": MP_MAP_URL,
+        "tags": venue_tags(v, cards, grades),
+        "listInfo": _list_info(v, r, cards),
+        "breakdown": r.get("breakdown"),
+        "auto": bool(v.get("auto")),
     }
 
 
@@ -782,7 +1180,11 @@ body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:14p
 .row{display:grid;grid-template-columns:30px minmax(0,1fr);column-gap:12px;width:100%;text-align:left;border:0;border-top:1px solid var(--line);background:none;padding:13px 18px;cursor:pointer;font:inherit;color:inherit}
 .row:hover{background:#1F232B}
 .row.active{background:var(--card);box-shadow:inset 3px 0 0 var(--ink)}
-.rnum{grid-row:1/4;font-family:var(--disp);font-weight:800;font-size:21px;line-height:1.1;color:var(--ink);opacity:.3}
+.rnum{grid-row:1/5;font-family:var(--disp);font-weight:800;font-size:21px;line-height:1.1;color:var(--ink);opacity:.3}
+.rinfo{font-size:10.5px;color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;font-family:var(--mono)}
+.bd-leg{display:flex;gap:13px;margin-top:11px;font-family:var(--mono);font-size:10.5px;color:var(--muted);flex-wrap:wrap}
+.bd-leg i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:5px}
+.wdir{font-size:9px;color:var(--muted);margin-left:2px}
 .row.active .rnum{opacity:1}
 .rname{font-family:var(--disp);font-weight:700;font-size:15.5px;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .rsub{font-size:11.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -823,8 +1225,15 @@ body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:14p
 .why{max-width:760px;font-size:14px;line-height:1.75;color:#CDCCC4}
 .score-note{font-size:12.5px;color:var(--muted);margin-top:10px;max-width:760px;line-height:1.6}
 .score-note b{color:var(--ink)}
-.wx-take{font-size:14px;margin-bottom:16px;max-width:760px}
+.wx-take{font-size:14px;margin-bottom:12px;max-width:760px}
 .wx-take b{font-weight:600}
+.wx-cond{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 16px;max-width:760px}
+.wx-cond .cc{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);background:var(--card);border:1px solid var(--line2);border-radius:20px;padding:4px 11px}
+.wx-cond .cc .ci{font-size:13px;line-height:1}
+.wx-cond .cc b{color:var(--ink);font-weight:600}
+.wx-cond .cc.good b{color:var(--dry)}
+.wx-cond .cc.warn b{color:var(--mixed)}
+.wx-cond .cc.bad b{color:var(--wet)}
 .wxgrid{display:grid;grid-template-columns:70px minmax(0,1fr);row-gap:2px;max-width:880px}
 .wxlbl{font-family:var(--mono);font-size:9.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);display:flex;align-items:flex-end;padding:0 8px 6px 0}
 .wxlbl .sw{width:8px;height:8px;border-radius:2px;margin-right:5px;flex-shrink:0}
@@ -902,6 +1311,26 @@ body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:14p
 .htag{font-size:10px;background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:2px 6px;color:var(--muted)}
 .sample{font-family:var(--mono);font-size:8.5px;letter-spacing:.08em;background:var(--card);border:1px solid var(--line2);border-radius:4px;padding:2px 6px;color:var(--muted);margin-left:6px}
 .guide{display:flex;gap:12px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:11px;padding:12px 15px;max-width:460px;margin-top:12px}
+.brk{max-width:760px}
+.brk-row{display:grid;grid-template-columns:92px 1fr 116px;gap:10px;align-items:center;margin-bottom:5px}
+.brk-lbl{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.brk-track{height:8px;background:var(--line);border-radius:4px;overflow:hidden}
+.brk-fill{height:100%;border-radius:4px}
+.brk-val{font-family:var(--mono);font-size:11px;color:var(--ink);text-align:right;white-space:nowrap}
+.brk-note{font-size:11px;color:var(--faint);margin:-1px 0 11px 102px;line-height:1.5}
+.brk-total{display:flex;justify-content:space-between;gap:10px;border-top:1px solid var(--line2);margin-top:8px;padding-top:9px;font-family:var(--mono);font-size:12px;color:var(--muted)}
+.brk-total b{color:var(--ink)}
+.tags{display:flex;gap:6px;flex-wrap:wrap;max-width:880px}
+.tag{font-family:var(--mono);font-size:10.5px;padding:4px 9px;border-radius:5px;border:1px solid var(--line2);white-space:nowrap}
+.tag-vol{color:#7FB2E8;border-color:rgba(57,135,229,.4);background:rgba(57,135,229,.10)}
+.tag-height{color:#7FB2E8;border-color:rgba(57,135,229,.28);background:rgba(57,135,229,.06)}
+.tag-diff{color:#D08770;border-color:rgba(217,89,38,.4);background:rgba(217,89,38,.10)}
+.tag-time{color:#B9A0E8;border-color:rgba(144,110,220,.4);background:rgba(144,110,220,.10)}
+.tag-trip{color:#B9A0E8;border-color:rgba(144,110,220,.3);background:rgba(144,110,220,.06)}
+.tag-rock{color:var(--muted);background:var(--card)}
+.tag-grade{color:#79C289;border-color:rgba(87,166,100,.4);background:var(--dry-bg)}
+.tag-hazard{color:#D9B25E;border-color:rgba(185,138,46,.45);background:var(--mixed-bg)}
+.tag-appr{color:var(--ink);background:var(--card)}
 ::-webkit-scrollbar{width:8px;height:8px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--line2);border-radius:4px}
@@ -920,9 +1349,14 @@ body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:14p
   .row{padding:11px 16px}
   .wxgrid{grid-template-columns:50px minmax(0,1fr)}
   .daysrow .wcol{font-size:8.5px}
+  /* wind per-day row is too dense to read on a phone — its signal lives in the
+     takeaway line + the conditions chips, so drop it from the grid here. */
+  .wxlbl-wind,.windrow{display:none}
   .wxi{width:17px;height:17px}
   .chip{min-width:84px;padding:8px 10px}
   .spot img{height:210px}
+  .brk-row{grid-template-columns:72px 1fr 100px}
+  .brk-note{margin-left:82px}
 }
 </style></head>"""
 
@@ -942,7 +1376,7 @@ PAGE_BODY = """<body>
   <aside class="board" aria-label="Climbing areas ranked by trip weather">
     <div class="board-hd">
       <div class="eyebrow">Ranked · best weather first</div>
-      <div class="board-sub">Score = expected trip-window weather, 0–100. Select an area for details.</div>
+      <div class="board-sub">Score /100 = weather (55%) + travel (25%) + venue fit (20%). Select an area for the breakdown.</div>
     </div>
     <div id="rows"></div>
     <div class="board-ft" id="updated"></div>
@@ -958,6 +1392,7 @@ function num(x){x=Number(x);return isFinite(x)?x:0;}
 function safeUrl(u){u=String(u==null?'':u);return /^https:\/\//i.test(u)?esc(u):'';}
 var COND={go:['Dry','var(--dry)','var(--dry-bg)'],mix:['Mixed','var(--mixed)','var(--mixed-bg)'],wet:['Wet','var(--wet)','var(--wet-bg)']};
 function cond(v){return COND[v.tagCls]||COND.mix;}
+function compass(d){var n=['N','NE','E','SE','S','SW','W','NW'];return n[Math.round((((num(d)%360)+360)%360)/45)%8];}
 var WIND_ICON='https://multi-pitch.com/img/icons/weather/wind.svg';
 var THERMO_ICON='https://multi-pitch.com/img/icons/weather/Thermometer-50.svg';
 var RAIN_ICON='https://multi-pitch.com/img/icons/weather/Umbrella.svg';
@@ -974,11 +1409,12 @@ function rowHtml(v,i){
   var bar=v.score>=0
     ?'<div class="rbar-line"><div class="rbar-track"><div class="rbar" style="width:'+Math.max(4,sc)+'%;background:'+c[1]+'"></div></div><span class="rsc">'+sc+'</span></div>'
     :'<div class="rbar-line"><span class="rsc dim">no data yet</span></div>';
+  var info=v.listInfo?'<span class="rinfo">'+esc(v.listInfo)+'</span>':'';
   return '<button class="row" data-i="'+i+'" onclick="sel('+i+')">'
     +'<span class="rnum">'+num(v.rank)+'</span>'
     +'<span class="rname">'+esc(v.flag)+' '+esc(v.shortName)+'</span>'
     +'<span class="rsub">'+esc(v.country)+(v.rock?' · '+esc(v.rock):'')+' · <b style="color:'+c[1]+';font-weight:600">'+c[0].toLowerCase()+'</b></span>'
-    +bar+'</button>';
+    +info+bar+'</button>';
 }
 document.getElementById('rows').innerHTML=V.map(rowHtml).join('');
 
@@ -1002,17 +1438,33 @@ function topoSvg(v){
     noise.push(0.5*Math.sin(a*2+ph1)+0.3*Math.sin(a*3+ph2)+0.2*Math.sin(a*5+ph3)+(rnd()-0.5)*0.18);
   }
   var rings='';
-  for(var i=6;i>=1;i--){
+  for(var i=6;i>=2;i--){
     var r=38+(i-1)*20,pts=[];
     for(q=0;q<P;q++){
       var a2=q/P*6.2832,rr=r*(1+0.2*noise[q]);
       pts.push([cx+Math.cos(a2)*rr*1.28,cy+Math.sin(a2)*rr]);
     }
-    rings+='<path d="'+ringPath(pts)+'" fill="'+(i===1?'var(--card)':'none')+'" stroke="'+c[1]+'" stroke-opacity="'+(i===1?0.9:(0.58-i*0.06).toFixed(2))+'" stroke-width="'+(i===1?1.8:1.1)+'"/>';
+    rings+='<path d="'+ringPath(pts)+'" fill="none" stroke="'+c[1]+'" stroke-opacity="'+(0.58-i*0.06).toFixed(2)+'" stroke-width="1.1"/>';
   }
+  // summit disc: a donut whose segments are the score's weather/travel/fit
+  // contributions (cake-chart breakdown lives here, not in a separate section)
+  rings+='<circle cx="'+cx.toFixed(1)+'" cy="'+cy.toFixed(1)+'" r="46" fill="var(--card)" stroke="'+c[1]+'" stroke-opacity=".9" stroke-width="1.8"/>';
   var sc=v.score>=0?num(v.score):'–';
-  var summit='<text x="'+cx.toFixed(1)+'" y="'+(cy-1).toFixed(1)+'" text-anchor="middle" dominant-baseline="middle" style="font:600 26px var(--mono);fill:var(--ink)">'+sc+'</text>'
-    +'<text x="'+cx.toFixed(1)+'" y="'+(cy+17).toFixed(1)+'" text-anchor="middle" style="font:600 7px var(--mono);letter-spacing:.18em;fill:var(--muted)">WEATHER /100</text>';
+  var donut='',b=v.breakdown;
+  if(b&&v.score>=0){
+    var rD=36,C=2*Math.PI*rD,acc=0;
+    donut='<circle cx="'+cx.toFixed(1)+'" cy="'+cy.toFixed(1)+'" r="'+rD+'" fill="none" stroke="var(--line)" stroke-width="7"/>';
+    [['weather','var(--rain)'],['travel','var(--temp)'],['fit','var(--dry)']].forEach(function(sg){
+      var frac=(num(b[sg[0]])*num((b.weights||{})[sg[0]]||0))/10000;   // contribution 0..1
+      if(frac<=0)return;
+      var dash=Math.max(0.5,frac*C-2);
+      donut+='<circle cx="'+cx.toFixed(1)+'" cy="'+cy.toFixed(1)+'" r="'+rD+'" fill="none" stroke="'+sg[1]+'" stroke-width="7" stroke-dasharray="'+dash.toFixed(1)+' '+(C-dash).toFixed(1)+'" stroke-dashoffset="'+(C*0.25-acc*C).toFixed(1)+'"/>';
+      acc+=frac;
+    });
+  }
+  var summit=donut
+    +'<text x="'+cx.toFixed(1)+'" y="'+(cy-1).toFixed(1)+'" text-anchor="middle" dominant-baseline="middle" style="font:600 21px var(--mono);fill:var(--ink)">'+sc+'</text>'
+    +'<text x="'+cx.toFixed(1)+'" y="'+(cy+15).toFixed(1)+'" text-anchor="middle" style="font:600 6px var(--mono);letter-spacing:.16em;fill:var(--muted)">TRIP /100</text>';
   return '<svg class="topo" viewBox="0 0 '+W+' '+H+'" aria-hidden="true"><g class="rings">'+rings+'</g>'+summit+'</svg>';
 }
 
@@ -1023,12 +1475,18 @@ function bandHtml(v){
     +(v.wx.rain!=null?' · '+num(v.wx.rain)+'% wet days':'')+'</span>';
   if(v.wx.live)pills+='<span class="pill">'+sky+' live forecast for your dates</span>';
   if(v.grades)pills+='<span class="pill">Trad '+esc(v.grades)+'</span>';
+  if(v.auto)pills+='<span class="pill" title="Generated from a row in the venue spreadsheet — edit the sheet to refine it">📄 from your sheet</span>';
+  var b=v.breakdown;
+  var leg=b?'<div class="bd-leg">'
+    +'<span><i style="background:var(--rain)"></i>Weather '+num(b.weather)+'</span>'
+    +'<span><i style="background:var(--temp)"></i>Travel '+num(b.travel)+'</span>'
+    +'<span><i style="background:var(--dry)"></i>Venue fit '+num(b.fit)+'</span></div>':'';
   return '<header class="band" style="background:'+c[2]+'">'+topoSvg(v)
     +'<div class="band-body">'
     +'<div class="eyebrow">No.'+num(v.rank)+' of '+V.length+' · '+esc(v.flag)+' '+esc(v.country)+'</div>'
     +'<h1 class="vname">'+esc(v.shortName)+'</h1>'
     +'<div class="vmeta">'+esc(v.style||'')+'</div>'
-    +'<div class="vpills">'+pills+'</div></div></header>';
+    +'<div class="vpills">'+pills+'</div>'+leg+'</div></header>';
 }
 
 function highlightHtml(v){
@@ -1052,7 +1510,9 @@ function verdictHtml(v){
   var note=v.score>=0
     ?'<p class="score-note">Why score <b>'+num(v.score)+'/100</b>: ranked on '+esc(v.basis||'weather')+' — '+bits.join('; ')+'.</p>'
     :'<p class="score-note">No weather data yet for this area, so it is unranked.</p>';
-  return '<div class="sec"><div class="eyebrow">Why go · why score '+(v.score>=0?num(v.score):'—')+'</div>'+why+note+'</div>';
+  var b=v.breakdown;
+  var comps=b?'<p class="score-note">The donut in the header splits the score: <b style="color:var(--rain)">weather '+num(b.weather)+'/100</b> × '+num((b.weights||{}).weather)+'% · <b style="color:var(--temp)">travel '+num(b.travel)+'/100</b> × '+num((b.weights||{}).travel)+'% ('+esc(b.travel_note||'')+') · <b style="color:var(--dry)">venue fit '+num(b.fit)+'/100</b> × '+num((b.weights||{}).fit)+'% ('+esc(b.fit_note||'')+').</p>':'';
+  return '<div class="sec"><div class="eyebrow">Why go · why score '+(v.score>=0?num(v.score):'—')+'</div>'+why+note+comps+'</div>';
 }
 
 function takeaway(v){
@@ -1068,7 +1528,33 @@ function takeaway(v){
   var maxW=Math.max.apply(null,winds);
   var head=haveOv?src+': ':'Typical late July here: ';
   var wetTxt=wet===0?'<b>rain unlikely</b>':'<b>'+wet+' of '+rows.length+' days wet</b>';
-  return '<p class="wx-take">'+head+wetTxt+' · highs around <b>'+avgT+'°C</b> · wind up to <b>'+maxW+' km/h</b>.</p>';
+  var extra='';
+  if(v.wx&&v.wx.live){
+    if(v.wx.friction)extra+=' · rock <b>'+esc(v.wx.friction)+'</b>';
+    if(v.wx.gustMax!=null)extra+=' · gusts to <b>'+num(v.wx.gustMax)+' km/h</b>';
+    if(v.wx.amDry&&v.wx.amDry[1])extra+=' · <b>'+num(v.wx.amDry[0])+'/'+num(v.wx.amDry[1])+'</b> dry mornings';
+  }
+  return '<p class="wx-take">'+head+wetTxt+' · highs around <b>'+avgT+'°C</b> · wind up to <b>'+maxW+' km/h</b>'+extra+'.</p>';
+}
+
+function condStrip(v){
+  // Icon chips for the live-forecast-only climbing signals — always visible (unlike the
+  // chart's hover tooltips, which don't exist on touch screens).
+  if(!v.wx||!v.wx.live)return '';
+  var w=v.wx,chips=[];
+  if(w.friction){
+    var fc=w.friction==='greasy'?'bad':w.friction==='humid'?'warn':'good';
+    chips.push('<span class="cc '+fc+'"><span class="ci">🪨</span>rock <b>'+esc(w.friction)+'</b></span>');
+  }
+  if(w.gustMax!=null){
+    var gc=w.gustMax>=55?'bad':w.gustMax>=40?'warn':'good';
+    chips.push('<span class="cc '+gc+'"><span class="ci">🌬️</span>gusts <b>'+num(w.gustMax)+' km/h</b></span>');
+  }
+  if(w.amDry&&w.amDry[1]){
+    var dc=w.amDry[0]===w.amDry[1]?'good':(w.amDry[0]===0?'bad':'warn');
+    chips.push('<span class="cc '+dc+'"><span class="ci">🌅</span><b>'+num(w.amDry[0])+'/'+num(w.amDry[1])+'</b> dry mornings</span>');
+  }
+  return chips.length?'<div class="wx-cond">'+chips.join('')+'</div>':'';
 }
 
 function wxHtml(v){
@@ -1088,7 +1574,9 @@ function wxHtml(v){
   function cols(fn,cls){
     return '<div class="wxrow '+(cls||'')+'">'+s.map(function(d,i){
       var o=ovOf(d);
-      var tip=esc(d.lbl)+' '+num(d.day)+' — typical: '+num(d.tmax)+'°C, '+num(d.precip)+'mm'+(o?' · '+(d.fc?'forecast':'outlook')+': '+num(o.tmax)+'°C, '+num(o.precip)+'mm':'')+' · wind '+num(d.wind)+' km/h';
+      var tip=esc(d.lbl)+' '+num(d.day)+' — typical: '+num(d.tmax)+'°C, '+num(d.precip)+'mm'+(o?' · '+(d.fc?'forecast':'outlook')+': '+num(o.tmax)+'°C, '+num(o.precip)+'mm':'')+' · wind '+num(d.wind)+' km/h'
+        +(d.fc&&d.fc.gust!=null?', gusts '+num(d.fc.gust):'')
+        +(d.fc&&d.fc.friction?' · friction '+esc(d.fc.friction)+(d.fc.dew!=null?' (dew '+num(d.fc.dew)+'°)':''):'');
       return '<div class="wcol'+(d.trip?' trip':'')+'" title="'+tip+'">'+fn(d,i)+'</div>';
     }).join('')+'</div>';
   }
@@ -1127,7 +1615,7 @@ function wxHtml(v){
   var wind=cols(function(d){
     var o=d.fc||null;
     var wv=(o&&o.wind!=null)?o.wind:d.wind;
-    var arr=(o&&o.dir!=null)?'<span class="warr" style="transform:rotate('+((num(o.dir)+180)%360)+'deg)">↑</span>':'';
+    var arr=(o&&o.dir!=null)?'<span class="warr" style="transform:rotate('+((num(o.dir)+180)%360)+'deg)">↑</span><span class="wdir">'+compass(o.dir)+'</span>':'';
     return '<span class="'+(num(wv)>=25?'hi':'')+'">'+num(wv)+arr+'</span>';
   },'windrow');
   var legend='<div class="wx-legend">'
@@ -1139,13 +1627,14 @@ function wxHtml(v){
   return '<div class="sec"><div class="sec-hd"><div class="eyebrow">Weather · '+esc(D.trip.dates)+'</div>'
     +(safeUrl(v.weather)?'<a class="lk sm" target="_blank" rel="noopener" href="'+safeUrl(v.weather)+'">Full forecast on Windy ↗</a>':'')+'</div>'
     +takeaway(v)
+    +condStrip(v)
     +'<div class="wxgrid">'
     +'<div class="wxlbl"></div>'+bkt
     +(icons?'<div class="wxlbl"></div>'+icons:'')
     +'<div class="wxlbl"><img class="wxi sm" src="'+THERMO_ICON+'" alt="">High °C</div>'+temp
     +'<div class="wxlbl"><img class="wxi sm" src="'+RAIN_ICON+'" alt="">Rain mm</div>'+rain
     +'<div class="wxlbl"></div>'+days
-    +'<div class="wxlbl"><img class="wxi sm" src="'+WIND_ICON+'" alt="">Wind</div>'+wind
+    +'<div class="wxlbl wxlbl-wind"><img class="wxi sm" src="'+WIND_ICON+'" alt="">Wind</div>'+wind
     +'</div>'+legend+'</div>';
 }
 
@@ -1183,9 +1672,36 @@ function climbHtml(c){
   if(c.dist!=null)pills.push(num(c.dist)+' km away');
   var ph='<div class="cpills">'+pills.map(function(p){return '<span class="cp">'+p+'</span>';}).join('')
     +(c.flags||[]).map(function(f){return '<span class="cp warn">⚠ '+esc(f)+'</span>';}).join('')+'</div>';
+  var name=safeUrl(c.url)
+    ?'<a class="lk" target="_blank" rel="noopener" href="'+safeUrl(c.url)+'">'+esc(c.cliff)+' ↗</a>'
+    :esc(c.cliff);
   return '<div class="climb"><div class="cthumb">'+(img?'<img src="'+img+'" alt="" loading="lazy" onerror="this.parentElement.textContent=\'🏔\'">':'🏔')+'</div>'
-    +'<div style="min-width:0;flex:1"><div class="cname">'+esc(c.cliff)+'</div><div class="croute">'+esc(c.route)+'</div>'+ph+'</div>'
+    +'<div style="min-width:0;flex:1"><div class="cname">'+name+'</div><div class="croute">'+esc(c.route)+'</div>'+ph+'</div>'
     +'<div class="cgrade">'+esc(c.tradGrade||c.grade||'')+'</div></div>';
+}
+
+function breakdownHtml(v){
+  var b=v.breakdown;
+  if(!b)return '';
+  var W=b.weights||{weather:55,travel:25,fit:20};
+  function row(lbl,val,wt,color,note){
+    return '<div class="brk-row"><span class="brk-lbl">'+lbl+'</span>'
+      +'<div class="brk-track"><div class="brk-fill" style="width:'+Math.max(2,num(val))+'%;background:'+color+'"></div></div>'
+      +'<span class="brk-val">'+num(val)+'/100 × '+wt+'%</span></div>'
+      +(note?'<div class="brk-note">'+esc(note)+'</div>':'');
+  }
+  return '<div class="sec"><div class="eyebrow">Score breakdown · '+num(v.score)+'/100</div><div class="brk">'
+    +row('Weather',b.weather,W.weather,'var(--rain)',b.weather_note)
+    +row('Travel',b.travel,W.travel,'var(--temp)',b.travel_note)
+    +row('Venue fit',b.fit,W.fit,'var(--dry)',b.fit_note)
+    +'<div class="brk-total"><span>'+num(b.weather)+' × .'+W.weather+' &nbsp;+&nbsp; '+num(b.travel)+' × .'+W.travel+' &nbsp;+&nbsp; '+num(b.fit)+' × .'+W.fit+'</span><b>= '+num(v.score)+'/100</b></div>'
+    +'</div></div>';
+}
+
+function tagsHtml(v){
+  if(!v.tags||!v.tags.length)return '';
+  return '<div class="sec"><div class="eyebrow">Area character · from your sheet + multi-pitch.com</div><div class="tags">'
+    +v.tags.map(function(t){return '<span class="tag tag-'+esc(t.k)+'">'+esc(t.t)+'</span>';}).join('')+'</div></div>';
 }
 
 function hotelHtml(h){
@@ -1212,6 +1728,7 @@ function detailHtml(v){
     +(safeUrl(v.guide.url)?'<a class="lk" style="font-size:12px;flex-shrink:0" target="_blank" rel="noopener" href="'+safeUrl(v.guide.url)+'">Amazon ↗</a>':'')+'</div>':'';
   return bandHtml(v)
     +(chips?'<div class="sec"><div class="chips">'+chips+'</div></div>':'')
+    +tagsHtml(v)
     +wxHtml(v)
     +hl
     +verdictHtml(v)
@@ -1320,8 +1837,13 @@ def main():
     now = datetime.now(timezone.utc)
     today = now.date().isoformat()
     results = [evaluate(v) for v in VENUES]
+    for r in results:                 # composite = weather + travel + venue fit
+        apply_composite(r)
     ranked = rank(results)
-    attach_flights(ranked)
+    attach_flights(ranked)            # price the provisional top-N (quota-capped)
+    for r in ranked[:TOP_N_FLIGHTS]:  # refine those with real flight prices…
+        apply_composite(r)
+    ranked = rank(results)            # …and settle the final order
 
     in_window = any(r.get("fc") and r["fc"].get("in_window") for r in ranked)
     horizon = next((r["fc"]["horizon"] for r in ranked if r.get("fc")), "?")

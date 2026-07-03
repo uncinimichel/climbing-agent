@@ -33,6 +33,19 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Refresh venue sheet (Michel curates areas in Google Sheets)
+        run: |
+          curl -sL --max-time 60 \
+            "https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/export?format=csv&gid=0" \
+            -o /tmp/sheet.csv || true
+          # only replace the committed copy if the download looks like the real sheet
+          if grep -q "^Area," /tmp/sheet.csv 2>/dev/null; then
+            mv /tmp/sheet.csv climbing-trips.csv
+            echo "sheet refreshed: $(wc -l < climbing-trips.csv) lines"
+          else
+            echo "sheet download failed or malformed — keeping the committed copy"
+          fi
+
       - name: Build report (weather ranking + per-venue flights + HTML)
         env:
           SERPAPI_KEY: ${{ secrets.SERPAPI_KEY }}
@@ -50,9 +63,11 @@ jobs:
         run: |
           git config user.name  "trip-bot"
           git config user.email "actions@github.com"
-          git add index.html .nojekyll trip-ni-july-2026/daily-report.md \
+          git add index.html .nojekyll climbing-trips.csv \
+                  trip-ni-july-2026/daily-report.md \
                   trip-ni-july-2026/history/ trip-ni-july-2026/flights-latest.json \
                   trip-ni-july-2026/serpapi-usage.json \
+                  trip-ni-july-2026/climo-cache.json \
                   knowledge/
           if git diff --staged --quiet; then
             echo "No changes."
