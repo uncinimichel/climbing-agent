@@ -48,16 +48,12 @@ real time:
 
 ### What exists today ✅ (a simplified slice)
 
-A **deterministic weather score** — a rain/precipitation proxy, not yet a physical
-friction/seepage model. Full maths in
-[`data/condition-algorithm.md`](../data/condition-algorithm.md):
-
-- `day_score()` = `100 − 0.8·rain% − 6·precip_mm`, capped at 25 if rain code ≥ 61
-  (rain) and 15 for thunderstorms.
-- **Venue score** = mean `day_score` over the trip days used.
-- **Three horizons blended:** live 16-day forecast › (climatology **70** / 45-day
-  seasonal **30**) while beyond live range. Live supersedes both once available (~8 July).
-- Rank by score desc, tie-break by venue `priority` (NI preferred when tied).
+A **deterministic weather score** — a rain/precipitation proxy now extended (on the live
+horizon) with friction/drying/heat terms and folded into a composite trip score. The
+formula evolves; **[`data/condition-algorithm.md`](../data/condition-algorithm.md) is the
+single source of truth** — don't restate it here. In brief: a per-day weather score,
+meaned over the trip days; three horizons (live 16-day › climatology 70 / seasonal 30);
+ranked desc, tie-broken by venue `priority`.
 
 ### The gap ⚠️ → ⛔
 

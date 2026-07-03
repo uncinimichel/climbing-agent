@@ -75,12 +75,7 @@ border-bottom:1px solid var(--seam)}
 <p>Evaluates live micro-climate forecasts against physical rock parameters to score, in real time:</p>
 <ul><li><strong>Friction windows</strong> — when it's cool/dry enough for good rock friction.</li><li><strong>Drying rate</strong> — how fast a crag becomes climbable after rain.</li><li><strong>Seepage</strong> — lingering water weeping through rock long after the sky clears.</li></ul>
 <h3 id="what-exists-today-a-simplified-slice">What exists today ✅ (a simplified slice)</h3>
-<p>A <strong>deterministic weather score</strong> — a rain/precipitation proxy, not yet a physical friction/seepage model. Full maths in <a href="../data/condition-algorithm.html"><code>data/condition-algorithm.md</code></a>:</p>
-<ul><li><code>day_score()</code> = <code>100 − 0.8·rain% − 6·precip_mm</code>, capped at 25 if rain code ≥ 61</li></ul>
-<p>  (rain) and 15 for thunderstorms.</p>
-<ul><li><strong>Venue score</strong> = mean <code>day_score</code> over the trip days used.</li><li><strong>Three horizons blended:</strong> live 16-day forecast › (climatology <strong>70</strong> / 45-day</li></ul>
-<p>  seasonal <strong>30</strong>) while beyond live range. Live supersedes both once available (~8 July).</p>
-<ul><li>Rank by score desc, tie-break by venue <code>priority</code> (NI preferred when tied).</li></ul>
+<p>A <strong>deterministic weather score</strong> — a rain/precipitation proxy now extended (on the live horizon) with friction/drying/heat terms and folded into a composite trip score. The formula evolves; <strong><a href="../data/condition-algorithm.html"><code>data/condition-algorithm.md</code></a> is the single source of truth</strong> — don't restate it here. In brief: a per-day weather score, meaned over the trip days; three horizons (live 16-day › climatology 70 / seasonal 30); ranked desc, tie-broken by venue <code>priority</code>.</p>
 <h3 id="the-gap">The gap ⚠️ → ⛔</h3>
 <p>Today's score ignores the physics the vision calls for:</p>
 <div class="tw"><table><thead><tr><th>Vision factor</th><th>Today</th><th>Needed</th></tr></thead><tbody><tr><td>Rock type (seepage propensity)</td><td>ignored</td><td>limestone/overhangs seep for days; granite dries fast</td></tr><tr><td>Aspect (sun/shade, drying)</td><td>ignored</td><td>S-facing dries &amp; bakes; N-facing stays shaded/cool</td></tr><tr><td>Humidity / dew point (friction)</td><td>ignored</td><td>core to a real "friction window"</td></tr><tr><td>Wind (drying)</td><td>shown on graph, not scored</td><td>accelerates drying</td></tr><tr><td>Antecedent rain (seepage lag)</td><td>not modelled</td><td>yesterday's rain sets today's seepage</td></tr></tbody></table></div>

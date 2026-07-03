@@ -86,6 +86,12 @@ Our model (from multi-pitch.com, see [`route-schema.md`](route-schema.md)) is st
 
 ## Proposed extensions (prioritised)
 
+> **Status:** the *enum-level* items are **already adopted** in
+> [`taxonomy.md`](taxonomy.md) — composable disciplines (#4), the `runout`/`terrain`/
+> `UNSPECIFIED` safety values (#6), commitment grades, objective hazards. The **structural**
+> items (hierarchy, `gradeContext`, multi-system `grades{}`, structured `pitches[]`) remain
+> schema-v2 work — see [`../roadmap/roadmap.md`](../roadmap/roadmap.md).
+
 ### P0 — structural, unlocks everything else
 1. **Adopt a hierarchical area model** (`region → crag → sector → route`) with `ancestors[]`
    / `pathTokens[]`, replacing flat venues. Properties (grade context, rock, aspect, access)
