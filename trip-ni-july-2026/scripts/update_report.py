@@ -315,7 +315,7 @@ def wmo_icon(code):
     return MP_ICONS + name + ".svg"
 
 FLAGS = {
-    "Northern Ireland": "🇬🇧", "England": "🇬🇧", "Wales": "🏴󠁧󠁢󠁷󠁬󠁳󠁿", "Scotland": "🏴󠁧󠁢󠁳󠁣󠁴󠁿",
+    "Northern Ireland": "☘️", "England": "🏴󠁧󠁢󠁥󠁮󠁧󠁿", "Wales": "🏴󠁧󠁢󠁷󠁬󠁳󠁿", "Scotland": "🏴󠁧󠁢󠁳󠁣󠁴󠁿",
     "Italy": "🇮🇹", "Austria": "🇦🇹", "Spain": "🇪🇸", "Croatia": "🇭🇷", "France": "🇫🇷", "Ireland": "🇮🇪",
     "Norway": "🇳🇴", "Germany": "🇩🇪", "Belgium": "🇧🇪", "Bulgaria": "🇧🇬", "Greece": "🇬🇷",
     "Turkey": "🇹🇷", "Slovakia": "🇸🇰", "Slovenia": "🇸🇮", "Portugal": "🇵🇹", "Switzerland": "🇨🇭",
@@ -406,19 +406,20 @@ def climatology(lat, lon):
     """Typical trip-window conditions over recent years — ONE ranged request, filtered.
     Days are matched by real (month, day) against the graph/trip windows, so this stays
     correct even when the trip straddles a month boundary (e.g. 30 Jul–3 Aug)."""
-    ck = f"{lat},{lon}|{CLIMO_YEARS[0]}-{CLIMO_YEARS[-1]}|{GRAPH_START:%m%d}-{GRAPH_END:%m%d}"
+    ck = f"{lat},{lon}|{CLIMO_YEARS[0]}-{CLIMO_YEARS[-1]}|{GRAPH_START:%m%d}-{GRAPH_END:%m%d}|v2"
     if ck in _CLIMO_CACHE:
         return _CLIMO_CACHE[ck]
     d = _get(
         "https://archive-api.open-meteo.com/v1/archive"
         f"?latitude={lat}&longitude={lon}"
         f"&start_date={CLIMO_YEARS[0]}-{GRAPH_START:%m-%d}&end_date={CLIMO_YEARS[-1]}-{GRAPH_END:%m-%d}"
-        "&daily=temperature_2m_max,precipitation_sum,windspeed_10m_max&timezone=auto"
+        "&daily=temperature_2m_max,precipitation_sum,windspeed_10m_max,winddirection_10m_dominant&timezone=auto"
     )["daily"]
     tmaxs, winds, rain_days, total = [], [], 0, 0
     per_day = {}   # (month, day) -> {"t","p","w"} lists for the graph window
-    for t, tx, pr, wd in zip(d["time"], d["temperature_2m_max"], d["precipitation_sum"],
-                             d.get("windspeed_10m_max", [None] * len(d["time"]))):
+    dirs = d.get("winddirection_10m_dominant") or [None] * len(d["time"])
+    for t, tx, pr, wd, wdir in zip(d["time"], d["temperature_2m_max"], d["precipitation_sum"],
+                                   d.get("windspeed_10m_max", [None] * len(d["time"])), dirs):
         dd = date.fromisoformat(t)
         md = (dd.month, dd.day)
         if tx is None:
@@ -428,6 +429,9 @@ def climatology(lat, lon):
             e["t"].append(tx)
             e["p"].append(pr or 0)
             e["w"].append(wd or 0)
+            if wdir is not None:
+                e.setdefault("dx", []).append(math.cos(math.radians(wdir)))
+                e.setdefault("dy", []).append(math.sin(math.radians(wdir)))
         if md in TRIP_MD:                        # trip window aggregate
             total += 1
             tmaxs.append(tx)
@@ -445,6 +449,8 @@ def climatology(lat, lon):
                            "tmax": round(sum(pd["t"]) / len(pd["t"])),
                            "precip": round(sum(pd["p"]) / len(pd["p"]), 1),
                            "wind": round(sum(pd["w"]) / len(pd["w"])),
+                           "dir": (round(math.degrees(math.atan2(sum(pd["dy"]), sum(pd["dx"]))) % 360)
+                                   if pd.get("dx") else None),
                            "trip": md in TRIP_MD})
         day += timedelta(days=1)
     out = {"tmax": round(sum(tmaxs) / len(tmaxs)), "rain_pct": round(100 * rain_days / total),
@@ -983,7 +989,7 @@ def climb_url(c):
     return SITE_URL + "climbs/" + s + "/" if s else None
 
 
-def venue_tags(v, cards, grades):
+def venue_tags(v, cards, grades, cond_txt=None):
     """Colored tag chips: the sheet's judgment columns + flagship-climbing traits
     derived from nearby multi-pitch.com routes, named after the knowledge-base
     taxonomy (route character & hazard flags, approach)."""
@@ -993,6 +999,8 @@ def venue_tags(v, cards, grades):
     def add(kind, text):
         if text:
             tags.append({"k": kind, "t": text})
+    if cond_txt:
+        add("cond", cond_txt)
     add("vol", sh.get("volume") and f"{sh['volume']} volume")
     add("diff", sh.get("difficulty"))
     add("time", sh.get("travel_time") and f"{sh['travel_time']} from UK")
@@ -1005,6 +1013,13 @@ def venue_tags(v, cards, grades):
         add("aspect", f"{asp}-facing" + (" · shade" if adj < 0 else " · sun-baked" if adj >= 3 else ""))
     if grades:
         add("grade", f"Trad {grades}")
+    if cards:
+        add("routes", f"{len(cards)} route{'s' if len(cards) != 1 else ''} on multi-pitch.com")
+        _tall = max(cards, key=lambda x: x.get("length") or 0)
+        if _tall.get("length"):
+            add("height", f"tallest {_tall['length']}m · {_tall['cliff']}")
+    if v.get("auto"):
+        add("auto", "from your sheet")
     if cards:
         pitches = [x.get("pitches") or 0 for x in cards]
         if max(pitches) >= 6:
@@ -1019,7 +1034,7 @@ def venue_tags(v, cards, grades):
             add("appr", "long walk-ins" if med >= 60 else ("roadside cragging" if med <= 20 else f"~{med} min walk-ins"))
         if any((x.get("appDiff") or 0) >= 3 for x in cards):
             add("hazard", "serious approach")
-    return tags[:14]
+    return tags[:18]
 
 
 # ---- Accommodation + guidebook: MOCK sample data (flights & weather are live) ----
@@ -1147,16 +1162,7 @@ def venue_payload(n, r):
     mf = fl.get("michel") or fallback_flight("michel")
     md = fl.get("dan") or fallback_flight("dan")
 
-    # quick-facts strip (travel lives in "Getting there" — not duplicated here)
     facts = []
-    if cards:
-        tallest = max(cards, key=lambda x: x.get("length") or 0)
-        if tallest.get("length"):
-            facts.append({"lbl": "Max height", "val": f"{tallest['length']}m", "sub": tallest["cliff"]})
-        facts.append({"lbl": "Routes", "val": str(len(cards)), "sub": "on multi-pitch.com"})
-    if grades:
-        facts.append({"lbl": "Grades", "val": grades, "sub": "trad"})
-    facts = facts[:5]
 
     # weather chart series: typical (climatology) days enriched with weekday labels,
     # plus per-day overlays — live forecast ("fc") when it reaches the window,
@@ -1170,7 +1176,7 @@ def venue_payload(n, r):
             wd = date(TARGET_START.year, m, s["day"]).strftime("%a")
         except Exception:
             wd = str(s["day"])
-        entry = {"day": s["day"], "lbl": wd, "tmax": s["tmax"],
+        entry = {"day": s["day"], "lbl": wd, "tmax": s["tmax"], "dir": s.get("dir"),
                  "precip": s["precip"], "wind": s.get("wind", 0), "trip": s["trip"]}
         md_key = (m, s["day"])
         if md_key in fcd:
@@ -1203,7 +1209,7 @@ def venue_payload(n, r):
         "flights": {"michel": mf, "dan": md},
         "hotels": hotels, "guide": guide,
         "maps": maps_url(v), "weather": weather_url(v), "mpMap": MP_MAP_URL,
-        "tags": venue_tags(v, cards, grades),
+        "tags": venue_tags(v, cards, grades, (f"{tag} · {rain}% wet days" if rain is not None else tag)),
         "listInfo": _list_info(v, r, cards),
         "breakdown": r.get("breakdown"),
         "auto": bool(v.get("auto")),
@@ -1420,6 +1426,9 @@ svg.topo .dseg{pointer-events:stroke}
 .tag-grade{color:#79C289;border-color:rgba(87,166,100,.4);background:var(--dry-bg)}
 .tag-hazard{color:#D9B25E;border-color:rgba(185,138,46,.45);background:var(--mixed-bg)}
 .tag-appr{color:var(--ink);background:var(--card)}
+.tag-cond{color:var(--ink);border-color:var(--line2);background:var(--card);font-weight:600}
+.tag-routes{color:#79C289;border-color:rgba(87,166,100,.3);background:rgba(87,166,100,.06)}
+.tag-auto{color:var(--muted);border-style:dashed}
 ::-webkit-scrollbar{width:8px;height:8px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--line2);border-radius:4px}
@@ -1579,18 +1588,15 @@ function topoSvg(v){
 
 function bandHtml(v){
   var c=cond(v);
-  var sky=v.wx.skyIcon?'<img class="wxi" src="'+safeUrl(v.wx.skyIcon)+'" alt="">':'';
-  var pills='<span class="pill"><span class="dot" style="background:'+c[1]+'"></span>'+c[0]
-    +(v.wx.rain!=null?' · '+num(v.wx.rain)+'% wet days':'')+'</span>';
-  if(v.wx.live)pills+='<span class="pill">'+sky+' live forecast for your dates</span>';
-  if(v.grades)pills+='<span class="pill">Trad '+esc(v.grades)+'</span>';
-  if(v.auto)pills+='<span class="pill" title="Generated from a row in the venue spreadsheet — edit the sheet to refine it">📄 from your sheet</span>';
-  return '<header class="band" style="background:'+c[2]+'">'+topoSvg(v)
+  var img=safeUrl(v.hero);
+  var bg=img?'background:linear-gradient(90deg,rgba(20,22,26,.94) 22%,rgba(20,22,26,.55)),url('+img+') center/cover no-repeat':'background:'+c[2];
+  return '<header class="band" style="'+bg+'">'
     +'<div class="band-body">'
     +'<div class="eyebrow">No.'+num(v.rank)+' of '+V.length+' · '+esc(v.flag)+' '+esc(v.country)+'</div>'
     +'<h1 class="vname">'+esc(v.shortName)+'</h1>'
-    +'<div class="vmeta">'+esc(v.style||'')+'</div>'
-    +'<div class="vpills">'+pills+'</div></div>'+(v.breakdown?'<div id="brkChart" class="brkchart hdr"></div>':'')+'</header>';
+    +'<div class="vmeta">'+esc(v.style||'')+'</div></div>'
+    +(v.breakdown?'<div id="brkChart" class="brkchart hdr"></div>':'')
+    +'</header>';
 }
 
 function highlightHtml(v){
@@ -1682,7 +1688,7 @@ function renderWx(v){
   var ARR=['↓','↙','←','↖','↑','↗','→','↘'];
   function warr(d){return d==null?'':ARR[Math.round((((num(d)%360)+360)%360)/45)%8];}
   var days=s2.map(function(d){var w=(d.fc&&d.fc.wind!=null)?d.fc.wind:d.wind;
-    return d.lbl+' '+d.day+'\n'+w+'km/h'+((d.fc&&d.fc.dir!=null)?warr(d.fc.dir):'');});
+    var dd=(d.fc&&d.fc.dir!=null)?d.fc.dir:d.dir;return d.lbl+' '+d.day+'\n'+w+'km/h'+warr(dd);});
   var anyFc=s2.some(function(d){return d.fc;}),ov=anyFc?'Forecast':'Outlook';
   var f=-1,l=-1;s2.forEach(function(d,i2){if(d.trip){if(f<0)f=i2;l=i2;}});
   var mark={silent:true,itemStyle:{color:'rgba(87,166,100,0.09)'},data:[[{xAxis:f},{xAxis:l}]]};
@@ -1733,7 +1739,7 @@ function renderBrk(v){
     radar:{indicator:[{name:'Weather',max:100},{name:'Travel',max:100},{name:'Venue fit',max:100}],
       radius:'62%',center:['54%','56%'],axisName:{color:'#E9E7E1',fontSize:11},
       splitLine:{lineStyle:{color:'#353A44'}},splitArea:{show:false},axisLine:{lineStyle:{color:'#2A2E36'}}},
-    series:[{type:'radar',symbolSize:5,
+    series:[{type:'radar',symbolSize:5,label:{show:true,color:'#E9E7E1',fontSize:11,fontWeight:600,formatter:'{c}'},
       data:[{value:[num(b.weather),num(b.travel),num(b.fit)],name:'score',
         areaStyle:{color:'rgba(57,135,229,0.25)'},lineStyle:{color:'#3987e5',width:2},itemStyle:{color:'#3987e5'}}]}]});
   _charts.push(c);
@@ -1799,10 +1805,11 @@ function breakdownHtml(v){
     +'</div></div>';
 }
 
+var TAGT={cond:'Typical share of wet days for your trip dates',vol:'Volume of multi-pitch climbing — from your sheet',diff:'Difficulty spread — from your sheet',time:'Rough travel time from the UK — from your sheet',trip:'Minimum sensible trip length — from your sheet',height:'Tallest route nearby on multi-pitch.com',rock:'Rock type',grade:'Trad grade range of nearby multi-pitch.com routes',routes:'Routes indexed on multi-pitch.com within 60 km',hazard:'Route character / hazard flag from multi-pitch.com route data',appr:'Approach character from route walk-in times',aspect:'Which way the crag faces — shifts felt temperature in sun',auto:'Venue generated from a row in your spreadsheet'};
 function tagsHtml(v){
   if(!v.tags||!v.tags.length)return '';
-  return '<div class="sec"><div class="eyebrow">Area character · from your sheet + multi-pitch.com</div><div class="tags">'
-    +v.tags.map(function(t){return '<span class="tag tag-'+esc(t.k)+'">'+esc(t.t)+'</span>';}).join('')+'</div></div>';
+  return '<div class="sec"><div class="eyebrow">Area character · hover a tag for what it means</div><div class="tags">'
+    +v.tags.map(function(t){return '<span class="tag tag-'+esc(t.k)+'" title="'+esc(TAGT[t.k]||'')+'">'+esc(t.t)+'</span>';}).join('')+'</div></div>';
 }
 
 function hotelHtml(h){
@@ -1828,7 +1835,6 @@ function detailHtml(v){
   var guide=v.guide?'<div class="guide"><div style="font-size:22px">📗</div><div style="flex:1"><div class="hname">'+esc(v.guide.title)+'</div><div class="htype" style="margin-bottom:0">'+esc(v.guide.pub)+' · '+esc(v.guide.price)+'</div></div>'
     +(safeUrl(v.guide.url)?'<a class="lk" style="font-size:12px;flex-shrink:0" target="_blank" rel="noopener" href="'+safeUrl(v.guide.url)+'">Amazon ↗</a>':'')+'</div>':'';
   return bandHtml(v)
-    +(chips?'<div class="sec"><div class="chips">'+chips+'</div></div>':'')
     +tagsHtml(v)
     +wxHtml(v)
     +hl
