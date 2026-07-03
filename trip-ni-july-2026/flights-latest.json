@@ -1,6 +1,6 @@
 {
   "comment": "Latest flight prices per combo (round-trip, 1 pax, GBP). Updated on demand by Claude or by an API script. null = not yet checked.",
-  "checked_at": "2026-07-03 19:43 UTC (Google Flights/SerpApi)",
+  "checked_at": "2026-07-03 21:46 UTC (Google Flights/SerpApi)",
   "currency": "GBP",
   "rep_combo": {
     "id": "fri-tue",
@@ -33,7 +33,7 @@
             "stops": 0
           },
           {
-            "price": 122,
+            "price": 125,
             "airline": "Wizz Air",
             "from": "LTN",
             "to": "MAD",
@@ -87,7 +87,7 @@
         "to": "LYS",
         "options": [
           {
-            "price": 151,
+            "price": 156,
             "airline": "easyJet",
             "from": "LTN",
             "to": "LYS",
@@ -168,21 +168,21 @@
             "stops": 1
           },
           {
-            "price": 308,
-            "airline": "AJet",
-            "from": "STN",
-            "to": "ASR",
-            "dep": "15:40",
-            "arr": "02:25",
-            "stops": 1
-          },
-          {
             "price": 313,
             "airline": "Pegasus",
             "from": "STN",
             "to": "ASR",
             "dep": "14:40",
             "arr": "01:15",
+            "stops": 1
+          },
+          {
+            "price": 325,
+            "airline": "Pegasus",
+            "from": "STN",
+            "to": "ASR",
+            "dep": "19:00",
+            "arr": "07:20",
             "stops": 1
           }
         ],
@@ -212,7 +212,7 @@
             "stops": 1
           },
           {
-            "price": 482,
+            "price": 483,
             "airline": "Turkish Airlines",
             "from": "DUB",
             "to": "ASR",
@@ -225,76 +225,76 @@
         "book_url": "https://www.skyscanner.net/transport/flights/dub/asr/260724/260728/"
       }
     },
-    "Picos de Europa": {
+    "Tenerife": {
       "michel": {
         "mode": "fly",
-        "to": "BIO",
+        "to": "TFS",
         "options": [
           {
-            "price": 66,
-            "airline": "Vueling",
-            "from": "LGW",
-            "to": "BIO",
-            "dep": "19:40",
-            "arr": "22:40",
+            "price": 190,
+            "airline": "Jet2",
+            "from": "STN",
+            "to": "TFS",
+            "dep": "17:15",
+            "arr": "21:45",
             "stops": 0
           },
           {
-            "price": 68,
-            "airline": "Wizz Air",
+            "price": 218,
+            "airline": "easyJet",
             "from": "LTN",
-            "to": "BIO",
-            "dep": "18:00",
-            "arr": "21:00",
+            "to": "TFS",
+            "dep": "07:25",
+            "arr": "12:00",
             "stops": 0
-          },
-          {
-            "price": 72,
-            "airline": "Vueling",
-            "from": "LGW",
-            "to": "BIO",
-            "dep": "16:20",
-            "arr": "19:25",
-            "stops": 0
-          }
-        ],
-        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTA3LTI0agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDQklPGkISCjIwMjYtMDctMjhqBwgBEgNCSU9yBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ",
-        "book_url": "https://www.skyscanner.net/transport/flights/lgw/bio/260724/260728/"
-      },
-      "dan": {
-        "mode": "fly",
-        "to": "BIO",
-        "options": [
-          {
-            "price": 152,
-            "airline": "Vueling",
-            "from": "DUB",
-            "to": "BIO",
-            "dep": "22:05",
-            "arr": "08:15",
-            "stops": 1
           },
           {
             "price": 223,
-            "airline": "Vueling",
-            "from": "DUB",
-            "to": "BIO",
-            "dep": "22:05",
-            "arr": "09:55",
-            "stops": 1
-          },
-          {
-            "price": 232,
-            "airline": "Lufthansa",
-            "from": "DUB",
-            "to": "BIO",
-            "dep": "06:05",
-            "arr": "17:00",
-            "stops": 1
+            "airline": "Ryanair",
+            "from": "STN",
+            "to": "TFS",
+            "dep": "10:30",
+            "arr": "15:00",
+            "stops": 0
           }
         ],
-        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQklPGjASCjIwMjYtMDctMjhqBwgBEgNCSU9yBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
-        "book_url": "https://www.skyscanner.net/transport/flights/dub/bio/260724/260728/"
+        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTA3LTI0agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDVEZTGkISCjIwMjYtMDctMjhqBwgBEgNURlNyBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ",
+        "book_url": "https://www.skyscanner.net/transport/flights/stn/tfs/260724/260728/"
+      },
+      "dan": {
+        "mode": "fly",
+        "to": "TFS",
+        "options": [
+          {
+            "price": 368,
+            "airline": "Aer Lingus",
+            "from": "DUB",
+            "to": "TFS",
+            "dep": "07:15",
+            "arr": "11:55",
+            "stops": 0
+          },
+          {
+            "price": 368,
+            "airline": "Aer Lingus",
+            "from": "DUB",
+            "to": "TFS",
+            "dep": "15:00",
+            "arr": "19:35",
+            "stops": 0
+          },
+          {
+            "price": 412,
+            "airline": "Jet2",
+            "from": "BFS",
+            "to": "TFS",
+            "dep": "15:55",
+            "arr": "20:30",
+            "stops": 0
+          }
+        ],
+        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDVEZTGjASCjIwMjYtMDctMjhqBwgBEgNURlNyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
+        "book_url": "https://www.skyscanner.net/transport/flights/dub/tfs/260724/260728/"
       }
     }
   }
