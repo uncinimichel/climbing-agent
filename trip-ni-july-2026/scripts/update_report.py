@@ -751,6 +751,46 @@ def _band(txt, table, default):
     return default
 
 
+def _sig(x):
+    return max(0, min(100, round(x)))
+
+
+def weather_signals(r, v):
+    """Per-signal 'health checks' for the header ring's outer tier: how little
+    each weather signal is costing (100 = costing nothing). Uses the same
+    numbers/penalty curves as the score itself. Wind + friction only exist on
+    the live-forecast horizon — before that they ship as None ('pending')."""
+    fc = r.get("fc") or {}
+    if fc.get("in_window"):
+        t = sun_adjusted_tmax(v, fc["tmax"]) if fc.get("tmax") is not None else None
+        g, dw = fc.get("gust_max"), fc.get("dew")
+        return [
+            {"n": "Rain", "v": _sig(100 - (fc.get("rain_prob") or 0) * 0.8),
+             "d": f"max rain prob {fc.get('rain_prob') or 0}% over the trip"},
+            {"n": "Heat", "v": _sig(100 - heat_penalty(t) - max(0, 8 - t) * 2) if t is not None else None,
+             "d": f"{round(t)}°C felt on the rock" if t is not None else "no temperature signal"},
+            {"n": "Wind", "v": _sig(100 - max(0, (g or 0) - 30) * 0.6) if g is not None else None,
+             "d": f"gusts to {g} km/h" if g is not None else "no gust signal"},
+            {"n": "Friction", "v": _sig(100 - max(0, (dw or 0) - 12) * 1.2) if dw is not None else None,
+             "d": f"daytime dewpoint {dw}°C" if dw is not None else "no dewpoint signal"},
+        ]
+    c, sea = r.get("climo"), r.get("seasonal")
+    if not c:
+        return None
+    rp = round(0.7 * c["rain_pct"] + 0.3 * sea["rain_pct"]) if sea else c["rain_pct"]
+    sunny = max(0.35, 1 - rp / 100)
+    tm = 0.7 * c["tmax"] + 0.3 * sea["tmax"] if sea else c["tmax"]
+    t = sun_adjusted_tmax(v, tm, sunny)
+    pend = "activates when the live forecast reaches your dates"
+    return [
+        {"n": "Rain", "v": _sig(100 - rp * 0.9), "d": f"{rp}% typical wet days"},
+        {"n": "Heat", "v": _sig(100 - heat_penalty(t) - max(0, 8 - t) * 2),
+         "d": f"{round(t)}°C felt on the rock"},
+        {"n": "Wind", "v": None, "d": pend},
+        {"n": "Friction", "v": None, "d": pend},
+    ]
+
+
 def apply_composite(r):
     """Attach r['score'] (composite 0-100) + r['breakdown'] for the UI."""
     v = r["venue"]
@@ -778,6 +818,7 @@ def apply_composite(r):
             costs.append(None)
     known = [c for c in costs if c is not None]
     cost_s = round(max(0, min(100, 100 - (sum(known) / len(known)) / 4))) if known else None
+    fl_d = "; ".join(cost_bits) if cost_bits else "no priced flights yet"
     time_s = _band(sh.get("travel_time"), TIME_BAND, 65)
     # stay: the cheapest realistic bed near the crag for the trip's nights —
     # a campsite keeps a venue cheap, a hotel-only area costs points. Typical
@@ -819,6 +860,34 @@ def apply_composite(r):
             f" · {v['aspect'].upper()}-facing rock ({ASPECT_ADJ.get(v['aspect'].upper(), 0):+d}°C felt in full sun)"
             if v.get("aspect") else ""),
         "travel_note": travel_note, "fit_note": fit_note,
+        # each factor's own function, for the header ring's outer tier +
+        # hover panels (v = 0-100 sub-score, None = pending/no data)
+        "sub": {
+            "weather": weather_signals(r, v),
+            "travel": [
+                {"n": "Flights", "v": cost_s, "d": fl_d},
+                {"n": "Time", "v": time_s,
+                 "d": f"{sh['travel_time']} from UK (sheet)" if sh.get("travel_time")
+                      else "no travel-time band on the sheet — neutral"},
+                {"n": "Stay", "v": stay_s,
+                 "d": f"{st['type'].lower()} ~£{st['est']}/night for 2 (est.)" if st
+                      else "no stay data yet"},
+            ],
+            "fit": [
+                {"n": "Volume", "v": vol_s,
+                 "d": f"{sh['volume'].lower()} multi-pitch volume (sheet)" if sh.get("volume")
+                      else "no volume note on the sheet — default"},
+                {"n": "Difficulty", "v": diff_s,
+                 "d": f"difficulty: {sh['difficulty'].lower()} (sheet)" if sh.get("difficulty")
+                      else "no difficulty note on the sheet — default"},
+                {"n": "Trip fit", "v": trip_s,
+                 "d": f"min trip {sh['min_trip'].lower()} vs your {TRIP_DAYS} days" if sh.get("min_trip")
+                      else f"no minimum-trip constraint vs your {TRIP_DAYS} days"},
+                {"n": "Coverage", "v": routes_s,
+                 "d": f"{n_routes} multi-pitch.com route{'s' if n_routes != 1 else ''} within 60 km"
+                      if n_routes else "no multi-pitch.com routes indexed — neutral"},
+            ],
+        },
     }
 
 
@@ -1408,6 +1477,21 @@ svg.topo{pointer-events:none}
 svg.topo .dseg{pointer-events:stroke}
 .updstamp{color:var(--faint);font-size:11px;white-space:nowrap}
 .brkchart{height:300px;max-width:780px;width:100%}
+.brkchart svg{display:block;width:100%;height:100%;overflow:visible}
+.fgrp{cursor:pointer;transition:opacity .15s}
+.fgrp.dim{opacity:.3}
+.brkpanel{display:none;position:absolute;top:50%;transform:translateY(-50%);right:calc(100% + 14px);width:236px;background:rgba(20,22,26,.93);border:1px solid var(--line2);border-radius:10px;padding:10px 14px;font-family:var(--mono);pointer-events:none;z-index:3}
+.brkpanel.on{display:block;animation:bpfade .16s ease-out}
+@keyframes bpfade{from{opacity:0;transform:translate(4px,-50%)}to{opacity:1;transform:translate(0,-50%)}}
+@media(prefers-reduced-motion:reduce){.brkpanel.on{animation:none}}
+.bp-hd{display:flex;align-items:baseline;gap:7px}
+.bp-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0;align-self:center}
+.bp-name{font-size:10px;font-weight:700;letter-spacing:.09em;color:var(--ink)}
+.bp-wt{font-size:9px;color:var(--faint);font-weight:400}
+.bp-score{font-family:var(--disp);font-size:16px;font-weight:800;margin-left:auto}
+.bp-fn{font-size:9.5px;color:var(--faint);margin-top:4px;line-height:1.75}
+.bp-fn b{font-weight:600}
+.bp-pend{opacity:.7;font-style:italic}
 .wxchart{height:340px;max-width:920px;width:100%}
 .tag-aspect{color:#8FB8C8;border-color:rgba(120,170,195,.4);background:rgba(120,170,195,.08)}
 .board-sub .lk{font-size:11px}
@@ -1429,7 +1513,7 @@ svg.topo .dseg{pointer-events:stroke}
 .board-ft{padding:12px 18px;font-size:10.5px;color:var(--faint);border-top:1px solid var(--line);line-height:1.5}
 .detail{background:var(--bg);min-height:100vh}
 .band{position:relative;overflow:hidden;padding:26px 30px 20px;border-bottom:1px solid var(--line2);min-height:214px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
-.brkchart.hdr{height:240px;width:min(430px,100%);flex-shrink:0;position:relative;z-index:1;margin-left:auto}
+.brkchart.hdr{height:250px;width:min(290px,100%);flex-shrink:0;position:relative;z-index:1;margin-left:auto}
 .band svg.topo{position:absolute;top:50%;right:-30px;transform:translateY(-50%);height:135%;pointer-events:none}
 .band-body{position:relative;max-width:60%}
 .vname{font-family:var(--disp);font-weight:800;font-size:clamp(26px,4.5vw,40px);letter-spacing:-.02em;line-height:1.05;margin:6px 0 5px}
@@ -1607,6 +1691,10 @@ a.sample:hover{color:var(--ink);border-color:var(--muted)}
   .brk-row{grid-template-columns:72px 1fr 100px}
   .brk-note{margin-left:82px}
   .brkchart{height:250px}
+  .brkchart.hdr{margin:0 auto}
+  /* no room beside the ring on a phone — the maths card floats over it instead */
+  .brkpanel{right:auto;left:50%;transform:translate(-50%,-50%);max-width:86vw}
+  @keyframes bpfade{from{opacity:0;transform:translate(-50%,-50%)}to{opacity:1;transform:translate(-50%,-50%)}}
   .wxchart{height:300px}
 }
 </style></head>"""
@@ -1883,33 +1971,112 @@ function renderWx(v){
   _charts.push(c);
 }
 
+// The weighted ring: the ranking function drawn honestly, two levels deep.
+// Inner ring = the composite itself — one arc per factor, arc length = weight,
+// lit length = score, so the lit fraction of the whole circle IS the trip
+// score. Outer tier = each factor's own function: travel/fit really are
+// equal-weight means in the scorer, so equal sub-arcs are honest geometry;
+// weather's sub-arcs are signal checks (lit = how little that signal costs),
+// dashed while a signal is pending (wind/friction before the live forecast).
+// Hovering (or tapping) a factor's wedge shows its formula card and dims the
+// other wedges; the card is pointer-events:none so it can never steal the
+// hover and flicker. Pure SVG — ECharts stays only for the weather chart.
 function renderBrk(v){
   var el=document.getElementById('brkChart');
   if(!el)return;
-  if(typeof echarts==='undefined'){el.innerHTML='<div class="empty">Charts need cdn.jsdelivr.net.</div>';return;}
-  var b=v.breakdown;if(!b)return;
-  var notes={'Weather':b.weather_note,'Travel':b.travel_note,'Venue fit':b.fit_note};
-  var c=echarts.init(el,null,{renderer:'svg'});
-  // the trip score lives at the radar's centre (a chip over the web) — its
-  // vertical position tracks the radar centre (58% of height) minus half the
-  // chip so the number sits on the hub, not floating in the band.
-  c.setOption({backgroundColor:'transparent',textStyle:{fontFamily:'IBM Plex Mono, monospace'},
-    title:{text:String(num(v.score)),subtext:'TRIP SCORE /100',left:'center',top:'44%',itemGap:1,
-      backgroundColor:'rgba(20,22,26,.88)',borderRadius:24,padding:[7,12,6,12],
-      textStyle:{color:'#E9E7E1',fontSize:23,fontWeight:800,fontFamily:'Bricolage Grotesque, sans-serif'},
-      subtextStyle:{color:'#A0A19A',fontSize:8,fontFamily:'IBM Plex Mono, monospace',align:'center'}},
-    tooltip:{backgroundColor:'#20242B',borderColor:'#353A44',textStyle:{color:'#E9E7E1',fontSize:12},confine:true,
-      formatter:function(){return '<b>'+esc(v.shortName)+'</b><br>'+
-        ['Weather','Travel','Venue fit'].map(function(k,ix){var val=[b.weather,b.travel,b.fit][ix];
-          return '<span style="color:'+['#3987e5','#d95926','#57A664'][ix]+'">■</span> '+k+' <b>'+val+'/100</b> × '+[b.weights.weather,b.weights.travel,b.weights.fit][ix]+'%<br><span style="color:#A0A19A;font-size:11px">'+esc(notes[k]||'')+'</span>';}).join('<br>');}},
-    radar:{indicator:[{name:'Weather',max:100},{name:'Travel',max:100},{name:'Venue fit',max:100}],
-      radius:'62%',center:['50%','58%'],axisName:{color:'#E9E7E1',fontSize:11.5,fontWeight:600},
-      splitLine:{lineStyle:{color:'#353A44'}},splitArea:{show:false},axisLine:{lineStyle:{color:'#2A2E36'}}},
-    series:[{type:'radar',symbolSize:5,label:{show:true,color:'#E9E7E1',fontSize:11,fontWeight:600,formatter:'{c}'},
-      data:[{value:[num(b.weather),num(b.travel),num(b.fit)],name:'score',
-        areaStyle:{color:'rgba(57,135,229,0.25)'},lineStyle:{color:'#3987e5',width:2},itemStyle:{color:'#3987e5'}}]}]});
-  _charts.push(c);
+  var b=v.breakdown;
+  if(!b){el.innerHTML='';return;}
+  var W=b.weights||{weather:55,travel:25,fit:20};
+  var FACT=[
+    {key:'weather',name:'WEATHER',val:num(b.weather),wt:W.weather,color:'#3987e5',fn:'100 −rain −heat −wind −grease'},
+    {key:'travel',name:'TRAVEL',val:num(b.travel),wt:W.travel,color:'#d95926',fn:'(flights + time + stay) / 3'},
+    {key:'fit',name:'VENUE FIT',val:num(b.fit),wt:W.fit,color:'#57A664',fn:'(vol + diff + trip + routes) / 4'}
+  ];
+  var notes={weather:b.weather_note,travel:b.travel_note,fit:b.fit_note};
+  var CX=145,CY=128,R=76,SW=15,RO=97,SWO=5,GAP=2.5,SUBGAP=1.8;
+  function f1(n){return n.toFixed(1);}
+  function pt(a,rr){var t=a*Math.PI/180;return [CX+rr*Math.sin(t),CY-rr*Math.cos(t)];}
+  function arc(a0,a1,rr){
+    var p0=pt(a0,rr),p1=pt(a1,rr),large=(a1-a0)>180?1:0;
+    return 'M'+f1(p0[0])+' '+f1(p0[1])+' A'+rr+' '+rr+' 0 '+large+' 1 '+f1(p1[0])+' '+f1(p1[1]);
+  }
+  var s='',a=0;
+  FACT.forEach(function(fc,fi){
+    var span=360*fc.wt/100,fill=span*fc.val/100;
+    var subs=(b.sub&&b.sub[fc.key])||null;
+    s+='<g class="fgrp" data-f="'+fi+'">';
+    // invisible fat arc = one continuous hover target for the whole wedge
+    s+='<path d="'+arc(a+GAP/2,a+span-GAP/2,(R+RO)/2)+'" fill="none" stroke="rgba(0,0,0,0)" stroke-width="'+(RO-R+SW+SWO)+'"/>';
+    s+='<path d="'+arc(a+GAP/2,a+span-GAP/2,R)+'" fill="none" stroke="'+fc.color+'" stroke-opacity=".16" stroke-width="'+SW+'"/>';
+    s+='<path d="'+arc(a+GAP/2,Math.max(a+GAP/2+1,a+Math.min(fill,span-GAP/2)),R)+'" fill="none" stroke="'+fc.color+'" stroke-width="'+SW+'">'
+      +'<title>'+fc.name+' '+fc.val+'/100 × '+fc.wt+'% = +'+f1(fc.val*fc.wt/100)+' pts</title></path>';
+    if(subs){
+      var n=subs.length,subspan=span/n;
+      subs.forEach(function(sb,j){
+        var s0=a+j*subspan+SUBGAP/2,s1=a+(j+1)*subspan-SUBGAP/2;
+        if(sb.v==null){
+          s+='<path d="'+arc(s0,s1,RO)+'" fill="none" stroke="#6E7069" stroke-opacity=".45" stroke-width="'+SWO+'" stroke-dasharray="2.5 3.5">'
+            +'<title>'+esc(sb.n)+' — pending: '+esc(sb.d||'')+'</title></path>';
+        }else{
+          var sfill=s0+(s1-s0)*num(sb.v)/100;
+          s+='<path d="'+arc(s0,s1,RO)+'" fill="none" stroke="'+fc.color+'" stroke-opacity=".15" stroke-width="'+SWO+'"/>';
+          s+='<path d="'+arc(s0,Math.max(s0+.8,sfill),RO)+'" fill="none" stroke="'+fc.color+'" stroke-opacity=".85" stroke-width="'+SWO+'">'
+            +'<title>'+esc(sb.n)+' '+num(sb.v)+'/100 — '+esc(sb.d||'')+'</title></path>';
+        }
+      });
+    }
+    var mid=a+span/2,lp=pt(mid,RO+13);
+    var sn=Math.sin(mid*Math.PI/180),anchor=Math.abs(sn)<.35?'middle':(sn>0?'start':'end');
+    s+='<text x="'+f1(lp[0])+'" y="'+f1(lp[1]+3)+'" text-anchor="'+anchor+'" font-family="IBM Plex Mono, monospace" font-size="8.5" font-weight="600" fill="#6E7069">'+fc.wt+'%</text>';
+    s+='</g>';
+    a+=span;
+  });
+  function trim1(x){var t=x.toFixed(1);return t.slice(-2)==='.0'?t.slice(0,-2):t;}
+  s+='<text x="'+CX+'" y="'+(CY-8)+'" text-anchor="middle" font-family="Bricolage Grotesque, sans-serif" font-size="30" font-weight="800" fill="#E9E7E1">'+num(v.score)+'</text>'
+    +'<text x="'+CX+'" y="'+(CY+8)+'" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="7" letter-spacing=".1em" fill="#A0A19A">TRIP SCORE /100</text>'
+    +'<text x="'+CX+'" y="'+(CY+24)+'" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="8.5">'
+    +FACT.map(function(fc,i){return (i?'<tspan fill="#6E7069">+</tspan>':'')+'<tspan fill="'+fc.color+'">'+trim1(fc.val*fc.wt/100)+'</tspan>';}).join('')+'</text>'
+    +'<text x="'+CX+'" y="'+(CY+41)+'" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="6.5" letter-spacing=".08em" fill="#6E7069">'
+    +FACT.map(function(fc){return '<tspan fill="'+fc.color+'">■</tspan>';}).join(' ')+' HOVER OR TAP FOR THE MATHS</text>';
+  function subLine(subs){
+    return subs.map(function(sb){
+      if(sb.v==null)return '<span class="bp-pend">'+esc(sb.n.toLowerCase())+': '+esc(sb.d||'—')+'</span>';
+      var c=sb.v>=80?'var(--dry)':(sb.v>=55?'var(--mixed)':'var(--wet)');
+      return esc(sb.n.toLowerCase())+' <b style="color:'+c+'">'+num(sb.v)+'</b>';
+    }).join(' · ');
+  }
+  var panels=FACT.map(function(fc,fi){
+    var subs=(b.sub&&b.sub[fc.key])||null;
+    var body=subs?fc.fn+'<br>'+subLine(subs):esc(notes[fc.key]||'');
+    return '<div class="brkpanel" id="bp'+fi+'"><div class="bp-hd"><span class="bp-dot" style="background:'+fc.color+'"></span>'
+      +'<span class="bp-name">'+fc.name+' <span class="bp-wt">×.'+fc.wt+'</span></span>'
+      +'<span class="bp-score" style="color:'+fc.color+'">'+fc.val+'</span></div>'
+      +'<div class="bp-fn">'+body+'</div></div>';
+  }).join('');
+  el.innerHTML='<svg viewBox="0 0 290 256" role="img" aria-label="Trip score '+num(v.score)+' of 100: weather '+num(b.weather)+', travel '+num(b.travel)+', venue fit '+num(b.fit)+'">'+s+'</svg>'+panels;
+  var grps=Array.prototype.slice.call(el.querySelectorAll('.fgrp'));
+  function showF(fi){
+    grps.forEach(function(g){g.classList.toggle('dim',+g.getAttribute('data-f')!==fi);});
+    FACT.forEach(function(_,i){
+      var p=document.getElementById('bp'+i);
+      if(p)p.classList.toggle('on',i===fi);
+    });
+  }
+  function clearF(){
+    grps.forEach(function(g){g.classList.remove('dim');});
+    FACT.forEach(function(_,i){var p=document.getElementById('bp'+i);if(p)p.classList.remove('on');});
+  }
+  grps.forEach(function(g){
+    var fi=+g.getAttribute('data-f');
+    g.addEventListener('mouseenter',function(){showF(fi);});
+    g.addEventListener('mouseleave',clearF);
+    g.addEventListener('click',function(e){showF(fi);e.stopPropagation();});
+  });
+  // renderBrk reruns on every venue switch — keep ONE document listener that
+  // always points at the current ring's clear function (tap-away on touch)
+  window._bpClear=clearF;
 }
+document.addEventListener('click',function(){if(window._bpClear)window._bpClear();});
 
 function flightCard(who,from,f){
   var inner;
