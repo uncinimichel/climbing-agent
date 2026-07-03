@@ -1077,11 +1077,20 @@ def nearby_climb_cards(v, km=60, limit=6):
 
 
 def climb_url(c):
-    """Route page on multi-pitch.com — slug pattern '<route>-on-<cliff>'."""
-    s = f"{c.get('routeName', '')} on {c.get('cliff', '')}"
-    s = unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode().lower()
-    s = re.sub(r"[^a-z0-9]+", "-", s).strip("-")
-    return SITE_URL + "climbs/" + s + "/" if s else None
+    """Route page on multi-pitch.com. Must match multi-pitch.com's own
+    slugifier EXACTLY (website/js/modules/convertNameToURL.js): lowercase,
+    drop apostrophes and slashes, spaces -> hyphens — nothing else. An
+    earlier version also stripped accents to plain ASCII, which is wrong:
+    the real site keeps diacritics literally in the URL (Peñón de Ifach,
+    Brüggler, Freÿr do NOT become Penon/Bruggler/Freyr), so that version
+    404'd on every accented cliff or route name. Draft routes (not yet
+    published on multi-pitch.com) have no live page at all."""
+    route, cliff = c.get("routeName") or "", c.get("cliff") or ""
+    if not route or not cliff or (c.get("status") or "publish") != "publish":
+        return None
+    slug = (f"{route.strip()}-on-{cliff.strip()}".lower()
+            .replace("'", "").replace("/", "").replace(" ", "-"))
+    return SITE_URL + "climbs/" + slug + "/"
 
 
 def venue_tags(v, cards, grades, cond_txt=None):
@@ -1225,6 +1234,12 @@ STAY_TYPE_LBL = {
     "camp_site": "Campsite", "hotel": "Hotel", "hostel": "Hostel",
     "alpine_hut": "Mountain hut", "motel": "Motel",
 }
+# Mainstream OTAs (Booking.com, Hotels.com, Airbnb) essentially never list
+# alpine huts/refuges — they're booked direct or through mountain federations
+# (FEDME, FFCAM, CAI...) — so an OTA search for one just returns junk or
+# nothing, which reads as "broken" even though the URL loads fine. Same
+# reasoning as excluding campsites: don't offer a search an OTA can't answer.
+NO_OTA_KINDS = {"camp_site", "alpine_hut"}
 # typical £/night for TWO people — rough planning estimates, not live quotes
 STAY_EST_NIGHT = {
     "apartment": 95, "chalet": 100, "guest_house": 85, "camp_site": 20,
@@ -1347,9 +1362,9 @@ def stay_options(v):
                 "dist": s["dist"], "est": STAY_EST_NIGHT[s["kind"]],
                 "note": CAMP_NOTE if cat == "camp" else "",
                 "web": web,
-                "airbnb": _airbnb_url(q) if cat == "house" else "",
-                "book": _booking_url(q) if cat in ("house", "hotel") else "",
-                "hotels": _hotels_url(q) if cat == "hotel" else "",
+                "airbnb": _airbnb_url(q) if cat == "house" and s["kind"] not in NO_OTA_KINDS else "",
+                "book": _booking_url(q) if cat in ("house", "hotel") and s["kind"] not in NO_OTA_KINDS else "",
+                "hotels": _hotels_url(q) if cat == "hotel" and s["kind"] not in NO_OTA_KINDS else "",
                 "maps": ("https://www.google.com/maps/search/?api=1&query="
                          + urllib.parse.quote(f"{s['name']} {area}")),
             })
