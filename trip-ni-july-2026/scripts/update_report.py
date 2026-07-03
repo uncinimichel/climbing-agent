@@ -1119,6 +1119,16 @@ def _airbnb_url(q):
                                       "checkin": REP["out"], "checkout": REP["back"]}))
 
 
+def _turbo_url(lat, lon):
+    """overpass-turbo deep-link that auto-runs the venue's lodging query (&R):
+    every place to stay pin-pointed on a real map, centred on the crag."""
+    kinds = "|".join(sorted(OSM_STAY_CAT))
+    q = ("[out:json][timeout:30];"
+         f'nwr["tourism"~"^({kinds})$"]["name"](around:{STAY_RADIUS_KM * 1000},{lat},{lon});'
+         "out center;")
+    return f"https://overpass-turbo.eu/?Q={urllib.parse.quote(q)}&C={lat};{lon};11&R"
+
+
 OVERPASS_HOSTS = ["https://overpass-api.de/api/interpreter",
                   "https://overpass.kumi.systems/api/interpreter",
                   "https://maps.mail.ru/osm/tools/overpass/api/interpreter"]
@@ -1200,7 +1210,8 @@ def stay_options(v):
         "cheapest": ({"est": cheapest["est"], "type": cheapest["type"]} if cheapest else None),
         "search": {"airbnb": _airbnb_url(area), "booking": _booking_url(area),
                    "camps": ("https://www.google.com/maps/search/?api=1&query="
-                             + urllib.parse.quote(f"campsite near {area}"))},
+                             + urllib.parse.quote(f"campsite near {area}")),
+                   "map": _turbo_url(v["lat"], v["lon"])},
     }
 
 
@@ -1533,8 +1544,14 @@ svg.topo .dseg{pointer-events:stroke}
 .htags{display:flex;gap:4px;flex-wrap:wrap;margin-top:7px}
 .htag{font-size:10px;background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:2px 6px;color:var(--muted)}
 .sample{font-family:var(--mono);font-size:8.5px;letter-spacing:.08em;background:var(--card);border:1px solid var(--line2);border-radius:4px;padding:2px 6px;color:var(--muted);margin-left:6px}
-.scat{font-family:var(--mono);font-size:9.5px;white-space:nowrap;color:var(--muted);border:1px solid var(--line2);border-radius:4px;padding:2px 6px;flex-shrink:0}
-.stay-search{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+a.sample{text-decoration:none}
+a.sample:hover{color:var(--ink);border-color:var(--muted)}
+.stay-search{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.stay-cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px 16px;max-width:1100px}
+.stay-col-hd{font-family:var(--disp);font-weight:700;font-size:14.5px}
+.stay-col-sub{font-size:10.5px;color:var(--faint);margin:1px 0 10px}
+.stay-col .hcard{margin-bottom:10px}
+.stay-none{font-size:12px;color:var(--muted);border:1px dashed var(--line2);border-radius:11px;padding:12px 14px}
 .stay-links{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
 .stay-links .btn{flex:1;margin-top:0;padding:6px 8px;font-size:11px;min-width:90px}
 .htag.warn{color:#D9B25E;border-color:rgba(185,138,46,.45);background:var(--mixed-bg)}
@@ -1823,18 +1840,22 @@ function renderWx(v){
   if(!el)return;
   if(typeof echarts==='undefined'){el.innerHTML='<div class="empty">Charts need cdn.jsdelivr.net.</div>';return;}
   var s2=v.series||[];if(!s2.length)return;
+  // phones: drop the long caption + per-day wind sub-labels, shrink everything —
+  // the same info lives in the takeaway line, condition chips and tap-tooltips.
+  var narrow=el.clientWidth<620;
   var ARR=['↓','↙','←','↖','↑','↗','→','↘'];
   function warr(d){return d==null?'':ARR[Math.round((((num(d)%360)+360)%360)/45)%8];}
-  var days=s2.map(function(d){var w=(d.fc&&d.fc.wind!=null)?d.fc.wind:d.wind;
+  var days=s2.map(function(d){if(narrow)return d.lbl.slice(0,2)+' '+d.day;
+    var w=(d.fc&&d.fc.wind!=null)?d.fc.wind:d.wind;
     var dd=(d.fc&&d.fc.dir!=null)?d.fc.dir:d.dir;return d.lbl+' '+d.day+'\n'+w+'km/h'+warr(dd);});
   var anyFc=s2.some(function(d){return d.fc;}),ov=anyFc?'Forecast':'Outlook';
   var f=-1,l=-1;s2.forEach(function(d,i2){if(d.trip){if(f<0)f=i2;l=i2;}});
   var mark={silent:true,itemStyle:{color:'rgba(87,166,100,0.09)'},data:[[{xAxis:f},{xAxis:l}]]};
   var c=echarts.init(el,null,{renderer:'svg'});
   c.setOption({backgroundColor:'transparent',textStyle:{fontFamily:'IBM Plex Mono, monospace'},
-    title:{text:'Lines = daily high °C (dashed grey = typical, orange = '+ov.toLowerCase()+') · bars = rain mm · under each day: wind km/h + direction',
+    title:{show:!narrow,text:'Lines = daily high °C (dashed grey = typical, orange = '+ov.toLowerCase()+') · bars = rain mm · under each day: wind km/h + direction',
       top:0,left:0,textStyle:{color:'#6E7069',fontSize:10.5,fontWeight:400}},
-    legend:{top:18,textStyle:{color:'#A0A19A',fontSize:11},itemWidth:14},
+    legend:{top:narrow?0:18,textStyle:{color:'#A0A19A',fontSize:narrow?9.5:11},itemWidth:narrow?10:14,itemGap:narrow?7:10},
     tooltip:{trigger:'axis',backgroundColor:'#20242B',borderColor:'#353A44',textStyle:{color:'#E9E7E1',fontSize:12},confine:true,
       formatter:function(ps){if(!ps.length)return '';var i2=ps[0].dataIndex,d=s2[i2],o=d.fc||d.out;
         var h='<b>'+d.lbl+' '+d.day+(d.trip?' · TRIP DAY':'')+'</b><br>typical: '+d.tmax+'°C · '+d.precip+'mm · wind '+d.wind+' km/h';
@@ -1843,16 +1864,17 @@ function renderWx(v){
           if(d.fc.friction)h+='<br>friction: '+esc(d.fc.friction)+(d.fc.dew!=null?' (dew '+d.fc.dew+'°C)':'');
           if(d.fc.sunFrac!=null)h+=' · sun '+Math.round(d.fc.sunFrac*100)+'%';}
         return h;}},
-    grid:{left:46,right:46,top:46,bottom:44},
-    xAxis:{type:'category',data:days,axisLabel:{fontSize:10.5,lineHeight:15,color:function(v2,idx){var d=s2[idx];var w=(d.fc&&d.fc.wind!=null)?d.fc.wind:d.wind;return w>=25?'#B98A2E':'#A0A19A';}},axisLine:{lineStyle:{color:'#353A44'}},axisTick:{show:false}},
-    yAxis:[{type:'value',name:'high °C',nameTextStyle:{color:'#6E7069'},axisLabel:{color:'#6E7069',fontSize:10},splitLine:{lineStyle:{color:'#2A2E36'}}},
-           {type:'value',name:'rain mm',nameTextStyle:{color:'#6E7069'},axisLabel:{color:'#6E7069',fontSize:10},splitLine:{show:false}}],
+    grid:{left:narrow?34:46,right:narrow?34:46,top:narrow?28:46,bottom:narrow?30:44},
+    xAxis:{type:'category',data:days,axisLabel:{fontSize:narrow?8.5:10.5,lineHeight:narrow?12:15,interval:narrow?1:0,color:function(v2,idx){var d=s2[idx];var w=(d.fc&&d.fc.wind!=null)?d.fc.wind:d.wind;return w>=25?'#B98A2E':'#A0A19A';}},axisLine:{lineStyle:{color:'#353A44'}},axisTick:{show:false}},
+    yAxis:[{type:'value',name:narrow?'':'high °C',nameTextStyle:{color:'#6E7069'},axisLabel:{color:'#6E7069',fontSize:narrow?9:10},splitLine:{lineStyle:{color:'#2A2E36'}}},
+           {type:'value',name:narrow?'':'rain mm',nameTextStyle:{color:'#6E7069'},axisLabel:{color:'#6E7069',fontSize:narrow?9:10},splitLine:{show:false}}],
     series:[
-      {name:'Typical high °C',type:'line',yAxisIndex:0,data:s2.map(function(d){return d.tmax;}),symbolSize:5,
+      {name:'Typical high °C',type:'line',yAxisIndex:0,data:s2.map(function(d){return d.tmax;}),symbolSize:narrow?4:5,
        lineStyle:{type:'dashed',color:'#6E7069',width:1.5},itemStyle:{color:'#6E7069'},markArea:mark},
-      {name:ov+' high °C',type:'line',yAxisIndex:0,data:s2.map(function(d){var o=d.fc||d.out;return o?o.tmax:null;}),symbolSize:7,
-       lineStyle:{color:'#d95926',width:2.5},itemStyle:{color:'#d95926'},
-       label:{show:true,position:'top',color:'#E9E7E1',fontSize:10,fontWeight:600,formatter:'{c}°'}},
+      {name:ov+' high °C',type:'line',yAxisIndex:0,data:s2.map(function(d){var o=d.fc||d.out;return o?o.tmax:null;}),symbolSize:narrow?5:7,
+       lineStyle:{color:'#d95926',width:narrow?2:2.5},itemStyle:{color:'#d95926'},
+       label:{show:true,position:'top',color:'#E9E7E1',fontSize:narrow?9:10,fontWeight:600,
+         formatter:function(p){return (narrow&&p.dataIndex%2===1)?'':num(p.value)+'°';}}},
       {name:'Typical rain mm',type:'bar',yAxisIndex:1,data:s2.map(function(d){return d.precip;}),barGap:'12%',
        itemStyle:{color:'rgba(57,135,229,0.32)',borderRadius:[3,3,0,0]}},
       {name:ov+' rain mm',type:'bar',yAxisIndex:1,data:s2.map(function(d){var o=d.fc||d.out;return o?o.precip:null;}),
@@ -1868,14 +1890,20 @@ function renderBrk(v){
   var b=v.breakdown;if(!b)return;
   var notes={'Weather':b.weather_note,'Travel':b.travel_note,'Venue fit':b.fit_note};
   var c=echarts.init(el,null,{renderer:'svg'});
+  // the trip score lives at the radar's centre (a chip over the web) — its
+  // vertical position tracks the radar centre (58% of height) minus half the
+  // chip so the number sits on the hub, not floating in the band.
   c.setOption({backgroundColor:'transparent',textStyle:{fontFamily:'IBM Plex Mono, monospace'},
-    graphic:[{type:'text',left:6,top:6,style:{text:'TRIP SCORE\n'+num(v.score)+'/100',fill:'#E9E7E1',font:'600 13px IBM Plex Mono',lineHeight:17}}],
+    title:{text:String(num(v.score)),subtext:'TRIP SCORE /100',left:'center',top:'44%',itemGap:1,
+      backgroundColor:'rgba(20,22,26,.88)',borderRadius:24,padding:[7,12,6,12],
+      textStyle:{color:'#E9E7E1',fontSize:23,fontWeight:800,fontFamily:'Bricolage Grotesque, sans-serif'},
+      subtextStyle:{color:'#A0A19A',fontSize:8,fontFamily:'IBM Plex Mono, monospace',align:'center'}},
     tooltip:{backgroundColor:'#20242B',borderColor:'#353A44',textStyle:{color:'#E9E7E1',fontSize:12},confine:true,
       formatter:function(){return '<b>'+esc(v.shortName)+'</b><br>'+
         ['Weather','Travel','Venue fit'].map(function(k,ix){var val=[b.weather,b.travel,b.fit][ix];
           return '<span style="color:'+['#3987e5','#d95926','#57A664'][ix]+'">■</span> '+k+' <b>'+val+'/100</b> × '+[b.weights.weather,b.weights.travel,b.weights.fit][ix]+'%<br><span style="color:#A0A19A;font-size:11px">'+esc(notes[k]||'')+'</span>';}).join('<br>');}},
     radar:{indicator:[{name:'Weather',max:100},{name:'Travel',max:100},{name:'Venue fit',max:100}],
-      radius:'62%',center:['54%','56%'],axisName:{color:'#E9E7E1',fontSize:11.5,fontWeight:600},
+      radius:'62%',center:['50%','58%'],axisName:{color:'#E9E7E1',fontSize:11.5,fontWeight:600},
       splitLine:{lineStyle:{color:'#353A44'}},splitArea:{show:false},axisLine:{lineStyle:{color:'#2A2E36'}}},
     series:[{type:'radar',symbolSize:5,label:{show:true,color:'#E9E7E1',fontSize:11,fontWeight:600,formatter:'{c}'},
       data:[{value:[num(b.weather),num(b.travel),num(b.fit)],name:'score',
@@ -1950,14 +1978,12 @@ function tagsHtml(v){
     +v.tags.map(function(t){return '<span class="tag tag-'+esc(t.k)+'" title="'+esc(TAGT[t.k]||'')+'">'+esc(t.t)+'</span>';}).join('')+'</div></div>';
 }
 
-var CATL={house:['🏠','House / apt'],camp:['⛺','Camping'],hotel:['🏨','Hotel']};
 function stayHtml(s){
-  var cat=CATL[s.cat]||['🛏',''];
   var links=[];
   if(safeUrl(s.web))links.push('<a class="btn ghost" target="_blank" rel="noopener" href="'+safeUrl(s.web)+'">Website ↗</a>');
   if(safeUrl(s.book))links.push('<a class="btn ghost" target="_blank" rel="noopener" href="'+safeUrl(s.book)+'">Booking.com ↗</a>');
   if(safeUrl(s.maps))links.push('<a class="btn ghost" target="_blank" rel="noopener" href="'+safeUrl(s.maps)+'">Map ↗</a>');
-  return '<div class="hcard"><div style="display:flex;justify-content:space-between;gap:8px;align-items:baseline"><span class="hname">'+esc(s.name)+'</span><span class="scat">'+cat[0]+' '+esc(cat[1])+'</span></div>'
+  return '<div class="hcard"><div class="hname">'+esc(s.name)+'</div>'
     +'<div class="htype">'+esc(s.type)+' · '+num(s.dist)+' km from the crag</div>'
     +'<div class="hprice">~£'+num(s.est)+' <span>/ night · 2 people · est.</span></div>'
     +(s.note?'<div class="htags"><span class="htag warn">⛺ '+esc(s.note)+'</span></div>':'')
@@ -1965,23 +1991,38 @@ function stayHtml(s){
     +'</div>';
 }
 
+// One column per kind of stay — house/apt first (Michel's preference), then
+// camping, then hotels. Each column carries its own search fallback.
+var STAY_COLS=[
+  ['house','🏠','Houses & apartments','self-catered, Airbnb-style','airbnb','Airbnb search'],
+  ['camp','⛺','Camping','bring your own tent, mats & cooking kit','camps','campsites map'],
+  ['hotel','🏨','Hotels & hostels','one room, 2 adults','booking','Booking.com search']];
 function staysHtml(v){
   var st=v.stays||{},q=st.search||{},radius=st.radius?num(st.radius):15;
+  var list=st.list||[];
+  var cols=STAY_COLS.map(function(cdef){
+    var items=list.filter(function(s){return s.cat===cdef[0];});
+    var inner=items.length?items.map(stayHtml).join('')
+      :'<div class="stay-none">none mapped within '+radius+' km'
+        +(safeUrl(q[cdef[4]])?' — try the <a class="lk" target="_blank" rel="noopener" href="'+safeUrl(q[cdef[4]])+'">'+esc(cdef[5])+' ↗</a>':'')+'</div>';
+    return '<div class="stay-col"><div class="stay-col-hd">'+cdef[1]+' '+esc(cdef[2])+'</div>'
+      +'<div class="stay-col-sub">'+esc(cdef[3])+'</div>'+inner+'</div>';
+  }).join('');
   var search=[
+    safeUrl(q.map)?'<a class="tl" target="_blank" rel="noopener" href="'+safeUrl(q.map)+'">🗺 All stays on one map ↗</a>':'',
     safeUrl(q.airbnb)?'<a class="tl" target="_blank" rel="noopener" href="'+safeUrl(q.airbnb)+'">🏠 Airbnb ↗</a>':'',
     safeUrl(q.booking)?'<a class="tl" target="_blank" rel="noopener" href="'+safeUrl(q.booking)+'">🏨 Booking.com ↗</a>':'',
-    safeUrl(q.camps)?'<a class="tl" target="_blank" rel="noopener" href="'+safeUrl(q.camps)+'">⛺ Campsites map ↗</a>':''
+    safeUrl(q.camps)?'<a class="tl" target="_blank" rel="noopener" href="'+safeUrl(q.camps)+'">⛺ Campsites ↗</a>':''
   ].join('');
-  var list=st.list||[];
-  var cards=list.length
-    ?'<div class="hgrid">'+list.map(stayHtml).join('')+'</div>'
-    :'<div class="empty">OpenStreetMap lists no named stays within '+radius+' km — use the search links above.</div>';
+  var src=safeUrl(q.map)
+    ?'<a class="sample" target="_blank" rel="noopener" href="'+safeUrl(q.map)+'" title="Every stay pin-pointed on an OpenStreetMap map">OpenStreetMap ↗</a>'
+    :'<span class="sample">OpenStreetMap</span>';
   var guide=v.guide?'<div class="guide"><div style="font-size:22px">📗</div><div style="flex:1"><div class="hname">'+esc(v.guide.title)+'</div><div class="htype" style="margin-bottom:0">'+esc(v.guide.pub)+' · '+esc(v.guide.price)+'</div></div>'
     +(safeUrl(v.guide.url)?'<a class="lk" style="font-size:12px;flex-shrink:0" target="_blank" rel="noopener" href="'+safeUrl(v.guide.url)+'">Amazon ↗</a>':'')+'</div>':'';
-  return '<div class="sec"><div class="eyebrow">Stay near the crag · 2 adults · '+esc(D.trip.dates)+'<span class="sample">OpenStreetMap</span></div>'
+  return '<div class="sec"><div class="eyebrow">Stay near the crag · 2 adults · '+esc(D.trip.dates)+' '+src+'</div>'
     +'<div class="tagleg">named places within '+radius+' km · search links pre-filled with your dates + 2 adults · £ = typical price for that type of stay, not a live quote</div>'
     +(search?'<div class="stay-search">'+search+'</div>':'')
-    +cards+guide+'</div>';
+    +'<div class="stay-cols">'+cols+'</div>'+guide+'</div>';
 }
 
 function detailHtml(v){
