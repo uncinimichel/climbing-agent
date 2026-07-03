@@ -1614,7 +1614,7 @@ function verdictHtml(v){
   var note=v.score>=0
     ?'<p class="score-note">Why score <b>'+num(v.score)+'/100</b>: ranked on '+esc(v.basis||'weather')+' — '+bits.join('; ')+'.</p>'
     :'<p class="score-note">No weather data yet for this area, so it is unranked.</p>';
-  return '<div class="sec"><div class="eyebrow">Why go · why score '+(v.score>=0?num(v.score):'—')+'</div>'+why+note+'</div>';
+  return '<div class="sec"><div class="eyebrow">Why go</div>'+why+'</div>';
 }
 
 function takeaway(v){
@@ -1677,40 +1677,41 @@ window.addEventListener('resize',function(){_charts.forEach(function(c){c.resize
 function renderWx(v){
   var el=document.getElementById('wxChart');
   if(!el)return;
-  if(typeof echarts==='undefined'){el.innerHTML='<div class="empty">Interactive charts need cdn.jsdelivr.net — check your connection.</div>';return;}
-  var s=v.series||[];if(!s.length)return;
-  var days=s.map(function(d){return d.lbl+' '+d.day;});
-  var anyFc=s.some(function(d){return d.fc;});
-  var ov=anyFc?'Forecast':'Outlook';
-  var tyT=s.map(function(d){return d.tmax;}),ovT=s.map(function(d){var o=d.fc||d.out;return o?o.tmax:null;});
-  var tyR=s.map(function(d){return d.precip;}),ovR=s.map(function(d){var o=d.fc||d.out;return o?o.precip:null;});
-  var f=-1,l=-1;s.forEach(function(d,i){if(d.trip){if(f<0)f=i;l=i;}});
+  if(typeof echarts==='undefined'){el.innerHTML='<div class="empty">Charts need cdn.jsdelivr.net.</div>';return;}
+  var s2=v.series||[];if(!s2.length)return;
+  var ARR=['↓','↙','←','↖','↑','↗','→','↘'];
+  function warr(d){return d==null?'':ARR[Math.round((((num(d)%360)+360)%360)/45)%8];}
+  var days=s2.map(function(d){var w=(d.fc&&d.fc.wind!=null)?d.fc.wind:d.wind;
+    return d.lbl+' '+d.day+'\n'+w+'km/h'+((d.fc&&d.fc.dir!=null)?warr(d.fc.dir):'');});
+  var anyFc=s2.some(function(d){return d.fc;}),ov=anyFc?'Forecast':'Outlook';
+  var f=-1,l=-1;s2.forEach(function(d,i2){if(d.trip){if(f<0)f=i2;l=i2;}});
   var mark={silent:true,itemStyle:{color:'rgba(87,166,100,0.09)'},data:[[{xAxis:f},{xAxis:l}]]};
-  var ax={color:'#A0A19A',fontSize:10},grid_c='#2A2E36',line_c='#353A44';
   var c=echarts.init(el,null,{renderer:'svg'});
   c.setOption({backgroundColor:'transparent',textStyle:{fontFamily:'IBM Plex Mono, monospace'},
-    legend:{top:0,textStyle:{color:'#A0A19A',fontSize:11},itemWidth:14,
-      data:['Typical °C',ov+' °C','Typical rain',ov+' rain']},
-    tooltip:{trigger:'axis',backgroundColor:'#20242B',borderColor:line_c,textStyle:{color:'#E9E7E1',fontSize:12},
-      formatter:function(ps){if(!ps.length)return '';var i=ps[0].dataIndex,d=s[i],o=d.fc||d.out;
-        var h='<b>'+days[i]+(d.trip?' · TRIP DAY':'')+'</b><br>typical: '+d.tmax+'°C · '+d.precip+'mm rain · wind '+d.wind+' km/h';
-        if(o)h+='<br><b>'+(d.fc?'forecast':'outlook')+': '+o.tmax+'°C · '+o.precip+'mm</b>'
-          +((d.fc&&d.fc.wind!=null)?' · wind '+d.fc.wind+' km/h'+(d.fc.dir!=null?' from '+compass(d.fc.dir):''):'');
+    title:{text:'Lines = daily high °C (dashed grey = typical, orange = '+ov.toLowerCase()+') · bars = rain mm · under each day: wind km/h + direction',
+      top:0,left:0,textStyle:{color:'#6E7069',fontSize:10.5,fontWeight:400}},
+    legend:{top:18,textStyle:{color:'#A0A19A',fontSize:11},itemWidth:14},
+    tooltip:{trigger:'axis',backgroundColor:'#20242B',borderColor:'#353A44',textStyle:{color:'#E9E7E1',fontSize:12},confine:true,
+      formatter:function(ps){if(!ps.length)return '';var i2=ps[0].dataIndex,d=s2[i2],o=d.fc||d.out;
+        var h='<b>'+d.lbl+' '+d.day+(d.trip?' · TRIP DAY':'')+'</b><br>typical: '+d.tmax+'°C · '+d.precip+'mm · wind '+d.wind+' km/h';
+        if(o)h+='<br><b>'+(d.fc?'forecast':'outlook')+': '+o.tmax+'°C · '+o.precip+'mm</b>';
+        if(d.fc){if(d.fc.wind!=null)h+='<br>wind '+d.fc.wind+' km/h '+(d.fc.dir!=null?'from '+compass(d.fc.dir)+' '+warr(d.fc.dir):'')+(d.fc.gust!=null?' · gusts '+d.fc.gust:'');
+          if(d.fc.friction)h+='<br>friction: '+esc(d.fc.friction)+(d.fc.dew!=null?' (dew '+d.fc.dew+'°C)':'');
+          if(d.fc.sunFrac!=null)h+=' · sun '+Math.round(d.fc.sunFrac*100)+'%';}
         return h;}},
-    grid:[{left:46,right:16,top:32,height:'33%'},{left:46,right:16,top:'60%',height:'27%'}],
-    xAxis:[{gridIndex:0,type:'category',data:days,axisLabel:{show:false},axisLine:{lineStyle:{color:line_c}},axisTick:{show:false}},
-           {gridIndex:1,type:'category',data:days,axisLabel:ax,axisLine:{lineStyle:{color:line_c}},axisTick:{show:false}}],
-    yAxis:[{gridIndex:0,type:'value',name:'high °C',nameTextStyle:{color:'#6E7069',fontSize:10},axisLabel:ax,splitLine:{lineStyle:{color:grid_c}}},
-           {gridIndex:1,type:'value',name:'rain mm',nameTextStyle:{color:'#6E7069',fontSize:10},axisLabel:ax,splitLine:{lineStyle:{color:grid_c}}}],
+    grid:{left:46,right:46,top:46,bottom:44},
+    xAxis:{type:'category',data:days,axisLabel:{color:'#A0A19A',fontSize:9.5,lineHeight:14},axisLine:{lineStyle:{color:'#353A44'}},axisTick:{show:false}},
+    yAxis:[{type:'value',name:'high °C',nameTextStyle:{color:'#6E7069'},axisLabel:{color:'#6E7069',fontSize:10},splitLine:{lineStyle:{color:'#2A2E36'}}},
+           {type:'value',name:'rain mm',nameTextStyle:{color:'#6E7069'},axisLabel:{color:'#6E7069',fontSize:10},splitLine:{show:false}}],
     series:[
-      {name:'Typical °C',type:'line',xAxisIndex:0,yAxisIndex:0,data:tyT,symbolSize:5,
+      {name:'Typical high °C',type:'line',yAxisIndex:0,data:s2.map(function(d){return d.tmax;}),symbolSize:5,
        lineStyle:{type:'dashed',color:'#6E7069',width:1.5},itemStyle:{color:'#6E7069'},markArea:mark},
-      {name:ov+' °C',type:'line',xAxisIndex:0,yAxisIndex:0,data:ovT,symbolSize:7,
+      {name:ov+' high °C',type:'line',yAxisIndex:0,data:s2.map(function(d){var o=d.fc||d.out;return o?o.tmax:null;}),symbolSize:7,
        lineStyle:{color:'#d95926',width:2.5},itemStyle:{color:'#d95926'},
        label:{show:true,position:'top',color:'#E9E7E1',fontSize:10,fontWeight:600,formatter:'{c}°'}},
-      {name:'Typical rain',type:'bar',xAxisIndex:1,yAxisIndex:1,data:tyR,barGap:'12%',
-       itemStyle:{color:'rgba(57,135,229,0.32)',borderRadius:[3,3,0,0]},markArea:mark},
-      {name:ov+' rain',type:'bar',xAxisIndex:1,yAxisIndex:1,data:ovR,
+      {name:'Typical rain mm',type:'bar',yAxisIndex:1,data:s2.map(function(d){return d.precip;}),barGap:'12%',
+       itemStyle:{color:'rgba(57,135,229,0.32)',borderRadius:[3,3,0,0]}},
+      {name:ov+' rain mm',type:'bar',yAxisIndex:1,data:s2.map(function(d){var o=d.fc||d.out;return o?o.precip:null;}),
        itemStyle:{color:'#3987e5',borderRadius:[3,3,0,0]}}
     ]});
   _charts.push(c);
@@ -1719,30 +1720,22 @@ function renderWx(v){
 function renderBrk(v){
   var el=document.getElementById('brkChart');
   if(!el)return;
-  if(typeof echarts==='undefined'){el.innerHTML='<div class="empty">Interactive charts need cdn.jsdelivr.net — check your connection.</div>';return;}
+  if(typeof echarts==='undefined'){el.innerHTML='<div class="empty">Charts need cdn.jsdelivr.net.</div>';return;}
   var b=v.breakdown;if(!b)return;
-  var W=b.weights;
-  function pts(k){return Math.round(num(b[k])*num(W[k]))/100;}
-  var lost=Math.max(0,Math.round((100-num(v.score))*10)/10);
-  var narrow=window.innerWidth<640;
+  var notes={'Weather':b.weather_note,'Travel':b.travel_note,'Venue fit':b.fit_note};
   var c=echarts.init(el,null,{renderer:'svg'});
   c.setOption({backgroundColor:'transparent',textStyle:{fontFamily:'IBM Plex Mono, monospace'},
-    graphic:[{type:'text',left:'center',top:'middle',style:{text:num(v.score)+'\nTRIP /100',textAlign:'center',fill:'#E9E7E1',font:'600 15px IBM Plex Mono',lineHeight:17}}],
-    tooltip:{trigger:'item',backgroundColor:'#20242B',borderColor:'#353A44',textStyle:{color:'#E9E7E1',fontSize:12},
-      formatter:function(pr){var notes={'Weather':b.weather_note,'Travel':b.travel_note,'Venue fit':b.fit_note,
-        'Headroom':'points not earned — a perfect venue would score 100'};
-        return '<b>'+pr.name+'</b>: '+pr.value+' pts of 100'+(notes[pr.name]?'<br><span style="color:#A0A19A;font-size:11px">'+notes[pr.name]+'</span>':'');}},
-    series:[{type:'pie',radius:narrow?['36%','60%']:['42%','66%'],center:['50%','50%'],
-      itemStyle:{borderRadius:8,borderColor:'#14161A',borderWidth:3},
-      label:{color:'#E9E7E1',fontSize:narrow?10:12,lineHeight:16,formatter:'{b}\n{c} pts'},
-      labelLine:{lineStyle:{color:'#6E7069'},length:narrow?8:16,length2:narrow?6:12},
-      emphasis:{scale:true,scaleSize:5},
-      data:[
-        {name:'Weather',value:pts('weather'),itemStyle:{color:'#3987e5'}},
-        {name:'Travel',value:pts('travel'),itemStyle:{color:'#d95926'}},
-        {name:'Venue fit',value:pts('fit'),itemStyle:{color:'#57A664'}},
-        {name:'Headroom',value:lost,itemStyle:{color:'#2A2E36'},label:{show:false},labelLine:{show:false}}
-      ]}]});
+    graphic:[{type:'text',left:6,top:6,style:{text:'TRIP SCORE\n'+num(v.score)+'/100',fill:'#E9E7E1',font:'600 13px IBM Plex Mono',lineHeight:17}}],
+    tooltip:{backgroundColor:'#20242B',borderColor:'#353A44',textStyle:{color:'#E9E7E1',fontSize:12},confine:true,
+      formatter:function(){return '<b>'+esc(v.shortName)+'</b><br>'+
+        ['Weather','Travel','Venue fit'].map(function(k,ix){var val=[b.weather,b.travel,b.fit][ix];
+          return '<span style="color:'+['#3987e5','#d95926','#57A664'][ix]+'">■</span> '+k+' <b>'+val+'/100</b> × '+[b.weights.weather,b.weights.travel,b.weights.fit][ix]+'%<br><span style="color:#A0A19A;font-size:11px">'+esc(notes[k]||'')+'</span>';}).join('<br>');}},
+    radar:{indicator:[{name:'Weather',max:100},{name:'Travel',max:100},{name:'Venue fit',max:100}],
+      radius:'62%',center:['54%','56%'],axisName:{color:'#E9E7E1',fontSize:11},
+      splitLine:{lineStyle:{color:'#353A44'}},splitArea:{show:false},axisLine:{lineStyle:{color:'#2A2E36'}}},
+    series:[{type:'radar',symbolSize:5,
+      data:[{value:[num(b.weather),num(b.travel),num(b.fit)],name:'score',
+        areaStyle:{color:'rgba(57,135,229,0.25)'},lineStyle:{color:'#3987e5',width:2},itemStyle:{color:'#3987e5'}}]}]});
   _charts.push(c);
 }
 
@@ -1840,7 +1833,7 @@ function detailHtml(v){
     +wxHtml(v)
     +hl
     +verdictHtml(v)
-    +'<div class="sec"><div class="eyebrow">Getting there · '+esc(D.trip.dates)+'</div><div class="fgrid">'
+    +'<div class="sec"><div class="eyebrow">Getting there</div><div class="fgrid">'
       +flightCard('Michel','London',v.flights&&v.flights.michel)
       +flightCard('Dan','Belfast / Dublin',v.flights&&v.flights.dan)+'</div></div>'
     +((climbs)?'<div class="sec"><div class="sec-hd"><div class="eyebrow">'+(hl?'More climbs':'Climbs')+' nearby · from multi-pitch.com</div>'
