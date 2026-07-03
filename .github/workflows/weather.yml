@@ -73,6 +73,9 @@ jobs:
             echo "No changes."
           else
             git commit -m "report: daily update ($(date -u +%Y-%m-%d))"
+            # main may have moved while this run was building (humans + agents
+            # push too) — rebase our report commit on top instead of failing
+            git pull --rebase origin main
             git push
           fi
 

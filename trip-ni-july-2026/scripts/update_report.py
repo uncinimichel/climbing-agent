@@ -60,6 +60,20 @@ def _md_range(start, end):
 
 GRAPH_MD = _md_range(GRAPH_START, GRAPH_END)   # graph window as (month, day) keys
 TRIP_MD = _md_range(TARGET_START, TARGET_END)  # trip window as (month, day) keys
+
+
+def _period_label(a, b):
+    """Human name for the trip window, derived from the dates — never hardcoded
+    ("late July", "early August", or "late July–early August" across months) so
+    future trips on other dates label themselves correctly."""
+    def part(d):
+        seg = "early" if d.day <= 10 else "mid" if d.day <= 20 else "late"
+        return f"{seg} {d:%B}"
+    pa, pb = part(a), part(b)
+    return pa if pa == pb else f"{pa}–{pb}"
+
+
+PERIOD_LBL = _period_label(TARGET_START, TARGET_END)
 SITE_URL = "https://multi-pitch.com/"
 MP_MAP_URL = "https://multi-pitch.com/map/"
 MP_DATA_URL = "https://multi-pitch.com/data/data.json"   # live climb DB (S3-backed)
@@ -130,29 +144,29 @@ def _fly(m_to, d_to=None):
 GAZETTEER = {
     "tenerife": dict(lat=28.27, lon=-16.64, rock="volcanic", style="Cañadas del Teide multi-pitch", travel=_fly("TFS")),
     "mallorca": dict(lat=39.72, lon=2.77, rock="limestone", style="Sa Gubia + sea cliffs", travel=_fly("PMI")),
-    "riglos": dict(lat=42.35, lon=-0.73, rock="conglomerate", style="huge overhanging towers", travel=_fly("BCN")),
+    "riglos": dict(lat=42.35, lon=-0.73, rock="conglomerate", style="huge overhanging towers", aspect="S", travel=_fly("BCN")),
     "vratsa": dict(lat=43.20, lon=23.55, rock="limestone", style="big limestone walls", travel=_fly("SOF")),
     "elbsandstein": dict(lat=50.91, lon=14.06, rock="sandstone", style="historic sandstone towers", travel=_fly("PRG")),
     "montserrat": dict(lat=41.60, lon=1.81, rock="conglomerate", style="pocketed conglomerate spires", travel=_fly("BCN")),
     "freyr": dict(lat=50.22, lon=4.89, rock="limestone", style="Meuse valley slab classics", travel=_fly("BRU")),
     "meteora": dict(lat=39.72, lon=21.63, rock="conglomerate", style="monastery towers, bold conglomerate", travel=_fly("SKG")),
     "anti atlas": dict(lat=29.72, lon=-8.98, rock="quartzite", style="vast desert trad (Tafraout)", travel=_fly("AGA")),
-    "bruggler": dict(lat=47.12, lon=8.99, rock="limestone", style="plated limestone slabs", travel=_fly("ZRH")),
+    "bruggler": dict(lat=47.12, lon=8.99, rock="limestone", style="plated limestone slabs", aspect="S", travel=_fly("ZRH")),
     "setesdal": dict(lat=58.9, lon=7.4, rock="granite", style="granite walls & slabs", travel=_fly("KRS")),
     "loften": dict(lat=68.12, lon=13.6, rock="granite", style="arctic granite (Presten, Svolvær)", travel=_fly("BOO")),
     "wadi rum": dict(lat=29.57, lon=35.42, rock="sandstone", style="desert big walls, Bedouin routes", travel=_fly("AQJ")),
     "triglav": dict(lat=46.38, lon=13.84, rock="limestone", style="north-face alpine limestone", travel=_fly("LJU")),
     "lundy": dict(lat=51.18, lon=-4.67, rock="granite", style="island sea-cliff granite",
                   travel={"michel": {"mode": "drive"}, "dan": {"mode": "fly", "to": "BRS"}}),
-    "costa blanca": dict(lat=38.63, lon=0.07, rock="limestone", style="Peñón d'Ifach + big ridges", travel=_fly("ALC")),
+    "costa blanca": dict(lat=38.63, lon=0.07, rock="limestone", style="Peñón d'Ifach + big ridges", aspect="S", travel=_fly("ALC")),
     "zadiel": dict(lat=48.62, lon=20.83, rock="limestone", style="karst gorge towers", travel=_fly("KSC")),
-    "calanques": dict(lat=43.21, lon=5.45, rock="limestone", style="sea cliffs above turquoise coves", travel=_fly("MRS")),
-    "gredos": dict(lat=40.27, lon=-5.17, rock="granite", style="Galayos granite spires", travel=_fly("MAD")),
+    "calanques": dict(lat=43.21, lon=5.45, rock="limestone", style="sea cliffs above turquoise coves", aspect="S", travel=_fly("MRS")),
+    "gredos": dict(lat=40.27, lon=-5.17, rock="granite", style="Galayos granite spires", aspect="W", travel=_fly("MAD")),
     "sicilly": dict(lat=38.17, lon=12.74, rock="limestone", style="San Vito lo Capo sea cliffs", travel=_fly("PMO")),
     "campanile basso": dict(lat=46.16, lon=10.87, rock="dolomite", style="Brenta's free-standing tower", travel=_fly("VRN")),
     "mont blonc": dict(lat=45.88, lon=6.89, rock="granite", style="high alpine granite (Chamonix)", travel=_fly("GVA")),
     "spitzkoppe": dict(lat=-21.83, lon=15.19, rock="granite", style="desert granite dome", travel=_fly("WDH")),
-    "hoy": dict(lat=58.88, lon=-3.43, rock="sandstone", style="Old Man of Hoy sea stack", travel=_fly("KOI")),
+    "hoy": dict(lat=58.88, lon=-3.43, rock="sandstone", style="Old Man of Hoy sea stack", aspect="W", travel=_fly("KOI")),
     "isle of white": dict(lat=50.66, lon=-1.30, rock="chalk", style="south-coast sea cliffs",
                           travel={"michel": {"mode": "drive"}, "dan": {"mode": "fly", "to": "SOU"}}),
     "devon": dict(lat=50.92, lon=-4.56, rock="culm sandstone", style="Culm coast slabs (Wreckers Slab)",
@@ -538,6 +552,29 @@ def climo_score(c):
     return max(0, min(100, round(s)))
 
 
+# Felt temperature ON THE ROCK: direct sun on a wall reads far hotter than air
+# temp, and a shaded N face climbs cooler — crag aspect × actual sunniness.
+ASPECT_ADJ = {"N": -4, "NE": -3, "NW": -2, "E": -1, "W": 2, "SE": 3, "SW": 3, "S": 4}
+
+
+def sun_adjusted_tmax(v, tmax, sun_frac=None):
+    """Aspect comes from venues.json / GAZETTEER ('aspect'; unknown → mild +1 sun
+    bump). Sunniness = forecast sunshine fraction when live, dryness as a proxy
+    for the climatology/outlook horizons."""
+    if tmax is None:
+        return tmax
+    adj = ASPECT_ADJ.get((v.get("aspect") or "").upper(), 1)
+    s = 0.7 if sun_frac is None else max(0.0, min(1.0, sun_frac))
+    return tmax + adj * s
+
+
+def _asp_m(v, m):
+    """Apply the aspect/sun adjustment to a live-forecast day's metrics dict."""
+    if m and m.get("tmax") is not None:
+        m = dict(m, tmax=sun_adjusted_tmax(v, m["tmax"], m.get("sun_frac")))
+    return m
+
+
 def forecast_metrics(d):
     """Per-day derived climbing signals from a forecast response, keyed by ISO date.
     Daily gives gusts / sunshine / precip-hours; hourly dewpoint+humidity are averaged
@@ -622,7 +659,8 @@ def evaluate(v):
                 }
         if in_win:
             scores = [day_score(daily["weathercode"][i], daily["precipitation_sum"][i],
-                                daily["precipitation_probability_max"][i], met.get(days[i]))
+                                daily["precipitation_probability_max"][i],
+                                _asp_m(v, met.get(days[i])))
                       for i in in_win]
             codes = [daily["weathercode"][i] for i in in_win]
             dom = max(set(codes), key=codes.count)
@@ -651,14 +689,18 @@ def evaluate(v):
     if fc and fc.get("in_window"):
         res["score"], res["basis"] = fc["score"], "live forecast (trip window)"
     elif res["climo"]:
-        cs = climo_score(res["climo"])
+        c = res["climo"]
+        sunny = max(0.35, 1 - c["rain_pct"] / 100)   # dry climate ≈ sunny climate
+        cs = climo_score({**c, "tmax": sun_adjusted_tmax(v, c["tmax"], sunny)})
         if sea:
             # gentle blend: climatology dominant, 45-day outlook nudges it
-            ss = climo_score({"tmax": sea["tmax"], "rain_pct": sea["rain_pct"]})
+            ssun = max(0.35, 1 - sea["rain_pct"] / 100)
+            ss = climo_score({"tmax": sun_adjusted_tmax(v, sea["tmax"], ssun),
+                              "rain_pct": sea["rain_pct"]})
             res["score"] = round(0.7 * cs + 0.3 * ss)
-            res["basis"] = "typical July + 45-day outlook"
+            res["basis"] = f"typical {PERIOD_LBL} + 45-day outlook"
         else:
-            res["score"], res["basis"] = cs, "typical July (climatology)"
+            res["score"], res["basis"] = cs, f"typical {PERIOD_LBL} (climatology)"
     else:
         res["score"], res["basis"] = -1, "no data"
     res["wscore"] = res["score"]   # weather-only score; composite overwrites score
@@ -741,7 +783,10 @@ def apply_composite(r):
     r["breakdown"] = {
         "weather": w, "travel": travel, "fit": fit,
         "weights": {"weather": W_WEATHER, "travel": W_TRAVEL, "fit": W_FIT},
-        "weather_note": r.get("basis", ""), "travel_note": travel_note, "fit_note": fit_note,
+        "weather_note": r.get("basis", "") + (
+            f" · {v['aspect'].upper()}-facing rock ({ASPECT_ADJ.get(v['aspect'].upper(), 0):+d}°C felt in full sun)"
+            if v.get("aspect") else ""),
+        "travel_note": travel_note, "fit_note": fit_note,
     }
 
 
@@ -950,6 +995,10 @@ def venue_tags(v, cards, grades):
     add("trip", sh.get("min_trip") and f"min trip {sh['min_trip']}")
     add("height", sh.get("max_height") and f"walls to {sh['max_height']}m")
     add("rock", v.get("rock"))
+    asp = (v.get("aspect") or "").upper()
+    if asp:
+        adj = ASPECT_ADJ.get(asp, 0)
+        add("aspect", f"{asp}-facing" + (" · shade" if adj < 0 else " · sun-baked" if adj >= 3 else ""))
     if grades:
         add("grade", f"Trad {grades}")
     if cards:
@@ -1106,7 +1155,7 @@ def venue_payload(n, r):
     if grades:
         facts.append({"lbl": "Grades", "val": grades, "sub": "trad"})
     if rain is not None:
-        facts.append({"lbl": "Wet days", "val": f"{rain}%", "sub": "typical late July"})
+        facts.append({"lbl": "Wet days", "val": f"{rain}%", "sub": f"typical {PERIOD_LBL}"})
     facts = facts[:5]
 
     # weather chart series: typical (climatology) days enriched with weekday labels,
@@ -1148,7 +1197,7 @@ def venue_payload(n, r):
                      if sea and not live else None),
         "series": series,
         "chartLabel": ("Live forecast — trip window" if live
-                       else f"Typical late-July daily pattern (avg {CLIMO_YEARS[0]}–{CLIMO_YEARS[-1]})"),
+                       else f"Typical {PERIOD_LBL} daily pattern (avg {CLIMO_YEARS[0]}–{CLIMO_YEARS[-1]})"),
         "grades": grades, "hero": (cards[0]["img"] if cards else None), "climbs": cards,
         "facts": facts,
         "flights": {"michel": mf, "dan": md},
@@ -1212,6 +1261,14 @@ body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:14p
 svg.topo{pointer-events:none}
 svg.topo .dseg{pointer-events:stroke}
 .updstamp{color:var(--faint);font-size:11px;white-space:nowrap}
+.tag-aspect{color:#8FB8C8;border-color:rgba(120,170,195,.4);background:rgba(120,170,195,.08)}
+.board-sub .lk{font-size:11px}
+.hovl{display:none;position:fixed;inset:0;background:rgba(10,11,14,.72);z-index:60;align-items:center;justify-content:center;padding:18px}
+.hbox{background:var(--panel);border:1px solid var(--line2);border-radius:14px;max-width:660px;max-height:86vh;overflow-y:auto;padding:18px 22px 20px;box-shadow:0 18px 60px rgba(0,0,0,.5)}
+.hhd{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.hbody{font-size:13px;line-height:1.7;color:var(--muted)}
+.hbody p{margin-bottom:11px}
+.hbody b{color:var(--ink)}
 .wdir{font-size:9px;color:var(--muted);margin-left:2px}
 .row.active .rnum{opacity:1}
 .rname{font-family:var(--disp);font-weight:700;font-size:15.5px;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -1393,9 +1450,11 @@ PAGE_BODY = """<body>
   <div class="wordmark"><img class="mplogo" src="https://multi-pitch.com/img/logo/mp-logo-white.png" alt="" onerror="this.style.display='none'">multi<b>·</b>pitch<em>trip planner</em></div>
   <div class="trip-line" id="tripline"></div>
   <nav class="top-links">
+    <button class="tl" onclick="help(1)" title="How the ranking works" aria-label="How the ranking works">?</button>
     <a class="tl" href="knowledge/index.html">Knowledge</a>
     <a class="tl" id="mapBtn" target="_blank" rel="noopener">Map</a>
     <a class="tl" id="sheetBtn" target="_blank" rel="noopener">Spreadsheet</a>
+    <a class="tl" id="ghBtn" target="_blank" rel="noopener" title="Project source on GitHub">GitHub</a>
     <a class="tl strong" id="mpBtn" target="_blank" rel="noopener">multi-pitch.com ↗</a>
   </nav>
 </header>
@@ -1404,12 +1463,42 @@ PAGE_BODY = """<body>
   <aside class="board" aria-label="Climbing areas ranked by trip weather">
     <div class="board-hd">
       <div class="eyebrow">Ranked · best weather first</div>
-      <div class="board-sub">Score /100 = weather (55%) + travel (25%) + venue fit (20%). Select an area for the breakdown.</div>
+      <div class="board-sub">Score /100 = weather (55%) + travel (25%) + venue fit (20%).
+        <a href="#" class="lk" onclick="help(1);return false">How the ranking works ?</a></div>
     </div>
     <div id="rows"></div>
     <div class="board-ft" id="updated"></div>
   </aside>
   <main class="detail" id="detail"></main>
+</div>
+<div class="hovl" id="hovl" onclick="if(event.target===this)help(0)">
+  <div class="hbox" role="dialog" aria-label="How the ranking works">
+    <div class="hhd"><span class="eyebrow">How the ranking works</span><button class="tl" onclick="help(0)">✕ Close</button></div>
+    <div class="hbody">
+      <p>Every area gets a <b>trip score out of 100</b> — the donut in each header shows the split:</p>
+      <p><b style="color:var(--rain)">Weather · 55%</b> — rain first: wet days and rain
+      probability cost points, and a forecast rain day is hard-capped. Temperature is scored
+      <b>through a climbing lens</b>: friction research puts ideal sending temps around
+      <b>7–18°C</b>, so points fall away gently above 20°C, steeply above 25°C, and brutally
+      above 30°C (numb-fingers penalty below 8°C too — this is multi-pitch, hours exposed on
+      the wall). <b>Sun exposure matters as much as air temperature</b>: a south-facing wall
+      in full sun feels far hotter than the thermometer says, while a shaded north face
+      climbs cooler — each crag's <b>aspect</b> shifts its felt temperature, weighted by how
+      sunny it actually is (cloud/sunshine from the live forecast once in range; dryness as
+      a proxy before that). Once the trip is inside the 16-day forecast, friction terms
+      (dew point, drying sun, gusts) join in.</p>
+      <p><b style="color:var(--temp)">Travel · 25%</b> — real return-flight prices for both
+      of you when priced (the top venues each day), otherwise the spreadsheet's travel-time
+      band from the UK. Local/drivable venues score near-perfect.</p>
+      <p><b style="color:var(--dry)">Venue fit · 20%</b> — from the spreadsheet's judgment
+      columns: how much multi-pitch there is, its difficulty spread, and whether the
+      minimum sensible trip fits your dates.</p>
+      <p>Ranking basis by date: <b>typical weather for your trip dates</b> (recent-year averages) blended with the
+      <b>45-day outlook</b> now; the <b>live 16-day forecast takes over ~8 July</b>. The page
+      rebuilds daily at 06:00 UTC. Full maths:
+      <a class="lk" href="knowledge/data/condition-algorithm.html">condition algorithm</a>.</p>
+    </div>
+  </div>
 </div>"""
 
 PAGE_JS = r"""
@@ -1429,6 +1518,7 @@ document.getElementById('tripline').innerHTML=D.trip.pills.map(esc).join(' · ')
 document.getElementById('mapBtn').href=safeUrl(D.trip.mapUrl);
 document.getElementById('sheetBtn').href=safeUrl(D.trip.sheetUrl);
 document.getElementById('mpBtn').href=safeUrl(D.trip.mpUrl);
+document.getElementById('ghBtn').href=safeUrl(D.trip.repoUrl);
 document.getElementById('basis').innerHTML=D.banner.html+' <span class="updstamp">· page updated '+esc(D.trip.updated)+'</span>';
 document.getElementById('updated').textContent='Updated '+D.trip.updated+' · weather: Open-Meteo · flights: Google Flights';
 
@@ -1546,7 +1636,7 @@ function highlightHtml(v){
 function verdictHtml(v){
   var why=v.why?'<p class="why">'+esc(v.why)+'</p>':'';
   var bits=[];
-  if(v.wx.rain!=null)bits.push('late July here typically has <b>'+num(v.wx.rain)+'% wet days</b> with highs of <b>'+num(v.wx.tmax)+'°C</b> (2021–2024 average)');
+  if(v.wx.rain!=null)bits.push(esc(D.trip.periodLbl)+' here typically has <b>'+num(v.wx.rain)+'% wet days</b> with highs of <b>'+num(v.wx.tmax)+'°C</b> (2021–2024 average)');
   if(v.wx.live&&v.wx.liveRain!=null)bits.push('the live forecast for your dates shows <b>'+num(v.wx.liveRain)+'% max rain chance</b>');
   if(v.seasonal)bits.push('the 45-day outlook currently reads <b>'+num(v.seasonal.rain)+'% wet days</b> at <b>'+num(v.seasonal.tmax)+'°C</b>');
   var note=v.score>=0
@@ -1568,7 +1658,7 @@ function takeaway(v){
   var avgT=Math.round(rows.reduce(function(a,s){return a+num(s.tmax);},0)/rows.length);
   var winds=t.map(function(s){return num((s.fc&&s.fc.wind!=null)?s.fc.wind:s.wind);});
   var maxW=Math.max.apply(null,winds);
-  var head=haveOv?src+': ':'Typical late July here: ';
+  var head=haveOv?src+': ':'Typical '+esc(D.trip.periodLbl)+' here: ';
   var wetTxt=wet===0?'<b>rain unlikely</b>':'<b>'+wet+' of '+rows.length+' days wet</b>';
   var extra='';
   if(v.wx&&v.wx.live){
@@ -1661,7 +1751,7 @@ function wxHtml(v){
     return '<span class="'+(num(wv)>=25?'hi':'')+'">'+num(wv)+arr+'</span>';
   },'windrow');
   var legend='<div class="wx-legend">'
-    +'<span><span class="swl" style="background:var(--faint)"></span>typical late July (avg 2021–24, dashed)</span>'
+    +'<span><span class="swl" style="background:var(--faint)"></span>typical '+esc(D.trip.periodLbl)+' (avg 2021–24, dashed)</span>'
     +((ovPts.length)?'<span><span class="swl" style="background:var(--temp)"></span>'+ovLabel+' — temp</span>':'')
     +'<span><span class="sw" style="background:var(--rain);opacity:.35"></span>typical rain</span>'
     +((ovPts.length)?'<span><span class="sw" style="background:var(--rain)"></span>'+ovLabel+' — rain</span>':'')
@@ -1787,6 +1877,8 @@ function detailHtml(v){
     +'</div>';
 }
 
+function help(on){document.getElementById('hovl').style.display=on?'flex':'none';}
+document.addEventListener('keydown',function(e){if(e.key==='Escape')help(0);});
 var _booted=false,_cur=0;
 function sel(i){
   _cur=i;
@@ -1823,6 +1915,8 @@ def build_html(ranked, now, banner):
                   f"📅 {REP_OUT_LBL} – {REP_BACK_LBL}",
                   f"🧗 {len(payload)} areas ranked"],
         "dates": f"{REP_OUT_LBL} → {REP_BACK_LBL}",
+        "periodLbl": PERIOD_LBL,
+        "repoUrl": REPO_URL,
         "mapUrl": MP_MAP_URL, "sheetUrl": SHEET_URL, "mpUrl": SITE_URL,
         "updated": now.strftime("%a %d %b %Y, %H:%M UTC"),
     }
@@ -1897,7 +1991,7 @@ def main():
         has_sea = any(r.get("seasonal") for r in ranked)
         sea_txt = (" blended with the <b>45-day sub-seasonal outlook</b> (shown per venue)" if has_sea else "")
         banner = ("", f"📅 Trip is {days_out} days out — beyond the 16-day live forecast (reaches {horizon}). "
-                      f"Ranked on <b>typical late-July weather</b> ({CLIMO_YEARS[0]}–{CLIMO_YEARS[-1]}){sea_txt}. "
+                      f"Ranked on <b>typical {PERIOD_LBL} weather</b> ({CLIMO_YEARS[0]}–{CLIMO_YEARS[-1]}){sea_txt}. "
                       f"Full live forecast fills in from ~8 July.")
 
     INDEX.write_text(build_html(ranked, now, banner))

@@ -24,7 +24,8 @@
         "dan": {
           "mode": "local"
         }
-      }
+      },
+      "aspect": "N"
     },
     {
       "name": "Mournes, NI",
@@ -189,7 +190,8 @@
           "mode": "fly",
           "to": "ZAD"
         }
-      }
+      },
+      "aspect": "N"
     },
     {
       "name": "Donegal (Sail Rock)",
@@ -209,7 +211,8 @@
         "dan": {
           "mode": "local"
         }
-      }
+      },
+      "aspect": "W"
     },
     {
       "name": "West Cornwall (Bosigran)",
@@ -229,7 +232,8 @@
           "mode": "fly",
           "to": "NQY"
         }
-      }
+      },
+      "aspect": "NW"
     },
     {
       "name": "Écrins (Aiguille Dibona)",

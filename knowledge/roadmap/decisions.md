@@ -143,6 +143,17 @@ with zero config. Weather alone also ignored real decision factors he tracks (co
 volume, trip length).
 **Status:** ✅ Live — 42 areas ranked from 38 sheet rows + curated extras.
 
+### #17 — Aspect × sun: score the felt temperature on the rock (2026-07-03)
+**Decision:** adjust `tmax` by crag aspect (N −4°C … S +4°C, unknown +1) weighted by
+sunniness (live sunshine fraction, else dryness as proxy) before the heat penalty, in
+both climatology and live-forecast scoring. Aspect is a venue field; ranking labels
+("typical late July") are derived from the trip dates, never hardcoded.
+**Why:** sun on a wall feels far hotter than air temp; shaded north faces climb cooler
+(Michel's Anica Kuk shade strategy, now scored: Paklenica +4 pts back). Cloud cover is
+implicit in the sunniness weight. Taxonomy's "Aspect / face" field goes from planned to
+scored.
+**Status:** ✅ Live.
+
 ### #16 — Climbing heat curve: penalise heat from 20°C, hard from 30°C (2026-07-03)
 **Decision:** `heat_penalty(tmax) = 1.2·(t−20)⁺ + 3·(t−25)⁺ + 5·(t−30)⁺` applied in both
 `climo_score` and `day_score`; cold penalty below 8°C. Replaces the old lenient knee at

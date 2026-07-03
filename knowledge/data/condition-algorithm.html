@@ -83,6 +83,14 @@ border-bottom:1px solid var(--seam)}
 climo_score = 100 − 0.9·rain_pct
             − 2·max(0, 8 − tmax)               (numb fingers below ~8°C)
             − heat_penalty(tmax)</code></pre>
+<h3 id="aspect-sun-felt-temperature-on-the-rock-2026-07-03">Aspect × sun: felt temperature on the rock (2026-07-03)</h3>
+<p>Air temperature isn't what the climber feels — <strong>direct sun on a wall reads far hotter than the thermometer, and a shaded north face climbs cooler</strong>. Before the heat penalty, <code>tmax</code> is adjusted for the crag's aspect, weighted by how sunny it actually is:</p>
+<pre><code>felt_tmax = tmax + aspect_adj × sunniness
+aspect_adj: N −4 · NE −3 · NW −2 · E −1 · unknown +1 · W +2 · SE/SW +3 · S +4  (°C)
+sunniness:  live sunshine fraction when the 16-day forecast is in range;
+            dryness (1 − rain%/100, floor 0.35) as the proxy before that</code></pre>
+<p><code>aspect</code> lives in <code>venues.json</code> / the script's <code>GAZETTEER</code> (taxonomy field "Aspect / face" — now scored, no longer just planned). Example: Paklenica's Anica Kuk is N-facing → −4°C felt → its score correctly recovers points despite a 30°C air temp, matching the "climb it in shade" strategy. Cloud cover is implicit in the sunniness weight: an overcast hot day gets almost no aspect shift.</p>
+<p>All period wording ("typical late July") is <strong>derived from the trip dates</strong> (<code>_period_label</code>), and the climatology cache is keyed by venue + date window — so future trips on other dates, or several trips at once, pick up the right averages automatically.</p>
 <ul><li>Higher is better; 100 = perfect dry day.</li><li>Rain probability and precipitation both penalise; heavy/coded rain hard-caps the score</li></ul>
 <p>  so a wet day can't look mediocre-but-okay.</p>
 <ul><li>The four extra terms apply <strong>only when the live 16-day forecast is in range</strong> (they need</li></ul>
