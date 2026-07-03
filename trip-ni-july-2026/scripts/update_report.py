@@ -2065,14 +2065,17 @@ function renderWx(v){
   if(!el)return;
   if(typeof echarts==='undefined'){el.innerHTML='<div class="empty">Charts need cdn.jsdelivr.net.</div>';return;}
   var s2=v.series||[];if(!s2.length)return;
-  // phones: drop the long caption + per-day wind sub-labels, shrink everything —
-  // the same info lives in the takeaway line, condition chips and tap-tooltips.
+  // phones: drop the long caption + the numeric wind speed under each day
+  // (that magnitude is already the axis label's colour) but keep the
+  // direction arrow — losing it entirely read as "wind direction broken".
   var narrow=el.clientWidth<620;
   var ARR=['↓','↙','←','↖','↑','↗','→','↘'];
   function warr(d){return d==null?'':ARR[Math.round((((num(d)%360)+360)%360)/45)%8];}
-  var days=s2.map(function(d){if(narrow)return d.lbl.slice(0,2)+' '+d.day;
+  var days=s2.map(function(d){
+    var dd=(d.fc&&d.fc.dir!=null)?d.fc.dir:d.dir;
+    if(narrow)return d.lbl.slice(0,2)+' '+d.day+'\n'+warr(dd);
     var w=(d.fc&&d.fc.wind!=null)?d.fc.wind:d.wind;
-    var dd=(d.fc&&d.fc.dir!=null)?d.fc.dir:d.dir;return d.lbl+' '+d.day+'\n'+w+'km/h'+warr(dd);});
+    return d.lbl+' '+d.day+'\n'+w+'km/h'+warr(dd);});
   var anyFc=s2.some(function(d){return d.fc;}),ov=anyFc?'Forecast':'Outlook';
   var f=-1,l=-1;s2.forEach(function(d,i2){if(d.trip){if(f<0)f=i2;l=i2;}});
   var mark={silent:true,itemStyle:{color:'rgba(87,166,100,0.09)'},data:[[{xAxis:f},{xAxis:l}]]};
@@ -2080,7 +2083,12 @@ function renderWx(v){
   c.setOption({backgroundColor:'transparent',textStyle:{fontFamily:'IBM Plex Mono, monospace'},
     title:{show:!narrow,text:'Lines = daily high °C · bars = rain mm · colour = severity (green→amber→red, blue=cold) · under each day: wind + direction',
       top:0,left:0,textStyle:{color:'#6E7069',fontSize:10.5,fontWeight:400}},
-    legend:{top:narrow?0:18,textStyle:{color:'#A0A19A',fontSize:narrow?9.5:11},itemWidth:narrow?10:14,itemGap:narrow?7:10},
+    // phone width can't fit 4 full series names on one row without either
+    // wrapping onto the plot or overflowing it — abbreviate instead so it
+    // reliably stays a single short row clear of the data above.
+    legend:{top:narrow?0:18,textStyle:{color:'#A0A19A',fontSize:narrow?8.5:11},itemWidth:narrow?8:14,itemGap:narrow?5:10,
+      formatter:narrow?function(name){return {'Typical high °C':'Typ °C','Forecast high °C':'Fc °C','Outlook high °C':'Out °C',
+        'Typical rain mm':'Typ mm','Forecast rain mm':'Fc mm','Outlook rain mm':'Out mm'}[name]||name;}:undefined},
     tooltip:{trigger:'axis',backgroundColor:'#20242B',borderColor:'#353A44',textStyle:{color:'#E9E7E1',fontSize:12},confine:true,
       formatter:function(ps){if(!ps.length)return '';var i2=ps[0].dataIndex,d=s2[i2],o=d.fc||d.out;
         var h='<b>'+d.lbl+' '+d.day+(d.trip?' · TRIP DAY':'')+'</b><br>typical: '+d.tmax+'°C · '+d.precip+'mm · wind '+d.wind+' km/h';
@@ -2089,7 +2097,7 @@ function renderWx(v){
           if(d.fc.friction)h+='<br>friction: '+esc(d.fc.friction)+(d.fc.dew!=null?' (dew '+d.fc.dew+'°C)':'');
           if(d.fc.sunFrac!=null)h+=' · sun '+Math.round(d.fc.sunFrac*100)+'%';}
         return h;}},
-    grid:{left:narrow?34:46,right:narrow?34:46,top:narrow?28:46,bottom:narrow?30:44},
+    grid:{left:narrow?34:46,right:narrow?34:46,top:narrow?36:52,bottom:narrow?38:44},
     xAxis:{type:'category',data:days,axisLabel:{fontSize:narrow?8.5:10.5,lineHeight:narrow?12:15,interval:narrow?1:0,color:function(v2,idx){var d=s2[idx];var w=(d.fc&&d.fc.wind!=null)?d.fc.wind:d.wind;return windColor(w);}},axisLine:{lineStyle:{color:'#353A44'}},axisTick:{show:false}},
     yAxis:[{type:'value',name:narrow?'':'high °C',nameTextStyle:{color:'#6E7069'},axisLabel:{color:'#6E7069',fontSize:narrow?9:10},splitLine:{lineStyle:{color:'#2A2E36'}}},
            {type:'value',name:narrow?'':'rain mm',nameTextStyle:{color:'#6E7069'},axisLabel:{color:'#6E7069',fontSize:narrow?9:10},splitLine:{show:false}}],
