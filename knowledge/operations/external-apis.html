@@ -84,10 +84,23 @@ border-bottom:1px solid var(--seam)}
 <ul><li><strong>Quota discipline:</strong> only the <strong>top-N (=4)</strong> ranked venues are priced, one combo each</li></ul>
 <p>  → ≤ 8 searches/day. <code>TOP_N_FLIGHTS</code> throttles this.</p>
 <ul><li><strong>Monitoring:</strong> every build logs remaining quota via <code>account.json</code> (which consumes <strong>no</strong></li></ul>
-<p>  search) → <a href="serpapi-quota.html">live quota page</a>, history in   <code>trip-ni-july-2026/serpapi-usage.json</code>. Script: <code>scripts/serpapi_quota.py</code>.</p>
+<p>  search) → <a href="serpapi-quota.html">live API usage &amp; cost page</a> (SerpApi meter + a cost/limits   table for the <strong>whole</strong> stack, incl. Overpass/Open-Meteo cache sizes), history in   <code>trip-ni-july-2026/serpapi-usage.json</code>. Script: <code>scripts/serpapi_quota.py</code>.</p>
 <ul><li><strong>Degradation:</strong> missing/exhausted key → flight cells fall back to "search ↗" links; the</li></ul>
 <p>  build still succeeds.</p>
 <ul><li><strong>NI special case:</strong> Dan is <code>local</code> → no flight priced for him at NI venues.</li></ul>
+<h2 id="openstreetmap-overpass-places-to-stay-free-no-key">OpenStreetMap Overpass — places to stay (free, no key)</h2>
+<ul><li><strong>Hosts:</strong> <code>overpass-api.de/api/interpreter</code>, mirror fallback</li></ul>
+<p>  <code>overpass.kumi.systems/api/interpreter</code>. One query per venue: named   <code>tourism=*</code> lodging within <strong>15 km</strong> of the crag coordinates.</p>
+<ul><li><strong>What:</strong> real named accommodation in the three shapes that matter for this trip —</li></ul>
+<p>  <strong>houses/apartments</strong> (Airbnb-style: <code>apartment</code>, <code>chalet</code>, <code>guest_house</code>),   <strong>campsites</strong> (<code>camp_site</code> — flagged <em>bring your own tent, mats and cooking kit</em>),   and <strong>hotels</strong> (<code>hotel</code>, <code>hostel</code>, <code>alpine_hut</code>, <code>motel</code>; one room, 2 adults).   Up to 3 options per category, nearest first, with the OSM <code>website</code> tag,   a Booking.com name search, and a Google Maps link per option, plus area-level   <strong>Airbnb/Booking searches pre-filled with the trip dates + 2 adults</strong>.</p>
+<ul><li><strong>Prices:</strong> OSM has none. Each lodging type carries a <strong>typical nightly estimate</strong></li></ul>
+<p>  (labelled <em>est.</em> in the UI — e.g. campsite ~£20, guest house ~£85, hotel ~£115 for 2)   which also feeds the <strong>stay score</strong> inside the composite's travel component — see   <a href="../data/condition-algorithm.html">condition-algorithm</a>.</p>
+<ul><li><strong>Key:</strong> none, but a <strong>real User-Agent is required</strong> — the default Python UA gets</li></ul>
+<p>  HTTP 406. <code>_get</code> now sends <code>climbing-agent/1.0</code> on every request.</p>
+<ul><li><strong>Limits:</strong> public instance load-sheds bursts (429/504). Mitigation: results are</li></ul>
+<p>  <strong>disk-cached in <code>trip-ni-july-2026/stays-cache.json</code></strong> (committed, like the   climatology cache — lodging stock changes slowly), 1 s pacing between uncached   queries, retry + mirror fallback.</p>
+<ul><li><strong>Degradation:</strong> all mirrors failing → that venue shows the date-filled search</li></ul>
+<p>  links only, and its stay score drops out of the travel mean. Never fails the build.</p>
 <h2 id="multi-pitch-com-data-json-curated-climbs-free">multi-pitch.com <code>data.json</code> — curated climbs (free)</h2>
 <ul><li>The platform's own climb dataset, pre-cleaned. Nearby climbs are <strong>geo-matched</strong> to each</li></ul>
 <p>  venue's <code>lat</code>/<code>lon</code> and linked from the card.</p>

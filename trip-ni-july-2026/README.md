@@ -33,6 +33,7 @@ NI venues: **Fair Head** (world-class dolerite, long single/multi-pitch trad) an
 - `venues.json` — candidate venues + target window (drives the weather queries)
 - `flights.json` — flight route + date combos to price (rules: Fri/Sat out, Mon/Tue back, 3–4 nights)
 - `flights-latest.json` — latest prices per combo (filled on demand / by an API; not wiped by weather runs)
+- `stays-cache.json` — OpenStreetMap lodging near each venue (houses / camping / hotels; committed cache, only new venues re-query)
 - `daily-report.md` — latest dashboard with weather + flights (GitHub renders it); regenerated each run
 - `history/YYYY-MM-DD.md` — permanent dated snapshots (never overwritten)
 - `forecast-log.md` — running append-only log
@@ -43,5 +44,6 @@ NI venues: **Fair Head** (world-class dolerite, long single/multi-pitch trad) an
 
 - **Weather:** automated daily forecast pull (Open-Meteo, no key) for NI + backup venues, appended to `forecast-log.md`. Reliable inside ~14 days.
 - **Flights:** checked on demand (no reliable free flight-price API). Ask Claude to check London⇄Belfast fares; closer to booking, run a few times.
+- **Stays:** OpenStreetMap Overpass (free, no key) lists real named houses/apartments (Airbnb-style), campsites (bring your own tent + kit) and hotels within 15 km of each venue, for 2 adults. The dashboard adds Airbnb/Booking.com searches pre-filled with the trip dates; £/night figures are typical estimates per lodging type (no free live-price API exists).
 
 See persistent memory `trip-ni-july-2026` for the durable summary.

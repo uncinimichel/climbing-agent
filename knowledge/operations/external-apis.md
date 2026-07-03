@@ -48,11 +48,37 @@ Three endpoints, one provider, consistent format. The backbone of the ranking.
 - **Quota discipline:** only the **top-N (=4)** ranked venues are priced, one combo each
   → ≤ 8 searches/day. `TOP_N_FLIGHTS` throttles this.
 - **Monitoring:** every build logs remaining quota via `account.json` (which consumes **no**
-  search) → [live quota page](serpapi-quota.html), history in
+  search) → [live API usage & cost page](serpapi-quota.html) (SerpApi meter + a cost/limits
+  table for the **whole** stack, incl. Overpass/Open-Meteo cache sizes), history in
   `trip-ni-july-2026/serpapi-usage.json`. Script: `scripts/serpapi_quota.py`.
 - **Degradation:** missing/exhausted key → flight cells fall back to "search ↗" links; the
   build still succeeds.
 - **NI special case:** Dan is `local` → no flight priced for him at NI venues.
+
+## OpenStreetMap Overpass — places to stay (free, no key)
+
+- **Hosts:** `overpass-api.de/api/interpreter`, mirror fallback
+  `overpass.kumi.systems/api/interpreter`. One query per venue: named
+  `tourism=*` lodging within **15 km** of the crag coordinates.
+- **What:** real named accommodation in the three shapes that matter for this trip —
+  **houses/apartments** (Airbnb-style: `apartment`, `chalet`, `guest_house`),
+  **campsites** (`camp_site` — flagged *bring your own tent, mats and cooking kit*),
+  and **hotels** (`hotel`, `hostel`, `alpine_hut`, `motel`; one room, 2 adults).
+  Up to 3 options per category, nearest first, with the OSM `website` tag,
+  a Booking.com name search, and a Google Maps link per option, plus area-level
+  **Airbnb/Booking searches pre-filled with the trip dates + 2 adults**.
+- **Prices:** OSM has none. Each lodging type carries a **typical nightly estimate**
+  (labelled *est.* in the UI — e.g. campsite ~£20, guest house ~£85, hotel ~£115 for 2)
+  which also feeds the **stay score** inside the composite's travel component — see
+  [condition-algorithm](../data/condition-algorithm.html).
+- **Key:** none, but a **real User-Agent is required** — the default Python UA gets
+  HTTP 406. `_get` now sends `climbing-agent/1.0` on every request.
+- **Limits:** public instance load-sheds bursts (429/504). Mitigation: results are
+  **disk-cached in `trip-ni-july-2026/stays-cache.json`** (committed, like the
+  climatology cache — lodging stock changes slowly), 1 s pacing between uncached
+  queries, retry + mirror fallback.
+- **Degradation:** all mirrors failing → that venue shows the date-filled search
+  links only, and its stay score drops out of the travel mean. Never fails the build.
 
 ## multi-pitch.com `data.json` — curated climbs (free)
 

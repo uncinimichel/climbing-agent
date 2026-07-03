@@ -13,6 +13,12 @@ Flights (Google Flights via SerpApi, key from SERPAPI_KEY / gitignored .env):
   links. NI venues: Dan is local. UK-mainland: Michel drives. To stay within the
   SerpApi quota we price only the top N venues, one representative combo each.
 
+Stays (OpenStreetMap Overpass — free, no key):
+  Named accommodation near each venue in three shapes — houses/apartments
+  (Airbnb-style), campsites (bring your own kit), hotels/hostels/huts (one room,
+  2 adults) — with date-filled Airbnb/Booking search links. Typical per-type
+  nightly estimates feed the travel component of the composite score.
+
 Outputs: index.html (Pages), daily-report.md, history/<date>.md. Stdlib only.
 """
 import csv
@@ -350,14 +356,19 @@ def _redact(s):
     return s.replace(SERPAPI_KEY, "***") if SERPAPI_KEY else s
 
 
+USER_AGENT = "climbing-agent/1.0 (github.com/uncinimichel/climbing-agent)"
+
+
 def _get(url, retries=4):
     """GET JSON with retries — APIs rate-limit bursts; never silently lose a sample.
     Client errors (4xx: bad key/params) are NOT retried — retrying can't fix them and
-    just burns ~15s × venues. Errors are re-raised with the key redacted."""
+    just burns ~15s × venues. Errors are re-raised with the key redacted. A real
+    User-Agent is required by some providers (Overpass 406s on Python's default)."""
     last = None
     for attempt in range(retries):
         try:
-            with urllib.request.urlopen(url, timeout=45) as r:
+            req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
+            with urllib.request.urlopen(req, timeout=45) as r:
                 return json.load(r)
         except urllib.error.HTTPError as e:
             last = e
@@ -629,6 +640,7 @@ def forecast_metrics(d):
 
 def evaluate(v):
     res = {"venue": v, "ok": True, "climo": None, "fc": None, "seasonal": None}
+    res["stays"] = stay_options(v)   # places to stay (OSM Overpass, disk-cached)
     try:
         res["climo"] = climatology(v["lat"], v["lon"])
     except Exception as e:
@@ -767,7 +779,17 @@ def apply_composite(r):
     known = [c for c in costs if c is not None]
     cost_s = round(max(0, min(100, 100 - (sum(known) / len(known)) / 4))) if known else None
     time_s = _band(sh.get("travel_time"), TIME_BAND, 65)
-    tparts = [s for s in (cost_s, time_s) if s is not None]
+    # stay: the cheapest realistic bed near the crag for the trip's nights —
+    # a campsite keeps a venue cheap, a hotel-only area costs points. Typical
+    # per-type nightly estimates (OSM has no prices), per person, same £/4
+    # slope as flights.
+    st = (r.get("stays") or {}).get("cheapest")
+    stay_s = None
+    if st:
+        pp_total = st["est"] / STAY_ADULTS * REP["nights"]
+        stay_s = round(max(0, min(100, 100 - pp_total / 4)))
+        cost_bits.append(f"stay from ~£{st['est']}/night for 2 ({st['type'].lower()}, est.)")
+    tparts = [s for s in (cost_s, time_s, stay_s) if s is not None]
     travel = round(sum(tparts) / len(tparts))
     travel_note = ("; ".join(cost_bits) if cost_bits else "no priced flights yet") \
         + (f" · {sh['travel_time']} from UK (sheet)" if sh.get("travel_time") else "")
@@ -1040,69 +1062,168 @@ def venue_tags(v, cards, grades, cond_txt=None):
     return tags[:18]
 
 
-# ---- Accommodation + guidebook: MOCK sample data (flights & weather are live) ----
-# Stays are illustrative placeholders near each venue, labelled "sample" in the UI.
-def _booking(town):
-    return "https://www.booking.com/searchresults.html?ss=" + urllib.parse.quote(town)
+def _short_name(name):
+    return name.split("(")[0].split(",")[0].strip()
+
+
+# ---- Accommodation: OpenStreetMap Overpass (free, no key) ------------------
+# Real named places to stay near each venue, in the three shapes that matter
+# for this trip: self-catered houses/apartments (Airbnb-style), campsites
+# (bring your own tent + kit) and hotels/hostels/huts (one room, 2 adults).
+# OSM carries no prices, so each lodging type gets a typical nightly estimate
+# (clearly labelled est., for 2 people) which also feeds the travel component
+# of the composite score. Results are disk-cached and committed like the
+# climatology — lodging stock changes slowly and Overpass rate-limits bursts.
+STAYS_CACHE_F = ROOT / "stays-cache.json"
+try:
+    _STAYS_CACHE = json.loads(STAYS_CACHE_F.read_text())
+except Exception:
+    _STAYS_CACHE = {}
+
+STAY_RADIUS_KM = 15
+STAY_ADULTS = 2
+STAY_PER_CAT = 3                     # options shown per category
+OSM_STAY_CAT = {                     # OSM tourism=* -> dashboard category
+    "apartment": "house", "chalet": "house", "guest_house": "house",
+    "camp_site": "camp",
+    "hotel": "hotel", "hostel": "hotel", "alpine_hut": "hotel", "motel": "hotel",
+}
+STAY_TYPE_LBL = {
+    "apartment": "Apartment", "chalet": "Chalet", "guest_house": "Guest house",
+    "camp_site": "Campsite", "hotel": "Hotel", "hostel": "Hostel",
+    "alpine_hut": "Mountain hut", "motel": "Motel",
+}
+# typical £/night for TWO people — rough planning estimates, not live quotes
+STAY_EST_NIGHT = {
+    "apartment": 95, "chalet": 100, "guest_house": 85, "camp_site": 20,
+    "hotel": 115, "hostel": 55, "alpine_hut": 70, "motel": 75,
+}
+CAMP_NOTE = "unserviced pitch — bring your own tent, mats and cooking kit"
 
 
 def _amazon(q):
     return "https://www.amazon.co.uk/s?k=" + urllib.parse.quote(q)
 
 
-MOCK_STAYS = {
-    "Fair Head": ("Ballycastle", "£", [
-        ("Marine Hotel", "Hotel · Ballycastle · 20min to crag", 4, 98, ["Sea views", "Drying room", "Restaurant"]),
-        ("Fair Head Campsite", "Campsite · Coolanlough · at the crag", 2, 12, ["Climber-run", "Walk to routes", "Basic"]),
-    ], ("Fair Head — A Rock Climbing Guide", "NIMC", 25)),
-    "Mournes": ("Newcastle", "£", [
-        ("Slieve Donard Resort", "Hotel · Newcastle · 20min to crags", 5, 115, ["Mountain views", "Spa", "Restaurant"]),
-        ("Meelmore Lodge", "Bunkhouse · Bryansford · 10min to crags", 2, 28, ["Climber-friendly", "Campsite", "Café"]),
-    ], ("Mourne Mountains — Rock Climbs", "NIMC", 20)),
-    "Dolomites": ("Cortina d'Ampezzo", "€", [
-        ("Rifugio Scoiattoli", "Mountain hut · Cinque Torri · at the routes", 3, 65, ["Half-board", "At the crag", "Cable car"]),
-        ("Camping Cortina", "Campsite · Cortina · valley base", 2, 30, ["Cheap base", "Shuttle", "Restaurant"]),
-    ], ("Dolomites — Rockfax", "Rockfax", 30)),
-    "East Tyrol": ("Lienz", "€", [
-        ("Hotel Traube", "Hotel · Lienz · valley base", 4, 105, ["Central", "Breakfast", "Restaurant"]),
-        ("Camping Falken", "Campsite · Lienz · 5min to centre", 2, 26, ["Cheap base", "Pool", "Family-run"]),
-    ], ("Osttirol — Alpinkletterfuehrer", "Panico", 34)),
-    "Lake District": ("Keswick", "£", [
-        ("The Borrowdale Hotel", "Hotel · Borrowdale · 10min to crags", 4, 110, ["Valley base", "Drying room", "Restaurant"]),
-        ("Borrowdale YHA", "Hostel · Borrowdale · under the crags", 2, 32, ["Climber classic", "Self-catering", "Cheap"]),
-    ], ("Lake District — Rockfax", "Rockfax", 28)),
-    "Snowdonia": ("Llanberis", "£", [
-        ("The Heights", "Inn · Llanberis · 10min to the Pass", 3, 78, ["Climber pub", "Drying room", "Bar"]),
-        ("Ynys Ettws (CC hut)", "Hut · Llanberis Pass · at the crags", 2, 15, ["Members' hut", "Walk to routes", "Basic"]),
-    ], ("Llanberis — Climbers Club Guide", "Climbers Club", 25)),
-    "Arran": ("Brodick", "£", [
-        ("Auchrannie Resort", "Hotel · Brodick · 40min to Cir Mhor", 4, 120, ["Pool", "Restaurant", "Spa"]),
-        ("Glen Rosa Campsite", "Campsite · Glen Rosa · start of the walk-in", 1, 10, ["At the glen", "Basic", "Cheap"]),
-    ], ("Arran — SMC Climbers Guide", "SMC", 24)),
-    "Picos": ("Arenas de Cabrales", "€", [
-        ("Hotel Picos de Europa", "Hotel · Arenas de Cabrales · gorge base", 3, 72, ["Mountain base", "Breakfast", "Bar"]),
-        ("Refugio de Urriellu", "Mountain hut · below Naranjo · at the routes", 2, 18, ["Half-board", "At the wall", "Alpine"]),
-    ], ("Picos de Europa — Rockfax", "Rockfax", 30)),
-    "Paklenica": ("Starigrad", "€", [
-        ("Hotel Alan", "Hotel · Starigrad · 10min to the canyon", 4, 88, ["Sea + mountains", "Pool", "Restaurant"]),
-        ("NP Paklenica Camp", "Campsite · canyon mouth · at the crag", 2, 22, ["At the crag", "Cheap", "Shaded"]),
-    ], ("Paklenica — Climbing Guide", "Astroida", 28)),
+def _booking_url(q):
+    """Booking.com search pre-filled with the trip dates + 2 adults, 1 room."""
+    return "https://www.booking.com/searchresults.html?" + urllib.parse.urlencode({
+        "ss": q, "checkin": REP["out"], "checkout": REP["back"],
+        "group_adults": STAY_ADULTS, "no_rooms": 1, "group_children": 0})
+
+
+def _airbnb_url(q):
+    """Airbnb area search pre-filled with the trip dates + 2 adults."""
+    return (f"https://www.airbnb.co.uk/s/{urllib.parse.quote(q)}/homes?"
+            + urllib.parse.urlencode({"adults": STAY_ADULTS,
+                                      "checkin": REP["out"], "checkout": REP["back"]}))
+
+
+OVERPASS_HOSTS = ["https://overpass-api.de/api/interpreter",
+                  "https://overpass.kumi.systems/api/interpreter",
+                  "https://maps.mail.ru/osm/tools/overpass/api/interpreter"]
+
+
+def overpass_stays(lat, lon):
+    """Named lodging within STAY_RADIUS_KM of the venue from Overpass, nearest
+    first. One request per venue, then served from the committed disk cache.
+    The public endpoints load-shed under bursts, so: gentle pacing between
+    uncached fetches + a mirror fallback."""
+    ck = f"{lat},{lon}|r{STAY_RADIUS_KM}|v1"
+    if ck in _STAYS_CACHE:
+        return _STAYS_CACHE[ck]
+    kinds = "|".join(sorted(OSM_STAY_CAT))
+    q = ("[out:json][timeout:30];"
+         f'nwr["tourism"~"^({kinds})$"]["name"](around:{STAY_RADIUS_KM * 1000},{lat},{lon});'
+         "out center 80;")
+    d, last = None, None
+    for host in OVERPASS_HOSTS:
+        try:
+            d = _get(host + "?data=" + urllib.parse.quote(q), retries=2)
+            break
+        except Exception as e:
+            last = e
+    if d is None:
+        raise RuntimeError(f"all Overpass mirrors failed: {_redact(last)}")
+    time.sleep(1)   # politeness between uncached venue queries
+    out = []
+    for el in d.get("elements", []):
+        t = el.get("tags", {})
+        kind, name = t.get("tourism"), (t.get("name") or "").strip()
+        la = el.get("lat") or (el.get("center") or {}).get("lat")
+        lo = el.get("lon") or (el.get("center") or {}).get("lon")
+        if kind not in OSM_STAY_CAT or not name or la is None or lo is None:
+            continue
+        out.append({"name": name, "kind": kind,
+                    "dist": round(_haversine(lat, lon, la, lo), 1),
+                    "web": t.get("website") or t.get("contact:website") or ""})
+    out.sort(key=lambda s: s["dist"])
+    _STAYS_CACHE[ck] = out
+    try:
+        STAYS_CACHE_F.write_text(json.dumps(_STAYS_CACHE))   # persist as we go
+    except Exception:
+        pass
+    return out
+
+
+def stay_options(v):
+    """Grouped stays payload for one venue. Overpass failing degrades to the
+    date-filled search links only (empty list) — it never fails the build."""
+    area = f"{_short_name(v['name'])}, {v['country']}"
+    try:
+        raw = overpass_stays(v["lat"], v["lon"])
+    except Exception as e:
+        print(f"[warn] stays lookup failed for {v['name']}: {_redact(e)}", file=sys.stderr)
+        raw = []
+    picks, seen = [], set()
+    for cat in ("house", "camp", "hotel"):     # houses first: Michel's preference order
+        n = 0
+        for s in raw:
+            if OSM_STAY_CAT[s["kind"]] != cat or s["name"].lower() in seen:
+                continue                        # skip other cats + node/way duplicates
+            if n >= STAY_PER_CAT:
+                break
+            seen.add(s["name"].lower())
+            n += 1
+            picks.append({
+                "name": s["name"], "cat": cat, "type": STAY_TYPE_LBL[s["kind"]],
+                "dist": s["dist"], "est": STAY_EST_NIGHT[s["kind"]],
+                "note": CAMP_NOTE if cat == "camp" else "",
+                "web": s["web"] if s["web"].startswith("https://") else "",
+                "book": _booking_url(f"{s['name']}, {v['country']}") if cat != "camp" else "",
+                "maps": ("https://www.google.com/maps/search/?api=1&query="
+                         + urllib.parse.quote(f"{s['name']} {area}")),
+            })
+    cheapest = min(picks, key=lambda p: p["est"]) if picks else None
+    return {
+        "list": picks, "radius": STAY_RADIUS_KM, "adults": STAY_ADULTS,
+        "cheapest": ({"est": cheapest["est"], "type": cheapest["type"]} if cheapest else None),
+        "search": {"airbnb": _airbnb_url(area), "booking": _booking_url(area),
+                   "camps": ("https://www.google.com/maps/search/?api=1&query="
+                             + urllib.parse.quote(f"campsite near {area}"))},
+    }
+
+
+# Guidebook per area (title, publisher, £) — curated, with an Amazon search link.
+GUIDEBOOKS = {
+    "Fair Head": ("Fair Head — A Rock Climbing Guide", "NIMC", 25),
+    "Mournes": ("Mourne Mountains — Rock Climbs", "NIMC", 20),
+    "Dolomites": ("Dolomites — Rockfax", "Rockfax", 30),
+    "East Tyrol": ("Osttirol — Alpinkletterfuehrer", "Panico", 34),
+    "Lake District": ("Lake District — Rockfax", "Rockfax", 28),
+    "Snowdonia": ("Llanberis — Climbers Club Guide", "Climbers Club", 25),
+    "Arran": ("Arran — SMC Climbers Guide", "SMC", 24),
+    "Picos": ("Picos de Europa — Rockfax", "Rockfax", 30),
+    "Paklenica": ("Paklenica — Climbing Guide", "Astroida", 28),
 }
 
 
-def mock_stays(v):
-    key = next((k for k in MOCK_STAYS if k in v["name"]), None)
+def guidebook(v):
+    key = next((k for k in GUIDEBOOKS if k in v["name"]), None)
     if not key:
-        return [], None
-    town, cur, rows, guide = MOCK_STAYS[key]
-    hotels = [{"name": n, "type": t, "stars": s, "price": f"{cur}{p}",
-               "tags": tags, "book": _booking(town)} for (n, t, s, p, tags) in rows]
-    g = {"title": guide[0], "pub": guide[1], "price": f"£{guide[2]}", "url": _amazon(guide[0])}
-    return hotels, g
-
-
-def _short_name(name):
-    return name.split("(")[0].split(",")[0].strip()
+        return None
+    title, pub, price = GUIDEBOOKS[key]
+    return {"title": title, "pub": pub, "price": f"£{price}", "url": _amazon(title)}
 
 
 def _list_info(v, r, cards):
@@ -1186,7 +1307,6 @@ def venue_payload(n, r):
             entry["out"] = sead[md_key]
         series.append(entry)
 
-    hotels, guide = mock_stays(v)
     return {
         "rank": n, "name": v["name"], "shortName": _short_name(v["name"]),
         "country": v["country"], "flag": flag(v["country"]), "rock": v.get("rock", ""),
@@ -1214,7 +1334,7 @@ def venue_payload(n, r):
         "grades": grades, "hero": (cards[0]["img"] if cards else None), "climbs": cards,
         "facts": facts,
         "flights": {"michel": mf, "dan": md},
-        "hotels": hotels, "guide": guide,
+        "stays": r.get("stays"), "guide": guidebook(v),
         "maps": maps_url(v), "weather": weather_url(v), "mpMap": MP_MAP_URL,
         "tags": venue_tags(v, cards, grades, (f"{tag} · {rain}% wet days" if rain is not None else tag)),
         "listInfo": _list_info(v, r, cards)["txt"],
@@ -1407,13 +1527,17 @@ svg.topo .dseg{pointer-events:stroke}
 .hgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;max-width:880px}
 .hcard{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:14px 15px}
 .hname{font-weight:600;font-size:13.5px}
-.hstars{color:var(--mixed);font-size:11px;white-space:nowrap}
 .htype{font-size:11px;color:var(--muted);margin:2px 0 7px}
 .hprice{font-family:var(--mono);font-weight:600;font-size:18px}
 .hprice span{font-family:var(--body);font-size:10.5px;font-weight:400;color:var(--muted)}
 .htags{display:flex;gap:4px;flex-wrap:wrap;margin-top:7px}
 .htag{font-size:10px;background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:2px 6px;color:var(--muted)}
 .sample{font-family:var(--mono);font-size:8.5px;letter-spacing:.08em;background:var(--card);border:1px solid var(--line2);border-radius:4px;padding:2px 6px;color:var(--muted);margin-left:6px}
+.scat{font-family:var(--mono);font-size:9.5px;white-space:nowrap;color:var(--muted);border:1px solid var(--line2);border-radius:4px;padding:2px 6px;flex-shrink:0}
+.stay-search{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.stay-links{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.stay-links .btn{flex:1;margin-top:0;padding:6px 8px;font-size:11px;min-width:90px}
+.htag.warn{color:#D9B25E;border-color:rgba(185,138,46,.45);background:var(--mixed-bg)}
 .guide{display:flex;gap:12px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:11px;padding:12px 15px;max-width:460px;margin-top:12px}
 .brk{max-width:760px}
 .brk-row{display:grid;grid-template-columns:92px 1fr 116px;gap:10px;align-items:center;margin-bottom:5px}
@@ -1514,7 +1638,10 @@ PAGE_BODY = """<body>
       (dew point, drying sun, gusts) join in.</p>
       <p><b style="color:var(--temp)">Travel · 25%</b> — real return-flight prices for both
       of you when priced (the top venues each day), otherwise the spreadsheet's travel-time
-      band from the UK. Local/drivable venues score near-perfect.</p>
+      band from the UK. Local/drivable venues score near-perfect. The <b>cheapest realistic
+      bed near the crag</b> counts too (from OpenStreetMap): an area with a campsite stays
+      cheap, a hotel-only area costs points — using typical nightly prices per type of
+      stay, not live quotes.</p>
       <p><b style="color:var(--dry)">Venue fit · 20%</b> — from the spreadsheet's judgment
       columns: how much multi-pitch there is, its difficulty spread, and whether the
       minimum sensible trip fits your dates.</p>
@@ -1545,7 +1672,7 @@ document.getElementById('sheetBtn').href=safeUrl(D.trip.sheetUrl);
 document.getElementById('mpBtn').href=safeUrl(D.trip.mpUrl);
 document.getElementById('ghBtn').href=safeUrl(D.trip.repoUrl);
 document.getElementById('basis').innerHTML=D.banner.html+' <span class="updstamp">· page updated '+esc(D.trip.updated)+'</span>';
-document.getElementById('updated').textContent='Updated '+D.trip.updated+' · weather: Open-Meteo · flights: Google Flights';
+document.getElementById('updated').textContent='Updated '+D.trip.updated+' · weather: Open-Meteo · flights: Google Flights · stays: OpenStreetMap';
 
 function rowHtml(v,i){
   var c=cond(v),sc=num(v.score);
@@ -1823,12 +1950,38 @@ function tagsHtml(v){
     +v.tags.map(function(t){return '<span class="tag tag-'+esc(t.k)+'" title="'+esc(TAGT[t.k]||'')+'">'+esc(t.t)+'</span>';}).join('')+'</div></div>';
 }
 
-function hotelHtml(h){
-  var stars='';for(var i=0;i<num(h.stars);i++)stars+='★';
-  return '<div class="hcard"><div style="display:flex;justify-content:space-between;gap:8px"><span class="hname">'+esc(h.name)+'</span><span class="hstars">'+stars+'</span></div>'
-    +'<div class="htype">'+esc(h.type)+'</div><div class="hprice">'+esc(h.price)+' <span>/ room / night</span></div>'
-    +'<div class="htags">'+(h.tags||[]).map(function(t){return '<span class="htag">'+esc(t)+'</span>';}).join('')+'</div>'
-    +(safeUrl(h.book)?'<a class="btn ghost" target="_blank" rel="noopener" href="'+safeUrl(h.book)+'">Search Booking.com ↗</a>':'')+'</div>';
+var CATL={house:['🏠','House / apt'],camp:['⛺','Camping'],hotel:['🏨','Hotel']};
+function stayHtml(s){
+  var cat=CATL[s.cat]||['🛏',''];
+  var links=[];
+  if(safeUrl(s.web))links.push('<a class="btn ghost" target="_blank" rel="noopener" href="'+safeUrl(s.web)+'">Website ↗</a>');
+  if(safeUrl(s.book))links.push('<a class="btn ghost" target="_blank" rel="noopener" href="'+safeUrl(s.book)+'">Booking.com ↗</a>');
+  if(safeUrl(s.maps))links.push('<a class="btn ghost" target="_blank" rel="noopener" href="'+safeUrl(s.maps)+'">Map ↗</a>');
+  return '<div class="hcard"><div style="display:flex;justify-content:space-between;gap:8px;align-items:baseline"><span class="hname">'+esc(s.name)+'</span><span class="scat">'+cat[0]+' '+esc(cat[1])+'</span></div>'
+    +'<div class="htype">'+esc(s.type)+' · '+num(s.dist)+' km from the crag</div>'
+    +'<div class="hprice">~£'+num(s.est)+' <span>/ night · 2 people · est.</span></div>'
+    +(s.note?'<div class="htags"><span class="htag warn">⛺ '+esc(s.note)+'</span></div>':'')
+    +(links.length?'<div class="stay-links">'+links.join('')+'</div>':'')
+    +'</div>';
+}
+
+function staysHtml(v){
+  var st=v.stays||{},q=st.search||{},radius=st.radius?num(st.radius):15;
+  var search=[
+    safeUrl(q.airbnb)?'<a class="tl" target="_blank" rel="noopener" href="'+safeUrl(q.airbnb)+'">🏠 Airbnb ↗</a>':'',
+    safeUrl(q.booking)?'<a class="tl" target="_blank" rel="noopener" href="'+safeUrl(q.booking)+'">🏨 Booking.com ↗</a>':'',
+    safeUrl(q.camps)?'<a class="tl" target="_blank" rel="noopener" href="'+safeUrl(q.camps)+'">⛺ Campsites map ↗</a>':''
+  ].join('');
+  var list=st.list||[];
+  var cards=list.length
+    ?'<div class="hgrid">'+list.map(stayHtml).join('')+'</div>'
+    :'<div class="empty">OpenStreetMap lists no named stays within '+radius+' km — use the search links above.</div>';
+  var guide=v.guide?'<div class="guide"><div style="font-size:22px">📗</div><div style="flex:1"><div class="hname">'+esc(v.guide.title)+'</div><div class="htype" style="margin-bottom:0">'+esc(v.guide.pub)+' · '+esc(v.guide.price)+'</div></div>'
+    +(safeUrl(v.guide.url)?'<a class="lk" style="font-size:12px;flex-shrink:0" target="_blank" rel="noopener" href="'+safeUrl(v.guide.url)+'">Amazon ↗</a>':'')+'</div>':'';
+  return '<div class="sec"><div class="eyebrow">Stay near the crag · 2 adults · '+esc(D.trip.dates)+'<span class="sample">OpenStreetMap</span></div>'
+    +'<div class="tagleg">named places within '+radius+' km · search links pre-filled with your dates + 2 adults · £ = typical price for that type of stay, not a live quote</div>'
+    +(search?'<div class="stay-search">'+search+'</div>':'')
+    +cards+guide+'</div>';
 }
 
 function detailHtml(v){
@@ -1840,11 +1993,6 @@ function detailHtml(v){
   var climbs=rest.length
     ?'<div class="climbgrid">'+rest.map(climbHtml).join('')+'</div>'
     :(hl?'':'<div class="empty">multi-pitch.com has not indexed routes here yet — <a class="lk" target="_blank" rel="noopener" href="'+safeUrl(v.mpMap)+'">browse the map ↗</a></div>');
-  var hotels=(v.hotels&&v.hotels.length)
-    ?'<div class="hgrid">'+v.hotels.map(hotelHtml).join('')+'</div>'
-    :'<div class="empty">No stay ideas for this area yet.</div>';
-  var guide=v.guide?'<div class="guide"><div style="font-size:22px">📗</div><div style="flex:1"><div class="hname">'+esc(v.guide.title)+'</div><div class="htype" style="margin-bottom:0">'+esc(v.guide.pub)+' · '+esc(v.guide.price)+'</div></div>'
-    +(safeUrl(v.guide.url)?'<a class="lk" style="font-size:12px;flex-shrink:0" target="_blank" rel="noopener" href="'+safeUrl(v.guide.url)+'">Amazon ↗</a>':'')+'</div>':'';
   return bandHtml(v)
     +tagsHtml(v)
     +wxHtml(v)
@@ -1855,7 +2003,7 @@ function detailHtml(v){
       +flightCard('Dan','Belfast / Dublin',v.flights&&v.flights.dan)+'</div></div>'
     +((climbs)?'<div class="sec"><div class="sec-hd"><div class="eyebrow">'+(hl?'More climbs':'Climbs')+' nearby · from multi-pitch.com</div>'
       +(safeUrl(v.mpMap)?'<a class="lk sm" target="_blank" rel="noopener" href="'+safeUrl(v.mpMap)+'">Browse the map ↗</a>':'')+'</div>'+climbs+'</div>':'')
-    +'<div class="sec"><div class="eyebrow">Stay near the crag<span class="sample">sample data</span></div>'+hotels+guide+'</div>'
+    +staysHtml(v)
     +'<div class="sec" style="display:flex;gap:8px;flex-wrap:wrap">'
       +(safeUrl(v.maps)?'<a class="tl" target="_blank" rel="noopener" href="'+safeUrl(v.maps)+'">📍 Google Maps</a>':'')
       +(safeUrl(v.weather)?'<a class="tl" target="_blank" rel="noopener" href="'+safeUrl(v.weather)+'">Detailed forecast — Windy ↗</a>':'')
@@ -1954,7 +2102,9 @@ def build_md(ranked, now, banner):
                + (f" · [sheet r{row}]({SHEET_URL}#gid=0&range={row}:{row})" if row else " · not in sheet"))
         lines.append(f"| {n} | {flag(v['country'])} {v['name']}<br><sub>{src}</sub> | {r['score']} | {cstr} | {fcell(fl.get('michel'))} | {fcell(fl.get('dan'))} |")
     lines += ["", f"_Flights: top {TOP_N_FLIGHTS} venues, return {REP['out']}→{REP['back']} ({REP['nights']}n); "
-              f"date options: {COMBO_LABELS}. Use the book links to adjust. Rendered dashboard: "
+              f"date options: {COMBO_LABELS}. Use the book links to adjust. "
+              f"Stays: OpenStreetMap lodging within {STAY_RADIUS_KM} km per venue (houses, camping, hotels "
+              f"for {STAY_ADULTS} adults) on the dashboard's per-venue cards. Rendered dashboard: "
               "https://uncinimichel.github.io/climbing-agent/_"]
     return "\n".join(lines) + "\n"
 

@@ -92,8 +92,13 @@ columns and flight costs now count:
 trip_score = 0.55·weather + 0.25·travel + 0.20·venue_fit
 
 travel    = mean of: cost score (known flight prices per person, £0 → 100,
-            £400+ avg → 0; local=£0, drive≈£90) and the sheet's
-            "Rough Travel Time from UK" band (<4h → 95 … 12-24h → 30)
+            £400+ avg → 0; local=£0, drive≈£90), the sheet's
+            "Rough Travel Time from UK" band (<4h → 95 … 12-24h → 30),
+            and a stay score: the cheapest realistic bed near the crag
+            (OpenStreetMap lodging within 15 km), as typical-£/night for 2
+            × nights ÷ 2 people on the same £/4 slope — a campsite (~£20/n)
+            scores ~90, a hotel-only area (~£115/n) ~42. Estimates, not
+            live quotes; no OSM lodging found → this term drops out.
 venue_fit = mean of: volume band (Vast 100 / Large 85 / Moderate 65 / Smaller 45),
             difficulty band (Full Range 100 / Moderate 90 / Medium-Hard 75 / Hard 50),
             min-trip fit (100 if sheet min-trip ≤ trip days, −25/extra day)

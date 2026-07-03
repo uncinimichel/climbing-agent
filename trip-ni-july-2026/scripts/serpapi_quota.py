@@ -30,6 +30,8 @@ from build_knowledge import page  # noqa: E402
 REPO_ROOT = Path(__file__).resolve().parents[2]
 LOG_PATH = REPO_ROOT / "trip-ni-july-2026" / "serpapi-usage.json"
 HTML_PATH = REPO_ROOT / "knowledge" / "operations" / "serpapi-quota.html"
+STAYS_CACHE = REPO_ROOT / "trip-ni-july-2026" / "stays-cache.json"
+CLIMO_CACHE = REPO_ROOT / "trip-ni-july-2026" / "climo-cache.json"
 ACCOUNT_URL = "https://serpapi.com/account.json?api_key="
 MAX_HISTORY = 180  # ~6 months of daily runs
 
@@ -119,15 +121,74 @@ def _num(v):
     return "—" if v is None else html.escape(str(v))
 
 
+def _cache_stats():
+    """Live cache sizes for the free sources (shown in the cost table)."""
+    stays_v = stays_n = climo_n = None
+    try:
+        d = json.loads(STAYS_CACHE.read_text())
+        stays_v, stays_n = len(d), sum(len(v) for v in d.values())
+    except Exception:  # noqa: BLE001
+        pass
+    try:
+        climo_n = len(json.loads(CLIMO_CACHE.read_text()))
+    except Exception:  # noqa: BLE001
+        pass
+    return stays_v, stays_n, climo_n
+
+
+def stack_table():
+    """Cost & limits for EVERY external source, not just the paid one — so this
+    page answers 'what does the stack cost and where are the ceilings' at a glance."""
+    stays_v, stays_n, climo_n = _cache_stats()
+    stays_cached = (f"{stays_v} venues / {stays_n} places cached"
+                    if stays_v is not None else "cache not built yet")
+    climo_cached = f"{climo_n} venue series cached" if climo_n is not None else "cache not built yet"
+    rows = [
+        ("Open-Meteo forecast + seasonal + geocoding", "£0 · no key",
+         "~10,000 calls/day free tier", "~2 calls per venue per daily build",
+         "4× retry; seasonal failing → climatology-only basis"),
+        ("Open-Meteo archive (climatology)", "£0 · no key",
+         "same tier, but requests are weight-multiplied — 2–3 full runs/hour trip 429s",
+         climo_cached + " — steady-state load ≈ zero, only new venues fetch",
+         "committed disk cache <code>climo-cache.json</code>"),
+        ("SerpApi — Google Flights", "£0 on the free plan (the ONE hard ceiling)",
+         "250 searches/month · 250/hour", "top-4 venues × ≤2 travellers per daily build (≤8/day)",
+         "live quota block above · last-good prices reused · search-link fallback"),
+        ("OpenStreetMap Overpass — places to stay", "£0 · no key",
+         "public instance load-sheds bursts (429/504); real User-Agent required",
+         stays_cached + " — steady-state load ≈ zero, only new venues fetch",
+         "committed disk cache <code>stays-cache.json</code> · 1s pacing · mirror fallback · "
+         "date-filled search links if all mirrors fail"),
+        ("Google Sheet CSV (venue master list)", "£0 · public export", "no practical limit",
+         "1 download per build", "committed copy <code>climbing-trips.csv</code> used on failure"),
+        ("multi-pitch.com <code>data.json</code>", "£0 · own site", "n/a",
+         "1 download per build", "empty climb list on failure — build continues"),
+    ]
+    out = ['<h2>The full API stack — cost &amp; limits</h2>',
+           '<p>Total cash cost of the stack: <strong>£0/month</strong>. Everything except '
+           'SerpApi is free and un-keyed; SerpApi is free-tier but quota-capped, which is why '
+           'it gets the live meter above. Caches are committed to the repo so daily builds '
+           'barely touch the rate-limited sources. Full failure behaviour per source: '
+           '<a href="external-apis.html">External APIs</a>.</p>',
+           '<div class="tw"><table><thead><tr><th>Source</th><th>Cost</th><th>Limit</th>'
+           '<th>Our usage</th><th>Backstop</th></tr></thead><tbody>']
+    for name, cost, limit, usage, backstop in rows:
+        out.append(f'<tr><td>{name}</td><td>{cost}</td><td>{limit}</td>'
+                   f'<td>{usage}</td><td>{backstop}</td></tr>')
+    out.append('</tbody></table></div>')
+    return out
+
+
 def render(log):
     hist = log.get("history", [])
     latest = hist[-1] if hist else None
 
-    body = ['<h1>🛰️ SerpApi Quota — Live</h1>',
-            '<p>Remaining <strong>Google Flights</strong> search quota, sampled on every '
-            'build via SerpApi\'s <code>account.json</code> (which itself costs no search). '
-            'Flight pricing degrades to "search ↗" links once this hits zero — the build '
-            'never fails. See <a href="external-apis.html">External APIs</a>.</p>']
+    body = ['<h1>🛰️ API Usage &amp; Cost — Live</h1>',
+            '<p>What the data stack costs and how close it is to its ceilings, refreshed on '
+            'every build. The only quota that can actually run out is <strong>SerpApi '
+            '(Google Flights)</strong>, sampled via <code>account.json</code> (which itself '
+            'costs no search). Flight pricing degrades to "search ↗" links once it hits zero '
+            '— the build never fails. See <a href="external-apis.html">External APIs</a>.</p>']
 
     if latest and latest.get("ok"):
         per = latest.get("per_month")
@@ -162,8 +223,10 @@ def render(log):
             '(key missing or endpoint error). Flight cells fall back to search links until the '
             'next successful check.</div>')
 
+    body += stack_table()
+
     # history table (newest first)
-    rows = ['<h2>History</h2>',
+    rows = ['<h2>SerpApi history</h2>',
             '<div class="tw"><table><thead><tr>'
             '<th>Checked (UTC)</th><th>Left</th><th>Used (month)</th>'
             '<th>Per month</th><th>Plan</th></tr></thead><tbody>']
@@ -182,7 +245,7 @@ def render(log):
 
     crumb = ('<a href="../index.html">📚 knowledge</a> / operations / '
              '<b style="color:var(--chalk2)">serpapi-quota.html</b>')
-    return page("SerpApi Quota", "\n".join(body), 2, crumb)
+    return page("API Usage & Cost", "\n".join(body), 2, crumb)
 
 
 def main():

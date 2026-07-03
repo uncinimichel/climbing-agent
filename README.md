@@ -15,6 +15,10 @@ by GitHub Actions (no laptop, no manual step).
 - **Prices flights** for the top venues, for **Michel (from London)** and
   **Dan (from Belfast or Dublin)**, via Google Flights — 3 best-value options each
   with times and booking links.
+- **Finds places to stay** near each crag (OpenStreetMap, free) — houses/apartments
+  (Airbnb-style), campsites (bring your own kit) and hotels for 2 adults, with
+  date-filled Airbnb/Booking.com search links. The cheapest realistic bed also
+  feeds the venue's travel score.
 - **Links back to sources** — each venue links to Google Maps, its
   [multi-pitch.com](https://multi-pitch.com/) climbs, and its row in the
   [venue spreadsheet](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit).
@@ -32,4 +36,7 @@ by GitHub Actions (no laptop, no manual step).
 | Plan, architecture, backlog | [`trip-ni-july-2026/PLAN.md`](trip-ni-july-2026/PLAN.md) |
 
 Weather: [Open-Meteo](https://open-meteo.com/) (free, no key). Flights: Google Flights
-via SerpApi (key stored as a GitHub secret, never committed).
+via SerpApi (key stored as a GitHub secret, never committed). Stays:
+[OpenStreetMap Overpass](https://wiki.openstreetmap.org/wiki/Overpass_API) (free, no
+key; cached in `trip-ni-july-2026/stays-cache.json` — prices shown are typical
+estimates per lodging type, not live quotes).
