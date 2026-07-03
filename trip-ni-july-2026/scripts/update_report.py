@@ -893,6 +893,9 @@ def attach_flights(ranked):
         if not r.get("ok") or r["score"] < 0:
             continue
         v = r["venue"]
+        if r.get("flights"):          # already priced in an earlier pass this run
+            cache[v["name"]] = r["flights"]
+            continue
         flights = {}
         for w in ("michel", "dan"):
             f = traveller_flight(v, w)
@@ -1968,6 +1971,10 @@ def main():
     ranked = rank(results)
     attach_flights(ranked)            # price the provisional top-N (quota-capped)
     for r in ranked[:TOP_N_FLIGHTS]:  # refine those with real flight prices…
+        apply_composite(r)
+    ranked = rank(results)            # …then price any NEWCOMERS to the top-N
+    attach_flights(ranked)            # (already-priced venues are skipped)
+    for r in ranked[:TOP_N_FLIGHTS]:
         apply_composite(r)
     ranked = rank(results)            # …and settle the final order
 
