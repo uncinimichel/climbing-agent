@@ -27,6 +27,7 @@ import json
 import math
 import os
 import re
+import socket
 import sys
 import time
 import unicodedata
@@ -1149,6 +1150,68 @@ try:
 except Exception:
     _STAYS_CACHE = {}
 
+# Per-stay "Website" buttons point at whatever OSM's website tag says, and that
+# drifts — small operators' sites die, move, or get replaced. A dead direct
+# link is worse than no link (a "Booking.com" button that's just a search
+# never looks broken; a "Website" button to a 404 does). So every such URL is
+# health-checked and the result cached, re-checked every LINK_RECHECK_DAYS so a
+# site that comes back isn't hidden forever.
+#
+# Getting the failure classification right matters a lot here: a first pass
+# that also trusted 5xx as "dead" wrongly flagged Premier Inn and other clearly
+# live sites, because Cloudflare/Akamai bot-challenges routinely answer non-
+# browser requests with 503 (not just 401/403/429) — the exact same "can't
+# verify, not actually dead" case, just a different status code. A real
+# visitor's browser clears all of these challenges fine; a single automated
+# GET can't tell a challenge from a real outage on a status code alone.
+# So: only 404/410 (this exact page is confirmed gone) and a DNS resolution
+# failure (the domain itself doesn't exist) count as dead on the first check —
+# both are unambiguous regardless of bot protection. Everything else that
+# fails (timeouts, connection errors, 5xx) only counts after it fails again on
+# a LATER day, so one bad network moment can't nuke a fine link.
+LINK_HEALTH_F = ROOT / "link-health-cache.json"
+try:
+    _LINK_HEALTH = json.loads(LINK_HEALTH_F.read_text())
+except Exception:
+    _LINK_HEALTH = {}
+LINK_RECHECK_DAYS = 14
+LINK_DEAD_NOW = {404, 410}          # confirmed dead on a single check
+LINK_DEAD_DAY = 86400
+
+
+def link_is_dead(url):
+    now = time.time()
+    cached = _LINK_HEALTH.get(url, {})
+    if now - cached.get("t", 0) < LINK_RECHECK_DAYS * 86400:
+        return cached.get("dead", False)
+    dns_fail = False
+    try:
+        req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT}, method="GET")
+        with urllib.request.urlopen(req, timeout=10):
+            dead, ambiguous_fail = False, False
+    except urllib.error.HTTPError as e:
+        dead, ambiguous_fail = e.code in LINK_DEAD_NOW, e.code not in LINK_DEAD_NOW
+    except urllib.error.URLError as e:
+        dns_fail = isinstance(e.reason, socket.gaierror)
+        dead, ambiguous_fail = dns_fail, not dns_fail
+    except Exception:
+        dead, ambiguous_fail = False, True   # timeout, connection reset, bad SSL, ...
+    if ambiguous_fail:
+        last_fail_day = cached.get("fail_day")
+        today = int(now // LINK_DEAD_DAY)
+        # only escalate to dead once the SAME url has failed on two DIFFERENT
+        # days — a single flaky run (ours or the site's) never removes a link
+        dead = bool(last_fail_day is not None and last_fail_day != today)
+        _LINK_HEALTH[url] = {"dead": dead, "t": now,
+                              "fail_day": last_fail_day if dead else today}
+    else:
+        _LINK_HEALTH[url] = {"dead": dead, "t": now}
+    try:
+        LINK_HEALTH_F.write_text(json.dumps(_LINK_HEALTH))   # persist as we go
+    except Exception:
+        pass
+    return dead
+
 STAY_RADIUS_KM = 15
 STAY_ADULTS = 2
 STAY_PER_CAT = 3                     # options shown per category
@@ -1186,6 +1249,13 @@ def _airbnb_url(q):
     return (f"https://www.airbnb.co.uk/s/{urllib.parse.quote(q)}/homes?"
             + urllib.parse.urlencode({"adults": STAY_ADULTS,
                                       "checkin": REP["out"], "checkout": REP["back"]}))
+
+
+def _hotels_url(q):
+    """Hotels.com search pre-filled with the trip dates + 2 adults, 1 room."""
+    return "https://www.hotels.com/Hotel-Search?" + urllib.parse.urlencode({
+        "destination": q, "startDate": REP["out"], "endDate": REP["back"],
+        "rooms": 1, "adults": STAY_ADULTS})
 
 
 def _turbo_url(lat, lon):
@@ -1264,12 +1334,22 @@ def stay_options(v):
                 break
             seen.add(s["name"].lower())
             n += 1
+            web = s["web"] if s["web"].startswith("https://") else ""
+            if web and link_is_dead(web):
+                web = ""
+            # engines that actually list this category: houses on Airbnb,
+            # hotels/hostels/huts on Booking.com + Hotels.com — a specific
+            # campsite name rarely resolves on any of the three, so camp
+            # keeps just its (verified) own website + map.
+            q = f"{s['name']}, {area}"
             picks.append({
                 "name": s["name"], "cat": cat, "type": STAY_TYPE_LBL[s["kind"]],
                 "dist": s["dist"], "est": STAY_EST_NIGHT[s["kind"]],
                 "note": CAMP_NOTE if cat == "camp" else "",
-                "web": s["web"] if s["web"].startswith("https://") else "",
-                "book": _booking_url(f"{s['name']}, {v['country']}") if cat != "camp" else "",
+                "web": web,
+                "airbnb": _airbnb_url(q) if cat == "house" else "",
+                "book": _booking_url(q) if cat in ("house", "hotel") else "",
+                "hotels": _hotels_url(q) if cat == "hotel" else "",
                 "maps": ("https://www.google.com/maps/search/?api=1&query="
                          + urllib.parse.quote(f"{s['name']} {area}")),
             })
@@ -1278,6 +1358,7 @@ def stay_options(v):
         "list": picks, "radius": STAY_RADIUS_KM, "adults": STAY_ADULTS,
         "cheapest": ({"est": cheapest["est"], "type": cheapest["type"]} if cheapest else None),
         "search": {"airbnb": _airbnb_url(area), "booking": _booking_url(area),
+                   "hotels": _hotels_url(area),
                    "camps": ("https://www.google.com/maps/search/?api=1&query="
                              + urllib.parse.quote(f"campsite near {area}")),
                    "map": _turbo_url(v["lat"], v["lon"])},
@@ -2148,7 +2229,9 @@ function tagsHtml(v){
 function stayHtml(s){
   var links=[];
   if(safeUrl(s.web))links.push('<a class="btn ghost" target="_blank" rel="noopener" href="'+safeUrl(s.web)+'">Website ↗</a>');
-  if(safeUrl(s.book))links.push('<a class="btn ghost" target="_blank" rel="noopener" href="'+safeUrl(s.book)+'">Booking.com ↗</a>');
+  if(safeUrl(s.airbnb))links.push('<a class="btn ghost" target="_blank" rel="noopener" href="'+safeUrl(s.airbnb)+'">Airbnb search ↗</a>');
+  if(safeUrl(s.book))links.push('<a class="btn ghost" target="_blank" rel="noopener" href="'+safeUrl(s.book)+'">Booking.com search ↗</a>');
+  if(safeUrl(s.hotels))links.push('<a class="btn ghost" target="_blank" rel="noopener" href="'+safeUrl(s.hotels)+'">Hotels.com search ↗</a>');
   if(safeUrl(s.maps))links.push('<a class="btn ghost" target="_blank" rel="noopener" href="'+safeUrl(s.maps)+'">Map ↗</a>');
   return '<div class="hcard"><div class="hname">'+esc(s.name)+'</div>'
     +'<div class="htype">'+esc(s.type)+' · '+num(s.dist)+' km from the crag</div>'
@@ -2179,6 +2262,7 @@ function staysHtml(v){
     safeUrl(q.map)?'<a class="tl" target="_blank" rel="noopener" href="'+safeUrl(q.map)+'">🗺 All stays on one map ↗</a>':'',
     safeUrl(q.airbnb)?'<a class="tl" target="_blank" rel="noopener" href="'+safeUrl(q.airbnb)+'">🏠 Airbnb ↗</a>':'',
     safeUrl(q.booking)?'<a class="tl" target="_blank" rel="noopener" href="'+safeUrl(q.booking)+'">🏨 Booking.com ↗</a>':'',
+    safeUrl(q.hotels)?'<a class="tl" target="_blank" rel="noopener" href="'+safeUrl(q.hotels)+'">🛏 Hotels.com ↗</a>':'',
     safeUrl(q.camps)?'<a class="tl" target="_blank" rel="noopener" href="'+safeUrl(q.camps)+'">⛺ Campsites ↗</a>':''
   ].join('');
   var src=safeUrl(q.map)
