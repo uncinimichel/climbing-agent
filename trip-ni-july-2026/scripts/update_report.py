@@ -698,7 +698,7 @@ def evaluate(v):
             ss = climo_score({"tmax": sun_adjusted_tmax(v, sea["tmax"], ssun),
                               "rain_pct": sea["rain_pct"]})
             res["score"] = round(0.7 * cs + 0.3 * ss)
-            res["basis"] = f"typical {PERIOD_LBL} + 45-day outlook"
+            res["basis"] = f"typical {PERIOD_LBL} + long-range outlook"
         else:
             res["score"], res["basis"] = cs, f"typical {PERIOD_LBL} (climatology)"
     else:
@@ -1494,7 +1494,7 @@ PAGE_BODY = """<body>
       columns: how much multi-pitch there is, its difficulty spread, and whether the
       minimum sensible trip fits your dates.</p>
       <p>Ranking basis by date: <b>typical weather for your trip dates</b> (recent-year averages) blended with the
-      <b>45-day outlook</b> now; the <b>live 16-day forecast takes over ~8 July</b>. The page
+      <b>long-range outlook</b> now (a forecast model that can see up to ~45 days ahead — the ‘45-day’ is the model’s reach, not your trip length); the <b>live 16-day forecast takes over ~8 July</b>. The page
       rebuilds daily at 06:00 UTC. Full maths:
       <a class="lk" href="knowledge/data/condition-algorithm.html">condition algorithm</a>.</p>
     </div>
@@ -1638,7 +1638,7 @@ function verdictHtml(v){
   var bits=[];
   if(v.wx.rain!=null)bits.push(esc(D.trip.periodLbl)+' here typically has <b>'+num(v.wx.rain)+'% wet days</b> with highs of <b>'+num(v.wx.tmax)+'°C</b> (2021–2024 average)');
   if(v.wx.live&&v.wx.liveRain!=null)bits.push('the live forecast for your dates shows <b>'+num(v.wx.liveRain)+'% max rain chance</b>');
-  if(v.seasonal)bits.push('the 45-day outlook currently reads <b>'+num(v.seasonal.rain)+'% wet days</b> at <b>'+num(v.seasonal.tmax)+'°C</b>');
+  if(v.seasonal)bits.push('the long-range outlook (model reach ~45 days) currently reads <b>'+num(v.seasonal.rain)+'% wet days</b> at <b>'+num(v.seasonal.tmax)+'°C</b>');
   var note=v.score>=0
     ?'<p class="score-note">Why score <b>'+num(v.score)+'/100</b>: ranked on '+esc(v.basis||'weather')+' — '+bits.join('; ')+'.</p>'
     :'<p class="score-note">No weather data yet for this area, so it is unranked.</p>';
@@ -1652,7 +1652,7 @@ function takeaway(v){
   if(!t.length)return '';
   var ov=t.map(function(s){return s.fc||s.out||null;});
   var haveOv=ov.every(function(x){return x;});
-  var src=t.some(function(s){return s.fc;})?'Live forecast for your dates':'45-day outlook for your dates';
+  var src=t.some(function(s){return s.fc;})?'Live forecast for your dates ('+esc(D.trip.dates)+')':'Long-range outlook for your dates ('+esc(D.trip.dates)+')';
   var rows=haveOv?ov:t;
   var wet=rows.filter(function(s){return num(s.precip)>=3;}).length;
   var avgT=Math.round(rows.reduce(function(a,s){return a+num(s.tmax);},0)/rows.length);
@@ -1695,7 +1695,7 @@ function wxHtml(v){
   var n=s.length;
   function ovOf(d){return d.fc||d.out||null;}
   var anyFc=s.some(function(d){return d.fc;}),anyOut=s.some(function(d){return d.out;});
-  var ovLabel=anyFc?'live 16-day forecast':'45-day outlook (experimental)';
+  var ovLabel=anyFc?'live 16-day forecast':'long-range outlook (experimental)';
   var maxR=1,allT=[];
   s.forEach(function(d){
     maxR=Math.max(maxR,num(d.precip));allT.push(num(d.tmax));
@@ -1989,7 +1989,7 @@ def main():
     else:
         days_out = (TARGET_START - now.date()).days
         has_sea = any(r.get("seasonal") for r in ranked)
-        sea_txt = (" blended with the <b>45-day sub-seasonal outlook</b> (shown per venue)" if has_sea else "")
+        sea_txt = (" blended with a <b>long-range outlook</b> (model reach ~45 days; shown per venue)" if has_sea else "")
         banner = ("", f"📅 Trip is {days_out} days out — beyond the 16-day live forecast (reaches {horizon}). "
                       f"Ranked on <b>typical {PERIOD_LBL} weather</b> ({CLIMO_YEARS[0]}–{CLIMO_YEARS[-1]}){sea_txt}. "
                       f"Full live forecast fills in from ~8 July.")

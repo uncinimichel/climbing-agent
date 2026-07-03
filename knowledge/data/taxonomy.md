@@ -13,6 +13,28 @@ guidebook prose into queryable structured data.
 > per-route record they populate is in [`route-schema.md`](route-schema.md); the
 > normalized difficulty ladder is in [`grade-conversion.md`](grade-conversion.md).
 
+## Tag quick-reference (the canonical set)
+
+**This file is the single source of truth for tags** — every other doc references these,
+none redefine them. The complete controlled vocabulary, in one scannable block for the
+Phase-3 curated list. Each value is a closed enum; detail + rationale follow below.
+
+| Facet | Type | Values |
+|---|---|---|
+| `discipline` | set | `trad` `sport` `multi-pitch` `single-pitch` `alpine` `big-wall` `bouldering` `ice` `mixed` `snow` `aid` `deepwatersolo` `tr` `via-ferrata` |
+| `feature` | set (opt.) | `slab` `face` `crack` `ridge` `arête` `chimney` |
+| `rock` | one | `granite` `limestone` `dolerite` `rhyolite` `sandstone` `gabbro` `quartzite` `volcanic` `dolomite` |
+| `protection` | one | `G` `PG` `PG-13` `R` `X` `runout` `terrain` `UNSPECIFIED` |
+| `gradeSys` | one | `BAS` `UIAA` `YDS` `ALP` `FS` `N` `V` `Font` `WI` `AI` `M` `A`/`C` |
+| `commitmentGrade` | one | `I`–`VII` (NCCS) · `F`/`PD`/`AD`/`D`/`TD`/`ED` (alpine) |
+| `incline` | compose | `Slab` → `Vertical` → `Overhanging` |
+| `face` (aspect) | one | `N` `NE` `E` `SE` `S` `SW` `W` `NW` |
+| `hazard` (route) | flags | `tidal` `seepage` `abseil` `traverse` `boat` `polished` `loose` `grassLedges` |
+| `hazard` (objective) | flags | `rockfall` `avalanche` `serac` `crevasse` `altitude` `stormExposed` `cornice` |
+| `conditions` | fields | `elevation_m` · `sunWindow` (`morning`/`afternoon`/`all-day`/`shade`) · `bestSeason[]` · `windExposed` |
+| `approach` | fields | `approachTime` (min) · `approachDifficulty` (1–3) |
+| `ascentStyle` | one | `onsight` `flash` `redpoint` `pinkpoint` `headpoint` `groundup` `second` `toprope` `solo` `aid` (+modifiers `clean`/`dog`) |
+
 ## Rock type
 
 | Value | Notes (drying / seepage behaviour) |

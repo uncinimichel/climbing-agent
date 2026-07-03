@@ -43,7 +43,7 @@ these fields are populated with provenance.
 ### Difficulty (grade — always keep the system!)
 | Field | Type | Notes |
 |---|---|---|
-| `gradeSys` | enum | Which system: `BAS` (British Adjectival), `UIAA`, `YDS`, `ALP` (Alpine), `FS` (French Sport), `N` (Norwegian). |
+| `gradeSys` | enum | Which grade system — full list in [`taxonomy.md`](taxonomy.md#tag-quick-reference-the-canonical-set). |
 | `originalGrade` | string | The raw grade verbatim (e.g. `"VS 5a"`, `"TD (f6a+)"`). Never lose this. |
 | `tradGrade` | string | Adjectival part for BAS (`VD S HS VS HVS E1…`). |
 | `techGrade` | string | Technical part for BAS (`4a 4b 4c 5a 5b 5c…`). |
@@ -62,20 +62,11 @@ these fields are populated with provenance.
 | `descent` | obj | `{ method: walk-off \| abseil \| lower-off, abseils: int, notes }` — how you get down (today buried in the `approach` prose). |
 
 ### Route character & hazard flags
-Boolean-ish (`1` = present, `null`/absent = not). These are the tags that most change how a
-route *feels and is planned* — and several feed the condition/tide logic directly.
-
-| Flag | Meaning | Engine relevance |
-|---|---|---|
-| `tidal` | Access/base is tide-dependent (sea cliffs) | ⟶ needs a tide window (backlog: tides). |
-| `seepage` | Route holds water / weeps after rain | ⟶ Predictive Condition Algorithm. |
-| `abseil` | Requires an abseil (approach or descent) | Gear/planning. |
-| `traverse` | Significant traverse (rope-management / commitment) | Planning. |
-| `boat` | Reached by boat/swim | Logistics. |
-| `tidal`+`boat` | Sea-stack style access | e.g. Old Man of Stoer. |
-| `polished` | Rock polished (holds slick) | Difficulty-in-practice. |
-| `loose` | Loose/friable rock | Safety. |
-| `grassLedges` | Vegetated ledges (wet/awkward belays) | Conditions. |
+Boolean flags (`1` = present) — the route (`tidal`, `seepage`, `abseil`, `traverse`,
+`boat`, `polished`, `loose`, `grassLedges`) and objective (`rockfall`, `avalanche`,
+`serac`, …) hazard sets. **Defined once** in
+[`taxonomy.md` § Route character & hazard flags](taxonomy.md). `tidal`+`boat` = sea-stack
+access (e.g. Old Man of Stoer). Several feed the condition/tide logic.
 
 ### Prose content (generated to the style guide below)
 | Field | Type | Notes |

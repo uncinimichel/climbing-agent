@@ -44,22 +44,9 @@ Notes:
 | `FS` | French Sport | `f4c`, `f5a`, `f6a+` |
 | `N` | Norwegian | `N6−` |
 
-## Origins (who created each system)
-
-Cited from the recognised authorities — full detail in [`references.md`](references.md).
-
-| System | Originator(s) | Date |
-|---|---|---|
-| `UIAA` (Welzenbach scale) | **Willo Welzenbach** (Germany); UIAA formalised it | 1923 → 1967 |
-| `BAS` (British adjectival) | **Owen Glynn Jones** & successors; open-ended **E-grade** added later | 1890s → 1970s |
-| `YDS` (Yosemite Decimal) | **Robbins, Wilson & Wilts** at Tahquitz, on the Sierra Club's Class 1–5 (1936) | early 1950s |
-| `ALP` (French Alpine / IFAS) | **Lucien Devies** & the Groupe de Haute Montagne | 1943 → 1967 |
-| `FS` (French sport) | popularised by **François Labande** | late 1980s |
-| Ewbank (AUS/NZ) | **John Ewbank** | 1967 |
-
-The very first difficulty scale was **Fritz Benesch**'s (Austria, 1894). The protection
-suffixes `G/PG/PG-13/R/X` were added by **Jim Erickson** (1980), borrowed from the US
-movie-rating system — see [`taxonomy.md` § Protection quality](taxonomy.md).
+Who created each system, and when → [`references.md` § Grade systems — origins](references.md).
+The discipline-specific systems (`V`, `Font`, `WI`, `AI`, `M`, `A`/`C`) live in
+[`taxonomy.md`](taxonomy.md#tag-quick-reference-the-canonical-set).
 
 ## Inferring protection from the UK grade pairing
 
@@ -98,7 +85,11 @@ even reading the prose. (Source: BMC — see [`references.md`](references.md).)
   [`../roadmap/decisions.md`](../roadmap/decisions.md).
 - Grade conversion is **inherently approximate** — systems weight danger, sustained
   difficulty, and single-move crux differently. `dataGrade` is a *sortable proxy*, not an
-  equivalence claim.
+  equivalence claim. Cross-checks disagree by a grade: e.g. **E1** is put at French `6a`–`6b`
+  / YDS `~5.10` / UIAA `VI+`–`VII−`, **VS** at French `5b`–`5c`; the table's single values
+  are the dataset's midpoints, not universal truth.
+- The British two-part grade carries **protection/seriousness** that single-number systems
+  (French/YDS/UIAA) simply don't encode — never treat `E1 5b` and `6a` as interchangeable.
 - Keep the raw `originalGrade` forever; never let the normalization overwrite it.
 
 ## Sources
