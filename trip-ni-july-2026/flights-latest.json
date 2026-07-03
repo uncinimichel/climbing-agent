@@ -1,6 +1,6 @@
 {
   "comment": "Latest flight prices per combo (round-trip, 1 pax, GBP). Updated on demand by Claude or by an API script. null = not yet checked.",
-  "checked_at": "2026-07-03 06:30 UTC (Google Flights/SerpApi)",
+  "checked_at": "2026-07-03 07:35 UTC (Google Flights/SerpApi)",
   "currency": "GBP",
   "rep_combo": {
     "id": "fri-tue",
@@ -14,15 +14,6 @@
         "mode": "fly",
         "to": "MAD",
         "options": [
-          {
-            "price": 116,
-            "airline": "Wizz Air",
-            "from": "LTN",
-            "to": "MAD",
-            "dep": "08:00",
-            "arr": "11:40",
-            "stops": 0
-          },
           {
             "price": 118,
             "airline": "Ryanair",
@@ -40,10 +31,19 @@
             "dep": "18:25",
             "arr": "21:55",
             "stops": 0
+          },
+          {
+            "price": 125,
+            "airline": "Wizz Air",
+            "from": "LTN",
+            "to": "MAD",
+            "dep": "08:00",
+            "arr": "11:40",
+            "stops": 0
           }
         ],
         "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTA3LTI0agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDTUFEGkISCjIwMjYtMDctMjhqBwgBEgNNQURyBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ",
-        "book_url": "https://www.skyscanner.net/transport/flights/ltn/mad/260724/260728/"
+        "book_url": "https://www.skyscanner.net/transport/flights/stn/mad/260724/260728/"
       },
       "dan": {
         "mode": "fly",
@@ -105,7 +105,7 @@
             "stops": 0
           },
           {
-            "price": 84,
+            "price": 77,
             "airline": "Wizz Air",
             "from": "LTN",
             "to": "BCN",
@@ -140,7 +140,7 @@
             "stops": 0
           },
           {
-            "price": 211,
+            "price": 214,
             "airline": "Ryanair",
             "from": "DUB",
             "to": "BCN",
@@ -240,7 +240,7 @@
             "stops": 0
           },
           {
-            "price": 93,
+            "price": 84,
             "airline": "Wizz Air",
             "from": "LTN",
             "to": "ALC",
@@ -266,7 +266,7 @@
         "to": "ALC",
         "options": [
           {
-            "price": 157,
+            "price": 156,
             "airline": "Ryanair UK",
             "from": "BFS",
             "to": "ALC",
@@ -275,7 +275,7 @@
             "stops": 0
           },
           {
-            "price": 191,
+            "price": 190,
             "airline": "Ryanair",
             "from": "BFS",
             "to": "ALC",
