@@ -74,8 +74,10 @@ jobs:
           else
             git commit -m "report: daily update ($(date -u +%Y-%m-%d))"
             # main may have moved while this run was building (humans + agents
-            # push too) — rebase our report commit on top instead of failing
-            git pull --rebase origin main
+            # push too) — rebase our report commit on top instead of failing.
+            # -X theirs: on conflict in the generated report files, this run's
+            # freshly built version wins (they're regenerated every run anyway)
+            git pull --rebase -X theirs origin main
             git push
           fi
 
