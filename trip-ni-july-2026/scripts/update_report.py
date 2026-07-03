@@ -1402,6 +1402,25 @@ def guidebook(v):
     return {"title": title, "pub": pub, "price": f"£{price}", "url": _amazon(title)}
 
 
+# Extra climbing references per venue — UKClimbing/thecrag.com/federation/blog
+# links covering the wider area, not just multi-pitch.com's curated flagship
+# routes. Unlike everything else in this file, this is NOT derived from a live
+# API or the spreadsheet: it's hand-researched (real web search, each URL
+# checked, never invented) and stored once in a committed JSON file so the
+# research isn't redone on every build — see extra-climbing.json. Filled in
+# incrementally, venue by venue; venues.get() returning None just means "not
+# researched yet", not "no such links exist".
+EXTRA_CLIMBING_F = ROOT / "extra-climbing.json"
+try:
+    EXTRA_CLIMBING = json.loads(EXTRA_CLIMBING_F.read_text())
+except Exception:
+    EXTRA_CLIMBING = {}
+
+
+def extra_climbing(v):
+    return EXTRA_CLIMBING.get(v["name"])
+
+
 def _list_info(v, r, cards):
     """Compact extra line for the leaderboard: expected trip temperature, total
     flight cost when priced, route count, and the sheet's difficulty band."""
@@ -1511,6 +1530,7 @@ def venue_payload(n, r):
         "facts": facts,
         "flights": {"michel": mf, "dan": md},
         "stays": r.get("stays"), "guide": guidebook(v),
+        "extraClimbing": extra_climbing(v),
         "maps": maps_url(v), "weather": weather_url(v), "mpMap": MP_MAP_URL,
         "tags": venue_tags(v, cards, grades, (f"{tag} · {rain}% wet days" if rain is not None else tag)),
         "listInfo": _list_info(v, r, cards)["txt"],
@@ -1726,6 +1746,13 @@ svg.topo .dseg{pointer-events:stroke}
 .sample{font-family:var(--mono);font-size:8.5px;letter-spacing:.08em;background:var(--card);border:1px solid var(--line2);border-radius:4px;padding:2px 6px;color:var(--muted);margin-left:6px}
 a.sample{text-decoration:none}
 a.sample:hover{color:var(--ink);border-color:var(--muted)}
+.xnote{font-size:11.5px;color:var(--mixed);background:var(--mixed-bg);border:1px solid rgba(185,138,46,.35);border-radius:8px;padding:9px 12px;margin-bottom:12px;max-width:640px;line-height:1.5}
+.xlinks{display:flex;flex-direction:column;gap:8px;max-width:640px}
+a.xlink{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;text-decoration:none;border:1px solid var(--line2);border-radius:9px;padding:9px 13px;background:var(--card)}
+a.xlink:hover{border-color:var(--muted)}
+.xlink-src{font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);flex-shrink:0}
+.xlink-title{font-size:13px;font-weight:600;color:var(--ink)}
+.xlink-note{font-size:11.5px;color:var(--faint);width:100%}
 .stay-search{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
 .stay-cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px 16px;max-width:1100px}
 .stay-col-hd{font-family:var(--disp);font-weight:700;font-size:14.5px}
@@ -2262,6 +2289,21 @@ var STAY_COLS=[
   ['house','🏠','Houses & apartments','self-catered, Airbnb-style','airbnb','Airbnb search'],
   ['camp','⛺','Camping','bring your own tent, mats & cooking kit','camps','campsites map'],
   ['hotel','🏨','Hotels & hostels','one room, 2 adults','booking','Booking.com search']];
+function extraClimbingHtml(v){
+  var links=v.extraClimbing;
+  if(!links||!links.length)return '';
+  var rows=links.map(function(l){
+    return '<a class="xlink" target="_blank" rel="noopener" href="'+safeUrl(l.url)+'">'
+      +'<span class="xlink-src">'+esc(l.source)+'</span>'
+      +'<span class="xlink-title">'+esc(l.title)+'</span>'
+      +(l.note?'<span class="xlink-note">'+esc(l.note)+'</span>':'')
+      +'</a>';
+  }).join('');
+  return '<div class="sec"><div class="sec-hd"><div class="eyebrow">More climbing in the area</div></div>'
+    +'<div class="xnote">⚠ not curated like the rest of this page — found via web search, not verified against a live database. Names, grades or access details may be out of date; treat as a starting point, not ground truth.</div>'
+    +'<div class="xlinks">'+rows+'</div></div>';
+}
+
 function staysHtml(v){
   var st=v.stays||{},q=st.search||{},radius=st.radius?num(st.radius):15;
   var list=st.list||[];
@@ -2310,6 +2352,7 @@ function detailHtml(v){
       +flightCard('Dan','Belfast / Dublin',v.flights&&v.flights.dan)+'</div></div>'
     +((climbs)?'<div class="sec"><div class="sec-hd"><div class="eyebrow">'+(hl?'More climbs':'Climbs')+' nearby · from multi-pitch.com</div>'
       +(safeUrl(v.mpMap)?'<a class="lk sm" target="_blank" rel="noopener" href="'+safeUrl(v.mpMap)+'">Browse the map ↗</a>':'')+'</div>'+climbs+'</div>':'')
+    +extraClimbingHtml(v)
     +staysHtml(v)
     +'<div class="sec" style="display:flex;gap:8px;flex-wrap:wrap">'
       +(safeUrl(v.maps)?'<a class="tl" target="_blank" rel="noopener" href="'+safeUrl(v.maps)+'">📍 Google Maps</a>':'')

@@ -24,7 +24,23 @@ Enhancements to what already runs. None are required for daily operation. Priori
 4. **Overlay live/seasonal forecast on the mini-graph** once in range (currently
    climatology) — show the actual forecast line for the trip window from ~8 July.
 5. **Tides for sea-cliff venues** (Fair Head, Gower, Cornwall) — flag non-tidal windows.
-6. **Per-crag detail** — link each venue to its UKC/theCrag/Mountain-Project page.
+6. **Per-crag detail** — link each venue to its UKC/theCrag/Mountain-Project page. **In
+   progress (3 Jul 2026):** shipped as a new "More climbing in the area" section, rendered
+   below the multi-pitch.com climbs list and explicitly labelled as *not curated* (unlike
+   the rest of the page, it isn't backed by a live API or the spreadsheet). Data lives in
+   the committed `trip-ni-july-2026/extra-climbing.json`, keyed by venue name, populated by
+   hand/agent research rather than regenerated on every build (same pattern as
+   `stays-cache.json`). Process per venue: real web search (never an invented/reconstructed
+   URL — that's the exact class of bug fixed the same day in the accommodation links), then
+   an HTTP reachability check on every candidate before it's persisted. Sources by priority:
+   UKClimbing (UK/Ireland), theCrag.com (best international default), national
+   federation/alpine-club sites (FEDME, FFCAM/refuges.info, CAI, Alpenverein — often the
+   *only* real source for hut/access beta), guidebook publisher pages (Rockfax, Vertebrate,
+   Cicerone), camptocamp.org (French/alpine wikis), and credible blog trip reports with real
+   route/access detail (never SEO filler). First batch covers the top 5 ranked venues
+   (Gredos, Écrins, Aladaglar, Picos de Europa, Tenerife); **remaining ~37 venues are
+   queued** for incremental follow-up passes — a venue with no entry yet in
+   `extra-climbing.json` means "not researched", not "nothing exists".
 7. **"Confidence"** — show climatology spread + seasonal ensemble agreement, not just means.
 8. **Email/Slack digest** — daily top pick + cheapest fares to a channel.
 9. **Bump GitHub Action versions** to Node24 to clear the deprecation warning.
