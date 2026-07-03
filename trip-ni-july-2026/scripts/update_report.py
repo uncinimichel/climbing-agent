@@ -770,7 +770,9 @@ def apply_composite(r):
     diff_s = _band(sh.get("difficulty"), DIFF_BAND, 70)
     mt = re.search(r"\d+", sh.get("min_trip") or "")
     trip_s = 100 if not mt else max(0, 100 - max(0, int(mt.group()) - TRIP_DAYS) * 25)
-    fit = round((vol_s + diff_s + trip_s) / 3)
+    n_routes = len(nearby_climbs(v, km=60))
+    routes_s = 50 + min(50, n_routes * 10)   # multi-pitch.com coverage: neutral at 0, +10/route
+    fit = round((vol_s + diff_s + trip_s + routes_s) / 4)
     fit_bits = []
     if sh.get("volume"):
         fit_bits.append(f"{sh['volume'].lower()} multi-pitch volume")
@@ -778,7 +780,9 @@ def apply_composite(r):
         fit_bits.append(f"difficulty: {sh['difficulty'].lower()}")
     if sh.get("min_trip"):
         fit_bits.append(f"min trip {sh['min_trip'].lower()} vs your {TRIP_DAYS} days")
-    fit_note = "; ".join(fit_bits) if fit_bits else "not in the sheet — neutral defaults"
+    fit_bits.append(f"{n_routes} multi-pitch.com route{'s' if n_routes != 1 else ''} nearby"
+                    if n_routes else "no multi-pitch.com routes indexed yet")
+    fit_note = "; ".join(fit_bits)
     r["score"] = round((W_WEATHER * w + W_TRAVEL * travel + W_FIT * fit) / 100)
     r["breakdown"] = {
         "weather": w, "travel": travel, "fit": fit,
@@ -1213,10 +1217,11 @@ def venue_payload(n, r):
 PAGE_HEAD = """<!doctype html>
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src https: data:">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src https: data:">
 <title>multi·pitch — Trip planner · Michel &amp; Dan · ~24 Jul 2026</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -1261,6 +1266,8 @@ body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:14p
 svg.topo{pointer-events:none}
 svg.topo .dseg{pointer-events:stroke}
 .updstamp{color:var(--faint);font-size:11px;white-space:nowrap}
+.brkchart{height:300px;max-width:780px;width:100%}
+.wxchart{height:340px;max-width:920px;width:100%}
 .tag-aspect{color:#8FB8C8;border-color:rgba(120,170,195,.4);background:rgba(120,170,195,.08)}
 .board-sub .lk{font-size:11px}
 .hovl{display:none;position:fixed;inset:0;background:rgba(10,11,14,.72);z-index:60;align-items:center;justify-content:center;padding:18px}
@@ -1442,6 +1449,8 @@ svg.topo .dseg{pointer-events:stroke}
   .spot img{height:210px}
   .brk-row{grid-template-columns:72px 1fr 100px}
   .brk-note{margin-left:82px}
+  .brkchart{height:250px}
+  .wxchart{height:300px}
 }
 </style></head>"""
 
@@ -1692,82 +1701,87 @@ function condStrip(v){
 function wxHtml(v){
   var s=v.series||[];
   if(!s.length)return '<div class="sec"><div class="eyebrow">Weather</div><div class="empty">No weather data for this area yet.</div></div>';
-  var n=s.length;
-  function ovOf(d){return d.fc||d.out||null;}
-  var anyFc=s.some(function(d){return d.fc;}),anyOut=s.some(function(d){return d.out;});
-  var ovLabel=anyFc?'live 16-day forecast':'long-range outlook (experimental)';
-  var maxR=1,allT=[];
-  s.forEach(function(d){
-    maxR=Math.max(maxR,num(d.precip));allT.push(num(d.tmax));
-    var o=ovOf(d);if(o){maxR=Math.max(maxR,num(o.precip));allT.push(num(o.tmax));}
-  });
-  var maxT=Math.max.apply(null,allT),minT=Math.min.apply(null,allT);
-  function y(t){var pct=maxT===minT?0.5:(num(t)-minT)/(maxT-minT);return 88-pct*60;}
-  function cols(fn,cls){
-    return '<div class="wxrow '+(cls||'')+'">'+s.map(function(d,i){
-      var o=ovOf(d);
-      var tip=esc(d.lbl)+' '+num(d.day)+' — typical: '+num(d.tmax)+'°C, '+num(d.precip)+'mm'+(o?' · '+(d.fc?'forecast':'outlook')+': '+num(o.tmax)+'°C, '+num(o.precip)+'mm':'')+' · wind '+num(d.wind)+' km/h'
-        +(d.fc&&d.fc.gust!=null?', gusts '+num(d.fc.gust):'')
-        +(d.fc&&d.fc.friction?' · friction '+esc(d.fc.friction)+(d.fc.dew!=null?' (dew '+num(d.fc.dew)+'°)':''):'');
-      return '<div class="wcol'+(d.trip?' trip':'')+'" title="'+tip+'">'+fn(d,i)+'</div>';
-    }).join('')+'</div>';
-  }
-  var firstTrip=-1;
-  s.forEach(function(d,i){if(d.trip&&firstTrip<0)firstTrip=i;});
-  var bkt=cols(function(d,i){return d.trip&&i===firstTrip?'<span>your dates</span>':'';},'bktrow');
-  var icons=anyFc?cols(function(d){return d.fc&&d.fc.icon?'<img class="wxi" src="'+safeUrl(d.fc.icon)+'" alt="" loading="lazy">':'';},'iconrow'):'';
-  var tyPts=s.map(function(d,i){return [(i+0.5)/n*1000,y(d.tmax)];});
-  var ovPts=[];
-  s.forEach(function(d,i){var o=ovOf(d);if(o)ovPts.push([(i+0.5)/n*1000,y(o.tmax)]);});
-  var lines='<svg viewBox="0 0 1000 100" preserveAspectRatio="none">'
-    +'<polyline points="'+tyPts.map(function(p){return p[0].toFixed(1)+','+p[1].toFixed(1);}).join(' ')+'" fill="none" stroke="var(--faint)" stroke-width="1.5" stroke-opacity=".8" stroke-dasharray="3 3" vector-effect="non-scaling-stroke"/>'
-    +(ovPts.length>1?'<polyline points="'+ovPts.map(function(p){return p[0].toFixed(1)+','+p[1].toFixed(1);}).join(' ')+'" fill="none" stroke="var(--temp)" stroke-width="2" stroke-opacity=".85" vector-effect="non-scaling-stroke"/>':'')
-    +'</svg>';
-  var temp='<div class="temparea">'+lines+cols(function(d,i){
-    var o=ovOf(d),h='';
-    var bt=(100-y(d.tmax)).toFixed(1);
-    h+='<span class="tdot ty" style="bottom:'+bt+'%"></span>';
-    if(o){
-      var bo=(100-y(o.tmax)).toFixed(1);
-      h+='<span class="tdot" style="bottom:'+bo+'%"></span><span class="tval" style="bottom:calc('+bo+'% + 7px)">'+num(o.tmax)+'°</span>';
-    }else{
-      h+='<span class="tval" style="bottom:calc('+bt+'% + 6px)">'+num(d.tmax)+'°</span>';
-    }
-    return h;
-  })+'</div>';
-  var rain='<div class="rainarea">'+cols(function(d){
-    var o=ovOf(d);
-    var tmm=Math.round(num(d.precip)*10)/10;
-    var ty='<span class="rbarv ty" style="height:'+(Math.round(num(d.precip)/maxR*44)+2)+'px"></span>';
-    var ov=o?'<span class="rbarv ov" style="height:'+(Math.round(num(o.precip)/maxR*44)+2)+'px"></span>':'';
-    var lbl=o?Math.round(num(o.precip)*10)/10:tmm;
-    return '<span class="mm">'+(lbl>0?lbl:'')+'</span><span class="rb-pair">'+ty+ov+'</span>';
-  })+'</div>';
-  var days=cols(function(d){return esc(d.lbl)+' '+num(d.day);},'daysrow');
-  var wind=cols(function(d){
-    var o=d.fc||null;
-    var wv=(o&&o.wind!=null)?o.wind:d.wind;
-    var arr=(o&&o.dir!=null)?'<span class="warr" style="transform:rotate('+((num(o.dir)+180)%360)+'deg)">↑</span><span class="wdir">'+compass(o.dir)+'</span>':'';
-    return '<span class="'+(num(wv)>=25?'hi':'')+'">'+num(wv)+arr+'</span>';
-  },'windrow');
-  var legend='<div class="wx-legend">'
-    +'<span><span class="swl" style="background:var(--faint)"></span>typical '+esc(D.trip.periodLbl)+' (avg 2021–24, dashed)</span>'
-    +((ovPts.length)?'<span><span class="swl" style="background:var(--temp)"></span>'+ovLabel+' — temp</span>':'')
-    +'<span><span class="sw" style="background:var(--rain);opacity:.35"></span>typical rain</span>'
-    +((ovPts.length)?'<span><span class="sw" style="background:var(--rain)"></span>'+ovLabel+' — rain</span>':'')
-    +'</div>';
   return '<div class="sec"><div class="sec-hd"><div class="eyebrow">Weather · '+esc(D.trip.dates)+'</div>'
     +(safeUrl(v.weather)?'<a class="lk sm" target="_blank" rel="noopener" href="'+safeUrl(v.weather)+'">Full forecast on Windy ↗</a>':'')+'</div>'
     +takeaway(v)
-    +condStrip(v)
-    +'<div class="wxgrid">'
-    +'<div class="wxlbl"></div>'+bkt
-    +(icons?'<div class="wxlbl"></div>'+icons:'')
-    +'<div class="wxlbl"><img class="wxi sm" src="'+THERMO_ICON+'" alt="">High °C</div>'+temp
-    +'<div class="wxlbl"><img class="wxi sm" src="'+RAIN_ICON+'" alt="">Rain mm</div>'+rain
-    +'<div class="wxlbl"></div>'+days
-    +'<div class="wxlbl wxlbl-wind"><img class="wxi sm" src="'+WIND_ICON+'" alt="">Wind</div>'+wind
-    +'</div>'+legend+'</div>';
+    +'<div id="wxChart" class="wxchart"></div>'
+    +(v.seasonal?'<div class="outlook">Long-range outlook (model reach ~45 days, experimental '+num(v.seasonal.members)+'-member ensemble) supplies the bright series until the live forecast lands ~8 July.</div>':'')
+    +'</div>';
+}
+
+var _charts=[];
+function _clearCharts(){_charts.forEach(function(c){try{c.dispose();}catch(e){}});_charts=[];}
+window.addEventListener('resize',function(){_charts.forEach(function(c){c.resize();});});
+
+function renderWx(v){
+  var el=document.getElementById('wxChart');
+  if(!el)return;
+  if(typeof echarts==='undefined'){el.innerHTML='<div class="empty">Interactive charts need cdn.jsdelivr.net — check your connection.</div>';return;}
+  var s=v.series||[];if(!s.length)return;
+  var days=s.map(function(d){return d.lbl+' '+d.day;});
+  var anyFc=s.some(function(d){return d.fc;});
+  var ov=anyFc?'Forecast':'Outlook';
+  var tyT=s.map(function(d){return d.tmax;}),ovT=s.map(function(d){var o=d.fc||d.out;return o?o.tmax:null;});
+  var tyR=s.map(function(d){return d.precip;}),ovR=s.map(function(d){var o=d.fc||d.out;return o?o.precip:null;});
+  var f=-1,l=-1;s.forEach(function(d,i){if(d.trip){if(f<0)f=i;l=i;}});
+  var mark={silent:true,itemStyle:{color:'rgba(87,166,100,0.09)'},data:[[{xAxis:f},{xAxis:l}]]};
+  var ax={color:'#A0A19A',fontSize:10},grid_c='#2A2E36',line_c='#353A44';
+  var c=echarts.init(el,null,{renderer:'svg'});
+  c.setOption({backgroundColor:'transparent',textStyle:{fontFamily:'IBM Plex Mono, monospace'},
+    legend:{top:0,textStyle:{color:'#A0A19A',fontSize:11},itemWidth:14,
+      data:['Typical °C',ov+' °C','Typical rain',ov+' rain']},
+    tooltip:{trigger:'axis',backgroundColor:'#20242B',borderColor:line_c,textStyle:{color:'#E9E7E1',fontSize:12},
+      formatter:function(ps){if(!ps.length)return '';var i=ps[0].dataIndex,d=s[i],o=d.fc||d.out;
+        var h='<b>'+days[i]+(d.trip?' · TRIP DAY':'')+'</b><br>typical: '+d.tmax+'°C · '+d.precip+'mm rain · wind '+d.wind+' km/h';
+        if(o)h+='<br><b>'+(d.fc?'forecast':'outlook')+': '+o.tmax+'°C · '+o.precip+'mm</b>'
+          +((d.fc&&d.fc.wind!=null)?' · wind '+d.fc.wind+' km/h'+(d.fc.dir!=null?' from '+compass(d.fc.dir):''):'');
+        return h;}},
+    grid:[{left:46,right:16,top:32,height:'33%'},{left:46,right:16,top:'60%',height:'27%'}],
+    xAxis:[{gridIndex:0,type:'category',data:days,axisLabel:{show:false},axisLine:{lineStyle:{color:line_c}},axisTick:{show:false}},
+           {gridIndex:1,type:'category',data:days,axisLabel:ax,axisLine:{lineStyle:{color:line_c}},axisTick:{show:false}}],
+    yAxis:[{gridIndex:0,type:'value',name:'high °C',nameTextStyle:{color:'#6E7069',fontSize:10},axisLabel:ax,splitLine:{lineStyle:{color:grid_c}}},
+           {gridIndex:1,type:'value',name:'rain mm',nameTextStyle:{color:'#6E7069',fontSize:10},axisLabel:ax,splitLine:{lineStyle:{color:grid_c}}}],
+    series:[
+      {name:'Typical °C',type:'line',xAxisIndex:0,yAxisIndex:0,data:tyT,symbolSize:5,
+       lineStyle:{type:'dashed',color:'#6E7069',width:1.5},itemStyle:{color:'#6E7069'},markArea:mark},
+      {name:ov+' °C',type:'line',xAxisIndex:0,yAxisIndex:0,data:ovT,symbolSize:7,
+       lineStyle:{color:'#d95926',width:2.5},itemStyle:{color:'#d95926'},
+       label:{show:true,position:'top',color:'#E9E7E1',fontSize:10,fontWeight:600,formatter:'{c}°'}},
+      {name:'Typical rain',type:'bar',xAxisIndex:1,yAxisIndex:1,data:tyR,barGap:'12%',
+       itemStyle:{color:'rgba(57,135,229,0.32)',borderRadius:[3,3,0,0]},markArea:mark},
+      {name:ov+' rain',type:'bar',xAxisIndex:1,yAxisIndex:1,data:ovR,
+       itemStyle:{color:'#3987e5',borderRadius:[3,3,0,0]}}
+    ]});
+  _charts.push(c);
+}
+
+function renderBrk(v){
+  var el=document.getElementById('brkChart');
+  if(!el)return;
+  if(typeof echarts==='undefined'){el.innerHTML='<div class="empty">Interactive charts need cdn.jsdelivr.net — check your connection.</div>';return;}
+  var b=v.breakdown;if(!b)return;
+  var W=b.weights;
+  function pts(k){return Math.round(num(b[k])*num(W[k]))/100;}
+  var lost=Math.max(0,Math.round((100-num(v.score))*10)/10);
+  var narrow=window.innerWidth<640;
+  var c=echarts.init(el,null,{renderer:'svg'});
+  c.setOption({backgroundColor:'transparent',textStyle:{fontFamily:'IBM Plex Mono, monospace'},
+    tooltip:{trigger:'item',backgroundColor:'#20242B',borderColor:'#353A44',textStyle:{color:'#E9E7E1',fontSize:12},
+      formatter:function(pr){var notes={'Weather':b.weather_note,'Travel':b.travel_note,'Venue fit':b.fit_note,
+        'Headroom':'points not earned — a perfect venue would score 100'};
+        return '<b>'+pr.name+'</b>: '+pr.value+' pts of 100'+(notes[pr.name]?'<br><span style="color:#A0A19A;font-size:11px">'+notes[pr.name]+'</span>':'');}},
+    series:[{type:'pie',radius:narrow?['36%','60%']:['42%','66%'],center:['50%','54%'],
+      itemStyle:{borderRadius:8,borderColor:'#14161A',borderWidth:3},
+      label:{color:'#E9E7E1',fontSize:narrow?10:12,lineHeight:16,formatter:'{b}\n{c} pts · {d}%'},
+      labelLine:{lineStyle:{color:'#6E7069'},length:narrow?8:16,length2:narrow?6:12},
+      emphasis:{scale:true,scaleSize:5},
+      data:[
+        {name:'Weather',value:pts('weather'),itemStyle:{color:'#3987e5'}},
+        {name:'Travel',value:pts('travel'),itemStyle:{color:'#d95926'}},
+        {name:'Venue fit',value:pts('fit'),itemStyle:{color:'#57A664'}},
+        {name:'Headroom',value:lost,itemStyle:{color:'#2A2E36'},label:{show:false},labelLine:{show:false}}
+      ]}]});
+  _charts.push(c);
 }
 
 function flightCard(who,from,f){
@@ -1860,6 +1874,7 @@ function detailHtml(v){
     +(safeUrl(v.guide.url)?'<a class="lk" style="font-size:12px;flex-shrink:0" target="_blank" rel="noopener" href="'+safeUrl(v.guide.url)+'">Amazon ↗</a>':'')+'</div>':'';
   return bandHtml(v)
     +(chips?'<div class="sec"><div class="chips">'+chips+'</div></div>':'')
+    +(v.breakdown?'<div class="sec"><div class="eyebrow">Score breakdown · '+num(v.score)+'/100 · hover or tap a slice</div><div id="brkChart" class="brkchart"></div></div>':'')
     +tagsHtml(v)
     +wxHtml(v)
     +hl
@@ -1885,6 +1900,7 @@ function sel(i){
   var rows=document.querySelectorAll('.row');
   for(var k=0;k<rows.length;k++)rows[k].classList.toggle('active',+rows[k].getAttribute('data-i')===i);
   document.getElementById('detail').innerHTML=detailHtml(V[i]);
+  _clearCharts();renderBrk(V[i]);renderWx(V[i]);
   if(_booted&&window.innerWidth<900)document.getElementById('detail').scrollIntoView({behavior:'smooth',block:'start'});
 }
 sel(0);
