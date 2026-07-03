@@ -1,6 +1,6 @@
 {
   "comment": "Latest flight prices per combo (round-trip, 1 pax, GBP). Updated on demand by Claude or by an API script. null = not yet checked.",
-  "checked_at": "2026-07-03 15:11 UTC (Google Flights/SerpApi)",
+  "checked_at": "2026-07-03 16:11 UTC (Google Flights/SerpApi)",
   "currency": "GBP",
   "rep_combo": {
     "id": "fri-tue",
@@ -87,7 +87,7 @@
         "to": "LYS",
         "options": [
           {
-            "price": 151,
+            "price": 156,
             "airline": "easyJet",
             "from": "LTN",
             "to": "LYS",
@@ -140,7 +140,7 @@
             "stops": 1
           },
           {
-            "price": 223,
+            "price": 239,
             "airline": "KLM",
             "from": "DUB",
             "to": "LYS",
@@ -231,6 +231,15 @@
         "to": "BIO",
         "options": [
           {
+            "price": 66,
+            "airline": "Vueling",
+            "from": "LGW",
+            "to": "BIO",
+            "dep": "19:40",
+            "arr": "22:40",
+            "stops": 0
+          },
+          {
             "price": 68,
             "airline": "Wizz Air",
             "from": "LTN",
@@ -240,16 +249,7 @@
             "stops": 0
           },
           {
-            "price": 74,
-            "airline": "Vueling",
-            "from": "LGW",
-            "to": "BIO",
-            "dep": "19:40",
-            "arr": "22:40",
-            "stops": 0
-          },
-          {
-            "price": 81,
+            "price": 72,
             "airline": "Vueling",
             "from": "LGW",
             "to": "BIO",
@@ -259,7 +259,7 @@
           }
         ],
         "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTA3LTI0agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDQklPGkISCjIwMjYtMDctMjhqBwgBEgNCSU9yBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ",
-        "book_url": "https://www.skyscanner.net/transport/flights/ltn/bio/260724/260728/"
+        "book_url": "https://www.skyscanner.net/transport/flights/lgw/bio/260724/260728/"
       },
       "dan": {
         "mode": "fly",
@@ -285,11 +285,11 @@
           },
           {
             "price": 240,
-            "airline": "Vueling",
+            "airline": "KLM",
             "from": "DUB",
             "to": "BIO",
-            "dep": "22:05",
-            "arr": "09:55",
+            "dep": "05:55",
+            "arr": "16:30",
             "stops": 1
           }
         ],
