@@ -1,6 +1,6 @@
 {
   "comment": "Latest flight prices per combo (round-trip, 1 pax, GBP). Updated on demand by Claude or by an API script. null = not yet checked.",
-  "checked_at": "2026-07-03 08:17 UTC (no key \u2014 links only)",
+  "checked_at": "2026-07-03 08:20 UTC (Google Flights/SerpApi)",
   "currency": "GBP",
   "rep_combo": {
     "id": "fri-tue",
@@ -43,8 +43,7 @@
           }
         ],
         "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTA3LTI0agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDTUFEGkISCjIwMjYtMDctMjhqBwgBEgNNQURyBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ",
-        "book_url": "https://www.skyscanner.net/transport/flights/stn/mad/260724/260728/",
-        "cached": true
+        "book_url": "https://www.skyscanner.net/transport/flights/stn/mad/260724/260728/"
       },
       "dan": {
         "mode": "fly",
@@ -79,8 +78,7 @@
           }
         ],
         "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDTUFEGjASCjIwMjYtMDctMjhqBwgBEgNNQURyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
-        "book_url": "https://www.skyscanner.net/transport/flights/dub/mad/260724/260728/",
-        "cached": true
+        "book_url": "https://www.skyscanner.net/transport/flights/dub/mad/260724/260728/"
       }
     },
     "Aladaglar": {
@@ -117,8 +115,7 @@
           }
         ],
         "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTA3LTI0agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDQVNSGkISCjIwMjYtMDctMjhqBwgBEgNBU1JyBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ",
-        "book_url": "https://www.skyscanner.net/transport/flights/stn/asr/260724/260728/",
-        "cached": true
+        "book_url": "https://www.skyscanner.net/transport/flights/stn/asr/260724/260728/"
       },
       "dan": {
         "mode": "fly",
@@ -153,8 +150,7 @@
           }
         ],
         "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQVNSGjASCjIwMjYtMDctMjhqBwgBEgNBU1JyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
-        "book_url": "https://www.skyscanner.net/transport/flights/dub/asr/260724/260728/",
-        "cached": true
+        "book_url": "https://www.skyscanner.net/transport/flights/dub/asr/260724/260728/"
       }
     },
     "Tenerife": {
@@ -191,8 +187,7 @@
           }
         ],
         "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTA3LTI0agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDVEZTGkISCjIwMjYtMDctMjhqBwgBEgNURlNyBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ",
-        "book_url": "https://www.skyscanner.net/transport/flights/stn/tfs/260724/260728/",
-        "cached": true
+        "book_url": "https://www.skyscanner.net/transport/flights/stn/tfs/260724/260728/"
       },
       "dan": {
         "mode": "fly",
@@ -227,8 +222,7 @@
           }
         ],
         "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDVEZTGjASCjIwMjYtMDctMjhqBwgBEgNURlNyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
-        "book_url": "https://www.skyscanner.net/transport/flights/dub/tfs/260724/260728/",
-        "cached": true
+        "book_url": "https://www.skyscanner.net/transport/flights/dub/tfs/260724/260728/"
       }
     },
     "\u00c9crins (Aiguille Dibona)": {
@@ -265,8 +259,7 @@
           }
         ],
         "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTA3LTI0agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDTFlTGkISCjIwMjYtMDctMjhqBwgBEgNMWVNyBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ",
-        "book_url": "https://www.skyscanner.net/transport/flights/ltn/lys/260724/260728/",
-        "cached": true
+        "book_url": "https://www.skyscanner.net/transport/flights/ltn/lys/260724/260728/"
       },
       "dan": {
         "mode": "fly",
@@ -301,8 +294,7 @@
           }
         ],
         "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDTFlTGjASCjIwMjYtMDctMjhqBwgBEgNMWVNyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
-        "book_url": "https://www.skyscanner.net/transport/flights/dub/lys/260724/260728/",
-        "cached": true
+        "book_url": "https://www.skyscanner.net/transport/flights/dub/lys/260724/260728/"
       }
     }
   }
