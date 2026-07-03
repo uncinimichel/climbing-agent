@@ -1113,8 +1113,6 @@ def _list_info(v, r, cards):
         t = (sea or {}).get("tmax") if sea else None
     if t is None:
         t = (c or {}).get("tmax") if c else None
-    if t is not None:
-        parts.append(f"🌡 {t}°C avg")
     prices = []
     for who in ("michel", "dan"):
         mode = (v.get("travel", {}).get(who) or {}).get("mode")
@@ -1132,7 +1130,7 @@ def _list_info(v, r, cards):
     diff = (v.get("sheet") or {}).get("difficulty")
     if diff:
         parts.append(diff)
-    return " · ".join(parts)
+    return {"txt": " · ".join(parts), "temp": t}
 
 
 def venue_payload(n, r):
@@ -1189,7 +1187,13 @@ def venue_payload(n, r):
     return {
         "rank": n, "name": v["name"], "shortName": _short_name(v["name"]),
         "country": v["country"], "flag": flag(v["country"]), "rock": v.get("rock", ""),
-        "style": v.get("style", ""), "why": v.get("why", ""), "basis": r.get("basis", ""),
+        "style": v.get("style", ""),
+        "why": v.get("why", "") or (
+            f"{(v.get('sheet') or {}).get('volume') or 'Unknown'}-volume {v.get('rock') or 'rock'}"
+            f", {((v.get('sheet') or {}).get('difficulty') or 'range unknown').lower()}"
+            f", {(v.get('sheet') or {}).get('travel_time') or '?'} from the UK — auto-summary "
+            "from your spreadsheet row; add notes there or in venues.json."),
+        "basis": r.get("basis", ""),
         "score": r["score"] if ok else -1, "tag": tag, "tagCls": tcls, "arcColor": arc_color(tcls),
         "wx": {"tmax": c.get("tmax"), "rain": rain, "wind": c.get("wind"),
                "sky": (fc.get("sky") if live else ""), "live": live,
@@ -1210,7 +1214,8 @@ def venue_payload(n, r):
         "hotels": hotels, "guide": guide,
         "maps": maps_url(v), "weather": weather_url(v), "mpMap": MP_MAP_URL,
         "tags": venue_tags(v, cards, grades, (f"{tag} · {rain}% wet days" if rain is not None else tag)),
-        "listInfo": _list_info(v, r, cards),
+        "listInfo": _list_info(v, r, cards)["txt"],
+        "listTemp": _list_info(v, r, cards)["temp"],
         "breakdown": r.get("breakdown"),
         "auto": bool(v.get("auto")),
     }
@@ -1257,7 +1262,7 @@ body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:14p
 .row:hover{background:#1F232B}
 .row.active{background:var(--card);box-shadow:inset 3px 0 0 var(--ink)}
 .rnum{grid-row:1/5;font-family:var(--disp);font-weight:800;font-size:21px;line-height:1.1;color:var(--ink);opacity:.3}
-.rinfo{font-size:10.5px;color:var(--faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;font-family:var(--mono)}
+.rinfo{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;font-family:var(--mono)}
 .bd-leg{display:flex;gap:13px;margin-top:11px;font-family:var(--mono);font-size:10.5px;color:var(--muted);flex-wrap:wrap}
 .bd-leg i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:5px}
 .bd-leg span{cursor:pointer}
@@ -1372,6 +1377,7 @@ svg.topo .dseg{pointer-events:stroke}
 .ffrom{font-size:11px;color:var(--muted);margin-bottom:10px}
 .fprice{font-family:var(--mono);font-weight:600;font-size:24px;letter-spacing:-.02em;margin-bottom:4px}
 .fprice span{font-family:var(--body);font-size:11px;font-weight:400;color:var(--muted)}
+.stale{font-size:10.5px;color:var(--mixed);margin:2px 0 4px}
 .fopt{display:flex;justify-content:space-between;gap:8px;font-size:12px;padding:5px 0;border-bottom:1px solid var(--line);color:var(--muted)}
 .fopt:last-of-type{border-bottom:0}
 .fopt>span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -1415,6 +1421,7 @@ svg.topo .dseg{pointer-events:stroke}
 .brk-note{font-size:11px;color:var(--faint);margin:-1px 0 11px 102px;line-height:1.5}
 .brk-total{display:flex;justify-content:space-between;gap:10px;border-top:1px solid var(--line2);margin-top:8px;padding-top:9px;font-family:var(--mono);font-size:12px;color:var(--muted)}
 .brk-total b{color:var(--ink)}
+.tagleg{font-size:10.5px;color:var(--faint);margin-bottom:9px}
 .tags{display:flex;gap:6px;flex-wrap:wrap;max-width:880px}
 .tag{font-family:var(--mono);font-size:10.5px;padding:4px 9px;border-radius:5px;border:1px solid var(--line2);white-space:nowrap}
 .tag-vol{color:#7FB2E8;border-color:rgba(57,135,229,.4);background:rgba(57,135,229,.10)}
@@ -1540,9 +1547,10 @@ document.getElementById('updated').textContent='Updated '+D.trip.updated+' · we
 function rowHtml(v,i){
   var c=cond(v),sc=num(v.score);
   var bar=v.score>=0
-    ?'<div class="rbar-line"><div class="rbar-track"><div class="rbar" style="width:'+Math.max(4,sc)+'%;background:'+c[1]+'"></div></div><span class="rsc">'+sc+'</span></div>'
+    ?'<div class="rbar-line"><div class="rbar-track"><div class="rbar" style="width:'+Math.max(4,sc)+'%;background:'+(sc>=80?'var(--dry)':(sc>=60?'var(--mixed)':'var(--faint)'))+'"></div></div><span class="rsc">'+sc+'</span></div>'
     :'<div class="rbar-line"><span class="rsc dim">no data yet</span></div>';
-  var info=v.listInfo?'<span class="rinfo">'+esc(v.listInfo)+'</span>':'';
+  var tc=v.listTemp==null?null:(v.listTemp<=20?'var(--dry)':(v.listTemp<=27?'var(--mixed)':'var(--wet)'));
+  var info='<span class="rinfo">'+(tc?'<b style="color:'+tc+'">'+num(v.listTemp)+'°C avg</b>'+(v.listInfo?' · ':''):'')+esc(v.listInfo||'')+'</span>';
   return '<button class="row" data-i="'+i+'" onclick="sel('+i+')">'
     +'<span class="rnum">'+num(v.rank)+'</span>'
     +'<span class="rname">'+esc(v.flag)+' '+esc(v.shortName)+'</span>'
@@ -1706,7 +1714,7 @@ function renderWx(v){
           if(d.fc.sunFrac!=null)h+=' · sun '+Math.round(d.fc.sunFrac*100)+'%';}
         return h;}},
     grid:{left:46,right:46,top:46,bottom:44},
-    xAxis:{type:'category',data:days,axisLabel:{color:'#A0A19A',fontSize:9.5,lineHeight:14},axisLine:{lineStyle:{color:'#353A44'}},axisTick:{show:false}},
+    xAxis:{type:'category',data:days,axisLabel:{fontSize:10.5,lineHeight:15,color:function(v2,idx){var d=s2[idx];var w=(d.fc&&d.fc.wind!=null)?d.fc.wind:d.wind;return w>=25?'#B98A2E':'#A0A19A';}},axisLine:{lineStyle:{color:'#353A44'}},axisTick:{show:false}},
     yAxis:[{type:'value',name:'high °C',nameTextStyle:{color:'#6E7069'},axisLabel:{color:'#6E7069',fontSize:10},splitLine:{lineStyle:{color:'#2A2E36'}}},
            {type:'value',name:'rain mm',nameTextStyle:{color:'#6E7069'},axisLabel:{color:'#6E7069',fontSize:10},splitLine:{show:false}}],
     series:[
@@ -1737,7 +1745,7 @@ function renderBrk(v){
         ['Weather','Travel','Venue fit'].map(function(k,ix){var val=[b.weather,b.travel,b.fit][ix];
           return '<span style="color:'+['#3987e5','#d95926','#57A664'][ix]+'">■</span> '+k+' <b>'+val+'/100</b> × '+[b.weights.weather,b.weights.travel,b.weights.fit][ix]+'%<br><span style="color:#A0A19A;font-size:11px">'+esc(notes[k]||'')+'</span>';}).join('<br>');}},
     radar:{indicator:[{name:'Weather',max:100},{name:'Travel',max:100},{name:'Venue fit',max:100}],
-      radius:'62%',center:['54%','56%'],axisName:{color:'#E9E7E1',fontSize:11},
+      radius:'62%',center:['54%','56%'],axisName:{color:'#E9E7E1',fontSize:11.5,fontWeight:600},
       splitLine:{lineStyle:{color:'#353A44'}},splitArea:{show:false},axisLine:{lineStyle:{color:'#2A2E36'}}},
     series:[{type:'radar',symbolSize:5,label:{show:true,color:'#E9E7E1',fontSize:11,fontWeight:600,formatter:'{c}'},
       data:[{value:[num(b.weather),num(b.travel),num(b.fit)],name:'score',
@@ -1763,7 +1771,7 @@ function flightCard(who,from,f){
         var st=num(o.stops)===0?'Direct':num(o.stops)+'-stop';
         return '<div class="fopt"><span>'+(i?'£'+num(o.price)+' · ':'')+'<b>'+esc(o.dep)+'→'+esc(o.arr)+'</b> '+esc(o.from)+' · '+esc(String(o.airline||'').slice(0,12))+'</span><span class="fstop'+(num(o.stops)===0?' direct':'')+'">'+st+'</span></div>';
       }).join('');
-      inner='<div class="fprice">£'+num(opts[0].price)+' <span>return · per person'+(f.cached?' · last checked price':'')+'</span></div>'+rows
+      inner='<div class="fprice">£'+num(opts[0].price)+' <span>return · per person'+'</span></div>'+(f.cached?'<div class="stale">⚠ last-checked price — verify before booking</div>':'')+rows
         +(book?'<a class="btn" target="_blank" rel="noopener" href="'+book+'">Book ↗</a>':'')
         +(view&&view!==book?'<a class="btn ghost" target="_blank" rel="noopener" href="'+view+'">All options</a>':'');
     }
@@ -1808,7 +1816,7 @@ function breakdownHtml(v){
 var TAGT={cond:'Typical share of wet days for your trip dates',vol:'Volume of multi-pitch climbing — from your sheet',diff:'Difficulty spread — from your sheet',time:'Rough travel time from the UK — from your sheet',trip:'Minimum sensible trip length — from your sheet',height:'Tallest route nearby on multi-pitch.com',rock:'Rock type',grade:'Trad grade range of nearby multi-pitch.com routes',routes:'Routes indexed on multi-pitch.com within 60 km',hazard:'Route character / hazard flag from multi-pitch.com route data',appr:'Approach character from route walk-in times',aspect:'Which way the crag faces — shifts felt temperature in sun',auto:'Venue generated from a row in your spreadsheet'};
 function tagsHtml(v){
   if(!v.tags||!v.tags.length)return '';
-  return '<div class="sec"><div class="eyebrow">Area character · hover a tag for what it means</div><div class="tags">'
+  return '<div class="sec"><div class="eyebrow">Area character</div><div class="tagleg">colours: blue/violet = your sheet · green = multi-pitch.com · amber = hazards · grey = rock/approach — hover any tag for its meaning</div><div class="tags">'
     +v.tags.map(function(t){return '<span class="tag tag-'+esc(t.k)+'" title="'+esc(TAGT[t.k]||'')+'">'+esc(t.t)+'</span>';}).join('')+'</div></div>';
 }
 
@@ -1855,16 +1863,21 @@ function detailHtml(v){
 function help(on){document.getElementById('hovl').style.display=on?'flex':'none';}
 document.addEventListener('keydown',function(e){if(e.key==='Escape')help(0);});
 var _booted=false,_cur=0;
+function slugify(n){return String(n).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');}
 function sel(i){
   _cur=i;
   var rows=document.querySelectorAll('.row');
   for(var k=0;k<rows.length;k++)rows[k].classList.toggle('active',+rows[k].getAttribute('data-i')===i);
   document.getElementById('detail').innerHTML=detailHtml(V[i]);
   _clearCharts();renderBrk(V[i]);renderWx(V[i]);
+  if(_booted)try{history.replaceState(null,'','#'+slugify(V[i].shortName));}catch(e){}
   if(_booted&&window.innerWidth<900)document.getElementById('detail').scrollIntoView({behavior:'smooth',block:'start'});
 }
-sel(0);
+var _h=location.hash.replace('#',''),_i0=0;
+if(_h)V.forEach(function(v,i){if(slugify(v.shortName)===_h)_i0=i;});
+sel(_i0);
 _booted=true;
+window.addEventListener('hashchange',function(){var h=location.hash.replace('#','');V.forEach(function(v,i){if(slugify(v.shortName)===h&&i!==_cur)sel(i);});});
 """
 
 
