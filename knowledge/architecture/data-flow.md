@@ -16,20 +16,22 @@ state is persisted. Follows the four layers end to end.
 
   CURATE (Phase 3)                        RANK & RENDER (Phase 2→4)          PERSIST
   ────────────────                        ─────────────────────────          ───────
-  venues.json (master index, manual) ─┐
-  climbing-trips.csv (shortlist)      ─┼─▶ score each venue:                  index.html
-                                       │    live ▸ (climatology 70 / 45d 30)  daily-report.md
-  flights.json (route + combos)       ─┘    sort desc, tie-break priority     history/<date>.md
-                                            → build cards + mini-graphs       flights-latest.json
-                                            → fold in flights                 git commit (the archive)
+  Google Sheet ▸ climbing-trips.csv  ─┐                                       index.html
+    (master list, refreshed each run) │   composite score each venue:         daily-report.md
+  venues.json (curated overrides)    ─┼─▶  0.55·weather + 0.25·travel         history/<date>.md
+  GAZETTEER / geocoder (new rows)    ─┤    + 0.20·venue fit                   flights-latest.json
+  flights.json (route + combos)      ─┘    two passes (price top-N between)   climo-cache.json
+                                           → donut breakdown + tags + charts  git commit (the archive)
 ```
 
 ## Step by step
 
 1. **Trigger.** GitHub Actions fires (cron 06:00 UTC / push / manual). One build job.
-2. **Read config (Phase 3, manual curation).** `update_report.py` loads `venues.json`
-   (which venues exist + travel modes) and `flights.json` (route + 3 date combos). These
-   are the single sources of truth — the script queries only what they list.
+2. **Read config (Phase 3, curation).** CI refreshes `climbing-trips.csv` from the
+   Google Sheet, and `build_venues()` turns **every sheet row** into a venue — enriched
+   by curated `venues.json` entries where they exist, generated from `GAZETTEER`
+   coords/airports (or the free geocoder) where they don't. `flights.json` still defines
+   the route + date combos. Editing the sheet is all it takes to change the ranking.
 3. **Ingest (Phase 1).** For each venue:
    - Fetch Open-Meteo **archive** → July climatology (deterministic, one ranged request).
    - Fetch Open-Meteo **forecast** → 16-day live (used once the trip is in range).

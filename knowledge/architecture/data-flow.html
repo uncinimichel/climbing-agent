@@ -72,15 +72,15 @@ border-bottom:1px solid var(--seam)}
 
   CURATE (Phase 3)                        RANK &amp; RENDER (Phase 2→4)          PERSIST
   ────────────────                        ─────────────────────────          ───────
-  venues.json (master index, manual) ─┐
-  climbing-trips.csv (shortlist)      ─┼─▶ score each venue:                  index.html
-                                       │    live ▸ (climatology 70 / 45d 30)  daily-report.md
-  flights.json (route + combos)       ─┘    sort desc, tie-break priority     history/&lt;date&gt;.md
-                                            → build cards + mini-graphs       flights-latest.json
-                                            → fold in flights                 git commit (the archive)</code></pre>
+  Google Sheet ▸ climbing-trips.csv  ─┐                                       index.html
+    (master list, refreshed each run) │   composite score each venue:         daily-report.md
+  venues.json (curated overrides)    ─┼─▶  0.55·weather + 0.25·travel         history/&lt;date&gt;.md
+  GAZETTEER / geocoder (new rows)    ─┤    + 0.20·venue fit                   flights-latest.json
+  flights.json (route + combos)      ─┘    two passes (price top-N between)   climo-cache.json
+                                           → donut breakdown + tags + charts  git commit (the archive)</code></pre>
 <h2 id="step-by-step">Step by step</h2>
-<ol><li><strong>Trigger.</strong> GitHub Actions fires (cron 06:00 UTC / push / manual). One build job.</li><li><strong>Read config (Phase 3, manual curation).</strong> <code>update_report.py</code> loads <code>venues.json</code></li></ol>
-<p>   (which venues exist + travel modes) and <code>flights.json</code> (route + 3 date combos). These    are the single sources of truth — the script queries only what they list.</p>
+<ol><li><strong>Trigger.</strong> GitHub Actions fires (cron 06:00 UTC / push / manual). One build job.</li><li><strong>Read config (Phase 3, curation).</strong> CI refreshes <code>climbing-trips.csv</code> from the</li></ol>
+<p>   Google Sheet, and <code>build_venues()</code> turns <strong>every sheet row</strong> into a venue — enriched    by curated <code>venues.json</code> entries where they exist, generated from <code>GAZETTEER</code>    coords/airports (or the free geocoder) where they don't. <code>flights.json</code> still defines    the route + date combos. Editing the sheet is all it takes to change the ranking.</p>
 <ol><li><strong>Ingest (Phase 1).</strong> For each venue:<ul><li>Fetch Open-Meteo <strong>archive</strong> → July climatology (deterministic, one ranged request).</li><li>Fetch Open-Meteo <strong>forecast</strong> → 16-day live (used once the trip is in range).</li><li>Fetch Open-Meteo <strong>seasonal</strong> → ~45-day outlook.</li><li>Geo-match <strong>multi-pitch.com <code>data.json</code></strong> → nearby curated climbs.</li></ul></li><li><strong>Normalize + score (Phase 2).</strong> Reduce each horizon to per-day records and compute</li></ol>
 <p>   <code>day_score</code> / <code>climo_score</code>; blend into one venue score. See    <a href="../data/condition-algorithm.html"><code>data/condition-algorithm.md</code></a>.</p>
 <ol><li><strong>Rank (Phase 2→3).</strong> Sort venues by score desc; tie-break by <code>priority</code> (NI preferred).</li></ol>

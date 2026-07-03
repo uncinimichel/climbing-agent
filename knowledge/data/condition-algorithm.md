@@ -20,6 +20,27 @@ day_score = 100 − 0.8·(rain_prob_%) − 6·(precip_mm)
           − 0.8·min(precip_hours, 12)          (drizzle-all-day vs one burst)
           + 10·(sunshine_frac − 0.5)           (sun dries rock, ±5)
           − 1.2·max(0, daytime_dewpoint − 12)  (friction / grease; ~−10 at dew 20)
+          − heat_penalty(tmax)                 (climbing heat curve, below)
+```
+
+### The climbing heat curve (2026-07-03)
+
+Dry-but-hot venues were out-ranking climbable ones (Costa Blanca, Wadi Rum topping a
+July list on 0% rain alone). Friction research puts ideal sending temperatures at
+**~7–18°C** — skin and rubber grease out past ~20–25°C — and this trip is
+**multi-pitch**: hours exposed on the wall with no shade retreat
+(climbing.com's *Science of Friction*; UKC conditions threads; full list in
+[`references.md`](references.md)). Both horizons now share one curve:
+
+```
+heat_penalty(tmax) = 1.2·max(0, tmax − 20)     gentle from 20°C
+                   + 3.0·max(0, tmax − 25)     steep from 25°C
+                   + 5.0·max(0, tmax − 30)     brutal from 30°C
+   # a 31°C coastal venue loses ~36 points; a 35°C desert ~73 → bottom of the table
+
+climo_score = 100 − 0.9·rain_pct
+            − 2·max(0, 8 − tmax)               (numb fingers below ~8°C)
+            − heat_penalty(tmax)
 ```
 
 - Higher is better; 100 = perfect dry day.
@@ -31,13 +52,35 @@ day_score = 100 − 0.8·(rain_prob_%) − 6·(precip_mm)
   is the mean of hourly dew point 09–18 local; `sunshine_frac = sunshine ÷ daylight`.
   Surfaced on the dashboard as a friction/gusts/dry-mornings chip strip + hover tooltips.
 
-### Venue score
+### Venue weather score
 
 ```
-venue_score = mean(day_score over the trip days used)
+weather_score = mean(day_score over the trip days used)     (live horizon)
+              | 0.7·climo_score + 0.3·seasonal_score        (beyond live range)
 ```
 
-Ranking: **sort by `venue_score` desc, tie-break by `priority`** (NI preferred when tied).
+### Composite trip score (2026-07-03)
+
+Weather is dominant but no longer the whole ranking — the spreadsheet's judgment
+columns and flight costs now count:
+
+```
+trip_score = 0.55·weather + 0.25·travel + 0.20·venue_fit
+
+travel    = mean of: cost score (known flight prices per person, £0 → 100,
+            £400+ avg → 0; local=£0, drive≈£90) and the sheet's
+            "Rough Travel Time from UK" band (<4h → 95 … 12-24h → 30)
+venue_fit = mean of: volume band (Vast 100 / Large 85 / Moderate 65 / Smaller 45),
+            difficulty band (Full Range 100 / Moderate 90 / Medium-Hard 75 / Hard 50),
+            min-trip fit (100 if sheet min-trip ≤ trip days, −25/extra day)
+```
+
+Flight prices exist only for the top-N priced venues, so ranking runs twice: a
+provisional pass (time-band travel), price the top-N, then a final pass with real
+prices. The UI shows the split as the **donut** in the venue header (click a segment
+for the maths); the leaderboard states the formula in its subtitle.
+
+Ranking: **sort by `trip_score` desc, tie-break by `priority`** (NI preferred when tied).
 
 ### Three weather horizons (all free, no key)
 

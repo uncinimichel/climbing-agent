@@ -71,14 +71,37 @@ border-bottom:1px solid var(--seam)}
           − 0.6·max(0, gust_kmh − 30)          (exposure; ~−12 at 50 km/h)
           − 0.8·min(precip_hours, 12)          (drizzle-all-day vs one burst)
           + 10·(sunshine_frac − 0.5)           (sun dries rock, ±5)
-          − 1.2·max(0, daytime_dewpoint − 12)  (friction / grease; ~−10 at dew 20)</code></pre>
+          − 1.2·max(0, daytime_dewpoint − 12)  (friction / grease; ~−10 at dew 20)
+          − heat_penalty(tmax)                 (climbing heat curve, below)</code></pre>
+<h3 id="the-climbing-heat-curve-2026-07-03">The climbing heat curve (2026-07-03)</h3>
+<p>Dry-but-hot venues were out-ranking climbable ones (Costa Blanca, Wadi Rum topping a July list on 0% rain alone). Friction research puts ideal sending temperatures at <strong>~7–18°C</strong> — skin and rubber grease out past ~20–25°C — and this trip is <strong>multi-pitch</strong>: hours exposed on the wall with no shade retreat (climbing.com's <em>Science of Friction</em>; UKC conditions threads; full list in <a href="references.html"><code>references.md</code></a>). Both horizons now share one curve:</p>
+<pre><code>heat_penalty(tmax) = 1.2·max(0, tmax − 20)     gentle from 20°C
+                   + 3.0·max(0, tmax − 25)     steep from 25°C
+                   + 5.0·max(0, tmax − 30)     brutal from 30°C
+   # a 31°C coastal venue loses ~36 points; a 35°C desert ~73 → bottom of the table
+
+climo_score = 100 − 0.9·rain_pct
+            − 2·max(0, 8 − tmax)               (numb fingers below ~8°C)
+            − heat_penalty(tmax)</code></pre>
 <ul><li>Higher is better; 100 = perfect dry day.</li><li>Rain probability and precipitation both penalise; heavy/coded rain hard-caps the score</li></ul>
 <p>  so a wet day can't look mediocre-but-okay.</p>
 <ul><li>The four extra terms apply <strong>only when the live 16-day forecast is in range</strong> (they need</li></ul>
 <p>  fields climatology/seasonal don't carry). Each is small and clamped so ranking never   swings wildly — they refine ties, they don't overturn a rain verdict. <code>daytime_dewpoint</code>   is the mean of hourly dew point 09–18 local; <code>sunshine_frac = sunshine ÷ daylight</code>.   Surfaced on the dashboard as a friction/gusts/dry-mornings chip strip + hover tooltips.</p>
-<h3 id="venue-score">Venue score</h3>
-<pre><code>venue_score = mean(day_score over the trip days used)</code></pre>
-<p>Ranking: <strong>sort by <code>venue_score</code> desc, tie-break by <code>priority</code></strong> (NI preferred when tied).</p>
+<h3 id="venue-weather-score">Venue weather score</h3>
+<pre><code>weather_score = mean(day_score over the trip days used)     (live horizon)
+              | 0.7·climo_score + 0.3·seasonal_score        (beyond live range)</code></pre>
+<h3 id="composite-trip-score-2026-07-03">Composite trip score (2026-07-03)</h3>
+<p>Weather is dominant but no longer the whole ranking — the spreadsheet's judgment columns and flight costs now count:</p>
+<pre><code>trip_score = 0.55·weather + 0.25·travel + 0.20·venue_fit
+
+travel    = mean of: cost score (known flight prices per person, £0 → 100,
+            £400+ avg → 0; local=£0, drive≈£90) and the sheet&#x27;s
+            &quot;Rough Travel Time from UK&quot; band (&lt;4h → 95 … 12-24h → 30)
+venue_fit = mean of: volume band (Vast 100 / Large 85 / Moderate 65 / Smaller 45),
+            difficulty band (Full Range 100 / Moderate 90 / Medium-Hard 75 / Hard 50),
+            min-trip fit (100 if sheet min-trip ≤ trip days, −25/extra day)</code></pre>
+<p>Flight prices exist only for the top-N priced venues, so ranking runs twice: a provisional pass (time-band travel), price the top-N, then a final pass with real prices. The UI shows the split as the <strong>donut</strong> in the venue header (click a segment for the maths); the leaderboard states the formula in its subtitle.</p>
+<p>Ranking: <strong>sort by <code>trip_score</code> desc, tie-break by <code>priority</code></strong> (NI preferred when tied).</p>
 <h3 id="three-weather-horizons-all-free-no-key">Three weather horizons (all free, no key)</h3>
 <div class="tw"><table><thead><tr><th>Horizon</th><th>Source</th><th>Role</th></tr></thead><tbody><tr><td><strong>Live forecast</strong></td><td>Open-Meteo 16-day</td><td>Ranks the trip once in range (~8 July); <strong>supersedes</strong> the others.</td></tr><tr><td><strong>Climatology</strong></td><td>Open-Meteo Archive (ERA5 July averages)</td><td>Deterministic base ranking + the per-venue rain/temp/wind mini-graph.</td></tr><tr><td><strong>Sub-seasonal</strong></td><td>Open-Meteo Seasonal (CFS, ~45 d)</td><td>Weak signal; <strong>blended 70/30</strong> (climatology dominant) while beyond live range.</td></tr></tbody></table></div>
 <p><strong>Basis selection:</strong> while the trip is beyond the 16-day window, rank on <code>0.7·climatology + 0.3·seasonal</code>, labelled "typical July + 45-day outlook". Once the live forecast reaches the trip window, it supersedes both. The active basis is always stated in the dashboard banner (honest-uncertainty principle).</p>

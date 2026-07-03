@@ -131,6 +131,29 @@ master index); grey-area + social tracks follow. Semantic search, managed DB, an
 APIs are deferred until budget opens.
 **Status:** 🔜 Planned — nothing built yet; this is the blueprint the first slice implements.
 
+### #15 — The Google Sheet is the venue master list; ranking is a composite (2026-07-03)
+**Decision:** every row of the venue spreadsheet becomes a ranked venue (CI refreshes the
+CSV each run; `GAZETTEER`/geocoder supply coords+airports for rows without a curated
+`venues.json` entry). The score is now **0.55·weather + 0.25·travel + 0.20·venue fit**,
+where travel uses real flight prices when priced (top-N) plus the sheet's travel-time
+band, and venue fit uses the sheet's volume/difficulty/min-trip judgment columns. Shown
+as an interactive donut in the venue header.
+**Why:** Michel curates in the sheet, not in JSON — the ranking should follow his data
+with zero config. Weather alone also ignored real decision factors he tracks (cost,
+volume, trip length).
+**Status:** ✅ Live — 42 areas ranked from 38 sheet rows + curated extras.
+
+### #16 — Climbing heat curve: penalise heat from 20°C, hard from 30°C (2026-07-03)
+**Decision:** `heat_penalty(tmax) = 1.2·(t−20)⁺ + 3·(t−25)⁺ + 5·(t−30)⁺` applied in both
+`climo_score` and `day_score`; cold penalty below 8°C. Replaces the old lenient knee at
+27°C/33°C.
+**Why:** dry-but-hot venues (Costa Blanca, Wadi Rum, Anti Atlas) topped the July ranking
+on 0% rain. Friction research (climbing.com *Science of Friction*, UKC conditions
+threads) puts ideal sending temps at ~7–18°C, and multi-pitch means hours exposed on the
+wall. After the change the top of the table is high/cool venues (Gredos, Teide 2,200 m,
+Écrins, Aladağlar) and deserts sit last — matching climber intuition.
+**Status:** ✅ Live.
+
 ---
 
 *Template for new entries:*

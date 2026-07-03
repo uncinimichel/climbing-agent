@@ -10,16 +10,31 @@ Three endpoints, one provider, consistent format. The backbone of the ranking.
 
 | Endpoint | Host | Gives | Used for |
 |---|---|---|---|
-| **Archive** | `archive-api.open-meteo.com` | ERA5 historical (July averages) | Climatology base ranking + per-venue mini-graph. One ranged request/venue → deterministic. |
-| **Forecast** | `api.open-meteo.com` | 16-day live forecast — sky/temp/precip **plus** gusts, sunshine, precip-hours (daily) and dew point/humidity (hourly) | Ranks the trip once in range (~8 July); supersedes other bases. Extra fields feed the friction/drying score terms — see [condition-algorithm](../data/condition-algorithm.html). |
-| **Seasonal** | `seasonal-api.open-meteo.com` | CFS ensemble, ~45 days–9 months | Sub-seasonal outlook; blended 70/30 into ranking beyond live range. |
+| **Archive** | `archive-api.open-meteo.com` | ERA5 historical (July averages) | Climatology base ranking + per-venue mini-graph. One ranged request/venue → deterministic, and **disk-cached** (below). |
+| **Forecast** | `api.open-meteo.com` | 16-day live forecast — sky/temp/precip **plus** gusts, sunshine, precip-hours, wind direction (daily) and dew point/humidity (hourly) | Ranks the trip once in range (~8 July); supersedes other bases. Extra fields feed the friction/drying/heat score terms — see [condition-algorithm](../data/condition-algorithm.html). |
+| **Seasonal** | `seasonal-api.open-meteo.com` | CFS ensemble, ~45 days–9 months | Sub-seasonal outlook; blended 70/30 into ranking beyond live range + per-day overlay on the chart. |
+| **Geocoding** | `geocoding-api.open-meteo.com` | place-name → lat/lon | Fallback for spreadsheet venue rows not in the script's `GAZETTEER`. |
 
-- **Key:** none. **Retry:** 4× on failure.
-- **Limits:** free non-commercial tier ≈ **10,000 calls/day** (~5,000/hour, ~600/minute).
-  Our load is 3 calls × venues × 1 run/day → well under 1% of the cap; effectively
-  unlimited for us. No usage endpoint exists, so the only signal is HTTP 429.
+- **Key:** none. **Retry:** 4× on failure (4xx except 429 not retried; errors redacted).
+- **Limits:** free non-commercial tier ≈ **10,000 calls/day** (~5,000/hour, ~600/minute) —
+  but archive requests are **weight-multiplied** by their date span. Observed in practice
+  (2026-07-03): **2–3 full 42-venue runs within an hour trip 429s** on the archive host.
+- **Mitigation:** climatology never changes (fixed 2021–24 years), so it's cached in
+  **`trip-ni-july-2026/climo-cache.json`** (committed). Steady-state archive load is now
+  ~zero; only *new* venues fetch. Forecast/seasonal stay live every run.
 - **Degradation:** seasonal failure → climatology-only; the banner stays honest about the
   basis.
+
+## Google Sheets — the venue master list (free, public CSV export)
+
+- **What:** Michel curates candidate areas (38+ rows) with judgment columns — volume,
+  difficulty, travel time, hub, minimum trip — in the
+  [venue spreadsheet](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit).
+- **How:** CI re-downloads the CSV export every run into `climbing-trips.csv` (committed,
+  so history tracks sheet evolution) and `build_venues()` turns **every row** into a
+  ranked venue — curated `venues.json` entries are enriched, unknown rows get coords +
+  airports from `GAZETTEER` or the geocoder.
+- **Degradation:** download failing or malformed → the committed CSV copy is used.
 
 ## SerpApi — Google Flights (keyed, quota-limited)
 
