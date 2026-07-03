@@ -2046,6 +2046,20 @@ var _charts=[];
 function _clearCharts(){_charts.forEach(function(c){try{c.dispose();}catch(e){}});_charts=[];}
 window.addEventListener('resize',function(){_charts.forEach(function(c){c.resize();});});
 
+// Severity colours shared across the whole weather chart (bars, dots, wind
+// labels) — the SAME three-tier scale already used everywhere else on this
+// page (leaderboard bars, condition chips, the trip-score ring), so a reader
+// only has to learn one "green = fine, amber = caution, red = rough" language
+// for the whole dashboard rather than a chart-specific one. Cold gets its own
+// blue tier for temperature only — the thermometer convention is universal
+// enough that a 4th colour there reads as MORE obvious, not less. Thresholds
+// come from the trip's own data (rain/wind: dry-day and gust-penalty cutoffs
+// already used in the scorer) and from heat_penalty's friction-research
+// bands (ideal 8–20°C, hot from ~27°C).
+function rainColor(mm){mm=num(mm);return mm>=6?'#D06A57':(mm>=2?'#B98A2E':'#57A664');}
+function windColor(k){k=num(k);return k>=25?'#D06A57':(k>=15?'#B98A2E':'#57A664');}
+function tempColor(t){t=num(t);return t>=27?'#D06A57':(t>=20?'#B98A2E':(t>=8?'#57A664':'#3987e5'));}
+
 function renderWx(v){
   var el=document.getElementById('wxChart');
   if(!el)return;
@@ -2064,7 +2078,7 @@ function renderWx(v){
   var mark={silent:true,itemStyle:{color:'rgba(87,166,100,0.09)'},data:[[{xAxis:f},{xAxis:l}]]};
   var c=echarts.init(el,null,{renderer:'svg'});
   c.setOption({backgroundColor:'transparent',textStyle:{fontFamily:'IBM Plex Mono, monospace'},
-    title:{show:!narrow,text:'Lines = daily high °C (dashed grey = typical, orange = '+ov.toLowerCase()+') · bars = rain mm · under each day: wind km/h + direction',
+    title:{show:!narrow,text:'Lines = daily high °C · bars = rain mm · colour = severity (green→amber→red, blue=cold) · under each day: wind + direction',
       top:0,left:0,textStyle:{color:'#6E7069',fontSize:10.5,fontWeight:400}},
     legend:{top:narrow?0:18,textStyle:{color:'#A0A19A',fontSize:narrow?9.5:11},itemWidth:narrow?10:14,itemGap:narrow?7:10},
     tooltip:{trigger:'axis',backgroundColor:'#20242B',borderColor:'#353A44',textStyle:{color:'#E9E7E1',fontSize:12},confine:true,
@@ -2076,20 +2090,26 @@ function renderWx(v){
           if(d.fc.sunFrac!=null)h+=' · sun '+Math.round(d.fc.sunFrac*100)+'%';}
         return h;}},
     grid:{left:narrow?34:46,right:narrow?34:46,top:narrow?28:46,bottom:narrow?30:44},
-    xAxis:{type:'category',data:days,axisLabel:{fontSize:narrow?8.5:10.5,lineHeight:narrow?12:15,interval:narrow?1:0,color:function(v2,idx){var d=s2[idx];var w=(d.fc&&d.fc.wind!=null)?d.fc.wind:d.wind;return w>=25?'#B98A2E':'#A0A19A';}},axisLine:{lineStyle:{color:'#353A44'}},axisTick:{show:false}},
+    xAxis:{type:'category',data:days,axisLabel:{fontSize:narrow?8.5:10.5,lineHeight:narrow?12:15,interval:narrow?1:0,color:function(v2,idx){var d=s2[idx];var w=(d.fc&&d.fc.wind!=null)?d.fc.wind:d.wind;return windColor(w);}},axisLine:{lineStyle:{color:'#353A44'}},axisTick:{show:false}},
     yAxis:[{type:'value',name:narrow?'':'high °C',nameTextStyle:{color:'#6E7069'},axisLabel:{color:'#6E7069',fontSize:narrow?9:10},splitLine:{lineStyle:{color:'#2A2E36'}}},
            {type:'value',name:narrow?'':'rain mm',nameTextStyle:{color:'#6E7069'},axisLabel:{color:'#6E7069',fontSize:narrow?9:10},splitLine:{show:false}}],
     series:[
-      {name:'Typical high °C',type:'line',yAxisIndex:0,data:s2.map(function(d){return d.tmax;}),symbolSize:narrow?4:5,
-       lineStyle:{type:'dashed',color:'#6E7069',width:1.5},itemStyle:{color:'#6E7069'},markArea:mark},
-      {name:ov+' high °C',type:'line',yAxisIndex:0,data:s2.map(function(d){var o=d.fc||d.out;return o?o.tmax:null;}),symbolSize:narrow?5:7,
-       lineStyle:{color:'#d95926',width:narrow?2:2.5},itemStyle:{color:'#d95926'},
+      // itemStyle.color at the series level is only ever seen by the legend
+      // swatch now — every actual point/bar overrides it per-datum below —
+      // so it's set to whatever kept that series' old legend look (grey
+      // dashed = typical, orange solid = outlook, faint vs solid bar).
+      {name:'Typical high °C',type:'line',yAxisIndex:0,itemStyle:{color:'#6E7069'},
+       data:s2.map(function(d){return {value:d.tmax,itemStyle:{color:tempColor(d.tmax)}};}),
+       symbolSize:narrow?4:5,lineStyle:{type:'dashed',color:'#6E7069',width:1.5},markArea:mark},
+      {name:ov+' high °C',type:'line',yAxisIndex:0,itemStyle:{color:'#d95926'},
+       data:s2.map(function(d){var o=d.fc||d.out;return o?{value:o.tmax,itemStyle:{color:tempColor(o.tmax)}}:null;}),
+       symbolSize:narrow?5:7,lineStyle:{color:'#d95926',width:narrow?2:2.5},
        label:{show:true,position:'top',color:'#E9E7E1',fontSize:narrow?9:10,fontWeight:600,
          formatter:function(p){return (narrow&&p.dataIndex%2===1)?'':num(p.value)+'°';}}},
-      {name:'Typical rain mm',type:'bar',yAxisIndex:1,data:s2.map(function(d){return d.precip;}),barGap:'12%',
-       itemStyle:{color:'rgba(57,135,229,0.32)',borderRadius:[3,3,0,0]}},
-      {name:ov+' rain mm',type:'bar',yAxisIndex:1,data:s2.map(function(d){var o=d.fc||d.out;return o?o.precip:null;}),
-       itemStyle:{color:'#3987e5',borderRadius:[3,3,0,0]}}
+      {name:'Typical rain mm',type:'bar',yAxisIndex:1,barGap:'12%',itemStyle:{color:'#A0A19A',opacity:.38},
+       data:s2.map(function(d){return {value:d.precip,itemStyle:{color:rainColor(d.precip),opacity:.38,borderRadius:[3,3,0,0]}};})},
+      {name:ov+' rain mm',type:'bar',yAxisIndex:1,itemStyle:{color:'#A0A19A',opacity:.92},
+       data:s2.map(function(d){var o=d.fc||d.out;return o?{value:o.precip,itemStyle:{color:rainColor(o.precip),opacity:.92,borderRadius:[3,3,0,0]}}:null;})}
     ]});
   _charts.push(c);
 }
