@@ -50,10 +50,16 @@ Enhancements to what already runs. None are required for daily operation. Priori
    federation/alpine-club sites (FEDME, FFCAM/refuges.info, CAI, Alpenverein — often the
    *only* real source for hut/access beta), guidebook publisher pages (Rockfax, Vertebrate,
    Cicerone), camptocamp.org (French/alpine wikis), and credible blog trip reports with real
-   route/access detail (never SEO filler). First batch covers the top 5 ranked venues
-   (Gredos, Écrins, Aladaglar, Picos de Europa, Tenerife); **remaining ~37 venues are
-   queued** for incremental follow-up passes — a venue with no entry yet in
-   `extra-climbing.json` means "not researched", not "nothing exists".
+   route/access detail (never SEO filler). **Done (4 Jul 2026): all 42 venues researched
+   in 4 batches — 41 of 42 have real, HTTP-verified links (202 total); "Medina" (listed as
+   Portugal/desert granite) has none because no real climbing area matches that
+   name/description could be found after a genuine search effort — likely a data issue in
+   the source venue list/spreadsheet worth checking, not a research gap.** A small number
+   of links sit behind Cloudflare/bot-protection (403/503 to automated checks) on
+   well-known sites (UKClimbing, theCrag.com) — kept, since these consistently clear for
+   real browsers (same conclusion reached checking the accommodation links). Future
+   maintenance: these links aren't re-checked automatically like the stays `web` links are
+   (no periodic health-check wired up yet) — worth adding if link rot becomes visible.
 7. **"Confidence"** — show climatology spread + seasonal ensemble agreement, not just means.
 8. **Email/Slack digest** — daily top pick + cheapest fares to a channel.
 9. **Bump GitHub Action versions** to Node24 to clear the deprecation warning.

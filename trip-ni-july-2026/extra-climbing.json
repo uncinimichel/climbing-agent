@@ -1,37 +1,1296 @@
 {
-  "Gredos": [
-    {"title": "Los Galayos, Trad Climbing Area", "source": "theCrag.com", "url": "https://www.thecrag.com/en/climbing/spain/los-galayos", "note": "Comprehensive route database for the ~40 granite spires of Los Galayos, listing 400+ trad routes from 1-8 pitches with grades and topos."},
-    {"title": "Galayos Area Guide", "source": "Mountain Project", "url": "https://www.mountainproject.com/area/108136820/galayos", "note": "Area page with driving directions from Madrid, the approach to Victory refuge, rack/gear recommendations, lodging options, and best-season advice."},
-    {"title": "Dos años de actividad en Galayos", "source": "Desnivel.com", "url": "https://www.desnivel.com/escalada-roca/dos-anos-de-actividad-en-galayos/", "note": "Spanish climbing news trip report on new route activity across Los Galayos towers (2016-2018), including named routes, grades, and local ethics."},
-    {"title": "Sierra de Gredos Rock Climbing Guidebook", "source": "Climb Europe / Desnivel", "url": "https://climb-europe.com/products/sierra-de-gredos-rock-climbing-guidebook", "note": "Publisher page for the Desnivel guidebook covering the best 100 multi-pitch routes (IV-6b) across the wider Sierra de Gredos range, including the Galayos towers."},
-    {"title": "Climbing in Galayos, Torozo and Villarejo", "source": "Climbing in Spain (guide service blog)", "url": "https://climbinginspain.com/en/outdoor-climbing/climbing-galayos/", "note": "Overview of trad climbing across the wider Gredos granite area (Galayos, El Torozo, Villarejo) with meeting points and refuge logistics."}
-  ],
-  "Écrins (Aiguille Dibona)": [
-    {"title": "Aiguille Dibona area page (waypoint / route database)", "source": "camptocamp.org", "url": "https://www.camptocamp.org/waypoints/39006/fr/aiguille-dibona", "note": "Collaborative topo database entry for the Aiguille Dibona summit, linking to its many routes, access notes, and difficulty grades."},
-    {"title": "Aiguille Dibona crag logbook", "source": "UKClimbing (UKC)", "url": "https://www.ukclimbing.com/logbook/crags/aiguille_dibona-3086/", "note": "UKC crag page listing routes on the Dibona (Normal Route, Voie du Nain, Visite Obligatoire, Lady Bona, etc.) with approach time from Refuge du Soreiller and user logbook entries."},
-    {"title": "Aiguille Dibona, Rock climbing", "source": "theCrag.com", "url": "https://www.thecrag.com/en/climbing/france/aiguille-dibona", "note": "Area page listing dozens of trad and sport routes at Aiguille Dibona with grades, star ratings, and a linked guidebooks section."},
-    {"title": "Le refuge du Soreiller", "source": "Destination Parc national des Écrins (official park site)", "url": "https://destination.ecrins-parcnational.fr/trek/996340-Le-refuge-du-Soreiller", "note": "Official approach description and practical info for Refuge du Soreiller, the hut used as base camp for Aiguille Dibona climbing."},
-    {"title": "Climbing the Aiguille Dibona in Écrins National Park, France", "source": "Alps Insight (blog)", "url": "https://alpsinsight.com/stories/climbing-the-aiguille-dibona-in-ecrins-national-park-france/", "note": "First-hand trip report from a multi-day stay at Refuge du Soreiller covering routes climbed (Visite Obligatoire and others), conditions, and rock quality."}
-  ],
-  "Aladaglar": [
-    {"title": "Aladaglar Mountains Turkey — climber Q&A thread", "source": "UKClimbing (forums)", "url": "https://www.ukclimbing.com/forums/expedition+alpine/aladaglar_mountains_turkey-702052", "note": "First-hand beta thread naming Demirkazık, Kızılkaya, Yedigöller, Direktaş and Parmakkaya, access via Demirkazik village/Sokullupınar, guidebook recommendations, and contact for the Ince family's camp."},
-    {"title": "Rock climbing and sport climbing in Aladağlar, Turkey", "source": "Climb Europe", "url": "https://climb-europe.com/pages/rock-climbing-turkey-aladaglar", "note": "Area overview covering Cimbar Valley, Pinarbasi Canyon and Kazikli Valley sport crags plus 150+ multi-pitch alpine routes (200-650m), access/season/accommodation logistics."},
-    {"title": "Aladaglar Rock Climbing Guidebook and Topo", "source": "Climb Europe (guidebook publisher)", "url": "https://climb-europe.com/products/aladaglar-rock-climbing-guidebook", "note": "Product page for Recep Ince's 232-page English-language guidebook covering 450+ sport routes and 65 multi-pitch alpine routes with photo topos and grades."},
-    {"title": "Rock Climbing in Aladaglar National Park", "source": "Mountain Project", "url": "https://www.mountainproject.com/area/112227314/aladaglar-national-park", "note": "Area page listing sub-sectors (Cımbar Valley, Kazikli Ali Canyon, Pınarbaşı Canyon, Yelatan) with ~103 documented routes and grades."},
-    {"title": "Taurus Mountains Aladağlar: Technical Guide to Turkey's Alpine Heart", "source": "Climb Anatolia (blog)", "url": "https://climbanatolia.com/en/mountaineering-in-turkey/taurus-mountains-aladaglar-the-alpine-heart-of-turkey/", "note": "Detailed technical guide covering sectors (Demirkazık/North, Yedigöller Plateau), a 5-day traverse itinerary, water sources, season/permits, and gear checklist."}
-  ],
-  "Picos de Europa": [
-    {"title": "Picu Urriellu / Naranjo de Bulnes area page", "source": "theCrag.com", "url": "https://www.thecrag.com/en/climbing/spain/naranjo-de-bulnes", "note": "Route database for Naranjo de Bulnes with dozens of logged multi-pitch trad/mixed routes (250m-700m+), grades from moderate to 8c."},
-    {"title": "UKC Destination Guide: Picos de Europa", "source": "UKClimbing", "url": "https://www.ukclimbing.com/articles/destinations/picos_de_europa-1858", "note": "Overview article covering the four faces of Naranjo de Bulnes, route grades (HS to extreme), best season (June-Sept), and descent/abseil info."},
-    {"title": "Vega de Urriellu / Refugio de Urriellu hut booking", "source": "reservarefugios.com", "url": "https://www.reservarefugios.com/en/shelters/vega-de-urriellu", "note": "Official-style booking and info page for the Refugio de Urriellu hut at the base of Naranjo de Bulnes, with bunk capacity, pricing and season dates."},
-    {"title": "Pico Urriellu / Naranjo de Bulnes climbing area", "source": "Mountain Project", "url": "https://www.mountainproject.com/area/112548138/pico-urriellu-naranjo-de-bulnes", "note": "Area page listing specific multi-pitch routes (e.g. Directa de los Martinez, Murciana 78) with grades, approach via Sotres, and hut approach times."},
-    {"title": "Climbing in the Picos de Europa (trip report)", "source": "Mountain Wagon blog", "url": "https://mountainwagon.com/the-blog/2017/1/12/climbing-in-the-picos-de-europa", "note": "Detailed first-hand trip report with real route/pitch beta across Naranjo de Bulnes, Peña de Fresnidiello, Pico Torres and Gilbo, plus base-town and guidebook recommendations."}
-  ],
-  "Tenerife": [
-    {"title": "Tenerife, Rock climbing (area hub)", "source": "theCrag.com", "url": "https://www.thecrag.com/en/climbing/spain/tenerife", "note": "Central database of all Tenerife climbing areas, including Teide National Park, Guaria and other multi-pitch trad crags."},
-    {"title": "El Catedral crag logbook", "source": "UKClimbing.com", "url": "https://www.ukclimbing.com/logbook/crags/el_catedral-17495/", "note": "Details the 2200m-altitude Teide National Park crag with 15 mostly-traditional 1-4 pitch granite/ignimbrite routes."},
-    {"title": "Guaria crag access and route info", "source": "TheTopo (formerly 27crags)", "url": "https://thetopo.com/crags/guaria-guia-de-isora/access", "note": "Covers permit requirements, approach, and multi-pitch trad/sport climbing at Tenerife's tallest and most concentrated multi-pitch crag."},
-    {"title": "Multi-pitch climbing on the Teide volcano", "source": "DirectMountain", "url": "https://www.directmountain.com/en/activities/491-rock-climbing-multi-pitch-route-teide-volcano/", "note": "Route-level beta on several Teide/Anaga multi-pitch trad and bolted lines (La Catedral, Roques de Guillermo, 7 Estrellas Verdes, La Directa Rusa)."},
-    {"title": "Las Cañadas / Parque Nacional del Teide climbing guide", "source": "Canarias Climb", "url": "https://www.canariasclimb.com/las-canadas-parque-nacional-del-teide/", "note": "Local Spanish-language guide to the Teide National Park sectors (El Capricho, Los Cachorros, La Catedral) and access via the Parador Nacional del Teide."}
-  ]
+ "Gredos": [
+  {
+   "title": "Los Galayos, Trad Climbing Area",
+   "source": "theCrag.com",
+   "url": "https://www.thecrag.com/en/climbing/spain/los-galayos",
+   "note": "Comprehensive route database for the ~40 granite spires of Los Galayos, listing 400+ trad routes from 1-8 pitches with grades and topos."
+  },
+  {
+   "title": "Galayos Area Guide",
+   "source": "Mountain Project",
+   "url": "https://www.mountainproject.com/area/108136820/galayos",
+   "note": "Area page with driving directions from Madrid, the approach to Victory refuge, rack/gear recommendations, lodging options, and best-season advice."
+  },
+  {
+   "title": "Dos años de actividad en Galayos",
+   "source": "Desnivel.com",
+   "url": "https://www.desnivel.com/escalada-roca/dos-anos-de-actividad-en-galayos/",
+   "note": "Spanish climbing news trip report on new route activity across Los Galayos towers (2016-2018), including named routes, grades, and local ethics."
+  },
+  {
+   "title": "Sierra de Gredos Rock Climbing Guidebook",
+   "source": "Climb Europe / Desnivel",
+   "url": "https://climb-europe.com/products/sierra-de-gredos-rock-climbing-guidebook",
+   "note": "Publisher page for the Desnivel guidebook covering the best 100 multi-pitch routes (IV-6b) across the wider Sierra de Gredos range, including the Galayos towers."
+  },
+  {
+   "title": "Climbing in Galayos, Torozo and Villarejo",
+   "source": "Climbing in Spain (guide service blog)",
+   "url": "https://climbinginspain.com/en/outdoor-climbing/climbing-galayos/",
+   "note": "Overview of trad climbing across the wider Gredos granite area (Galayos, El Torozo, Villarejo) with meeting points and refuge logistics."
+  }
+ ],
+ "Écrins (Aiguille Dibona)": [
+  {
+   "title": "Aiguille Dibona area page (waypoint / route database)",
+   "source": "camptocamp.org",
+   "url": "https://www.camptocamp.org/waypoints/39006/fr/aiguille-dibona",
+   "note": "Collaborative topo database entry for the Aiguille Dibona summit, linking to its many routes, access notes, and difficulty grades."
+  },
+  {
+   "title": "Aiguille Dibona crag logbook",
+   "source": "UKClimbing (UKC)",
+   "url": "https://www.ukclimbing.com/logbook/crags/aiguille_dibona-3086/",
+   "note": "UKC crag page listing routes on the Dibona (Normal Route, Voie du Nain, Visite Obligatoire, Lady Bona, etc.) with approach time from Refuge du Soreiller and user logbook entries."
+  },
+  {
+   "title": "Aiguille Dibona, Rock climbing",
+   "source": "theCrag.com",
+   "url": "https://www.thecrag.com/en/climbing/france/aiguille-dibona",
+   "note": "Area page listing dozens of trad and sport routes at Aiguille Dibona with grades, star ratings, and a linked guidebooks section."
+  },
+  {
+   "title": "Le refuge du Soreiller",
+   "source": "Destination Parc national des Écrins (official park site)",
+   "url": "https://destination.ecrins-parcnational.fr/trek/996340-Le-refuge-du-Soreiller",
+   "note": "Official approach description and practical info for Refuge du Soreiller, the hut used as base camp for Aiguille Dibona climbing."
+  },
+  {
+   "title": "Climbing the Aiguille Dibona in Écrins National Park, France",
+   "source": "Alps Insight (blog)",
+   "url": "https://alpsinsight.com/stories/climbing-the-aiguille-dibona-in-ecrins-national-park-france/",
+   "note": "First-hand trip report from a multi-day stay at Refuge du Soreiller covering routes climbed (Visite Obligatoire and others), conditions, and rock quality."
+  }
+ ],
+ "Aladaglar": [
+  {
+   "title": "Aladaglar Mountains Turkey — climber Q&A thread",
+   "source": "UKClimbing (forums)",
+   "url": "https://www.ukclimbing.com/forums/expedition+alpine/aladaglar_mountains_turkey-702052",
+   "note": "First-hand beta thread naming Demirkazık, Kızılkaya, Yedigöller, Direktaş and Parmakkaya, access via Demirkazik village/Sokullupınar, guidebook recommendations, and contact for the Ince family's camp."
+  },
+  {
+   "title": "Rock climbing and sport climbing in Aladağlar, Turkey",
+   "source": "Climb Europe",
+   "url": "https://climb-europe.com/pages/rock-climbing-turkey-aladaglar",
+   "note": "Area overview covering Cimbar Valley, Pinarbasi Canyon and Kazikli Valley sport crags plus 150+ multi-pitch alpine routes (200-650m), access/season/accommodation logistics."
+  },
+  {
+   "title": "Aladaglar Rock Climbing Guidebook and Topo",
+   "source": "Climb Europe (guidebook publisher)",
+   "url": "https://climb-europe.com/products/aladaglar-rock-climbing-guidebook",
+   "note": "Product page for Recep Ince's 232-page English-language guidebook covering 450+ sport routes and 65 multi-pitch alpine routes with photo topos and grades."
+  },
+  {
+   "title": "Rock Climbing in Aladaglar National Park",
+   "source": "Mountain Project",
+   "url": "https://www.mountainproject.com/area/112227314/aladaglar-national-park",
+   "note": "Area page listing sub-sectors (Cımbar Valley, Kazikli Ali Canyon, Pınarbaşı Canyon, Yelatan) with ~103 documented routes and grades."
+  },
+  {
+   "title": "Taurus Mountains Aladağlar: Technical Guide to Turkey's Alpine Heart",
+   "source": "Climb Anatolia (blog)",
+   "url": "https://climbanatolia.com/en/mountaineering-in-turkey/taurus-mountains-aladaglar-the-alpine-heart-of-turkey/",
+   "note": "Detailed technical guide covering sectors (Demirkazık/North, Yedigöller Plateau), a 5-day traverse itinerary, water sources, season/permits, and gear checklist."
+  }
+ ],
+ "Picos de Europa": [
+  {
+   "title": "Picu Urriellu / Naranjo de Bulnes area page",
+   "source": "theCrag.com",
+   "url": "https://www.thecrag.com/en/climbing/spain/naranjo-de-bulnes",
+   "note": "Route database for Naranjo de Bulnes with dozens of logged multi-pitch trad/mixed routes (250m-700m+), grades from moderate to 8c."
+  },
+  {
+   "title": "UKC Destination Guide: Picos de Europa",
+   "source": "UKClimbing",
+   "url": "https://www.ukclimbing.com/articles/destinations/picos_de_europa-1858",
+   "note": "Overview article covering the four faces of Naranjo de Bulnes, route grades (HS to extreme), best season (June-Sept), and descent/abseil info."
+  },
+  {
+   "title": "Vega de Urriellu / Refugio de Urriellu hut booking",
+   "source": "reservarefugios.com",
+   "url": "https://www.reservarefugios.com/en/shelters/vega-de-urriellu",
+   "note": "Official-style booking and info page for the Refugio de Urriellu hut at the base of Naranjo de Bulnes, with bunk capacity, pricing and season dates."
+  },
+  {
+   "title": "Pico Urriellu / Naranjo de Bulnes climbing area",
+   "source": "Mountain Project",
+   "url": "https://www.mountainproject.com/area/112548138/pico-urriellu-naranjo-de-bulnes",
+   "note": "Area page listing specific multi-pitch routes (e.g. Directa de los Martinez, Murciana 78) with grades, approach via Sotres, and hut approach times."
+  },
+  {
+   "title": "Climbing in the Picos de Europa (trip report)",
+   "source": "Mountain Wagon blog",
+   "url": "https://mountainwagon.com/the-blog/2017/1/12/climbing-in-the-picos-de-europa",
+   "note": "Detailed first-hand trip report with real route/pitch beta across Naranjo de Bulnes, Peña de Fresnidiello, Pico Torres and Gilbo, plus base-town and guidebook recommendations."
+  }
+ ],
+ "Tenerife": [
+  {
+   "title": "Tenerife, Rock climbing (area hub)",
+   "source": "theCrag.com",
+   "url": "https://www.thecrag.com/en/climbing/spain/tenerife",
+   "note": "Central database of all Tenerife climbing areas, including Teide National Park, Guaria and other multi-pitch trad crags."
+  },
+  {
+   "title": "El Catedral crag logbook",
+   "source": "UKClimbing.com",
+   "url": "https://www.ukclimbing.com/logbook/crags/el_catedral-17495/",
+   "note": "Details the 2200m-altitude Teide National Park crag with 15 mostly-traditional 1-4 pitch granite/ignimbrite routes."
+  },
+  {
+   "title": "Guaria crag access and route info",
+   "source": "TheTopo (formerly 27crags)",
+   "url": "https://thetopo.com/crags/guaria-guia-de-isora/access",
+   "note": "Covers permit requirements, approach, and multi-pitch trad/sport climbing at Tenerife's tallest and most concentrated multi-pitch crag."
+  },
+  {
+   "title": "Multi-pitch climbing on the Teide volcano",
+   "source": "DirectMountain",
+   "url": "https://www.directmountain.com/en/activities/491-rock-climbing-multi-pitch-route-teide-volcano/",
+   "note": "Route-level beta on several Teide/Anaga multi-pitch trad and bolted lines (La Catedral, Roques de Guillermo, 7 Estrellas Verdes, La Directa Rusa)."
+  },
+  {
+   "title": "Las Cañadas / Parque Nacional del Teide climbing guide",
+   "source": "Canarias Climb",
+   "url": "https://www.canariasclimb.com/las-canadas-parque-nacional-del-teide/",
+   "note": "Local Spanish-language guide to the Teide National Park sectors (El Capricho, Los Cachorros, La Catedral) and access via the Parador Nacional del Teide."
+  }
+ ],
+ "Lundy": [
+  {
+   "title": "Lundy Destination Guide",
+   "source": "UKClimbing",
+   "url": "https://www.ukclimbing.com/articles/destinations/lundy-8709",
+   "note": "Narrative overview of the whole island's granite sea-cliff climbing, grade range, the MS Oldenburg crossing, and why Lundy is a step up from mainland Cornwall granite."
+  },
+  {
+   "title": "Lundy area page (all crags and routes)",
+   "source": "theCrag.com",
+   "url": "https://www.thecrag.com/en/climbing/united-kingdom/lundy",
+   "note": "Database-style area page listing Lundy's many sub-crags across the island with routes, topos and logs."
+  },
+  {
+   "title": "Climbing on Lundy",
+   "source": "Landmark Trust",
+   "url": "https://www.landmarktrust.org.uk/lundyisland/discovering-lundy/activities/climbing/",
+   "note": "Official access page covering how to arrange climbing on Lundy, nesting-season restrictions, and booking/warden check-in requirements."
+  },
+  {
+   "title": "Lundy (2008) Climbers' Club guidebook review",
+   "source": "Rock+Run blog",
+   "url": "https://rockrun.com/blogs/the-flash-rock-run-blog/lundy-guidebook-review",
+   "note": "Review of the definitive Climbers' Club guidebook to Lundy, covering its topos, Harvey's map, and history sections."
+  },
+  {
+   "title": "Lundy climbing trip - key information before you sail",
+   "source": "Southampton Climbing Club",
+   "url": "https://southamptonclimbingclub.org/wp-content/uploads/2020/01/Lundy-Before-you-sail-info-2020.pdf",
+   "note": "Practical club-produced PDF briefing on MS Oldenburg logistics, gear check-in, and what to expect on a Lundy climbing trip."
+  }
+ ],
+ "Mournes, NI": [
+  {
+   "title": "Mourne Mountains, Trad Climbing",
+   "source": "theCrag.com",
+   "url": "https://www.thecrag.com/en/climbing/ireland/mourne-mountains",
+   "note": "Area overview page listing all Mourne sub-crags with route counts, grades, and access notes."
+  },
+  {
+   "title": "A Rough Guide to the Mournes",
+   "source": "Belfast Climbing Club",
+   "url": "https://www.belfastclimbingclub.co.uk/a-rough-guide-to-the-mournes",
+   "note": "Practical local club guide covering 11 main Mourne crags with grade ranges, walk-in times, parking, and recommended routes."
+  },
+  {
+   "title": "Rock Climbs in the Mourne Mountains (guidebook)",
+   "source": "UKClimbing Logbook",
+   "url": "https://www.ukclimbing.com/logbook/books/rock_climbs_in_the_mourne_mountains-794",
+   "note": "Logbook entry for the definitive Mourne Mountains trad guidebook covering 26+ crags and ~1,000 routes."
+  },
+  {
+   "title": "Rock Climbs in the Mourne Mountains Guidebook",
+   "source": "Climb Europe",
+   "url": "https://www.climb-europe.com/mourne-mountains-rock-climbing-guidebook.html",
+   "note": "Retailer page detailing the Mournes guidebook's coverage, edition, and the granite range's crag/approach character from VD to E10."
+  },
+  {
+   "title": "Climbing in the Mourne Mountains",
+   "source": "Weekend Explorer (blog)",
+   "url": "https://iclimbedamountain.wordpress.com/2020/09/01/climbing-in-the-mourne-mountains/",
+   "note": "First-hand trip report on trad climbs at Hen Mountain, Pigeon Rock, Annalong Buttress and Slieve Bearnagh."
+  }
+ ],
+ "Mont Blonc": [
+  {
+   "title": "Destination Guide: Best of Chamonix Granite up to 6b",
+   "source": "UKClimbing",
+   "url": "https://www.ukclimbing.com/articles/destinations/best_of_chamonix_granite_up_to_6b-15375",
+   "note": "UKC destination guide covering the best moderate-grade granite multi-pitch alpine rock routes across the Chamonix aiguilles."
+  },
+  {
+   "title": "Chamonix Mont Blanc",
+   "source": "Mountain Project",
+   "url": "https://www.mountainproject.com/area/106470309/chamonix-mont-blanc",
+   "note": "Area index for the whole Mont Blanc massif with 13 sub-regions and 215 logged climbs."
+  },
+  {
+   "title": "Mont Blanc Climbing: Best Multi-Pitch Routes",
+   "source": "Compagnie des Guides de Chamonix",
+   "url": "https://www.chamonix-guides.com/en/activities/details/rock-climbing-chamonix-best-rock-climbs",
+   "note": "The official Chamonix guides' bureau page grading multi-pitch granite routes with equipment and guiding/booking info."
+  },
+  {
+   "title": "Voie Normale du Mont Blanc - refuge booking portal",
+   "source": "FFCAM",
+   "url": "https://montblanc.ffcam.fr/GB_home.html",
+   "note": "Official French Alpine Club booking portal for the Goûter, Tête Rousse and Nid d'Aigle refuges, with regulations and season dates."
+  },
+  {
+   "title": "Escalade dans le massif du Mont Blanc / Aiguilles de Chamonix",
+   "source": "Camptocamp.org (forum)",
+   "url": "https://forum.camptocamp.org/t/escalade-dans-le-massif-du-mont-blanc-aiguilles-de-chamonix-voi/102475",
+   "note": "Community forum thread with real route beta and gear advice for classic easy multi-pitch lines like Rébuffat-Pierre."
+  }
+ ],
+ "Paklenica (Anica Kuk)": [
+  {
+   "title": "National Park of Paklenica — full area overview",
+   "source": "Mountain Project",
+   "url": "https://www.mountainproject.com/area/106700370/national-park-of-paklenica",
+   "note": "Covers all 8 sectors of the park with route counts and grade ranges."
+  },
+  {
+   "title": "Paklenica, Sport climbing — area page",
+   "source": "theCrag.com",
+   "url": "https://www.thecrag.com/en/climbing/croatia/paklenica-zadar",
+   "note": "Area hub with sectors, route database, grades, and access/fee summary for the whole gorge."
+  },
+  {
+   "title": "Climbing at National Park Paklenica — official info",
+   "source": "np-paklenica.hr",
+   "url": "https://www.np-paklenica.hr/en/climbing-en/climbing-site",
+   "note": "Official permit/pass info, sector list, season dates, and mountain rescue presence."
+  },
+  {
+   "title": "Paklenica National Park, Croatia — must-do routes?",
+   "source": "UKClimbing forums",
+   "url": "https://www.ukclimbing.com/forums/destinations/paklenica_national_park_croatia_must_do_routes-692226",
+   "note": "Community discussion thread with real climber recommendations on routes and areas across Paklenica."
+  },
+  {
+   "title": "Croatia 2023: Climbing our first Big Wall – Anića Kuk",
+   "source": "Curious Gnome (blog)",
+   "url": "https://curious-gnome.com/2023/09/17/croatia-2023-climbing-our-first-big-wall-anica-kuk/",
+   "note": "First-hand trip report with approach, route-finding, and pitch-by-pitch beta for a 13-pitch route."
+  }
+ ],
+ "Montserrat": [
+  {
+   "title": "Montserrat, Sport climbing",
+   "source": "theCrag.com",
+   "url": "https://www.thecrag.com/en/climbing/spain/montserrat",
+   "note": "Comprehensive area database for the whole Montserrat massif, covering all sectors, thousands of routes, and linked guidebooks."
+  },
+  {
+   "title": "Rock Climbing in Montserrat, Catalonia",
+   "source": "Mountain Project",
+   "url": "https://www.mountainproject.com/area/106492100/montserrat",
+   "note": "Area overview describing Montserrat's conglomerate rock, sub-areas, access via train/funicular, and route length/grade range."
+  },
+  {
+   "title": "Escalada al Parc Natural de la Muntanya de Montserrat",
+   "source": "Patronat de la Muntanya de Montserrat",
+   "url": "https://muntanyamontserrat.gencat.cat/ca/el_parc/escalada/",
+   "note": "Official park authority page listing permanent/seasonal climbing closures and conservation rules."
+  },
+  {
+   "title": "Climbing in Montserrat in Spain",
+   "source": "Maja Travels (blog)",
+   "url": "https://majatravels.com/climbing-in-montserrat-in-spain/",
+   "note": "First-hand trip report with real multi-pitch route names/grades and cable-car/approach logistics."
+  },
+  {
+   "title": "Montserrat multi-pitch recommendations",
+   "source": "UKClimbing Forums",
+   "url": "https://www.ukclimbing.com/forums/destinations/montserrat_multi-pitch_recommendations-636323",
+   "note": "Climber forum thread with specific easy multi-pitch route suggestions and guidebook recommendations."
+  }
+ ],
+ "Freÿr": [
+  {
+   "title": "Rochers de Freyr, Sport climbing",
+   "source": "theCrag.com",
+   "url": "https://www.thecrag.com/en/climbing/belgium/freyr",
+   "note": "Comprehensive area database covering all of Freÿr's crags/sectors, 600+ routes graded 3 to 8c+."
+  },
+  {
+   "title": "Freyr",
+   "source": "UKClimbing (UKC Logbook)",
+   "url": "https://www.ukclimbing.com/logbook/crags/freyr-2018/",
+   "note": "UKC's crag/area logbook for Freÿr with route listings, grades, user logs and forum discussion links."
+  },
+  {
+   "title": "Anseremme (Rochers de Freyr) - Où grimper ?",
+   "source": "Club Alpin Belge (CAB)",
+   "url": "https://www.clubalpin.be/location/67",
+   "note": "Official CAB site management page with directions, bivouac/refuge fees, and membership access rules."
+  },
+  {
+   "title": "Activités Escalade",
+   "source": "Club Alpin Belge (CAB)",
+   "url": "https://www.clubalpin.be/escalade",
+   "note": "CAB's general climbing-activities hub, covering the club's role managing Freÿr and other Belgian crags."
+  },
+  {
+   "title": "Rock Climbing Area Freyr - info, betas, location",
+   "source": "ClimbingAway.fr",
+   "url": "https://climbingaway.fr/en/climbing-areas/freyr",
+   "note": "Independent area guide with GPS coordinates, grade range, rock style by sector, and classic multi-pitch/historic routes."
+  }
+ ],
+ "Loften": [
+  {
+   "title": "Destination Guide: Lofoten Rock - Norway",
+   "source": "UKClimbing",
+   "url": "https://www.ukclimbing.com/articles/destinations/lofoten_rock_-_norway-1819",
+   "note": "UKC destination guide covering the wider Lofoten climbing scene, best season, and the Nord Norske Climbing School as a local hub."
+  },
+  {
+   "title": "Lofoten, Rock Climbing",
+   "source": "theCrag.com",
+   "url": "https://www.thecrag.com/en/climbing/norway/lofoten",
+   "note": "Area index for the whole Lofoten archipelago with sub-areas spanning 800+ trad and sport routes."
+  },
+  {
+   "title": "Lofoten Climbs (guidebook)",
+   "source": "Rockfax",
+   "url": "https://rockfax.com/climbing-guides/books/lofoten-climbs/",
+   "note": "The current standard English-language guidebook covering multi-pitch trad and sport routes across Austvågøy and neighbouring islands."
+  },
+  {
+   "title": "Climbing in the Lofoten Islands and Stetind (trip report)",
+   "source": "Irish Mountaineering Club",
+   "url": "https://www.irishmountaineeringclub.org/climbing-in-the-lofoten-islands-and-stetind-or-lofotens-lavish-lavatories-a-guide-to-arctic-norways-finest-outhouses/",
+   "note": "Real July 2019 trip report with campsite, access and logistics beta plus a list of 35 routes climbed."
+  },
+  {
+   "title": "Rock Climbing in Lofoten",
+   "source": "Mountain Project",
+   "url": "https://www.mountainproject.com/area/106848867/lofoten",
+   "note": "Area page covering access, camping, parking regulations, weather patterns and classic routes across the archipelago."
+  }
+ ],
+ "West Cornwall (Bosigran)": [
+  {
+   "title": "Cornwall (Trad Climbing) area page",
+   "source": "theCrag.com",
+   "url": "https://www.thecrag.com/en/climbing/united-kingdom/england/south-west-england/cornwall",
+   "note": "Database-style area page indexing all West Cornwall crags (Bosigran, Chair Ladder, Sennen, Land's End, etc.) with routes, grades and maps."
+  },
+  {
+   "title": "Wonderful West Penwith: Climbing on the Cornish Coast",
+   "source": "UKClimbing Articles",
+   "url": "https://www.ukclimbing.com/articles/destinations/wonderful_west_penwith_climbing_on_the_cornish_coast-7379",
+   "note": "Editorial destination guide surveying the granite sea cliffs of the whole West Penwith coast."
+  },
+  {
+   "title": "West Cornwall - Chair Ladder & The Lizard (guidebook)",
+   "source": "The Climbers' Club",
+   "url": "https://climbers-club.co.uk/guidebooks/chair_laddder_%26_lizard",
+   "note": "Official Climbers' Club page for the definitive guidebook covering the south coast crags from Land's End to the Lizard."
+  },
+  {
+   "title": "Bird restrictions: can you climb there?",
+   "source": "BMC",
+   "url": "https://services.thebmc.co.uk/access-skills-bird-restrictions",
+   "note": "Explains seasonal nesting-bird climbing restrictions and how to check the BMC Regional Access Database before visiting a crag."
+  },
+  {
+   "title": "Climbing around seals: good practice for UK sea cliff climbing",
+   "source": "BMC",
+   "url": "https://www.thebmc.co.uk/en/climbing-around-seals-good-practise-for-uk-sea-cliff-climbing",
+   "note": "Access/conservation advice on keeping safe distance from seals relevant to Cornish sea-cliff approaches."
+  }
+ ],
+ "Elbsandstein": [
+  {
+   "title": "Die Sächsischen Kletterregeln (The Saxon Climbing Rules)",
+   "source": "Sächsischer Bergsteigerbund (SBB)",
+   "url": "https://bergsteigerbund.de/bergsport/klettern-im-elbsandsteingebirge/die-saechsischen-kletterregeln/",
+   "note": "Official rulebook explaining the free-climbing-only ethic: no bolts/cams/chalk, protection only via ring bolts and slings/knots, since 1913."
+  },
+  {
+   "title": "Tipps zum ersten Besuch im Elbsandstein",
+   "source": "Sächsischer Bergsteigerbund (SBB)",
+   "url": "https://bergsteigerbund.de/bergsport/klettern-im-elbsandsteingebirge/neuimelbsandstein/",
+   "note": "Practical guidance for newcomers on gear, protected-area etiquette, and recommending a guide before climbing independently."
+  },
+  {
+   "title": "Sächsische Schweiz (Saxon Switzerland), Trad Climbing",
+   "source": "theCrag.com",
+   "url": "https://www.thecrag.com/en/climbing/germany/sachsische-schweiz",
+   "note": "Area database covering the whole Saxon Switzerland region's crags, towers and thousands of routes."
+  },
+  {
+   "title": "Lines in the Sand - Crack Climbing on German & Czech Sandstone",
+   "source": "UKClimbing",
+   "url": "https://www.ukclimbing.com/articles/features/lines_in_the_sand_-_crack_climbing_on_german+czech_sandstone-15572",
+   "note": "Feature article on the shared Saxon/Bohemian sandstone tradition, explaining knotted-rope protection and chalk ban."
+  },
+  {
+   "title": "Elbsandstein Plaisir Climbing Guidebook",
+   "source": "climbing-guide.eu",
+   "url": "https://www.climbing-guide.eu/climbing-guidebook-elbsandstein-plaisir-11460/",
+   "note": "Publisher/retailer page for a guidebook covering over 400 routes across five sub-areas of the Elbe Sandstone Mountains."
+  }
+ ],
+ "Spitzkoppe": [
+  {
+   "title": "Spitzkoppe & The Pontoks - Area Guide",
+   "source": "theCrag.com",
+   "url": "https://www.thecrag.com/en/climbing/namibia/spitzkop",
+   "note": "Full area database covering all Spitzkoppe/Pontoks sub-areas with routes, topos, grades, and approach notes."
+  },
+  {
+   "title": "Spitzkoppe and Pontoks",
+   "source": "Mountain Project",
+   "url": "https://www.mountainproject.com/area/109505206/spitzkoppe-and-pontoks",
+   "note": "Area page listing 8 sub-zones with directions from the B2 road, GPS coordinates, and route photos."
+  },
+  {
+   "title": "Climbing at Spitzkoppe, Namibia",
+   "source": "climbing.co.za wiki",
+   "url": "https://www.climbing.co.za/wiki/Spitzkoppe_%26_Pontoks",
+   "note": "Southern African climbing wiki page covering geology, access via the D1930 gravel road, campsite/hut costs, and the local guidebook."
+  },
+  {
+   "title": "Spitzkoppe trip report - runout slabs and conservancy access",
+   "source": "chossclimbers.com",
+   "url": "https://chossclimbers.com/testing/africa/namibia/spitzkoppe/",
+   "note": "First-hand trip report on conservancy fees, campsite facilities, and sandbagged, runout multi-pitch slab routes."
+  },
+  {
+   "title": "Climb Namibia - granite climbing festival and trip planning",
+   "source": "climbnamibia.org",
+   "url": "https://climbnamibia.org/",
+   "note": "Active Namibia climbing hub covering the annual Spitzkoppe climbing festival, gear/water logistics, and shuttle transport from Windhoek."
+  }
+ ],
+ "Devon": [
+  {
+   "title": "The Culm Coast — area overview",
+   "source": "theCrag.com",
+   "url": "https://www.thecrag.com/en/climbing/united-kingdom/the-culm-coast",
+   "note": "Route database and area overview for the wider Culm Coast, listing sub-crags with route counts and grades."
+  },
+  {
+   "title": "Hartland Quay access advice",
+   "source": "BMC Regional Access Database",
+   "url": "https://services.thebmc.co.uk/modules/RAD/View.aspx?id=3252",
+   "note": "Official BMC access page for Hartland Quay covering tidal cut-off times, rock type and route grade range."
+  },
+  {
+   "title": "Culm Coast and Baggy Point rock climbing guidebook",
+   "source": "Climb Europe",
+   "url": "https://climb-europe.com/products/culm-coast-and-baggy-point-rock-climbing-guidebook",
+   "note": "The current definitive 2021 Climbers' Club guidebook covering over 1,200 routes across the Culm Coast."
+  },
+  {
+   "title": "Extreme Culm — Recollections of Climbing on the Coast",
+   "source": "UKClimbing.com",
+   "url": "https://www.ukclimbing.com/articles/features/extreme_culm_-_recollections_of_climbing_on_the_coast-13131",
+   "note": "UKC feature article giving first-hand recollections and character of climbing across the Culm Coast's tide-dependent sea cliffs."
+  },
+  {
+   "title": "Wreckers' Slab",
+   "source": "Footless Crow (blog)",
+   "url": "https://footlesscrow.blogspot.com/2014/03/wreckers-slab.html",
+   "note": "Stephen Venables' trip-report/history piece on climbing the classic Wreckers' Slab, with context on the loose, slaty Culm rock."
+  }
+ ],
+ "Hoy": [
+  {
+   "title": "Destination Guide: The Orkney Islands - The Old Man of Hoy and Beyond",
+   "source": "UKClimbing",
+   "url": "https://www.ukclimbing.com/articles/destinations/the_orkney_islands_the_old_man_of_hoy_and_beyond-8457",
+   "note": "UKC destination guide covering Orkney's wider sea-cliff climbing scene beyond the Old Man, including Yesnaby and St John's Head."
+  },
+  {
+   "title": "Orkney Isles, Trad Climbing Area",
+   "source": "theCrag.com",
+   "url": "https://www.thecrag.com/en/climbing/united-kingdom/orkney-isles",
+   "note": "Collaborative area page indexing Orkney crags and stacks with route data."
+  },
+  {
+   "title": "Climbing in Orkney - Sea Cliffs and Sea Stacks Guide",
+   "source": "orkney-seastacks.co.uk",
+   "url": "http://www.orkney-seastacks.co.uk/",
+   "note": "Dedicated independent guide site to sandstone sea-cliff and sea-stack climbing across Orkney's mainland and outer islands."
+  },
+  {
+   "title": "Stack Rock guidebook excerpt: North West Highlands and Orkney",
+   "source": "UKClimbing (hosted PDF)",
+   "url": "https://www.ukclimbing.com/articles/pdf/Orkney.pdf",
+   "note": "Scanned guidebook chapter with full route descriptions, access/approach notes, and ferry logistics for Orkney stacks."
+  },
+  {
+   "title": "Old Man of Hoy Logistics (forum thread)",
+   "source": "UKClimbing Forums",
+   "url": "https://www.ukclimbing.com/forums/destinations/old_man_of_hoy_logistics-668046",
+   "note": "Community forum thread with practical trip-planning beta for climbing the Old Man of Hoy."
+  }
+ ],
+ "Isle of White": [
+  {
+   "title": "The Needles - Crag Page",
+   "source": "UKClimbing Logbook",
+   "url": "https://www.ukclimbing.com/logbook/crags/the_needles-2342/",
+   "note": "UKC crag database entry for the Needles sea stacks, covering Skeleton Ridge with route, tide, rope-length and access notes."
+  },
+  {
+   "title": "The Needles - Regional Access Database",
+   "source": "BMC",
+   "url": "https://services.thebmc.co.uk/modules/rad/view.aspx?id=212",
+   "note": "Official BMC access page for the Needles (National Trust/CRoW land, chalk)."
+  },
+  {
+   "title": "Culver Cliff - Crag Page",
+   "source": "UKClimbing Logbook",
+   "url": "https://www.ukclimbing.com/logbook/crags/culver_cliff-11584/",
+   "note": "Route-by-route beta for Culver Cliff, a separate south-east IoW chalk crag near Yaverland/Sandown."
+  },
+  {
+   "title": "Isle Wight Climbing? (forum thread)",
+   "source": "UKClimbing Forums",
+   "url": "https://www.ukclimbing.com/forums/destinations/isle_wight_climbing-384944",
+   "note": "Local-knowledge thread covering climbing across the island beyond the Needles."
+  },
+  {
+   "title": "BMC Re-Negotiates Access to Skeleton Ridge on the Isle of Wight",
+   "source": "BMC",
+   "url": "https://www.thebmc.co.uk/en/skeleton-ridge-access-isle-of-wight",
+   "note": "Article on the renewed National Trust access agreement and updated permission process for Skeleton Ridge."
+  }
+ ],
+ "Costa Blanca": [
+  {
+   "title": "Destination Guide: Costa Blanca",
+   "source": "UKClimbing",
+   "url": "https://www.ukclimbing.com/articles/destinations/costa_blanca-2529",
+   "note": "UKC's overview of the whole Costa Blanca climbing region — around 35 crags and 2,500+ routes."
+  },
+  {
+   "title": "Costa Blanca (Alicante) area page",
+   "source": "theCrag.com",
+   "url": "https://www.thecrag.com/en/climbing/spain/costa-blanca",
+   "note": "Database/topo hub for the whole Alicante/Costa Blanca region, listing 50 crags and 4,800+ routes."
+  },
+  {
+   "title": "Spain: Costa Blanca climbing guidebook",
+   "source": "Rockfax",
+   "url": "https://rockfax.com/climbing-guides/books/costa-blanca/",
+   "note": "Publisher page for the definitive Rockfax Costa Blanca guidebook, covering 50 crags plus classic ridge routes like Bernia."
+  },
+  {
+   "title": "Costa Blanca climbing: review and notes",
+   "source": "Futurile (blog)",
+   "url": "https://www.futurile.net/adventure/CostaBlancaClimbing.html",
+   "note": "First-hand trip report covering several crags with real access/gear beta and a Peñón d'Ifach note."
+  },
+  {
+   "title": "The Bernia Ridge",
+   "source": "Climbapedia",
+   "url": "https://climbapedia.org/content/bernia-ridge",
+   "note": "Detailed route description for the classic Bernia Ridge traverse, the region's other big multi-pitch/ridge outing."
+  }
+ ],
+ "Mallorca": [
+  {
+   "title": "Mallorca - Jewel of the Med (Destination Guide)",
+   "source": "UKClimbing",
+   "url": "https://www.ukclimbing.com/articles/destinations/mallorca_-_jewel_of_the_med-2519",
+   "note": "Whole-island UKC destination guide covering sport, trad and multi-pitch crags plus sea-cliff venues."
+  },
+  {
+   "title": "Mallorca, Sport climbing",
+   "source": "theCrag.com",
+   "url": "https://www.thecrag.com/en/climbing/spain/mallorca",
+   "note": "Comprehensive online guidebook/database for the island with 31 climbing areas and 1,500+ routes."
+  },
+  {
+   "title": "Sa Gubia (Mallorca) Multipitch descents and advice",
+   "source": "UKClimbing Forums",
+   "url": "https://www.ukclimbing.com/forums/destinations/sa_gubia_mallorca_multipitch_descents_and_advice-610690",
+   "note": "Climber discussion thread with real beta on descent options, rope length, rack needed, and grading at Sa Gubia."
+  },
+  {
+   "title": "Mallorca (2011 Rockfax guidebook)",
+   "source": "Rockfax",
+   "url": "https://rockfax.com/climbing-guides/old-books/mallorca-2011/",
+   "note": "Guidebook edition covering the island's sport, trad and multi-pitch routes with GPS-tagged approaches."
+  },
+  {
+   "title": "Rock Climbing Mallorca: Sa Gubia (Bunyola)",
+   "source": "Grime.cc",
+   "url": "https://www.grime.cc/rock-climbing-mallorca-sa-gubia-bunyola/",
+   "note": "First-hand trip report with approach times, route names/grades, and descent notes."
+  }
+ ],
+ "Calanques": [
+  {
+   "title": "Destination Guide: Calanques National Park",
+   "source": "UKClimbing",
+   "url": "https://www.ukclimbing.com/articles/destinations/calanques_national_park_-_classic_moderate_climbs_above_the_deep_blue_med-16294",
+   "note": "UKC destination guide covering multiple classic moderate multi-pitch routes and areas across the Calanques."
+  },
+  {
+   "title": "Les Calanques / Marseille-Calanques area",
+   "source": "theCrag.com",
+   "url": "https://www.thecrag.com/en/climbing/france/provence-cote-dazur/marseille-calanques-area",
+   "note": "Area hub for the wider Marseille-Calanques region with sub-areas, crags, and route listings."
+  },
+  {
+   "title": "Regulations on land",
+   "source": "Parc national des Calanques",
+   "url": "https://www.calanques-parcnational.fr/en/regulations-land",
+   "note": "Official park page on access rules: fire-risk colour-coded closures, permit requirements, and the daily-status app."
+  },
+  {
+   "title": "Règlementation escalade dans les Calanques",
+   "source": "Bonne Grimpe",
+   "url": "https://www.bonnegrimpe.com/reglementation.html",
+   "note": "Climbing-specific breakdown of Calanques access rules: fire-danger levels, bird-nesting closures, parking restrictions."
+  },
+  {
+   "title": "Rock climbing in the Calanques of Marseille",
+   "source": "OmegaRoc",
+   "url": "https://omegaroc.com/en/climbing-in-the-calanques/",
+   "note": "Guidebook publisher overview of the wider Calanques/Cassis/La Ciotat climbing area, sectors and route counts."
+  }
+ ],
+ "Isle of Arran": [
+  {
+   "title": "Cìr Mhòr — Crag/Area Logbook",
+   "source": "UKClimbing",
+   "url": "https://www.ukclimbing.com/logbook/crags/cir_mhor-13421/",
+   "note": "UKC's logbook/area page for Cìr Mhòr listing its climbing sectors with routes, grades and access notes."
+  },
+  {
+   "title": "Arran, Trad Climbing",
+   "source": "theCrag.com",
+   "url": "https://www.thecrag.com/en/climbing/united-kingdom/arran",
+   "note": "Regional area page for the whole of Arran, breaking the island down into its granite crags."
+  },
+  {
+   "title": "Inner Hebrides and Arran (SMC guidebook)",
+   "source": "Scottish Mountaineering Press",
+   "url": "https://scottishmountaineeringpress.com/product/inner-hebrides-and-arran-smc/",
+   "note": "The current SMC definitive climbers' guidebook covering summer and winter rock climbing across Arran."
+  },
+  {
+   "title": "Arran: Ardrossan – Brodick ferry route",
+   "source": "CalMac Ferries",
+   "url": "https://www.calmac.co.uk/article/7713/Arran-Ardrossan---Brodick",
+   "note": "Official ferry route info for getting to and from Arran to access the mountain crags."
+  },
+  {
+   "title": "Arran's A'Chir – The Coward's Route",
+   "source": "Mountain Coward Adventures (blog)",
+   "url": "https://mountaincowardadventures.wordpress.com/2011/10/14/arrans-a-chir-the-cowards-route/",
+   "note": "First-hand trip report with real route-finding beta on the A'Chir ridge traverse adjoining Cìr Mhòr."
+  }
+ ],
+ "Snowdonia (Llanberis Pass)": [
+  {
+   "title": "Destination Guide: Llanberis Pass",
+   "source": "UKClimbing",
+   "url": "https://www.ukclimbing.com/articles/destinations/llanberis_pass-2508",
+   "note": "UKC's full destination guide to the Llanberis Pass, covering its main crags, history, and character."
+  },
+  {
+   "title": "Llanberis Pass area page",
+   "source": "theCrag.com",
+   "url": "https://www.thecrag.com/en/climbing/united-kingdom/llanberis-area/llanberis-pass",
+   "note": "Structured area index for the whole Llanberis Pass, linking every sub-crag with route listings and grades."
+  },
+  {
+   "title": "Ynys Ettws hut",
+   "source": "The Climbers' Club",
+   "url": "https://climbers-club.co.uk/huts",
+   "note": "Official Climbers' Club huts page describing Ynys Ettws, its base within walking distance of all the main crags."
+  },
+  {
+   "title": "Llanberis Rock Climbing Guidebook (2025 edition)",
+   "source": "Climb Europe",
+   "url": "https://climb-europe.com/products/llanberis-rock-climbing-guidebook",
+   "note": "Product page for the current Climbers' Club Llanberis Pass guidebook, now including Cloggy and Y Lliwedd."
+  },
+  {
+   "title": "Llanberis Pass Climbing Guide",
+   "source": "rockvanlife.com",
+   "url": "https://rockvanlife.com/llanberis-pass-climbing-guide",
+   "note": "Trip-style guide with real access/parking beta and route notes on classics like Cenotaph Corner."
+  }
+ ],
+ "Sicilly": [
+  {
+   "title": "Climbing in Paradise: San Vito Lo Capo",
+   "source": "Gripped Magazine",
+   "url": "https://gripped.com/profiles/climbing-in-paradise-san-vito-lo-capo/",
+   "note": "Feature article covering the whole area's ~1,300 sport routes plus multi-pitch climbing on Monte Monaco and access/logistics from Palermo."
+  },
+  {
+   "title": "San Vito lo Capo (Trapani), Sport climbing",
+   "source": "theCrag.com",
+   "url": "https://www.thecrag.com/en/climbing/italy/trapani",
+   "note": "Area hub page indexing all San Vito lo Capo sectors with topos, route logs and guidebook links."
+  },
+  {
+   "title": "San Vito Lo Capo climbing map/guidebook",
+   "source": "Versante Sud",
+   "url": "https://www.versantesud.it/prodotto/san-vito-lo-capo-climbing-map/",
+   "note": "Official Italian guidebook publisher's page for the San Vito Lo Capo/Custonaci climbing map covering ~900 routes."
+  },
+  {
+   "title": "Climbing on Sicily: San Vito Lo Capo",
+   "source": "Maja Travels (blog)",
+   "url": "https://majatravels.com/climbing-on-sicily-san-vito-lo-capo/",
+   "note": "First-hand trip report detailing the Salinella cliff band and the harder Never Sleeping Wall sector with real belay/access notes."
+  },
+  {
+   "title": "San Vito lo Capo in NW Sicily",
+   "source": "UKClimbing Forums",
+   "url": "https://www.ukclimbing.com/forums/destinations/san_vito_lo_capo_in_nw_sicily-596264",
+   "note": "UKC destination forum thread where climbers discuss planning trips, conditions and crag recommendations."
+  }
+ ],
+ "Fair Head, NI": [
+  {
+   "title": "Fair Head Destination Guide",
+   "source": "UKClimbing",
+   "url": "https://www.ukclimbing.com/articles/destinations/fair_head_-_northern_ireland-7435",
+   "note": "UKC's destination guide to the wider Fair Head dolerite sill, covering sectors like The Prow and Rathlin Wall across VS to E9."
+  },
+  {
+   "title": "Fair Head Area Page",
+   "source": "theCrag.com",
+   "url": "https://www.thecrag.com/en/climbing/ireland/fair-head",
+   "note": "Comprehensive area guide listing 400+ routes across all Fair Head sectors with grades, stars, and guidebook links."
+  },
+  {
+   "title": "Fairhead Climbing - A Guide for the First Time Visitor",
+   "source": "Hike & Climb",
+   "url": "https://hikeandclimb.ie/fairhead-climbing/",
+   "note": "First-timer's practical guide covering approach gullies, camping at Sean's Farm, rack/rope recommendations, and beginner-friendly routes."
+  },
+  {
+   "title": "Climbing & Bouldering at Fairhead",
+   "source": "Explore Fairhead",
+   "url": "https://explorefairhead.com/climbing/",
+   "note": "Overview of the whole climbing area from Marconi's Crag to Murlough Bay, including bouldering and the annual Climbing Weekend."
+  },
+  {
+   "title": "Fair Head - Northern Ireland's Climbing Gem",
+   "source": "Climber Magazine",
+   "url": "https://www.climber.co.uk/outdoor/fair-head-northern-ireland-s-climbing-gem/",
+   "note": "In-depth destination feature covering travel/accommodation logistics and a sector-by-sector tour."
+  }
+ ],
+ "Vratsa": [
+  {
+   "title": "Vratsa Crag Logbook",
+   "source": "UKClimbing (UKC)",
+   "url": "https://www.ukclimbing.com/logbook/crag.php?id=20802",
+   "note": "Comprehensive database of 506 climbs across all Vratsa sectors with grades, topos and guidebooks."
+  },
+  {
+   "title": "Vratsa, Rock Climbing",
+   "source": "theCrag.com",
+   "url": "https://www.thecrag.com/en/climbing/bulgaria/area/678225288",
+   "note": "Area overview of Bulgaria's biggest climbing zone, covering sport/trad/mixed routes up to 400m and safety notes on loose rock and vipers."
+  },
+  {
+   "title": "Vratsa, Bulgaria",
+   "source": "Mountain Project",
+   "url": "https://www.mountainproject.com/area/108183639/vratsa",
+   "note": "International climber's overview comparing Vratsa to El Potrero Chico, with access/lodging info and notable multi-pitch routes."
+  },
+  {
+   "title": "Vratsa Climbing Place Info",
+   "source": "ClimbingGuideBG.com",
+   "url": "https://www.climbingguidebg.com/en/cdb-info?place=1",
+   "note": "Official Bulgarian climbing route database entry for Vratsa detailing its 10 regions and 45 sectors along the gorge."
+  },
+  {
+   "title": "200 meters in 5 hours: Bezengi",
+   "source": "Bulgarian Days (blog)",
+   "url": "https://bulgariandays.wordpress.com/2017/12/11/200-meters-in-5-hours-bezengi/",
+   "note": "First-hand trip report on climbing the classic Bezengi multi-pitch route in Vratsata gorge."
+  }
+ ],
+ "Setesdal": [
+  {
+   "title": "Setesdal, Rock climbing — area overview",
+   "source": "theCrag.com",
+   "url": "https://www.thecrag.com/en/climbing/norway/southern-norway/area/337127346",
+   "note": "Area hub page listing all the sub-crags with 670+ routes, topos and logbooks for the whole Setesdal valley."
+  },
+  {
+   "title": "Setesdal - Climbing in Southern Norway (guidebook)",
+   "source": "Climb Europe",
+   "url": "https://climb-europe.com/rockclimbingshop/setesdal-rock-climbing-guidebook.html",
+   "note": "Product page for the definitive 352-page Setesdal guidebook covering 670+ multi-pitch granite trad/sport routes."
+  },
+  {
+   "title": "Løefjell crag description (with current access status)",
+   "source": "TheTopo (formerly 27crags)",
+   "url": "https://thetopo.com/crags/loefjell/description",
+   "note": "Detailed beta on Setesdal's flagship 1.5km granite wall — flags that climbing was banned by landowners as of May 2025, critical for trip planning."
+  },
+  {
+   "title": "Fossegrimen (UIAA VI-), Setesdal — trip report",
+   "source": "Lee Harrison Climbing (blog)",
+   "url": "http://leeharrisonclimbing.blogspot.com/2014/06/fossegrimen-uiaa-vi-setesdal.html",
+   "note": "First-hand trip report on a 13-pitch, 770m bolted granite slab route near Bø, with real route/grade/logistics beta."
+  },
+  {
+   "title": "Nissedal/Setesdal, Norway info",
+   "source": "UKClimbing Forums",
+   "url": "https://www.ukclimbing.com/forums/destinations/nissedalsetesdal_norway_info-399448",
+   "note": "Climber discussion thread with practical trip-planning questions and answers for the wider Setesdal/Nissedal granite climbing region."
+  }
+ ],
+ "Zádiel": [
+  {
+   "title": "Zádielska dolina area page",
+   "source": "theCrag.com",
+   "url": "https://www.thecrag.com/en/climbing/slovakia/zadielska-dolina",
+   "note": "Area database for the whole Zádiel gorge with sectors, route lists and grades."
+  },
+  {
+   "title": "Zádiel crag guide",
+   "source": "TheTopo.com",
+   "url": "https://thetopo.com/crags/zadiel",
+   "note": "343 sport + 81 trad routes across named sectors, with a note that part of the gorge is closed seasonally as a nature reserve."
+  },
+  {
+   "title": "Zadielská Dolina - Zadiel Valley",
+   "source": "SummitPost",
+   "url": "https://www.summitpost.org/zadielsk-dolina-sz-del-337-i-v-lgy-zadiel-valley/256825",
+   "note": "Area overview with driving/border-crossing access details, gorge geography, and route/tower descriptions."
+  },
+  {
+   "title": "RP v Zádieli climbing guidebook",
+   "source": "Climbing-Guide.eu",
+   "url": "https://www.climbing-guide.eu/climbing-guidebook-rp-v-zadieli-11352/",
+   "note": "2022 dedicated Slovak/English guidebook covering roughly 450 routes with topos, maps and QR codes for the gorge."
+  }
+ ],
+ "Carcassonne": [
+  {
+   "title": "Aude, Sport Climbing (area page)",
+   "source": "theCrag.com",
+   "url": "https://www.thecrag.com/en/climbing/france/occitanie/area/1511458005",
+   "note": "Crag database area page for Aude covering multiple sport-climbing sites with routes and grades."
+  },
+  {
+   "title": "Climbing Near Carcassonne?",
+   "source": "UKClimbing Forums",
+   "url": "https://www.ukclimbing.com/forums/destinations/climbing_near_carcassonne-146884",
+   "note": "Climber trip-planning thread naming real nearby crags, the 'Escalade en Minervois' guidebook, and the COSIROC access-info organisation."
+  },
+  {
+   "title": "Climbing around Carcassonne",
+   "source": "UKClimbing Forums",
+   "url": "https://www.ukclimbing.com/forums/rock_talk/climbing_around_carcassonne-205547",
+   "note": "Further trip-planning discussion covering wider-radius options and the Foix/Tarascon area."
+  },
+  {
+   "title": "Notre-Dame du Cros climbing area",
+   "source": "ClimbingAway.fr",
+   "url": "https://climbingaway.fr/en/climbing-areas/notre-dame-du-cros",
+   "note": "Detailed access beta for the main limestone crag near Caunes-Minervois, ~30-40 min from Carcassonne."
+  }
+ ],
+ "Lake District (Borrowdale)": [
+  {
+   "title": "Borrowdale area page",
+   "source": "theCrag.com",
+   "url": "https://www.thecrag.com/en/climbing/united-kingdom/borrowdale",
+   "note": "Comprehensive area index for the Borrowdale valley listing all its crags with routes, grades and topos."
+  },
+  {
+   "title": "Borrowdale logbook/area page",
+   "source": "UKClimbing (UKC)",
+   "url": "https://www.ukclimbing.com/logbook/books/borrowdale-35",
+   "note": "UKC's crag database entry for Borrowdale, aggregating routes, grades, and user logbook entries."
+  },
+  {
+   "title": "Top 10 Borrowdale Routes at VS and Under",
+   "source": "UKClimbing Articles",
+   "url": "https://www.ukclimbing.com/articles/destinations/top_10_borrowdale_routes_at_vs_and_under-15554",
+   "note": "Editorial trip-planning article recommending classic moderate-grade multi-pitch routes spread across several crags."
+  },
+  {
+   "title": "Borrowdale climbing guidebook",
+   "source": "FRCC",
+   "url": "https://www.frcc.co.uk/publications/borrowdale/",
+   "note": "Official Fell & Rock Climbing Club page for the definitive Borrowdale guidebook."
+  },
+  {
+   "title": "The Best of Borrowdale Rock Climbing",
+   "source": "Adventure Hunter (blog)",
+   "url": "https://www.adventurehunter.co.uk/the-best-of-borrowdale/",
+   "note": "First-person blog trip report covering 12 routes spread across multiple Borrowdale crags."
+  }
+ ],
+ "Donegal (Sail Rock)": [
+  {
+   "title": "Destination Guide: Donegal",
+   "source": "UKClimbing",
+   "url": "https://www.ukclimbing.com/articles/destinations/donegal-11171",
+   "note": "Overview of Donegal's coastal crags, islands and sea stacks with links to free downloadable area PDF guides."
+  },
+  {
+   "title": "County Donegal, Trad Climbing",
+   "source": "theCrag.com",
+   "url": "https://www.thecrag.com/en/climbing/ireland/donegal",
+   "note": "theCrag's area index for all Donegal climbing venues with route logs and topos."
+  },
+  {
+   "title": "Donegal Sea Stacks - Text Guide",
+   "source": "UKClimbing",
+   "url": "https://www.ukclimbing.com/articles/features/donegal_sea_stacks_-_text_guide-3127",
+   "note": "Text guide surveying Donegal's many sea stack ascents including Cnoc na Mara with route grades and approach notes."
+  },
+  {
+   "title": "A Rock Climbing Guide of Donegal",
+   "source": "Unique Ascent",
+   "url": "https://uniqueascent.ie/donegal-guide",
+   "note": "Iain Miller's comprehensive Donegal climbing portal linking 28 free PDF area guidebooks covering sea cliffs, stacks and islands county-wide."
+  },
+  {
+   "title": "A Rock Climber's Guide to Cnoc na Mara Sea Stack",
+   "source": "Unique Ascent",
+   "url": "https://uniqueascent.ie/cnoc-na-mara",
+   "note": "Detailed route and access beta for Cnoc na Mara itself, including the An Port approach, abseil, and pitch-by-pitch description."
+  }
+ ],
+ "Triglav": [
+  {
+   "title": "Julijske Alpe (Julian Alps) climbing area",
+   "source": "theCrag.com",
+   "url": "https://www.thecrag.com/en/climbing/slovenia/area/793012881",
+   "note": "Region-wide theCrag area page covering 300+ multi-pitch routes across 69 crags throughout the Slovenian Julian Alps."
+  },
+  {
+   "title": "Triglav - North Wall area page",
+   "source": "theCrag.com",
+   "url": "https://www.thecrag.com/en/climbing/slovenia/area/5587727817",
+   "note": "theCrag's dedicated area page for the Triglav North Wall, listing long trad/alpine routes on the 1200m face."
+  },
+  {
+   "title": "Triglav crag logbook",
+   "source": "UKClimbing",
+   "url": "https://www.ukclimbing.com/logbook/crags/triglav-10692/",
+   "note": "UKC's crag/logbook page for Triglav where climbers log ascents and share route notes on the north face."
+  },
+  {
+   "title": "Triglavski dom na Kredarici (Kredarica hut)",
+   "source": "PZS network",
+   "url": "https://triglavskidom.si/en/",
+   "note": "Official site for the highest hut in the Julian Alps, with booking, season dates, and access-route info."
+  },
+  {
+   "title": "Triglav North Face climbing guide",
+   "source": "Slovenia Hiking Rocks",
+   "url": "https://sloveniahiking.rocks/en/climbing/triglavnorthface/",
+   "note": "Independent guide detailing multiple north-face routes, approach from Vrata valley, and guiding recommendations."
+  }
+ ],
+ "Stetind (Norway)": [
+  {
+   "title": "Stetind area page",
+   "source": "theCrag.com",
+   "url": "https://www.thecrag.com/en/climbing/norway/northern-norway/area/1296453297",
+   "note": "Collaborative area database listing all logged Stetind routes and sectors with grades and topos."
+  },
+  {
+   "title": "Stetind crag logbook",
+   "source": "UKClimbing.com",
+   "url": "https://www.ukclimbing.com/logbook/crags/stetind-4024/",
+   "note": "UKC logbook for the whole Stetind crag, aggregating route entries, grades, and user ascent logs across the mountain."
+  },
+  {
+   "title": "Rock Climbing in Stetind area page",
+   "source": "Mountain Project",
+   "url": "https://www.mountainproject.com/area/106280801/stetind",
+   "note": "Lists the main Stetind lines plus access via E-6/ferry, weather notes, and GPS/elevation data."
+  },
+  {
+   "title": "Rock climbing in Arctic Norway: Narvik, Stetind and beyond",
+   "source": "Light From The North (blog)",
+   "url": "http://lightfromthenorth.blogspot.com/2013/09/rock-climbing-in-arctic-norway-narvik.html",
+   "note": "First-hand trip report covering Sydpillaren plus nearby objectives with real route-finding, descent, and hazard beta."
+  },
+  {
+   "title": "Lofoten Climbs guidebook",
+   "source": "Rockfax",
+   "url": "https://rockfax.com/climbing-guides/books/lofoten-climbs/",
+   "note": "Publisher page for the current guidebook covering the wider Stetind and Narvik climbing areas alongside Lofoten."
+  }
+ ],
+ "Bruggler": [
+  {
+   "title": "Klettern am Brüggler",
+   "source": "allgaeu-plaisir.de",
+   "url": "https://www.allgaeu-plaisir.de/klettern-am-brueggler/",
+   "note": "German-language overview of the whole Brüggler wall covering access, approach time, rock character, and route grades."
+  },
+  {
+   "title": "Klettertour am Brüggler, Glarus in der Schweiz",
+   "source": "enziano.com (blog)",
+   "url": "https://enziano.com/blog/klettertour-am-brueggler-glarus-in-der-schweiz/",
+   "note": "First-hand trip report with parking/approach details, a recommended beginner multi-pitch route, and guidebook reference."
+  },
+  {
+   "title": "Klettern Glarnerland (SAC guidebook)",
+   "source": "SAC-Shop",
+   "url": "https://sac-cas-shop.ch/products/sami-leuzinger-thomas-walti-klettern-glarnerland",
+   "note": "Official SAC guidebook covering ten Glarus climbing areas including Brüggler, with 230 route topos."
+  },
+  {
+   "title": "Brüggler crag logbook",
+   "source": "UKClimbing (UKC)",
+   "url": "https://www.ukclimbing.com/logbook/crags/bruckler-10269/",
+   "note": "UKC crag database entry listing ~40 routes at Brüggler with approach time and grade range."
+  },
+  {
+   "title": "Brüggler via Grüne Plattenwand trip report",
+   "source": "BuschnicK blog",
+   "url": "https://blog.buschnick.net/2022/10/bruggler-1777m-via-grune-plattenwand.html",
+   "note": "Personal blog trip report of a specific Brüggler multi-pitch climb with practical route and condition notes."
+  }
+ ],
+ "Riglos": [
+  {
+   "title": "Destination Guide: Los Mallos de Riglos",
+   "source": "UKClimbing",
+   "url": "https://www.ukclimbing.com/articles/destinations/los_mallos_de_riglos-4614",
+   "note": "UKC destination guide covering all the Riglos sectors, access, rock style, season, and the local refugio."
+  },
+  {
+   "title": "Riglos area page",
+   "source": "theCrag.com",
+   "url": "https://www.thecrag.com/en/climbing/spain/riglos",
+   "note": "theCrag's area database page for the whole Riglos climbing zone, listing all sub-crags/sectors and guidebook links."
+  },
+  {
+   "title": "Rock Climbing in Riglos, Aragon",
+   "source": "Mountain Project",
+   "url": "https://www.mountainproject.com/area/108851610/riglos",
+   "note": "Mountain Project area page breaking Riglos into 9 sectors with route lists, grades, GPS, and seasonal/access info."
+  },
+  {
+   "title": "Riglos Vertical guidebook",
+   "source": "climbing-guide.eu",
+   "url": "https://www.climbing-guide.eu/climbing-guidebook-riglos-vertical-10938/",
+   "note": "Product page for the current Riglos Vertical guidebook covering Riglos, Agüero, Peña Rueba and Loarre."
+  },
+  {
+   "title": "Riglos: tips for climbing the great towers of Aragon",
+   "source": "Climb Europe",
+   "url": "https://climb-europe.com/pages/destination-article-riglos-the-great-towers-of-aragon",
+   "note": "Trip-report style article with real practical beta across the wider Riglos towers."
+  }
+ ],
+ "Dolomites (Cortina)": [
+  {
+   "title": "Cortina d'Ampezzo Area",
+   "source": "theCrag.com",
+   "url": "https://www.thecrag.com/en/climbing/italy/dolomites/cortina-dampezzo-area",
+   "note": "Comprehensive crag/route database for the whole Cortina/Dolomites area, covering 145 alpine routes and over 100 sport crags."
+  },
+  {
+   "title": "DESTINATION GUIDE: The Dolomites",
+   "source": "UKClimbing",
+   "url": "https://www.ukclimbing.com/articles/destinations/the_dolomites-2708",
+   "note": "UKC's overview destination guide covering trad and sport climbing, via ferrata, best season, and recommended bases like Cortina."
+  },
+  {
+   "title": "CAI Cortina d'Ampezzo",
+   "source": "Club Alpino Italiano",
+   "url": "https://caicortina.it/",
+   "note": "Official local CAI section site with info on the three rifugi it manages plus trail and alpinism activity listings."
+  },
+  {
+   "title": "Crags in Cortina d'Ampezzo",
+   "source": "guidedolomiti.com",
+   "url": "https://www.guidedolomiti.com/en/crags-in-cortina-dampezzo/",
+   "note": "IFMGA mountain guide's ground-truth blog listing 25+ crags around Cortina with approach times, route lengths and season info."
+  },
+  {
+   "title": "Bolted multi-pitch routes in the Dolomites, best in Cortina",
+   "source": "guidedolomiti.com",
+   "url": "https://www.guidedolomiti.com/en/multi-pitch-bolted-routes/",
+   "note": "Companion blog page focused specifically on bolted multi-pitch classics around Cortina."
+  }
+ ],
+ "Campanile Basso": [
+  {
+   "title": "Brenta Group — UKC Logbook",
+   "source": "UKClimbing.com",
+   "url": "https://www.ukclimbing.com/logbook/crags/brenta_group-3414/",
+   "note": "UKC's crag/logbook page for the whole Brenta Group, listing routes including Campanile Basso's Normal Route and Fehrmann route."
+  },
+  {
+   "title": "Dolomiti di Brenta — Rock Climbing Area",
+   "source": "theCrag.com",
+   "url": "https://www.thecrag.com/en/climbing/italy/northern-italy/arco-trento-area/area/2606385675",
+   "note": "theCrag's area page for the wider Dolomiti di Brenta, linking to sub-areas with route databases."
+  },
+  {
+   "title": "Rifugio Brentei — CAI Hut Booking",
+   "source": "CAI",
+   "url": "https://www.prenotarifugi.cai.it/en/detail/?id_cai=921600804",
+   "note": "Official CAI booking page for Rifugio Brentei, the key base hut under the Brenta walls."
+  },
+  {
+   "title": "Dolomites Guidebooks & Publications",
+   "source": "theCrag.com",
+   "url": "https://www.thecrag.com/en/climbing/italy/dolomites/guidebooks",
+   "note": "Listing of guidebooks covering the Dolomites/Brenta area, useful for planning which guidebook to buy."
+  },
+  {
+   "title": "Campanil Basso: Normale or Preuss Route",
+   "source": "Mountain Friends",
+   "url": "https://www.mountainfriends.it/en/climbing/campanil-basso-normale-or-preuss-route",
+   "note": "Practical route beta comparing the Via Normale and Preuss route on Campanile Basso, including approach and timing."
+  }
+ ],
+ "East Tyrol (Lienz)": [
+  {
+   "title": "Multi-Pitch Climbing in Osttirol",
+   "source": "Osttirol Tourismus",
+   "url": "https://www.osttirol.com/en/discover-and-experience/summer/climbing/multi-pitch-climbing/",
+   "note": "Official regional overview and searchable list of 30+ multi-pitch routes across East Tyrol with pitch counts, grades and duration."
+  },
+  {
+   "title": "Lienzer Dolomiten, Sport climbing",
+   "source": "theCrag.com",
+   "url": "https://www.thecrag.com/en/climbing/austria/klagenfurt-area/area/790615182",
+   "note": "theCrag area page for the Lienzer Dolomiten with crag/route listings for the main East Tyrol climbing zone near Lienz."
+  },
+  {
+   "title": "Karlsbader Hütte (Lienzer Dolomiten)",
+   "source": "karlsbaderhuette.at",
+   "url": "https://karlsbaderhuette.at/",
+   "note": "Official site of the alpine club hut used as a base for multi-pitch routes in the Lienz Dolomites."
+  },
+  {
+   "title": "East Tyrol Rock Climbing Guidebook",
+   "source": "Climb Europe",
+   "url": "https://climb-europe.com/products/east-tyrol-rock-climbing-guidebook",
+   "note": "Guidebook covering multi-pitch routes from Laserzkessel above Lienz to the Virgen Valley, plus sport crags."
+  }
+ ],
+ "Meteora": [
+  {
+   "title": "Destination Guide: Meteora, Greece",
+   "source": "UKClimbing",
+   "url": "https://www.ukclimbing.com/articles/destinations/meteora_greece_-_a_sport_climbing_area_for_trad_climbers-15531",
+   "note": "UKC destination guide covering the wider Meteora area's multi-pitch conglomerate climbing, sparse bolting ethic, and best seasons."
+  },
+  {
+   "title": "Meteora, Rock climbing",
+   "source": "theCrag.com",
+   "url": "https://www.thecrag.com/en/climbing/greece/meteora",
+   "note": "theCrag's area database for Meteora covering hundreds of routes across the region's towers and linked guidebooks."
+  },
+  {
+   "title": "Rock Climbing in Meteora",
+   "source": "Mountain Project",
+   "url": "https://www.mountainproject.com/area/106482471/meteora",
+   "note": "Area page with access directions from Athens, rock quality warnings, and a note that active monastery spires are off-limits."
+  },
+  {
+   "title": "A Guide to Rock Climbing in Meteora, Greece",
+   "source": "ExplorersWeb",
+   "url": "https://explorersweb.com/a-guide-to-rock-climbing-in-meteora-greece/",
+   "note": "Trip-report-style guide with logistics, gear list, season windows, and detail on which monastery towers are off-limits."
+  },
+  {
+   "title": "Rock climbing in the Meteora",
+   "source": "OmegaRoc",
+   "url": "https://omegaroc.com/en/rock-climbing-in-the-meteora/",
+   "note": "Guidebook publisher/guiding outfit page with approach times from Kastraki, rack recommendations, and the monastery access agreement."
+  }
+ ],
+ "Wadi Rum": [
+  {
+   "title": "Destination Guide: Wadi Rum – A Desert Sandstone Wonderland",
+   "source": "UKClimbing",
+   "url": "https://www.ukclimbing.com/articles/destinations/wadi_rum_-_a_desert_sandstone_wonderland-8747",
+   "note": "UKC editorial destination guide covering Wadi Rum's climbing history, rock/route character, access, and practical trip logistics."
+  },
+  {
+   "title": "Wadi Rum, Jordan – Trad Climbing Area",
+   "source": "theCrag",
+   "url": "https://www.thecrag.com/en/climbing/jordan/wadi-rum",
+   "note": "theCrag's area database page listing Wadi Rum's sub-areas and hundreds of logged multi-pitch trad and sport routes."
+  },
+  {
+   "title": "Climbing Rum – Authentic Bedouin Guides, Wadi Rum",
+   "source": "climbingrum.com",
+   "url": "https://www.climbingrum.com/",
+   "note": "Jordanian-owned Bedouin guiding company offering multi-pitch trad climbing, mountain guiding and 4x4 desert logistics."
+  },
+  {
+   "title": "Trad Rock Climbing & Bedouin Routes in Wadi Rum",
+   "source": "The Desert Guides Society",
+   "url": "https://www.desert-guides.com/trad-rock-climbing-bedouin-routes-heart-wadi-rum/",
+   "note": "Detailed route-topo blog with pitch-by-pitch beta, 4WD approach notes, descent info and gear recommendations."
+  },
+  {
+   "title": "Climbing Jordan – Free Topos (including Rum)",
+   "source": "climbingjordan.com",
+   "url": "https://climbingjordan.com/topos/",
+   "note": "Community-run free topo database for Jordan's climbing areas, including Wadi Rum, with grade/protection colour-coding."
+  }
+ ],
+ "Anti Atlas": [
+  {
+   "title": "Destination Guide: Morocco Rock - Climbing in the Anti-Atlas",
+   "source": "UKClimbing",
+   "url": "https://www.ukclimbing.com/articles/destinations/morocco_rock_-_climbing_in_the_anti-atlas-4974",
+   "note": "UKC destination article covering the Anti-Atlas region around Tafraoute, its main crags, grades, season, and access."
+  },
+  {
+   "title": "Tafraoute Granite",
+   "source": "theCrag.com",
+   "url": "https://www.thecrag.com/en/climbing/morocco/area/419463612",
+   "note": "theCrag area page for the granite crags south of Tafraout, with route listings covering trad, sport, and bouldering."
+  },
+  {
+   "title": "Climb Tafraout - Adventure Trad Climbing in Morocco",
+   "source": "climb-tafraout.com",
+   "url": "https://www.climb-tafraout.com/climbing-overview.php",
+   "note": "Dedicated regional site covering all main Anti-Atlas climbing areas with detailed access, gear, guiding and logistics advice."
+  },
+  {
+   "title": "Tafraoute Climbing: A Rough Guide to Your Anti-Atlas Adventure",
+   "source": "Jebel Adventures (blog)",
+   "url": "https://jebeladventures.com/2024/12/07/tafraoute-climbing-a-rough-guide-to-your-anti-atlas-adventure/",
+   "note": "Trip-report style guide covering Tafraout granite, Ameln Valley quartzite and Toudma Valley with real logistics beta."
+  },
+  {
+   "title": "Morocco Rock Guidebook - The Anti-Atlas Mountains",
+   "source": "Climb Europe",
+   "url": "https://climb-europe.com/products/morocco-rock-guidebook-the-anti-atlas-mountains",
+   "note": "Publisher page for the selective Anti-Atlas trad guidebook covering ~100 crags and 1,700 routes near Tafraoute."
+  }
+ ]
 }
