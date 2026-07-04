@@ -553,7 +553,7 @@ def day_score(code, mm, prob, m=None):
         s = min(s, 15)
     if m:
         if m.get("gust") is not None:            # gusts bite on exposed routes / sea-cliffs
-            s -= max(0, m["gust"] - 30) * 0.6     # 50 km/h ≈ −12
+            s -= max(0, m["gust"] - GUST_BAD_KMH) * 0.6     # 50 km/h ≈ −12
         if m.get("precip_hours") is not None:     # hours of rain, not just total mm
             s -= min(m["precip_hours"], 12) * 0.8  # up to ≈ −10
         if m.get("sun_frac") is not None:         # sun dries rock → reward, dull → penalise
@@ -565,20 +565,32 @@ def day_score(code, mm, prob, m=None):
     return max(0.0, min(100.0, s))
 
 
+# Named so the client-side weather-chart colouring (rainColor/windColor/
+# tempColor in PAGE_JS, emitted via CLIMATE_THRESHOLDS below) can share these
+# exact numbers instead of guessing its own — a chart that silently disagrees
+# with the scorer about what counts as "hot" or "windy" is worse than no
+# colour at all.
+COLD_C = 8            # numb-fingers threshold (climo_score)
+HEAT_WARM_C = 20       # heat_penalty: gentle slope starts
+HEAT_HOT_C = 25        # heat_penalty: steep slope starts
+HEAT_BRUTAL_C = 30     # heat_penalty: brutal slope starts
+GUST_BAD_KMH = 30      # day_score: gust penalty starts
+
+
 def heat_penalty(tmax):
     """Climbing-specific heat curve. Friction research puts ideal sending temps at
     ~7–18°C (climbing.com 'Science of Friction'; UKC conditions threads agree);
     rubber and skin grease out past ~20–25°C, and multi-pitch means HOURS exposed
     on the wall with no shade retreat. Cumulative slopes: gentle from 20°C, steep
     from 25°C, brutal from 30°C — a 31°C coastal venue loses ~36 points."""
-    return (max(0, tmax - 20) * 1.2
-            + max(0, tmax - 25) * 3
-            + max(0, tmax - 30) * 5)
+    return (max(0, tmax - HEAT_WARM_C) * 1.2
+            + max(0, tmax - HEAT_HOT_C) * 3
+            + max(0, tmax - HEAT_BRUTAL_C) * 5)
 
 
 def climo_score(c):
     s = 100 - c["rain_pct"] * 0.9
-    s -= max(0, 8 - c["tmax"]) * 2      # too cold: numb fingers below ~8°C
+    s -= max(0, COLD_C - c["tmax"]) * 2      # too cold: numb fingers below ~8°C
     s -= heat_penalty(c["tmax"])
     return max(0, min(100, round(s)))
 
@@ -1397,26 +1409,22 @@ def stay_options(v):
     }
 
 
-# Guidebook per area (title, publisher, £) — curated, with an Amazon search link.
-GUIDEBOOKS = {
-    "Fair Head": ("Fair Head — A Rock Climbing Guide", "NIMC", 25),
-    "Mournes": ("Mourne Mountains — Rock Climbs", "NIMC", 20),
-    "Dolomites": ("Dolomites — Rockfax", "Rockfax", 30),
-    "East Tyrol": ("Osttirol — Alpinkletterfuehrer", "Panico", 34),
-    "Lake District": ("Lake District — Rockfax", "Rockfax", 28),
-    "Snowdonia": ("Llanberis — Climbers Club Guide", "Climbers Club", 25),
-    "Arran": ("Arran — SMC Climbers Guide", "SMC", 24),
-    "Picos": ("Picos de Europa — Rockfax", "Rockfax", 30),
-    "Paklenica": ("Paklenica — Climbing Guide", "Astroida", 28),
-}
+# Guidebook per venue (title, publisher, £) — curated, with an Amazon search
+# link. Keyed by the venue's exact name (matches SHEET_ALIAS/extra-climbing.json
+# convention) rather than a substring, which used to risk one venue's name
+# coincidentally containing another's guidebook key.
+GUIDEBOOKS_F = ROOT / "guidebooks.json"
+try:
+    GUIDEBOOKS = json.loads(GUIDEBOOKS_F.read_text())
+except Exception:
+    GUIDEBOOKS = {}
 
 
 def guidebook(v):
-    key = next((k for k in GUIDEBOOKS if k in v["name"]), None)
-    if not key:
+    gb = GUIDEBOOKS.get(v["name"])
+    if not gb:
         return None
-    title, pub, price = GUIDEBOOKS[key]
-    return {"title": title, "pub": pub, "price": f"£{price}", "url": _amazon(title)}
+    return {"title": gb["title"], "pub": gb["pub"], "price": f"£{gb['price']}", "url": _amazon(gb["title"])}
 
 
 # Extra climbing references per venue — UKClimbing/thecrag.com/federation/blog
@@ -2671,9 +2679,12 @@ def _sky_label(e):
 def venue_page(v, trip):
     """Static, crawlable page per venue (SEO): the SPA's #hash routes all look
     like ONE page to search engines, so each venue gets a real URL with the
-    weather table, routes and resources server-rendered. Deliberately carries
-    no traveller names or exact trip dates — only the generic period."""
+    weather table, routes and resources server-rendered. Carries the planner's
+    own .top header (Michel's request, 4 Jul) so hopping between the static
+    pages and the live site feels like one website; the article body itself
+    stays name-free."""
     name, slug = v["name"], _slug(v["shortName"])
+    pills = " · ".join(trip.get("pills") or [])
     period = trip.get("periodLbl", "late July")
     why = re.sub(r"\s*—\s*auto-summary.*$", "", v.get("why") or "", flags=re.S).strip()
     wx = v.get("wx") or {}
@@ -2725,16 +2736,47 @@ def venue_page(v, trip):
 <meta property="og:description" content="{_esc(desc)}">
 <meta property="og:url" content="{PAGES_BASE}venues/{slug}.html">
 {f'<meta property="og:image" content="{_esc(v["hero"])}">' if v.get("hero") else ""}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
-body{{background:#14161A;color:#E9E7E1;font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:15px;line-height:1.6;max-width:820px;margin:0 auto;padding:28px 20px 60px}}
-a{{color:#57A664}} h1{{font-size:30px;line-height:1.15;margin-bottom:4px}} h2{{font-size:17px;margin:28px 0 10px}}
-.meta{{color:#A0A19A;font-size:13px}} .src{{color:#6E7069;font-size:12px}}
-table{{border-collapse:collapse;width:100%;font-size:12.5px;font-family:'IBM Plex Mono',monospace}}
-.twrap{{overflow-x:auto}} th,td{{padding:5px 8px;border-bottom:1px solid #2A2E36;text-align:left;white-space:nowrap}}
-th{{color:#A0A19A;font-weight:600}} li{{margin-bottom:7px}} ul{{padding-left:20px}}
-.cta{{display:inline-block;margin-top:20px;background:#E9E7E1;color:#14161A;border-radius:8px;padding:8px 14px;text-decoration:none;font-weight:600}}
-footer{{margin-top:34px;color:#6E7069;font-size:12px;border-top:1px solid #2A2E36;padding-top:12px}}
+:root{{--bg:#14161A;--panel:#191C21;--card:#20242B;--ink:#E9E7E1;--muted:#A0A19A;--faint:#6E7069;--line:#2A2E36;--line2:#353A44;
+--disp:'Bricolage Grotesque',sans-serif;--body:'IBM Plex Sans',sans-serif;--mono:'IBM Plex Mono',monospace}}
+*,*::before,*::after{{box-sizing:border-box;margin:0;padding:0}}
+body{{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.6}}
+/* .top header: keep in sync with PAGE_HEAD's .top rules — same markup, same look */
+.top{{display:flex;align-items:center;flex-wrap:wrap;gap:10px 18px;padding:13px 22px;border-bottom:1px solid var(--line2);background:var(--panel)}}
+.mplogo{{width:22px;height:22px;object-fit:contain;margin-right:8px;vertical-align:-5px}}
+.wordmark{{font-family:var(--disp);font-weight:800;font-size:19px;letter-spacing:-.02em;white-space:nowrap;display:flex;align-items:center;color:var(--ink);text-decoration:none}}
+.wordmark em{{font-style:normal;font-weight:500;font-size:10px;font-family:var(--mono);color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-left:8px}}
+.trip-line{{font-size:12.5px;color:var(--muted)}}
+.top-links{{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}}
+.tl{{font-size:12px;font-weight:500;text-decoration:none;color:var(--ink);border:1px solid var(--line2);border-radius:7px;padding:5px 11px;background:var(--card);white-space:nowrap}}
+.tl:hover{{border-color:var(--muted)}}
+.tl.strong{{background:var(--ink);color:var(--bg);border-color:var(--ink)}}
+.tl.strong:hover{{opacity:.88}}
+.wrap{{max-width:820px;margin:0 auto;padding:28px 20px 60px}}
+a{{color:#57A664}} h1{{font-family:var(--disp);font-size:30px;line-height:1.15;margin-bottom:4px}} h2{{font-family:var(--disp);font-size:17px;margin:28px 0 10px}}
+.meta{{color:var(--muted);font-size:13px}} .src{{color:var(--faint);font-size:12px}}
+table{{border-collapse:collapse;width:100%;font-size:12.5px;font-family:var(--mono)}}
+.twrap{{overflow-x:auto}} th,td{{padding:5px 8px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}}
+th{{color:var(--muted);font-weight:600}} li{{margin-bottom:7px}} ul{{padding-left:20px}}
+.cta{{display:inline-block;margin-top:20px;background:var(--ink);color:var(--bg);border-radius:8px;padding:8px 14px;text-decoration:none;font-weight:600}}
+footer{{margin-top:34px;color:var(--faint);font-size:12px;border-top:1px solid var(--line);padding-top:12px}}
 </style></head><body>
+<header class="top">
+  <a class="wordmark" href="../"><img class="mplogo" src="https://multi-pitch.com/img/logo/mp-logo-white.png" alt="" onerror="this.style.display='none'">multi<b>·</b>pitch<em>trip planner</em></a>
+  <div class="trip-line">{_esc(pills)}</div>
+  <nav class="top-links">
+    <a class="tl" href="../" title="How the ranking works — in the live planner">?</a>
+    <a class="tl" href="../knowledge/index.html">Knowledge</a>
+    <a class="tl" href="{_esc(trip.get('mapUrl',''))}" target="_blank" rel="noopener">Map</a>
+    <a class="tl" href="{_esc(trip.get('sheetUrl',''))}" target="_blank" rel="noopener">Spreadsheet</a>
+    <a class="tl" href="{_esc(trip.get('repoUrl',''))}" target="_blank" rel="noopener">GitHub</a>
+    <a class="tl strong" href="{_esc(trip.get('mpUrl',''))}" target="_blank" rel="noopener">multi-pitch.com ↗</a>
+  </nav>
+</header>
+<main class="wrap">
 <h1>{_esc(name)} — multi-pitch climbing</h1>
 <p class="meta">{_esc(v.get('country',''))} · {_esc(v.get('rock',''))} · {_esc(v.get('style',''))}{(' · grades ' + _esc(v['grades'])) if v.get('grades') else ''}</p>
 {f'<p>{_esc(why)}</p>' if why else ''}
@@ -2750,6 +2792,7 @@ footer{{margin-top:34px;color:#6E7069;font-size:12px;border-top:1px solid #2A2E3
 <a class="cta" href="../#{slug}">Open {_esc(v.get('shortName',name))} in the live planner →</a>
 <footer>Part of the <a href="{PAGES_BASE}">multi-pitch climbing trip planner</a> — 40+ European venues ranked daily by weather.
 Data: <a href="https://open-meteo.com/" rel="noopener">Open-Meteo</a> · routes: <a href="{SITE_URL}" rel="noopener">multi-pitch.com</a>.</footer>
+</main>
 </body></html>
 """
 
