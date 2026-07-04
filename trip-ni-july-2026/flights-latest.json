@@ -1,6 +1,6 @@
 {
   "comment": "Latest flight prices per combo (round-trip, 1 pax, GBP). Updated on demand by Claude or by an API script. null = not yet checked.",
-  "checked_at": "2026-07-04 09:33 UTC (Google Flights/SerpApi)",
+  "checked_at": "2026-07-04 20:16 UTC (Google Flights/SerpApi)",
   "currency": "GBP",
   "rep_combo": {
     "id": "fri-tue",
@@ -15,7 +15,7 @@
         "to": "MAD",
         "options": [
           {
-            "price": 104,
+            "price": 112,
             "airline": "Ryanair UK",
             "from": "STN",
             "to": "MAD",
@@ -24,21 +24,21 @@
             "stops": 0
           },
           {
-            "price": 114,
-            "airline": "Ryanair",
-            "from": "STN",
-            "to": "MAD",
-            "dep": "08:40",
-            "arr": "12:10",
-            "stops": 0
-          },
-          {
-            "price": 123,
+            "price": 121,
             "airline": "Wizz Air",
             "from": "LTN",
             "to": "MAD",
             "dep": "08:00",
             "arr": "11:40",
+            "stops": 0
+          },
+          {
+            "price": 130,
+            "airline": "easyJet",
+            "from": "LTN",
+            "to": "MAD",
+            "dep": "12:30",
+            "arr": "16:00",
             "stops": 0
           }
         ],
@@ -68,7 +68,7 @@
             "stops": 0
           },
           {
-            "price": 159,
+            "price": 172,
             "airline": "Air France",
             "from": "DUB",
             "to": "MAD",
@@ -87,22 +87,13 @@
         "to": "LYS",
         "options": [
           {
-            "price": 156,
+            "price": 159,
             "airline": "easyJet",
             "from": "LTN",
             "to": "LYS",
             "dep": "13:30",
             "arr": "16:20",
             "stops": 0
-          },
-          {
-            "price": 192,
-            "airline": "KLM",
-            "from": "LHR",
-            "to": "LYS",
-            "dep": "19:15",
-            "arr": "09:20",
-            "stops": 1
           },
           {
             "price": 244,
@@ -112,6 +103,15 @@
             "dep": "19:55",
             "arr": "22:35",
             "stops": 0
+          },
+          {
+            "price": 209,
+            "airline": "Brussels Airlines",
+            "from": "LHR",
+            "to": "LYS",
+            "dep": "17:55",
+            "arr": "22:20",
+            "stops": 1
           }
         ],
         "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTA3LTI0agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDTFlTGkISCjIwMjYtMDctMjhqBwgBEgNMWVNyBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ",
@@ -122,7 +122,7 @@
         "to": "LYS",
         "options": [
           {
-            "price": 164,
+            "price": 168,
             "airline": "Aer Lingus",
             "from": "DUB",
             "to": "LYS",
@@ -181,8 +181,8 @@
             "airline": "AJet",
             "from": "STN",
             "to": "ASR",
-            "dep": "15:40",
-            "arr": "02:25",
+            "dep": "23:00",
+            "arr": "09:15",
             "stops": 1
           }
         ],
@@ -231,7 +231,7 @@
         "to": "TFS",
         "options": [
           {
-            "price": 189,
+            "price": 197,
             "airline": "Jet2",
             "from": "STN",
             "to": "TFS",
@@ -240,21 +240,21 @@
             "stops": 0
           },
           {
-            "price": 209,
-            "airline": "Ryanair",
-            "from": "STN",
-            "to": "TFS",
-            "dep": "20:35",
-            "arr": "01:05",
-            "stops": 0
-          },
-          {
-            "price": 217,
+            "price": 216,
             "airline": "TUI Airways",
             "from": "LGW",
             "to": "TFS",
             "dep": "15:25",
             "arr": "19:50",
+            "stops": 0
+          },
+          {
+            "price": 218,
+            "airline": "easyJet",
+            "from": "LTN",
+            "to": "TFS",
+            "dep": "07:25",
+            "arr": "12:00",
             "stops": 0
           }
         ],
@@ -266,7 +266,7 @@
         "to": "TFS",
         "options": [
           {
-            "price": 368,
+            "price": 370,
             "airline": "Aer Lingus",
             "from": "DUB",
             "to": "TFS",
@@ -275,7 +275,7 @@
             "stops": 0
           },
           {
-            "price": 368,
+            "price": 370,
             "airline": "Aer Lingus",
             "from": "DUB",
             "to": "TFS",
@@ -284,12 +284,12 @@
             "stops": 0
           },
           {
-            "price": 452,
-            "airline": "Ryanair",
-            "from": "DUB",
+            "price": 376,
+            "airline": "Jet2",
+            "from": "BFS",
             "to": "TFS",
-            "dep": "05:45",
-            "arr": "10:10",
+            "dep": "15:55",
+            "arr": "20:30",
             "stops": 0
           }
         ],
