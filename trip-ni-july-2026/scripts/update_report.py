@@ -398,7 +398,7 @@ def forecast(lat, lon):
         "&daily=weathercode,temperature_2m_max,temperature_2m_min,"
         "precipitation_sum,precipitation_probability_max,precipitation_hours,"
         "windspeed_10m_max,wind_gusts_10m_max,winddirection_10m_dominant,"
-        "sunshine_duration,daylight_duration"
+        "sunshine_duration,daylight_duration,uv_index_max,cloud_cover_mean"
         "&hourly=dewpoint_2m,relative_humidity_2m,precipitation"
         "&timezone=auto&forecast_days=16"
     )
@@ -408,8 +408,11 @@ def forecast(lat, lon):
 # committed — repeated runs then skip the weight-heavy archive API entirely
 # (which rate-limits after a few full 42-venue runs in an hour).
 CLIMO_CACHE_F = ROOT / "climo-cache.json"
+_CLIMO_VER = "v3"   # v3: + cloud_cover_mean. Bumping re-fetches all venues once
 try:
-    _CLIMO_CACHE = json.loads(CLIMO_CACHE_F.read_text())
+    # drop stale-version keys so one bump doesn't grow the committed file forever
+    _CLIMO_CACHE = {k: x for k, x in json.loads(CLIMO_CACHE_F.read_text()).items()
+                    if k.endswith("|" + _CLIMO_VER)}
 except Exception:
     _CLIMO_CACHE = {}
 
@@ -418,20 +421,22 @@ def climatology(lat, lon):
     """Typical trip-window conditions over recent years — ONE ranged request, filtered.
     Days are matched by real (month, day) against the graph/trip windows, so this stays
     correct even when the trip straddles a month boundary (e.g. 30 Jul–3 Aug)."""
-    ck = f"{lat},{lon}|{CLIMO_YEARS[0]}-{CLIMO_YEARS[-1]}|{GRAPH_START:%m%d}-{GRAPH_END:%m%d}|v2"
+    ck = f"{lat},{lon}|{CLIMO_YEARS[0]}-{CLIMO_YEARS[-1]}|{GRAPH_START:%m%d}-{GRAPH_END:%m%d}|{_CLIMO_VER}"
     if ck in _CLIMO_CACHE:
         return _CLIMO_CACHE[ck]
     d = _get(
         "https://archive-api.open-meteo.com/v1/archive"
         f"?latitude={lat}&longitude={lon}"
         f"&start_date={CLIMO_YEARS[0]}-{GRAPH_START:%m-%d}&end_date={CLIMO_YEARS[-1]}-{GRAPH_END:%m-%d}"
-        "&daily=temperature_2m_max,precipitation_sum,windspeed_10m_max,winddirection_10m_dominant&timezone=auto"
+        "&daily=temperature_2m_max,precipitation_sum,windspeed_10m_max,winddirection_10m_dominant,"
+        "cloud_cover_mean&timezone=auto"
     )["daily"]
     tmaxs, winds, rain_days, total = [], [], 0, 0
     per_day = {}   # (month, day) -> {"t","p","w"} lists for the graph window
     dirs = d.get("winddirection_10m_dominant") or [None] * len(d["time"])
-    for t, tx, pr, wd, wdir in zip(d["time"], d["temperature_2m_max"], d["precipitation_sum"],
-                                   d.get("windspeed_10m_max", [None] * len(d["time"])), dirs):
+    clouds = d.get("cloud_cover_mean") or [None] * len(d["time"])
+    for t, tx, pr, wd, wdir, cc in zip(d["time"], d["temperature_2m_max"], d["precipitation_sum"],
+                                       d.get("windspeed_10m_max", [None] * len(d["time"])), dirs, clouds):
         dd = date.fromisoformat(t)
         md = (dd.month, dd.day)
         if tx is None:
@@ -441,6 +446,8 @@ def climatology(lat, lon):
             e["t"].append(tx)
             e["p"].append(pr or 0)
             e["w"].append(wd or 0)
+            if cc is not None:
+                e.setdefault("c", []).append(cc)
             if wdir is not None:
                 e.setdefault("dx", []).append(math.cos(math.radians(wdir)))
                 e.setdefault("dy", []).append(math.sin(math.radians(wdir)))
@@ -461,6 +468,8 @@ def climatology(lat, lon):
                            "tmax": round(sum(pd["t"]) / len(pd["t"])),
                            "precip": round(sum(pd["p"]) / len(pd["p"]), 1),
                            "wind": round(sum(pd["w"]) / len(pd["w"])),
+                           "cloud": (round(sum(pd["c"]) / len(pd["c"]))
+                                     if pd.get("c") else None),
                            "dir": (round(math.degrees(math.atan2(sum(pd["dy"]), sum(pd["dx"]))) % 360)
                                    if pd.get("dx") else None),
                            "trip": md in TRIP_MD})
@@ -481,21 +490,24 @@ def seasonal(lat, lon):
     d = _get(
         "https://seasonal-api.open-meteo.com/v1/seasonal"
         f"?latitude={lat}&longitude={lon}"
-        "&daily=temperature_2m_max,precipitation_sum&forecast_days=45&timezone=auto"
+        "&daily=temperature_2m_max,precipitation_sum,cloud_cover_mean&forecast_days=45&timezone=auto"
     )["daily"]
     times = d["time"]
     tkeys = [k for k in d if k.startswith("temperature_2m_max")]
     pkeys = [k for k in d if k.startswith("precipitation_sum")]
+    ckeys = [k for k in d if k.startswith("cloud_cover_mean")]
     tmaxs, precs, wet, total = [], [], 0, 0
-    daily = {}   # (month, day) -> ensemble-mean {tmax, precip} for the graph window
+    daily = {}   # (month, day) -> ensemble-mean {tmax, precip, cloud} for the graph window
     for i, day in enumerate(times):
         dd = date.fromisoformat(day)
         gvals = [d[k][i] for k in tkeys if i < len(d[k]) and d[k][i] is not None]
         gp = [d[k][i] for k in pkeys if i < len(d[k]) and d[k][i] is not None]
+        gc = [d[k][i] for k in ckeys if i < len(d[k]) and d[k][i] is not None]
         if gvals and (dd.month, dd.day) in GRAPH_MD:
             daily[(dd.month, dd.day)] = {
                 "tmax": round(sum(gvals) / len(gvals)),
-                "precip": round(sum(gp) / len(gp) if gp else 0, 1)}
+                "precip": round(sum(gp) / len(gp) if gp else 0, 1),
+                "cloud": (round(sum(gc) / len(gc)) if gc else None)}
         if not (TARGET_START <= dd <= TARGET_END):
             continue
         tvals = gvals
@@ -663,6 +675,8 @@ def evaluate(v):
         dirs = daily.get("winddirection_10m_dominant") or [None] * len(days)
         # per-day live forecast for graph-window days (overlaid on the typical chart)
         res["fc_days"] = {}
+        uvs = daily.get("uv_index_max") or [None] * len(days)
+        ccs = daily.get("cloud_cover_mean") or [None] * len(days)
         for i in valid:
             dd = date.fromisoformat(days[i])
             if (dd.month, dd.day) in GRAPH_MD:
@@ -673,6 +687,8 @@ def evaluate(v):
                     "icon": wmo_icon(daily["weathercode"][i]),
                     "wind": round(winds[i]) if winds[i] is not None else None,
                     "dir": round(dirs[i]) if dirs[i] is not None else None,
+                    "uv": round(uvs[i]) if uvs[i] is not None else None,
+                    "cloud": round(ccs[i]) if ccs[i] is not None else None,
                     "gust": mi.get("gust"), "dew": mi.get("dew"),
                     "friction": mi.get("friction"), "sunFrac": mi.get("sun_frac"),
                 }
@@ -1507,6 +1523,23 @@ def _venue_utc_off(v):
     return off
 
 
+def _uv_est(lat, d, cloud_pct):
+    """Estimated midday UV index for typical/outlook days, until the live
+    forecast supplies the real uv_index_max: clear-sky UVI from solar
+    elevation (McKenzie et al. ~12.5·cosZ^2.42 at sea level), knocked down
+    up to ~50% under full cloud. ±1–2 UVI — fine for a suncream call, and
+    the tooltip labels it 'est.'."""
+    doy = d.timetuple().tm_yday
+    dec = 23.44 * math.sin(math.radians((284 + doy) / 365.0 * 360.0))
+    cosz = math.cos(math.radians(abs(lat - dec)))   # solar zenith at local noon
+    if cosz <= 0:
+        return 0
+    uvi = 12.5 * cosz ** 2.42
+    if cloud_pct is not None:
+        uvi *= 1.0 - 0.5 * (cloud_pct / 100.0)
+    return round(uvi)
+
+
 def _day_sun(lat, lon, d, off):
     """One day's [local sunrise "HH:MM", local sunset, daylight hours] for the
     weather tiles; [None, None, 24/0] when the sun never sets/rises."""
@@ -1567,7 +1600,8 @@ def venue_payload(n, r):
         except Exception:
             dt, wd = None, str(s["day"])
         entry = {"day": s["day"], "lbl": wd, "tmax": s["tmax"], "dir": s.get("dir"),
-                 "precip": s["precip"], "wind": s.get("wind", 0), "trip": s["trip"]}
+                 "precip": s["precip"], "wind": s.get("wind", 0),
+                 "cloud": s.get("cloud"), "trip": s["trip"]}
         if dt and v.get("lat") is not None and v.get("lon") is not None:
             entry["sun"] = _day_sun(v["lat"], v["lon"], dt, utc_off)
         md_key = (m, s["day"])
@@ -1575,6 +1609,13 @@ def venue_payload(n, r):
             entry["fc"] = fcd[md_key]
         elif md_key in sead:
             entry["out"] = sead[md_key]
+        # estimated UV until the live forecast (which carries the real value)
+        # reaches this day; attenuated by the best cloud signal we have
+        if dt and v.get("lat") is not None and (entry.get("fc") or {}).get("uv") is None:
+            cc = (entry.get("out") or {}).get("cloud")
+            if cc is None:
+                cc = entry.get("cloud")
+            entry["uv"] = _uv_est(v["lat"], dt, cc)
         series.append(entry)
 
     return {
@@ -1703,6 +1744,9 @@ svg.topo .dseg{pointer-events:stroke}
 .wxdial .wn{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--ink)}
 .wxdial svg{position:absolute;inset:-8px;width:50px;height:50px}
 .wxtile .suns{display:flex;flex-direction:column;align-items:center;gap:1px;font-family:var(--mono);font-size:9.5px;color:var(--faint);line-height:1.25;white-space:nowrap}
+.wxtile .suns .dl{color:var(--muted)}
+.wxtile .irow{display:flex;align-items:center;gap:4px}
+.uvr{width:20px;height:20px;border-radius:50%;border:1.5px solid;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9.5px;font-weight:600;color:var(--ink);flex-shrink:0}
 #wxtip{position:fixed;z-index:70;pointer-events:none;background:var(--card);border:1px solid var(--line2);color:var(--ink);font-family:var(--mono);font-size:11.5px;line-height:1.6;border-radius:7px;padding:8px 11px;max-width:260px;box-shadow:0 8px 24px rgba(0,0,0,.5);opacity:0;transition:opacity .12s}
 #wxtip .dim{color:var(--muted)}
 @media(prefers-reduced-motion:reduce){#wxtip{transition:none}}
@@ -1924,6 +1968,8 @@ a.xlink:hover{border-color:var(--muted)}
   .wxdial{width:30px;height:30px}
   .wxdial svg{inset:-7px;width:44px;height:44px}
   .wxtile .suns{font-size:8.5px}
+  .uvr{width:18px;height:18px;font-size:8.5px}
+  .wxtile .irow{gap:3px}
 }
 </style></head>"""
 
@@ -2160,6 +2206,9 @@ function wxHtml(v){
 function rainColor(mm){mm=num(mm);return mm>=6?'#D06A57':(mm>=2?'#B98A2E':'#57A664');}
 function windColor(k){k=num(k);return k>=25?'#D06A57':(k>=15?'#B98A2E':'#57A664');}
 function tempColor(t){t=num(t);return t>=27?'#D06A57':(t>=20?'#B98A2E':(t>=8?'#57A664':'#3987e5'));}
+// WHO UV bands folded onto the page's severity colours (violet = the WHO
+// "extreme" tier — it exists nowhere else on the page, like temp's cold blue)
+function uvColor(u){u=num(u);return u>=11?'#B07ADB':(u>=6?'#D06A57':(u>=3?'#B98A2E':'#57A664'));}
 
 // Per-day tiles (BBC-style strip, one column per day) — replaced the ECharts
 // line/bar chart 4 Jul 2026; Michel picked this from four mockup options.
@@ -2169,12 +2218,23 @@ function tempColor(t){t=num(t);return t>=27?'#D06A57':(t>=20?'#B98A2E':(t>=8?'#5
 // severity, arrow flies WITH the wind — same convention as the old chart's
 // axis arrows). Plain HTML/SVG: dropping ECharts here removed the page's
 // only CDN script.
+function wxCloud(d){
+  // best cloud-cover signal for the day: live forecast, else ensemble
+  // outlook, else the 2021-24 typical mean
+  if(d.fc&&d.fc.cloud!=null)return num(d.fc.cloud);
+  if(d.out&&d.out.cloud!=null)return num(d.out.cloud);
+  return d.cloud!=null?num(d.cloud):null;
+}
 function wxIcon(d){
   var o=d.fc||d.out,mm=o?num(o.precip):num(d.precip);
+  var cc=wxCloud(d);
   var sf=(d.fc&&d.fc.sunFrac!=null)?num(d.fc.sunFrac):null;
-  // sky from the best signal available: live sun fraction once the forecast
-  // lands, expected rain until then
-  var kind=mm>=2?'rain':sf!=null?(sf>=.6?'sun':(sf>=.3?'partly':'cloud')):(mm<0.05?'sun':(mm<0.5?'partly':'cloud'));
+  // sky from the best signal available: rain trumps everything, then real
+  // cloud cover, then live sun fraction, then expected rain as a proxy
+  var kind=mm>=2?'rain'
+    :cc!=null?(cc<25?'sun':(cc<60?'partly':'cloud'))
+    :sf!=null?(sf>=.6?'sun':(sf>=.3?'partly':'cloud'))
+    :(mm<0.05?'sun':(mm<0.5?'partly':'cloud'));
   function rays(cx,cy,r1,r2,wd){var s3='';[0,45,90,135,180,225,270,315].forEach(function(a){var r=a*Math.PI/180;
     s3+='<line x1="'+(cx+r1*Math.cos(r)).toFixed(1)+'" y1="'+(cy+r1*Math.sin(r)).toFixed(1)+'" x2="'+(cx+r2*Math.cos(r)).toFixed(1)+'" y2="'+(cy+r2*Math.sin(r)).toFixed(1)+'" stroke="#E5B93F" stroke-width="'+wd+'" stroke-linecap="round"/>';});return s3;}
   var inner,label;
@@ -2195,6 +2255,11 @@ function wxTipHtml(d){
   if(d.sun)h+='<br><span class="dim">daylight:</span> '+(d.sun[0]
     ?esc(d.sun[0])+' → '+esc(d.sun[1])+' · '+num(d.sun[2])+' h'
     :(d.sun[2]>=24?'sun never sets (24 h)':'sun never rises'));
+  var tcc=wxCloud(d),tuv=(d.fc&&d.fc.uv!=null)?num(d.fc.uv):(d.uv!=null?num(d.uv):null);
+  if(tcc!=null||tuv!=null)h+='<br><span class="dim">'
+    +(tcc!=null?'cloud '+tcc+'%':'')
+    +(tcc!=null&&tuv!=null?' · ':'')
+    +(tuv!=null?'UV '+tuv+((d.fc&&d.fc.uv!=null)?'':' est.'):'')+'</span>';
   if(d.fc){
     if(d.fc.wind!=null)h+='<br>wind '+num(d.fc.wind)+' km/h'+(d.fc.dir!=null?' from '+compass(d.fc.dir)+' '+warr(d.fc.dir):'')+(d.fc.gust!=null?' · gusts '+num(d.fc.gust):'');
     if(d.fc.friction)h+='<br>friction: '+esc(d.fc.friction)+(d.fc.dew!=null?' (dew '+num(d.fc.dew)+'°C)':'');
@@ -2248,9 +2313,12 @@ function renderWx(v){
     var dd=(d.fc&&d.fc.dir!=null)?d.fc.dir:d.dir;
     var wc=windColor(w),big=o?o.tmax:d.tmax;
     var mm=o?num(o.precip):num(d.precip);
+    var uv=(d.fc&&d.fc.uv!=null)?num(d.fc.uv):(d.uv!=null?num(d.uv):null);
+    var uvEst=!(d.fc&&d.fc.uv!=null);
     return '<div class="wxtile'+(d.trip?' trip':'')+'" data-i="'+i+'" tabindex="0" role="listitem">'
       +'<span class="wd">'+esc(d.lbl)+' '+num(d.day)+'</span>'
-      +wxIcon(d)
+      +'<span class="irow">'+wxIcon(d)
+      +(uv!=null?'<span class="uvr" style="border-color:'+uvColor(uv)+'" title="UV index '+uv+(uvEst?' (estimated)':'')+'">'+uv+'</span>':'')+'</span>'
       +'<span class="t-out" style="color:'+tempColor(big)+'">'+num(big)+'°</span>'
       +'<span class="t-typ">'+(o?'typ '+num(d.tmax)+'°':'typical')+'</span>'
       +'<span class="wxrain"><span class="rt" style="height:'+pc(d.precip)+'%"></span>'
@@ -2261,11 +2329,11 @@ function renderWx(v){
       +'<svg viewBox="0 0 50 50" aria-hidden="true"><g transform="rotate('+((num(dd)+180)%360)+' 25 25)"><path d="M25 2l4 7h-8Z" fill="'+wc+'"/></g></svg>'
       +'<span class="wn">'+w+'</span></span>'
       +(d.sun?'<span class="suns">'+(d.sun[0]
-        ?'<span title="sunrise">↑'+esc(d.sun[0])+'</span><span title="sunset">↓'+esc(d.sun[1])+'</span>'
+        ?'<span title="sunrise">↑'+esc(d.sun[0])+'</span><span title="sunset">↓'+esc(d.sun[1])+'</span><span class="dl" title="daylight">'+num(d.sun[2])+' h</span>'
         :'<span>'+(d.sun[2]>=24?'☀ 24 h':'no sun')+'</span>')+'</span>':'')
       +'</div>';
   }).join('');
-  el.innerHTML='<div class="wx-key">big °C = '+ov+' · small = typical '+esc(D.trip.periodLbl)+' · bar = rain mm, 0–'+mx+' scale (hatch = typical, solid = '+ov+') · dial = wind km/h, arrow = where it blows · ↑↓ = sunrise/sunset, local · green/amber/red = fine/caution/rough</div>'
+  el.innerHTML='<div class="wx-key">big °C = '+ov+' · small = typical '+esc(D.trip.periodLbl)+' · icon = cloud cover · ring by icon = UV index'+(anyFc?'':' (est.)')+' · bar = rain mm, 0–'+mx+' scale (hatch = typical, solid = '+ov+') · dial = wind km/h, arrow = where it blows · ↑↓ = sunrise/sunset, local + daylight h · green/amber/red = fine/caution/rough</div>'
     +'<div class="wxtiles" role="list" aria-label="Daily weather, one tile per day">'+h+'</div>';
   wireWxTips(el,s2);
 }
