@@ -1,0 +1,11 @@
+{
+ "Fair Head, NI": {"title": "Fair Head — A Rock Climbing Guide", "pub": "NIMC", "price": 25},
+ "Mournes, NI": {"title": "Mourne Mountains — Rock Climbs", "pub": "NIMC", "price": 20},
+ "Dolomites (Cortina)": {"title": "Dolomites — Rockfax", "pub": "Rockfax", "price": 30},
+ "East Tyrol (Lienz)": {"title": "Osttirol — Alpinkletterfuehrer", "pub": "Panico", "price": 34},
+ "Lake District (Borrowdale)": {"title": "Lake District — Rockfax", "pub": "Rockfax", "price": 28},
+ "Snowdonia (Llanberis Pass)": {"title": "Llanberis — Climbers Club Guide", "pub": "Climbers Club", "price": 25},
+ "Isle of Arran": {"title": "Arran — SMC Climbers Guide", "pub": "SMC", "price": 24},
+ "Picos de Europa": {"title": "Picos de Europa — Rockfax", "pub": "Rockfax", "price": 30},
+ "Paklenica (Anica Kuk)": {"title": "Paklenica — Climbing Guide", "pub": "Astroida", "price": 28}
+}

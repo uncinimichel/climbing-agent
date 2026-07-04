@@ -2225,13 +2225,18 @@ function wxHtml(v){
 // only has to learn one "green = fine, amber = caution, red = rough" language
 // for the whole dashboard rather than a chart-specific one. Cold gets its own
 // blue tier for temperature only — the thermometer convention is universal
-// enough that a 4th colour there reads as MORE obvious, not less. Thresholds
-// come from the trip's own data (rain/wind: dry-day and gust-penalty cutoffs
-// already used in the scorer) and from heat_penalty's friction-research
-// bands (ideal 8–20°C, hot from ~27°C).
+// enough that a 4th colour there reads as MORE obvious, not less.
+// Wind/temp thresholds come from D.trip.climateThresholds — the SAME
+// cold/heat/gust breakpoints heat_penalty()/day_score() use to compute the
+// score itself (see update_report.py), not a separately-eyeballed copy, so
+// the chart can never quietly disagree with the score about what counts as
+// cold/hot/windy. Rain has no equivalent scorer constant to share (the score
+// works off a period's wet-day %, not a single day's mm) so its thresholds
+// are tuned directly from the trip's own daily rainfall distribution.
+var CT=(D.trip&&D.trip.climateThresholds)||{cold:8,warm:20,hot:25,gustBad:30};
 function rainColor(mm){mm=num(mm);return mm>=6?'#D06A57':(mm>=2?'#B98A2E':'#57A664');}
-function windColor(k){k=num(k);return k>=25?'#D06A57':(k>=15?'#B98A2E':'#57A664');}
-function tempColor(t){t=num(t);return t>=27?'#D06A57':(t>=20?'#B98A2E':(t>=8?'#57A664':'#3987e5'));}
+function windColor(k){k=num(k);return k>=CT.gustBad?'#D06A57':(k>=CT.gustBad/2?'#B98A2E':'#57A664');}
+function tempColor(t){t=num(t);return t>=CT.hot?'#D06A57':(t>=CT.warm?'#B98A2E':(t>=CT.cold?'#57A664':'#3987e5'));}
 // WHO UV bands folded onto the page's severity colours (violet = the WHO
 // "extreme" tier — it exists nowhere else on the page, like temp's cold blue)
 function uvColor(u){u=num(u);return u>=11?'#B07ADB':(u>=6?'#D06A57':(u>=3?'#B98A2E':'#57A664'));}
@@ -2872,6 +2877,11 @@ def build_data(ranked, now, banner):
         "repoUrl": REPO_URL,
         "mapUrl": MP_MAP_URL, "sheetUrl": SHEET_URL, "mpUrl": SITE_URL,
         "updated": now.strftime("%a %d %b %Y, %H:%M UTC"),
+        # single source of truth for the weather chart's severity colouring —
+        # the same breakpoints the scorer itself uses, so the chart can never
+        # quietly disagree with the score about what counts as cold/hot/windy
+        "climateThresholds": {"cold": COLD_C, "warm": HEAT_WARM_C, "hot": HEAT_HOT_C,
+                               "gustBad": GUST_BAD_KMH},
     }
     return {"venues": payload, "trip": trip,
             "banner": {"cls": (banner[0] or "info"), "html": banner[1]}}
