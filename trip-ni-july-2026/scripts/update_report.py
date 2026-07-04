@@ -87,6 +87,7 @@ MP_DATA_URL = "https://multi-pitch.com/data/data.json"   # live climb DB (S3-bac
 SHEET_URL = "https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit"
 CLIMBING_CSV = REPO_ROOT / "climbing-trips.csv"
 REPO_URL = "https://github.com/uncinimichel/climbing-agent"
+PAGES_BASE = "https://uncinimichel.github.io/climbing-agent/"   # canonical URL for SEO tags + sitemap
 
 
 # ---- Data-driven source links (no hardcoded rows/URLs) --------------------
@@ -1661,7 +1662,16 @@ PAGE_HEAD = """<!doctype html>
 <html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src https: data:">
-<title>multi·pitch — Trip planner · Michel &amp; Dan · ~24 Jul 2026</title>
+<title>Multi-pitch climbing trip planner — European trad venues ranked daily by weather</title>
+<meta name="description" content="Free multi-pitch climbing trip planner: 40+ European venues — Gredos, Fair Head, the Dolomites, Écrins and more — ranked every day by live weather, flight prices and places to stay.">
+<link rel="canonical" href="https://uncinimichel.github.io/climbing-agent/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="multi·pitch trip planner">
+<meta property="og:title" content="Multi-pitch climbing trip planner — venues ranked daily by weather">
+<meta property="og:description" content="40+ European trad venues ranked every day by live weather, flights and stays.">
+<meta property="og:url" content="https://uncinimichel.github.io/climbing-agent/">
+<meta property="og:image" content="https://multi-pitch.com/img/tiles/aiguille-debona.jpg">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -1675,6 +1685,13 @@ PAGE_HEAD = """<!doctype html>
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-text-size-adjust:100%}
+.sr{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.allv{padding:24px 22px 30px;border-top:1px solid var(--line2);background:var(--panel)}
+.allv nav{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:9px;max-width:1100px}
+.allv a{font-family:var(--mono);font-size:11.5px;color:var(--muted);text-decoration:none;white-space:nowrap}
+.allv a:hover{color:var(--ink);text-decoration:underline}
+.allv-note{margin-top:12px;font-size:11px;color:var(--faint)}
+.allv-note a{color:var(--faint)}
 body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:14px;line-height:1.55}
 .top{display:flex;align-items:center;flex-wrap:wrap;gap:10px 18px;padding:13px 22px;border-bottom:1px solid var(--line2);background:var(--panel)}
 .mplogo{width:22px;height:22px;object-fit:contain;margin-right:8px;vertical-align:-5px}
@@ -1974,6 +1991,7 @@ a.xlink:hover{border-color:var(--muted)}
 </style></head>"""
 
 PAGE_BODY = """<body>
+<h1 class="sr">Multi-pitch climbing trip planner — European trad venues ranked daily by weather</h1>
 <header class="top">
   <div class="wordmark"><img class="mplogo" src="https://multi-pitch.com/img/logo/mp-logo-white.png" alt="" onerror="this.style.display='none'">multi<b>·</b>pitch<em>trip planner</em></div>
   <div class="trip-line" id="tripline"></div>
@@ -2626,23 +2644,181 @@ window.addEventListener('hashchange',function(){var h=location.hash.replace('#',
 """
 
 
+def _slug(name):
+    """Mirror of the client-side slugify() so static venue URLs and the SPA's
+    #hash routes agree on names."""
+    t = unicodedata.normalize("NFD", str(name)).encode("ascii", "ignore").decode().lower()
+    return re.sub(r"^-+|-+$", "", re.sub(r"[^a-z0-9]+", "-", t))
+
+
+def _esc(t):
+    return (str(t).replace("&", "&amp;").replace("<", "&lt;")
+            .replace(">", "&gt;").replace('"', "&quot;"))
+
+
+def _sky_label(e):
+    """Text version of the tile icon's cloud logic, for the static tables."""
+    o = e.get("fc") or e.get("out") or {}
+    mm = o.get("precip", e.get("precip")) or 0
+    cc = o.get("cloud", e.get("cloud"))
+    if mm >= 2:
+        return "rain"
+    if cc is None:
+        return "sunny" if mm < 0.05 else ("sunny intervals" if mm < 0.5 else "cloudy")
+    return "sunny" if cc < 25 else ("sunny intervals" if cc < 60 else "cloudy")
+
+
+def venue_page(v, trip):
+    """Static, crawlable page per venue (SEO): the SPA's #hash routes all look
+    like ONE page to search engines, so each venue gets a real URL with the
+    weather table, routes and resources server-rendered. Deliberately carries
+    no traveller names or exact trip dates — only the generic period."""
+    name, slug = v["name"], _slug(v["shortName"])
+    period = trip.get("periodLbl", "late July")
+    why = re.sub(r"\s*—\s*auto-summary.*$", "", v.get("why") or "", flags=re.S).strip()
+    wx = v.get("wx") or {}
+    desc = (f"{name} ({v.get('country','')}) multi-pitch climbing: {v.get('style','')}. "
+            f"Typical {period}: {wx.get('tmax','?')}°C, wind {wx.get('wind','?')} km/h. "
+            "Daily-updated weather outlook, classic routes, and travel notes.")
+    rows = []
+    for e in v.get("series") or []:
+        o = e.get("fc") or e.get("out") or {}
+        sun = e.get("sun") or [None, None, None]
+        uv = (e.get("fc") or {}).get("uv", e.get("uv"))
+        rows.append(
+            "<tr><td>%s %s Jul</td><td>%s</td><td>%s°C</td><td>%s°C</td><td>%s</td><td>%s</td>"
+            "<td>%s</td><td>%s</td><td>%s h</td><td>%s</td></tr>" % (
+                _esc(e.get("lbl", "")), _esc(e.get("day", "")), _sky_label(e),
+                _esc(o.get("tmax", "–")), _esc(e.get("tmax", "–")),
+                _esc(o.get("precip", e.get("precip", "–"))), _esc(e.get("wind", "–")),
+                _esc(sun[0] or "–"), _esc(sun[1] or "–"), _esc(sun[2] if sun[2] is not None else "–"),
+                _esc(uv if uv is not None else "–")))
+    climbs = "".join(
+        f'<li><a href="{_esc(c["url"])}" rel="noopener">{_esc(c.get("route",""))}</a> '
+        f'({_esc(c.get("grade",""))}{", " + str(c.get("pitches")) + " pitches" if c.get("pitches") else ""}) '
+        f'on {_esc(c.get("cliff",""))}</li>'
+        for c in (v.get("climbs") or []) if c.get("url"))
+    extras = "".join(
+        f'<li><a href="{_esc(x["url"])}" rel="noopener">{_esc(x.get("title",""))}</a> '
+        f'<span class="src">({_esc(x.get("source",""))})</span> — {_esc(x.get("note",""))}</li>'
+        for x in (v.get("extraClimbing") or []) if isinstance(x, dict) and x.get("url"))
+    fl = []
+    for who, lbl in (("michel", "from London"), ("dan", "from Belfast / Dublin")):
+        f = (v.get("flights") or {}).get(who) or {}
+        opts = f.get("options") or []
+        if f.get("mode") == "fly" and opts:
+            o0 = opts[0]
+            fl.append(f"Flights {lbl} from £{_esc(o0['price'])} "
+                      f"({_esc(o0['from'])}→{_esc(o0['to'])}, {_esc(o0['airline'])})")
+        elif f.get("mode") == "drive":
+            fl.append(f"Drive/train {lbl}")
+        elif f.get("mode") == "local":
+            fl.append(f"Local {lbl}")
+    return f"""<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{_esc(name)} multi-pitch climbing — weather, routes &amp; travel</title>
+<meta name="description" content="{_esc(desc)}">
+<link rel="canonical" href="{PAGES_BASE}venues/{slug}.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="{_esc(name)} multi-pitch climbing">
+<meta property="og:description" content="{_esc(desc)}">
+<meta property="og:url" content="{PAGES_BASE}venues/{slug}.html">
+{f'<meta property="og:image" content="{_esc(v["hero"])}">' if v.get("hero") else ""}
+<style>
+body{{background:#14161A;color:#E9E7E1;font-family:'IBM Plex Sans',system-ui,sans-serif;font-size:15px;line-height:1.6;max-width:820px;margin:0 auto;padding:28px 20px 60px}}
+a{{color:#57A664}} h1{{font-size:30px;line-height:1.15;margin-bottom:4px}} h2{{font-size:17px;margin:28px 0 10px}}
+.meta{{color:#A0A19A;font-size:13px}} .src{{color:#6E7069;font-size:12px}}
+table{{border-collapse:collapse;width:100%;font-size:12.5px;font-family:'IBM Plex Mono',monospace}}
+.twrap{{overflow-x:auto}} th,td{{padding:5px 8px;border-bottom:1px solid #2A2E36;text-align:left;white-space:nowrap}}
+th{{color:#A0A19A;font-weight:600}} li{{margin-bottom:7px}} ul{{padding-left:20px}}
+.cta{{display:inline-block;margin-top:20px;background:#E9E7E1;color:#14161A;border-radius:8px;padding:8px 14px;text-decoration:none;font-weight:600}}
+footer{{margin-top:34px;color:#6E7069;font-size:12px;border-top:1px solid #2A2E36;padding-top:12px}}
+</style></head><body>
+<h1>{_esc(name)} — multi-pitch climbing</h1>
+<p class="meta">{_esc(v.get('country',''))} · {_esc(v.get('rock',''))} · {_esc(v.get('style',''))}{(' · grades ' + _esc(v['grades'])) if v.get('grades') else ''}</p>
+{f'<p>{_esc(why)}</p>' if why else ''}
+<h2>Weather — typical {_esc(period)} vs current outlook</h2>
+<div class="twrap"><table>
+<tr><th>Day</th><th>Sky</th><th>Outlook high</th><th>Typical high</th><th>Rain mm</th><th>Wind km/h</th><th>Sunrise</th><th>Sunset</th><th>Daylight</th><th>UV</th></tr>
+{''.join(rows)}
+</table></div>
+<p class="meta">Updated {_esc(trip.get('updated',''))} · typical = 2021–2024 average · outlook = 45-day ensemble, replaced by the live 16-day forecast as the window approaches.</p>
+{f'<h2>Classic routes</h2><ul>{climbs}</ul>' if climbs else ''}
+{f'<h2>More climbing &amp; guidebook resources</h2><ul>{extras}</ul>' if extras else ''}
+{f'<h2>Getting there</h2><p>{_esc(" · ".join(fl))}</p>' if fl else ''}
+<a class="cta" href="../#{slug}">Open {_esc(v.get('shortName',name))} in the live planner →</a>
+<footer>Part of the <a href="{PAGES_BASE}">multi-pitch climbing trip planner</a> — 40+ European venues ranked daily by weather.
+Data: <a href="https://open-meteo.com/" rel="noopener">Open-Meteo</a> · routes: <a href="{SITE_URL}" rel="noopener">multi-pitch.com</a>.</footer>
+</body></html>
+"""
+
+
+def write_venue_pages(data):
+    """Emit venues/<slug>.html for every venue; returns the slugs (for the
+    sitemap). The dir is rebuilt from scratch so renamed venues don't leave
+    stale pages behind."""
+    vdir = REPO_ROOT / "venues"
+    if vdir.exists():
+        for p in vdir.glob("*.html"):
+            p.unlink()
+    vdir.mkdir(exist_ok=True)
+    slugs = []
+    for v in data["venues"]:
+        slug = _slug(v["shortName"])
+        (vdir / f"{slug}.html").write_text(venue_page(v, data["trip"]))
+        slugs.append(slug)
+    return slugs
+
+
+def write_seo_files(slugs, today):
+    """sitemap.xml + robots.txt at the repo root (staged into site/ by CI).
+    Venue pages + the planner are regenerated daily; knowledge pages get their
+    file's mtime."""
+    urls = [(PAGES_BASE, today, "daily", "1.0")]
+    urls += [(f"{PAGES_BASE}venues/{s}.html", today, "daily", "0.8") for s in sorted(slugs)]
+    kdir = REPO_ROOT / "knowledge"
+    if kdir.exists():
+        for p in sorted(kdir.rglob("*.html")):
+            rel = p.relative_to(REPO_ROOT).as_posix()
+            mod = date.fromtimestamp(p.stat().st_mtime).isoformat()
+            urls.append((f"{PAGES_BASE}{rel}", mod, "weekly", "0.5"))
+    items = "\n".join(
+        f"  <url><loc>{_esc(u)}</loc><lastmod>{m}</lastmod>"
+        f"<changefreq>{c}</changefreq><priority>{pr}</priority></url>"
+        for u, m, c, pr in urls)
+    (REPO_ROOT / "sitemap.xml").write_text(
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        f"{items}\n</urlset>\n")
+    (REPO_ROOT / "robots.txt").write_text(
+        f"User-agent: *\nAllow: /\n\nSitemap: {PAGES_BASE}sitemap.xml\n")
+    return len(urls)
+
+
 def render_page(data):
     """Assemble the final page from the embedded-data dict. Kept separate from
     build_html so the page can be re-rendered from an existing index.html's
     window.DATA without re-hitting any API."""
     blob = json.dumps(data, ensure_ascii=False).replace("</", "<\\/")
+    # server-rendered venue links: crawlable text + the discovery path to the
+    # static venues/ pages, since the SPA's own nav is JS + #hashes
+    links = "".join(
+        f'<a href="venues/{_slug(v["shortName"])}.html">{_esc(v["shortName"])} ({_esc(v["country"])})</a>'
+        for v in data["venues"])
+    footer = ('<footer class="allv"><div class="eyebrow">All climbing areas</div><nav>'
+              + links + '</nav><div class="allv-note">Multi-pitch venues ranked daily by weather · '
+              f'routes from <a href="{SITE_URL}" rel="noopener">multi-pitch.com</a> · '
+              f'weather from <a href="https://open-meteo.com/" rel="noopener">Open-Meteo</a></div></footer>')
     return (PAGE_HEAD
             + "\n<script>window.DATA=" + blob + ";</script>\n"
             + PAGE_BODY
+            + footer
             + "<script>" + PAGE_JS + "</script>\n</body></html>\n")
 
 
-def build_html(ranked, now, banner):
-    """Light 'guidebook' dashboard: left = ranked leaderboard (score bars), right =
-    area detail (contour-map header with the weather score at the summit, weather
-    rows, flights, climbs, sample stays). All per-venue data is embedded as JSON
-    and rendered client-side so one static file (GitHub Pages) supports switching
-    between areas."""
+def build_data(ranked, now, banner):
+    """The embedded-data dict: every venue's payload + trip-level context."""
     payload = [venue_payload(n, r) for n, r in enumerate(ranked, 1)]
     trip = {
         "pills": ["✈ Michel · London", "✈ Dan · Belfast / Dublin",
@@ -2654,9 +2830,17 @@ def build_html(ranked, now, banner):
         "mapUrl": MP_MAP_URL, "sheetUrl": SHEET_URL, "mpUrl": SITE_URL,
         "updated": now.strftime("%a %d %b %Y, %H:%M UTC"),
     }
-    data = {"venues": payload, "trip": trip,
+    return {"venues": payload, "trip": trip,
             "banner": {"cls": (banner[0] or "info"), "html": banner[1]}}
-    return render_page(data)
+
+
+def build_html(ranked, now, banner):
+    """Light 'guidebook' dashboard: left = ranked leaderboard (score bars), right =
+    area detail (contour-map header with the weather score at the summit, weather
+    rows, flights, climbs, sample stays). All per-venue data is embedded as JSON
+    and rendered client-side so one static file (GitHub Pages) supports switching
+    between areas."""
+    return render_page(build_data(ranked, now, banner))
 
 
 def build_md(ranked, now, banner):
@@ -2734,12 +2918,16 @@ def main():
                       f"Ranked on <b>typical {PERIOD_LBL} weather</b> ({CLIMO_YEARS[0]}–{CLIMO_YEARS[-1]}){sea_txt}. "
                       f"Full live forecast fills in from ~8 July.")
 
-    INDEX.write_text(build_html(ranked, now, banner))
+    data = build_data(ranked, now, banner)
+    INDEX.write_text(render_page(data))
+    slugs = write_venue_pages(data)
+    n_urls = write_seo_files(slugs, today)
     md = build_md(ranked, now, banner)
     DAILY.write_text(md)
     HISTORY.mkdir(exist_ok=True)
     (HISTORY / f"{today}.md").write_text(md)
-    print(f"Wrote index.html, daily-report.md, history/{today}.md")
+    print(f"Wrote index.html, {len(slugs)} venue pages, sitemap ({n_urls} urls), "
+          f"daily-report.md, history/{today}.md")
     print("Ranking:", " > ".join(r["venue"]["name"] for r in ranked if r.get("ok") and r["score"] >= 0))
 
 

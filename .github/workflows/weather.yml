@@ -64,6 +64,7 @@ jobs:
           git config user.name  "trip-bot"
           git config user.email "actions@github.com"
           git add index.html .nojekyll climbing-trips.csv \
+                  venues/ sitemap.xml robots.txt \
                   trip-ni-july-2026/daily-report.md \
                   trip-ni-july-2026/history/ trip-ni-july-2026/flights-latest.json \
                   trip-ni-july-2026/serpapi-usage.json \
@@ -84,6 +85,8 @@ jobs:
           rm -rf site && mkdir -p site
           cp index.html site/
           cp .nojekyll site/ 2>/dev/null || true
+          cp robots.txt sitemap.xml site/ 2>/dev/null || true
+          cp -R venues site/venues 2>/dev/null || true
           cp -R knowledge site/knowledge
 
       - name: Upload page artifact

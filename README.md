@@ -1,6 +1,6 @@
 # 🧗 Climbing Trip Planner — Michel & Dan
 
-**▶ Live dashboard: https://uncinimichel.github.io/climbing-agent/**
+**▶ Live: [Multi-pitch climbing trip planner — 40+ European venues ranked daily by weather](https://uncinimichel.github.io/climbing-agent/)**
 
 An automated, free, always-on planner for a multi-pitch climbing trip around
 **Fri 24 – Tue 28 July 2026**. It ranks candidate venues by weather and prices

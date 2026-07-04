@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://uncinimichel.github.io/climbing-agent/sitemap.xml
