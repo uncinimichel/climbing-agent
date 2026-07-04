@@ -1452,6 +1452,77 @@ def _list_info(v, r, cards):
     return {"txt": " · ".join(parts), "temp": t}
 
 
+def _sun_times(lat, lon, d):
+    """Sunrise/sunset for date d at lat/lon as (rise, set) minutes since UTC
+    midnight, via the NOAA approximation (±2 min — plenty for a head-torch
+    call). Returns "day"/"night" when the sun never crosses the horizon
+    (Lofoten still has the midnight sun in late July)."""
+    rad, deg = math.radians, math.degrees
+    # 1721425 anchors toordinal() to the integer Julian DAY (noon), which is
+    # what this formula's day-count n wants — not the midnight JD (…424.5)
+    n = d.toordinal() + 1721425.0 - 2451545.0 + 0.0008
+    jstar = n - lon / 360.0
+    m = (357.5291 + 0.98560028 * jstar) % 360
+    c = 1.9148 * math.sin(rad(m)) + 0.02 * math.sin(rad(2 * m)) + 0.0003 * math.sin(rad(3 * m))
+    lam = (m + c + 180 + 102.9372) % 360
+    jtransit = 2451545.0 + jstar + 0.0053 * math.sin(rad(m)) - 0.0069 * math.sin(rad(2 * lam))
+    sindec = math.sin(rad(lam)) * math.sin(rad(23.4397))
+    cosw = ((math.sin(rad(-0.833)) - math.sin(rad(lat)) * sindec)
+            / (math.cos(rad(lat)) * math.cos(math.asin(sindec))))
+    if cosw < -1:
+        return "day"
+    if cosw > 1:
+        return "night"
+    w = deg(math.acos(cosw))
+
+    def mins(j):
+        return ((j + 0.5) % 1.0) * 1440.0
+    # daylight comes from the hour angle, not set−rise: near the arctic the
+    # sun can set after local midnight, so the wrapped clock times would
+    # difference to nonsense (Lofoten: rise 01:55, set 00:29 the NEXT day)
+    return mins(jtransit - w / 360.0), mins(jtransit + w / 360.0), w / 360.0 * 48.0
+
+
+# July UTC offsets by country, for showing sunrise/sunset in the venue's own
+# clock time (Europe is on summer time in July; Turkey/Jordan/Saudi sit on
+# permanent +3; Namibia +2; Morocco +1 — Ramadan's clock shift is months away
+# from late July). Sheet spellings included as-is.
+_JUL_UTC_OFF = {
+    "england": 1, "scotland": 1, "wales": 1, "northern ireland": 1, "ireland": 1,
+    "portugal": 1, "morocco": 1,
+    "austria": 2, "belgium": 2, "croatia": 2, "czechia": 2, "france": 2,
+    "germany": 2, "italy": 2, "namibia": 2, "netherlands": 2, "norway": 2,
+    "slovakia": 2, "slovenia": 2, "slovinia": 2, "spain": 2,
+    "switzerland": 2, "swizzerland": 2,
+    "bulgaria": 3, "greece": 3, "jordan": 3, "saudi arabia": 3, "turkey": 3,
+}
+
+
+def _venue_utc_off(v):
+    if "tenerife" in (v.get("name") or "").lower():
+        return 1                       # Canaries run an hour behind mainland Spain
+    off = _JUL_UTC_OFF.get((v.get("country") or "").strip().lower())
+    if off is None:
+        off = round((v.get("lon") or 0) / 15)   # solar-time guess for new venues
+    return off
+
+
+def _day_sun(lat, lon, d, off):
+    """One day's [local sunrise "HH:MM", local sunset, daylight hours] for the
+    weather tiles; [None, None, 24/0] when the sun never sets/rises."""
+    st = _sun_times(lat, lon, d)
+    if st == "day":
+        return [None, None, 24.0]
+    if st == "night":
+        return [None, None, 0.0]
+    r, s, dl = st
+
+    def hm(mn):
+        mn = int(mn + off * 60) % 1440
+        return "%02d:%02d" % (mn // 60, mn % 60)
+    return [hm(r), hm(s), round(dl, 1)]
+
+
 def venue_payload(n, r):
     """One venue's data as a plain dict → embedded as JSON and rendered client-side."""
     v = r["venue"]
@@ -1486,15 +1557,19 @@ def venue_payload(n, r):
     # otherwise the 45-day ensemble outlook ("out").
     fcd = r.get("fc_days") or {}
     sead = (sea or {}).get("daily") or {}
+    utc_off = _venue_utc_off(v)
     series = []
     for s in (c.get("series") or []):
         m = s.get("month", TARGET_START.month)
         try:
-            wd = date(TARGET_START.year, m, s["day"]).strftime("%a")
+            dt = date(TARGET_START.year, m, s["day"])
+            wd = dt.strftime("%a")
         except Exception:
-            wd = str(s["day"])
+            dt, wd = None, str(s["day"])
         entry = {"day": s["day"], "lbl": wd, "tmax": s["tmax"], "dir": s.get("dir"),
                  "precip": s["precip"], "wind": s.get("wind", 0), "trip": s["trip"]}
+        if dt and v.get("lat") is not None and v.get("lon") is not None:
+            entry["sun"] = _day_sun(v["lat"], v["lon"], dt, utc_off)
         md_key = (m, s["day"])
         if md_key in fcd:
             entry["fc"] = fcd[md_key]
@@ -1504,6 +1579,7 @@ def venue_payload(n, r):
 
     return {
         "rank": n, "name": v["name"], "shortName": _short_name(v["name"]),
+        "lat": v.get("lat"), "lon": v.get("lon"),
         "country": v["country"], "flag": flag(v["country"]), "rock": v.get("rock", ""),
         "style": v.get("style", ""),
         "why": v.get("why", "") or (
@@ -1626,6 +1702,7 @@ svg.topo .dseg{pointer-events:stroke}
 .wxdial{width:34px;height:34px;border-radius:50%;border:1.5px solid;display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0}
 .wxdial .wn{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--ink)}
 .wxdial svg{position:absolute;inset:-8px;width:50px;height:50px}
+.wxtile .suns{display:flex;flex-direction:column;align-items:center;gap:1px;font-family:var(--mono);font-size:9.5px;color:var(--faint);line-height:1.25;white-space:nowrap}
 #wxtip{position:fixed;z-index:70;pointer-events:none;background:var(--card);border:1px solid var(--line2);color:var(--ink);font-family:var(--mono);font-size:11.5px;line-height:1.6;border-radius:7px;padding:8px 11px;max-width:260px;box-shadow:0 8px 24px rgba(0,0,0,.5);opacity:0;transition:opacity .12s}
 #wxtip .dim{color:var(--muted)}
 @media(prefers-reduced-motion:reduce){#wxtip{transition:none}}
@@ -1846,6 +1923,7 @@ a.xlink:hover{border-color:var(--muted)}
   .wxrain{width:18px;height:38px}
   .wxdial{width:30px;height:30px}
   .wxdial svg{inset:-7px;width:44px;height:44px}
+  .wxtile .suns{font-size:8.5px}
 }
 </style></head>"""
 
@@ -2114,6 +2192,9 @@ function wxTipHtml(d){
   function warr(x){return x==null?'':ARR[Math.round((((num(x)%360)+360)%360)/45)%8];}
   var h='<b>'+esc(d.lbl)+' '+num(d.day)+(d.trip?' · TRIP DAY':'')+'</b><br><span class="dim">typical:</span> '+num(d.tmax)+'°C · '+num(d.precip)+' mm · wind '+num(d.wind)+' km/h';
   if(o)h+='<br><b>'+(d.fc?'forecast':'outlook')+': '+num(o.tmax)+'°C · '+num(o.precip)+' mm</b>';
+  if(d.sun)h+='<br><span class="dim">daylight:</span> '+(d.sun[0]
+    ?esc(d.sun[0])+' → '+esc(d.sun[1])+' · '+num(d.sun[2])+' h'
+    :(d.sun[2]>=24?'sun never sets (24 h)':'sun never rises'));
   if(d.fc){
     if(d.fc.wind!=null)h+='<br>wind '+num(d.fc.wind)+' km/h'+(d.fc.dir!=null?' from '+compass(d.fc.dir)+' '+warr(d.fc.dir):'')+(d.fc.gust!=null?' · gusts '+num(d.fc.gust):'');
     if(d.fc.friction)h+='<br>friction: '+esc(d.fc.friction)+(d.fc.dew!=null?' (dew '+num(d.fc.dew)+'°C)':'');
@@ -2179,9 +2260,12 @@ function renderWx(v){
       +'<span class="wxdial" style="border-color:'+wc+'">'
       +'<svg viewBox="0 0 50 50" aria-hidden="true"><g transform="rotate('+((num(dd)+180)%360)+' 25 25)"><path d="M25 2l4 7h-8Z" fill="'+wc+'"/></g></svg>'
       +'<span class="wn">'+w+'</span></span>'
+      +(d.sun?'<span class="suns">'+(d.sun[0]
+        ?'<span title="sunrise">↑'+esc(d.sun[0])+'</span><span title="sunset">↓'+esc(d.sun[1])+'</span>'
+        :'<span>'+(d.sun[2]>=24?'☀ 24 h':'no sun')+'</span>')+'</span>':'')
       +'</div>';
   }).join('');
-  el.innerHTML='<div class="wx-key">big °C = '+ov+' · small = typical '+esc(D.trip.periodLbl)+' · bar = rain mm, 0–'+mx+' scale (hatch = typical, solid = '+ov+') · dial = wind km/h, arrow = where it blows · green/amber/red = fine/caution/rough</div>'
+  el.innerHTML='<div class="wx-key">big °C = '+ov+' · small = typical '+esc(D.trip.periodLbl)+' · bar = rain mm, 0–'+mx+' scale (hatch = typical, solid = '+ov+') · dial = wind km/h, arrow = where it blows · ↑↓ = sunrise/sunset, local · green/amber/red = fine/caution/rough</div>'
     +'<div class="wxtiles" role="list" aria-label="Daily weather, one tile per day">'+h+'</div>';
   wireWxTips(el,s2);
 }
