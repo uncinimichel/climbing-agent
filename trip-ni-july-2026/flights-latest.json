@@ -1,6 +1,6 @@
 {
   "comment": "Latest flight prices per combo (round-trip, 1 pax, GBP). Updated on demand by Claude or by an API script. null = not yet checked.",
-  "checked_at": "2026-07-05 06:04 UTC (Google Flights/SerpApi)",
+  "checked_at": "2026-07-05 08:46 UTC (Google Flights/SerpApi)",
   "currency": "GBP",
   "rep_combo": {
     "id": "fri-tue",
@@ -15,7 +15,7 @@
         "to": "MAD",
         "options": [
           {
-            "price": 104,
+            "price": 112,
             "airline": "Ryanair UK",
             "from": "STN",
             "to": "MAD",
@@ -68,13 +68,13 @@
             "stops": 0
           },
           {
-            "price": 216,
-            "airline": "Ryanair",
+            "price": 183,
+            "airline": "Air France",
             "from": "DUB",
             "to": "MAD",
-            "dep": "20:35",
-            "arr": "00:15",
-            "stops": 0
+            "dep": "05:55",
+            "arr": "16:45",
+            "stops": 1
           }
         ],
         "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDTUFEGjASCjIwMjYtMDctMjhqBwgBEgNNQURyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
@@ -217,12 +217,12 @@
             "stops": 0
           },
           {
-            "price": 206,
-            "airline": "KLM",
+            "price": 209,
+            "airline": "Brussels Airlines",
             "from": "LHR",
             "to": "LYS",
-            "dep": "19:15",
-            "arr": "09:20",
+            "dep": "11:05",
+            "arr": "22:20",
             "stops": 1
           }
         ],
