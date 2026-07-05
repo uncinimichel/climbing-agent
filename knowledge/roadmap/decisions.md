@@ -315,6 +315,35 @@ The cosmetic `fetch_trip.py`/`build_report.py` file-split is **deferred** — sc
 rendering share in-memory state across the 3-pass flight loop, so separating them is risk
 with no functional gain. Publishing the normalized `days` view to the website is a follow-up.
 
+### #25 — Standardized "Area character" tags: two-tier taxonomy + one JSON source of truth (2026-07-05)
+**Decision:** the venue-card tags are a fixed **two-tier taxonomy** rendered identically on
+the dashboard and the static venue pages: **Tier 1 · Trip fit** (dynamic — `cond`/`time`/
+`trip`, about *this* trip's dates/origin/window) and **Tier 2 · Area taxonomy** (static —
+`Character` · `Scale & grade` · `Hazards`). Each family is one labelled row, in a fixed
+order, one colour per family. The controlled spec — family, colour, tooltip, order and the
+"?" page copy for every tag kind — lives in [`../data/tag-spec.json`](../data/tag-spec.json)
+as the **single source of truth**: `update_report.py` generates the tag CSS, tooltips,
+legend and emit-order from it, and `build_knowledge.py` fills the tables in
+[`../data/tags.md`](../data/tags.md) (the reader-facing key the "?" opens) from the same file
+via `{{TAGTABLE:…}}` placeholders. Two key collisions were split (`height` → `wallheight`/
+`tallest`, `grade` → `grade`/`pitches`) and the meta `auto` pill dropped.
+**Why:** pills used to render in append order with two kinds doing double duty, so the same
+colour meant different facts on different cards and there was no legend. Dynamic-vs-static is
+the real hierarchy — the test is *"would it ever tag a single climb?"* (`cond`/`time`/`trip`
+never would; the static families are the exact vocabulary that will tag each climb later,
+since a venue value is a rollup of its climbs — see [`../data/taxonomy.md`](../data/taxonomy.md)).
+One JSON authority kills the drift between the three copies that existed before (the CSS
+grouping, the `TAGT` tooltip dict, the doc tables). It lives in `knowledge/data/` **not** the
+trip folder because it is static, trip-independent. Terminology verified against
+**multi-pitch.com** (`Rock Type`, `Aspect`, `Grade (BAS)`, the exact hazard flags),
+**UKClimbing** crag facets, and our own `taxonomy.md`.
+**Trade-off:** how each pill's *text* is computed stays in `venue_tags()` — that is genuinely
+code, not data — so the spec is the authority for taxonomy + presentation but not extraction;
+a new tag kind still needs a one-line `add()` in `venue_tags()` alongside its spec row.
+**Status:** ✅ Live — dashboard + all 42 static venue pages render from the venue's JSON
+payload (`v["tags"]`); the "?" opens `knowledge/data/tags.html`; generated CSS/tooltips/legend
+verified byte-identical to the prior hand-written versions.
+
 ---
 
 *Template for new entries:*
