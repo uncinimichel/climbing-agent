@@ -28,20 +28,20 @@ Enhancements to what already runs. None are required for daily operation. Priori
    combo's price trend over time.
 4. **Overlay live/seasonal forecast on the mini-graph** once in range (currently
    climatology) — show the actual forecast line for the trip window from ~8 July.
-5. **Tides for sea-cliff venues** (Fair Head, Gower, Cornwall) — flag non-tidal windows.
-   Some approaches to tidal crags are only safe/possible at low tide, so this needs
-   actual tide **times**, not just a yes/no flag. **Not started (noted 3 Jul 2026):**
-   multi-pitch.com already solves this for its own climb pages — see
-   `~/dev/multi-pitch/lambda-node/get-tides/getTides.js`, which calls the RapidAPI
-   "tides" endpoint (`tides.p.rapidapi.com`, needs a `TIDES_HOOD_KEY`) per climb
-   lat/lon and returns tide extremes/heights, filtered to climbs already flagged
-   `tidal == 1` in multi-pitch.com's own data. Our `_climb_flags()` in
-   `update_report.py` already surfaces that same `tidal` flag as a hazard chip on
-   climb cards (see `TAGT['hazard']`) — the plumbing to know *which* climbs need
-   this exists, just not the tide-times lookup or a low-tide-window callout in the
-   weather section. When this gets built: reuse the same RapidAPI tides endpoint
-   (or an equivalent free source) rather than re-deriving tide tables from scratch,
-   and surface it per-venue only when at least one nearby climb is tidal.
+5. **Tides for sea-cliff venues** — flag non-tidal windows. Some approaches to tidal
+   crags are only safe/possible at low tide, so this needs actual tide **times**, not
+   just a yes/no flag. **✅ Shipped (5 Jul 2026):** venues carry a crag-level `tidal`
+   flag (explicit in `venues.json`/`GAZETTEER` — Donegal, West Cornwall, Lundy, Devon,
+   Isle of Wight — or derived from multi-pitch.com routes flagged `tidal` within 10 km;
+   see [`../data/taxonomy.md`](../data/taxonomy.md)). For tidal venues the planner
+   fetches hourly tidal sea level from **Open-Meteo Marine** (free, keyless — chosen
+   over multi-pitch.com's RapidAPI endpoint, decision #22) and refines per-day high/
+   low-water times with a parabola fit through each turning point. Surfaced as:
+   low-water times (▼) on the weather tiles + full extremes in the tile tooltip, an
+   always-visible "tidal — plan around low water" condition chip, a cyan
+   `tide-dependent access` tag, and a Low-water column on the static venue pages. The
+   marine model's horizon is ~10 days, so tide times reach the trip-window tiles from
+   ~10 July; until then the widget says so explicitly.
 6. **Per-crag detail** — link each venue to its UKC/theCrag/Mountain-Project page. **In
    progress (3 Jul 2026):** shipped as a new "More climbing in the area" section, rendered
    below the multi-pitch.com climbs list and explicitly labelled as *not curated* (unlike

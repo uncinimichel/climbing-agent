@@ -245,6 +245,25 @@ stack serves and multi-pitch.com calls. Not decided; revisit once Stage 1 (real 
 intelligence) or the site's Tier 1.1 gets built.
 **Status:** ✅ Docs merged/cross-linked; code-location question 🔜 open.
 
+### #22 — Tides from Open-Meteo Marine, not the shared RapidAPI key (2026-07-05)
+**Decision:** the planner's tide times (roadmap Stage 0 #5) come from the **Open-Meteo
+Marine API** (`sea_level_height_msl`, hourly, free, keyless), with high/low-water times
+computed in `update_report.py` by a parabola fit through each turning point of the hourly
+curve. We do **not** reuse the RapidAPI "Tides" endpoint that multi-pitch.com's
+`lambdaGetTides` uses, even though the `TIDES_HOOD_KEY` is available from the Lambda's
+env config.
+**Why:** (a) that key is shared with the live multi-pitch.com daily Lambda — burning its
+unknown RapidAPI quota from a second daily CI job risks breaking the site's own tide
+pages; (b) the RapidAPI call returns 24 h per request, so covering the trip window would
+take ~6 requests × venue × day vs. one keyless request; (c) no secret to manage in GitHub
+Actions; (d) it matches the stack — every other weather signal here is already Open-Meteo.
+Trade-off accepted: the marine model is a tide *model* (~10-day horizon, heights vs. mean
+sea level, no station datum), fine for a "which half of the day" access call, not for
+navigation. Venue selection is the crag-level `tidal` flag (see #21's taxonomy and
+`knowledge/data/taxonomy.md`): explicit in `venues.json`/`GAZETTEER`, or derived from
+multi-pitch.com routes flagged `tidal` within 10 km.
+**Status:** ✅ Live — tiles/tags/static pages; times reach the trip window ~10 Jul.
+
 ---
 
 *Template for new entries:*

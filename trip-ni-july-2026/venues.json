@@ -201,6 +201,7 @@
       "lon": -8.685,
       "rock": "quartzite",
       "style": "sea cliffs & sea stacks (Cnoc na Mara)",
+      "tidal": true,
       "why": "Ireland's wild west: Sail Rock's perfect corner lines and the Cnoc na Mara sea-stack are as adventurous as trad gets, three hours' drive from Belfast. Remote, free and swell-dependent — a calm, dry window here beats almost anywhere.",
       "hub": "drive from Belfast (~3h); Michel flies to Belfast",
       "travel": {
@@ -222,6 +223,7 @@
       "lon": -5.62,
       "rock": "granite",
       "style": "immaculate sea-cliff trad (Bosigran, Chair Ladder)",
+      "tidal": true,
       "why": "Golden granite above the Atlantic — Commando Ridge, Doorpost and Chair Ladder's tiered walls are England's finest sea-cliff trad. It is the warmest, driest corner of the UK in late July, and the rock dries in minutes in a breeze.",
       "hub": "drive from London (~5h); fly Belfast→Newquay",
       "travel": {

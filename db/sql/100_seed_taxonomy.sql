@@ -97,7 +97,9 @@ INSERT INTO sun_window (code) VALUES
 
 INSERT INTO hazard (code, kind, meaning, safety_critical, feeds) VALUES
     -- route character (safety-critical: only from explicit source evidence)
-    ('tidal',        'route',     'Access/base tide-dependent (sea cliffs).',          true,  'tide-window logic (planned)'),
+    -- tidal also applies crag-level (venues.json `tidal` flag, explicit or derived
+    -- from tidal routes within 10 km) — see knowledge/data/taxonomy.md
+    ('tidal',        'route',     'Access/base tide-dependent (sea cliffs).',          true,  'tide-window logic (live 2026-07-05: planner tide tiles, Open-Meteo Marine)'),
     ('seepage',      'route',     'Weeps / holds water after rain.',                   true,  'Predictive Condition Algorithm'),
     ('abseil',       'route',     'Requires an abseil (approach/descent).',            false, 'gear & planning'),
     ('traverse',     'route',     'Significant traverse.',                             false, 'rope management / commitment'),

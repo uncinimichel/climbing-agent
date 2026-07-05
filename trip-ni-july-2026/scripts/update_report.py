@@ -164,7 +164,7 @@ GAZETTEER = {
     "loften": dict(lat=68.12, lon=13.6, rock="granite", style="arctic granite (Presten, Svolvær)", travel=_fly("BOO")),
     "wadi rum": dict(lat=29.57, lon=35.42, rock="sandstone", style="desert big walls, Bedouin routes", travel=_fly("AQJ")),
     "triglav": dict(lat=46.38, lon=13.84, rock="limestone", style="north-face alpine limestone", travel=_fly("LJU")),
-    "lundy": dict(lat=51.18, lon=-4.67, rock="granite", style="island sea-cliff granite",
+    "lundy": dict(lat=51.18, lon=-4.67, rock="granite", style="island sea-cliff granite", tidal=True,
                   travel={"michel": {"mode": "drive"}, "dan": {"mode": "fly", "to": "BRS"}}),
     "costa blanca": dict(lat=38.63, lon=0.07, rock="limestone", style="Peñón d'Ifach + big ridges", aspect="S", travel=_fly("ALC")),
     "zadiel": dict(lat=48.62, lon=20.83, rock="limestone", style="karst gorge towers", travel=_fly("KSC")),
@@ -175,9 +175,9 @@ GAZETTEER = {
     "mont blonc": dict(lat=45.88, lon=6.89, rock="granite", style="high alpine granite (Chamonix)", travel=_fly("GVA")),
     "spitzkoppe": dict(lat=-21.83, lon=15.19, rock="granite", style="desert granite dome", travel=_fly("WDH")),
     "hoy": dict(lat=58.88, lon=-3.43, rock="sandstone", style="Old Man of Hoy sea stack", aspect="W", travel=_fly("KOI")),
-    "isle of white": dict(lat=50.66, lon=-1.30, rock="chalk", style="south-coast sea cliffs",
+    "isle of white": dict(lat=50.66, lon=-1.30, rock="chalk", style="south-coast sea cliffs", tidal=True,
                           travel={"michel": {"mode": "drive"}, "dan": {"mode": "fly", "to": "SOU"}}),
-    "devon": dict(lat=50.92, lon=-4.56, rock="culm sandstone", style="Culm coast slabs (Wreckers Slab)",
+    "devon": dict(lat=50.92, lon=-4.56, rock="culm sandstone", style="Culm coast slabs (Wreckers Slab)", tidal=True,
                   travel={"michel": {"mode": "drive"}, "dan": {"mode": "fly", "to": "EXT"}}),
     "carcassonne": dict(lat=43.21, lon=2.35, rock="limestone", style="southern France crags", travel=_fly("CCF")),
     "medina": dict(lat=24.47, lon=39.61, rock="granite", style="desert granite", travel=_fly("MED")),
@@ -230,7 +230,7 @@ def build_venues():
             v = {"name": sh["area"], "country": sh["country"] or g.get("country", ""),
                  "priority": "7 (from sheet)", "lat": g["lat"], "lon": g["lon"],
                  "rock": g.get("rock", ""), "style": g.get("style", ""), "why": "",
-                 "travel": g["travel"], "auto": True}
+                 "travel": g["travel"], "tidal": g.get("tidal", False), "auto": True}
         v["sheet"] = sh
         out.append(v)
     for name, v in curated.items():
@@ -403,6 +403,54 @@ def forecast(lat, lon):
         "&hourly=dewpoint_2m,relative_humidity_2m,precipitation"
         "&timezone=auto&forecast_days=16"
     )
+
+
+def tides(lat, lon):
+    """Hourly tidal sea level (Open-Meteo Marine — free, keyless). Chosen over the
+    RapidAPI endpoint multi-pitch.com's lambda uses: that key is shared with the
+    live site's daily quota and only returns 24 h per call (decision #22). The
+    marine model carries real values ~10 days out; hours beyond come back null."""
+    return _get(
+        "https://marine-api.open-meteo.com/v1/marine"
+        f"?latitude={lat}&longitude={lon}"
+        "&hourly=sea_level_height_msl&forecast_days=16&timezone=auto"
+    )
+
+
+def tide_extremes(lat, lon):
+    """High/low water from the hourly tide curve, keyed by local ISO date:
+    {"2026-07-22": [{"t":"HH:MM","h":metres_vs_MSL,"k":"H"|"L"}, ...], ...}.
+    Each turning point's time/height is refined by fitting a parabola through
+    the three hours around it — the raw hourly grid would put high water up to
+    30 min off, which matters for a tide-window call."""
+    d = tides(lat, lon).get("hourly") or {}
+    ts, vs = d.get("time") or [], d.get("sea_level_height_msl") or []
+    out = {}
+    for i in range(1, min(len(ts), len(vs)) - 1):
+        v0, v1, v2 = vs[i - 1], vs[i], vs[i + 1]
+        if None in (v0, v1, v2):
+            continue
+        hi = v1 >= v0 and v1 > v2
+        if not hi and not (v1 <= v0 and v1 < v2):
+            continue
+        den = v0 - 2 * v1 + v2                       # 2a of the fitted parabola
+        off = (v0 - v2) / (2 * den) if den else 0.0  # vertex, hours from ts[i]
+        h = v1 - (v2 - v0) ** 2 / (8 * den) if den else v1
+        when = datetime.fromisoformat(ts[i]) + timedelta(hours=off)
+        out.setdefault(when.date().isoformat(), []).append(
+            {"t": when.strftime("%H:%M"), "h": round(h, 1), "k": "H" if hi else "L"})
+    return out
+
+
+def venue_is_tidal(v):
+    """Crag-level tidal flag: explicit `tidal` on the venue/gazetteer entry, else
+    derived from multi-pitch.com route evidence close by. The taxonomy marks
+    `tidal` safety-critical (explicit evidence only), so the derivation radius
+    stays tight — a tidal route 50 km away says nothing about this crag."""
+    if v.get("tidal"):
+        return True
+    return any("Tidal" in (c.get("flags") or [])
+               for c in nearby_climb_cards(v, km=10))
 
 
 # Climatology never changes (fixed 2021–24 archive), so it's cached to disk and
@@ -677,6 +725,11 @@ def evaluate(v):
     except Exception as e:
         print(f"[warn] seasonal failed for {v['name']}: {_redact(e)}", file=sys.stderr)
         res["seasonal"] = None
+    if venue_is_tidal(v):
+        try:
+            res["tides"] = tide_extremes(v["lat"], v["lon"])
+        except Exception as e:
+            print(f"[warn] tides failed for {v['name']}: {_redact(e)}", file=sys.stderr)
     try:
         d = forecast(v["lat"], v["lon"])
         daily = d["daily"]
@@ -1122,7 +1175,7 @@ def climb_url(c):
     return SITE_URL + "climbs/" + slug + "/"
 
 
-def venue_tags(v, cards, grades, cond_txt=None):
+def venue_tags(v, cards, grades, cond_txt=None, tidal=False):
     """Colored tag chips: the sheet's judgment columns + flagship-climbing traits
     derived from nearby multi-pitch.com routes, named after the knowledge-base
     taxonomy (route character & hazard flags, approach)."""
@@ -1134,6 +1187,8 @@ def venue_tags(v, cards, grades, cond_txt=None):
             tags.append({"k": kind, "t": text})
     if cond_txt:
         add("cond", cond_txt)
+    if tidal:
+        add("tidal", "tide-dependent access")
     add("vol", sh.get("volume") and f"{sh['volume']} volume")
     add("diff", sh.get("difficulty"))
     add("time", sh.get("travel_time") and f"{sh['travel_time']} from UK")
@@ -1159,6 +1214,8 @@ def venue_tags(v, cards, grades, cond_txt=None):
             add("grade", f"up to {max(pitches)} pitches")
         # taxonomy hazard/character flags aggregated over the area's routes
         seen_flags = {f for x in cards for f in (x.get("flags") or [])}
+        if tidal:
+            seen_flags.discard("Tidal")   # already the venue-level tidal chip
         for f in sorted(seen_flags):
             add("hazard", f)
         walks = [x.get("approach") for x in cards if x.get("approach") is not None]
@@ -1577,6 +1634,7 @@ def venue_payload(n, r):
     tag, tcls = wx_band(rain)
     grades = grade_range(cards)
     live = bool(fc and fc.get("in_window"))
+    tidal = venue_is_tidal(v)
     fl = r.get("flights") or {}
 
     def fallback_flight(who):
@@ -1625,6 +1683,8 @@ def venue_payload(n, r):
             if cc is None:
                 cc = entry.get("cloud")
             entry["uv"] = _uv_est(v["lat"], dt, cc)
+        if dt and (r.get("tides") or {}).get(dt.isoformat()):
+            entry["tide"] = r["tides"][dt.isoformat()]
         series.append(entry)
 
     return {
@@ -1658,7 +1718,8 @@ def venue_payload(n, r):
         "stays": r.get("stays"), "guide": guidebook(v),
         "extraClimbing": extra_climbing(v),
         "maps": maps_url(v), "weather": weather_url(v), "mpMap": MP_MAP_URL,
-        "tags": venue_tags(v, cards, grades, (f"{tag} · {rain}% wet days" if rain is not None else tag)),
+        "tidal": tidal,
+        "tags": venue_tags(v, cards, grades, (f"{tag} · {rain}% wet days" if rain is not None else tag), tidal),
         "listInfo": _list_info(v, r, cards)["txt"],
         "listTemp": _list_info(v, r, cards)["temp"],
         "breakdown": r.get("breakdown"),
@@ -1769,6 +1830,7 @@ svg.topo .dseg{pointer-events:stroke}
 .wxdial .wn{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--ink)}
 .wxdial svg{position:absolute;inset:-8px;width:50px;height:50px}
 .wxtile .suns{display:flex;flex-direction:column;align-items:center;gap:1px;font-family:var(--mono);font-size:9.5px;color:var(--faint);line-height:1.25;white-space:nowrap}
+.wxtile .tds{font-family:var(--mono);font-size:9.5px;color:#6FC7D9;line-height:1.25;white-space:nowrap}
 .wxtile .suns .dl{color:var(--muted)}
 .wxtile .irow{display:flex;align-items:center;gap:4px}
 .uvr{width:20px;height:20px;border-radius:50%;border:1.5px solid;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9.5px;font-weight:600;color:var(--ink);flex-shrink:0}
@@ -1949,6 +2011,7 @@ a.xlink:hover{border-color:var(--muted)}
 .tag-rock{color:var(--muted);background:var(--card)}
 .tag-grade{color:#79C289;border-color:rgba(87,166,100,.4);background:var(--dry-bg)}
 .tag-hazard{color:#D9B25E;border-color:rgba(185,138,46,.45);background:var(--mixed-bg)}
+.tag-tidal{color:#6FC7D9;border-color:rgba(78,168,190,.45);background:rgba(78,168,190,.10)}
 .tag-appr{color:var(--ink);background:var(--card)}
 .tag-cond{color:var(--ink);border-color:var(--line2);background:var(--card);font-weight:600}
 .tag-routes{color:#79C289;border-color:rgba(87,166,100,.3);background:rgba(87,166,100,.06)}
@@ -2189,22 +2252,23 @@ function takeaway(v){
 }
 
 function condStrip(v){
-  // Icon chips for the live-forecast-only climbing signals — always visible, so the
-  // headline conditions never hide behind the tiles' hover/tap tooltips.
-  if(!v.wx||!v.wx.live)return '';
-  var w=v.wx,chips=[];
-  if(w.friction){
+  // Icon chips for the headline climbing signals — always visible, so the
+  // conditions never hide behind the tiles' hover/tap tooltips. Most need the
+  // live forecast; the tidal flag is a fixed venue trait, so it shows now.
+  var w=v.wx||{},chips=[];
+  if(w.live&&w.friction){
     var fc=w.friction==='greasy'?'bad':w.friction==='humid'?'warn':'good';
     chips.push('<span class="cc '+fc+'"><span class="ci">🪨</span>rock <b>'+esc(w.friction)+'</b></span>');
   }
-  if(w.gustMax!=null){
+  if(w.live&&w.gustMax!=null){
     var gc=w.gustMax>=55?'bad':w.gustMax>=40?'warn':'good';
     chips.push('<span class="cc '+gc+'"><span class="ci">🌬️</span>gusts <b>'+num(w.gustMax)+' km/h</b></span>');
   }
-  if(w.amDry&&w.amDry[1]){
+  if(w.live&&w.amDry&&w.amDry[1]){
     var dc=w.amDry[0]===w.amDry[1]?'good':(w.amDry[0]===0?'bad':'warn');
     chips.push('<span class="cc '+dc+'"><span class="ci">🌅</span><b>'+num(w.amDry[0])+'/'+num(w.amDry[1])+'</b> dry mornings</span>');
   }
+  if(v.tidal)chips.push('<span class="cc warn"><span class="ci">🌊</span><b>tidal</b> — plan around low water</span>');
   return chips.length?'<div class="wx-cond">'+chips.join('')+'</div>':'';
 }
 
@@ -2296,6 +2360,8 @@ function wxTipHtml(d){
     if(d.fc.friction)h+='<br>friction: '+esc(d.fc.friction)+(d.fc.dew!=null?' (dew '+num(d.fc.dew)+'°C)':'');
     if(d.fc.sunFrac!=null)h+=' · sun '+Math.round(num(d.fc.sunFrac)*100)+'%';
   }
+  if(d.tide&&d.tide.length)h+='<br><span class="dim">tide (vs mean sea level):</span> '
+    +d.tide.map(function(x){return (x.k==='L'?'▼':'▲')+esc(x.t)+' '+num(x.h)+'m';}).join(' · ');
   return h;
 }
 var _wxTipEl=null;
@@ -2362,10 +2428,17 @@ function renderWx(v){
       +(d.sun?'<span class="suns">'+(d.sun[0]
         ?'<span title="sunrise">↑'+esc(d.sun[0])+'</span><span title="sunset">↓'+esc(d.sun[1])+'</span><span class="dl" title="daylight">'+num(d.sun[2])+' h</span>'
         :'<span>'+(d.sun[2]>=24?'☀ 24 h':'no sun')+'</span>')+'</span>':'')
+      +(function(){
+        if(!d.tide)return '';
+        var lows=d.tide.filter(function(x){return x.k==='L';});
+        return lows.length?'<span class="tds" title="low water, local time">'+lows.map(function(x){return '▼'+esc(x.t);}).join(' ')+'</span>':'';
+      })()
       +'</div>';
   }).join('');
-  el.innerHTML='<div class="wx-key">big °C = '+ov+' · small = typical '+esc(D.trip.periodLbl)+' · icon = cloud cover · ring by icon = UV index'+(anyFc?'':' (est.)')+' · bar = rain mm, 0–'+mx+' scale (hatch = typical, solid = '+ov+') · dial = wind km/h, arrow = where it blows · ↑↓ = sunrise/sunset, local + daylight h · green/amber/red = fine/caution/rough</div>'
-    +'<div class="wxtiles" role="list" aria-label="Daily weather, one tile per day">'+h+'</div>';
+  var anyTide=s2.some(function(d){return d.tide&&d.tide.length;});
+  el.innerHTML='<div class="wx-key">big °C = '+ov+' · small = typical '+esc(D.trip.periodLbl)+' · icon = cloud cover · ring by icon = UV index'+(anyFc?'':' (est.)')+' · bar = rain mm, 0–'+mx+' scale (hatch = typical, solid = '+ov+') · dial = wind km/h, arrow = where it blows · ↑↓ = sunrise/sunset, local + daylight h'+(anyTide?' · ▼ = low water, local':'')+' · green/amber/red = fine/caution/rough</div>'
+    +'<div class="wxtiles" role="list" aria-label="Daily weather, one tile per day">'+h+'</div>'
+    +(v.tidal&&!anyTide?'<div class="wx-key">🌊 tide-dependent access — low-water times appear on these tiles once the 10-day tide forecast reaches the trip dates.</div>':'');
   wireWxTips(el,s2);
 }
 
@@ -2536,10 +2609,10 @@ function breakdownHtml(v){
     +'</div></div>';
 }
 
-var TAGT={cond:'Typical share of wet days for your trip dates',vol:'Volume of multi-pitch climbing — from your sheet',diff:'Difficulty spread — from your sheet',time:'Rough travel time from the UK — from your sheet',trip:'Minimum sensible trip length — from your sheet',height:'Tallest route nearby on multi-pitch.com',rock:'Rock type',grade:'Trad grade range of nearby multi-pitch.com routes',routes:'Routes indexed on multi-pitch.com within 60 km',hazard:'Route character / hazard flag from multi-pitch.com route data',appr:'Approach character from route walk-in times',aspect:'Which way the crag faces — shifts felt temperature in sun',auto:'Venue generated from a row in your spreadsheet'};
+var TAGT={cond:'Typical share of wet days for your trip dates',tidal:'Access/base is tide-dependent (sea cliff) — low-water times show on the weather tiles once the 10-day tide forecast reaches those dates',vol:'Volume of multi-pitch climbing — from your sheet',diff:'Difficulty spread — from your sheet',time:'Rough travel time from the UK — from your sheet',trip:'Minimum sensible trip length — from your sheet',height:'Tallest route nearby on multi-pitch.com',rock:'Rock type',grade:'Trad grade range of nearby multi-pitch.com routes',routes:'Routes indexed on multi-pitch.com within 60 km',hazard:'Route character / hazard flag from multi-pitch.com route data',appr:'Approach character from route walk-in times',aspect:'Which way the crag faces — shifts felt temperature in sun',auto:'Venue generated from a row in your spreadsheet'};
 function tagsHtml(v){
   if(!v.tags||!v.tags.length)return '';
-  return '<div class="sec"><div class="eyebrow">Area character</div><div class="tagleg">colours: blue/violet = your sheet · green = multi-pitch.com · amber = hazards · grey = rock/approach — hover any tag for its meaning</div><div class="tags">'
+  return '<div class="sec"><div class="eyebrow">Area character</div><div class="tagleg">colours: blue/violet = your sheet · green = multi-pitch.com · amber = hazards · cyan = tides · grey = rock/approach — hover any tag for its meaning</div><div class="tags">'
     +v.tags.map(function(t){return '<span class="tag tag-'+esc(t.k)+'" title="'+esc(TAGT[t.k]||'')+'">'+esc(t.t)+'</span>';}).join('')+'</div></div>';
 }
 
@@ -2696,19 +2769,23 @@ def venue_page(v, trip):
     desc = (f"{name} ({v.get('country','')}) multi-pitch climbing: {v.get('style','')}. "
             f"Typical {period}: {wx.get('tmax','?')}°C, wind {wx.get('wind','?')} km/h. "
             "Daily-updated weather outlook, classic routes, and travel notes.")
+    # low-water column only once tide data reaches the window (tidal venues only)
+    has_tide = any(e.get("tide") for e in v.get("series") or [])
     rows = []
     for e in v.get("series") or []:
         o = e.get("fc") or e.get("out") or {}
         sun = e.get("sun") or [None, None, None]
         uv = (e.get("fc") or {}).get("uv", e.get("uv"))
+        lows = " / ".join(x["t"] for x in (e.get("tide") or []) if x.get("k") == "L")
         rows.append(
             "<tr><td>%s %s Jul</td><td>%s</td><td>%s°C</td><td>%s°C</td><td>%s</td><td>%s</td>"
-            "<td>%s</td><td>%s</td><td>%s h</td><td>%s</td></tr>" % (
+            "<td>%s</td><td>%s</td><td>%s h</td><td>%s</td>%s</tr>" % (
                 _esc(e.get("lbl", "")), _esc(e.get("day", "")), _sky_label(e),
                 _esc(o.get("tmax", "–")), _esc(e.get("tmax", "–")),
                 _esc(o.get("precip", e.get("precip", "–"))), _esc(e.get("wind", "–")),
                 _esc(sun[0] or "–"), _esc(sun[1] or "–"), _esc(sun[2] if sun[2] is not None else "–"),
-                _esc(uv if uv is not None else "–")))
+                _esc(uv if uv is not None else "–"),
+                f"<td>{_esc(lows or '–')}</td>" if has_tide else ""))
     climbs = "".join(
         f'<li><a href="{_esc(c["url"])}" rel="noopener">{_esc(c.get("route",""))}</a> '
         f'({_esc(c.get("grade",""))}{", " + str(c.get("pitches")) + " pitches" if c.get("pitches") else ""}) '
@@ -2783,11 +2860,11 @@ footer{{margin-top:34px;color:var(--faint);font-size:12px;border-top:1px solid v
 </header>
 <main class="wrap">
 <h1>{_esc(name)} — multi-pitch climbing</h1>
-<p class="meta">{_esc(v.get('country',''))} · {_esc(v.get('rock',''))} · {_esc(v.get('style',''))}{(' · grades ' + _esc(v['grades'])) if v.get('grades') else ''}</p>
+<p class="meta">{_esc(v.get('country',''))} · {_esc(v.get('rock',''))} · {_esc(v.get('style',''))}{(' · grades ' + _esc(v['grades'])) if v.get('grades') else ''}{' · tidal access — plan around low water' if v.get('tidal') else ''}</p>
 {f'<p>{_esc(why)}</p>' if why else ''}
 <h2>Weather — typical {_esc(period)} vs current outlook</h2>
 <div class="twrap"><table>
-<tr><th>Day</th><th>Sky</th><th>Outlook high</th><th>Typical high</th><th>Rain mm</th><th>Wind km/h</th><th>Sunrise</th><th>Sunset</th><th>Daylight</th><th>UV</th></tr>
+<tr><th>Day</th><th>Sky</th><th>Outlook high</th><th>Typical high</th><th>Rain mm</th><th>Wind km/h</th><th>Sunrise</th><th>Sunset</th><th>Daylight</th><th>UV</th>{'<th>Low water</th>' if has_tide else ''}</tr>
 {''.join(rows)}
 </table></div>
 <p class="meta">Updated {_esc(trip.get('updated',''))} · typical = 2021–2024 average · outlook = 45-day ensemble, replaced by the live 16-day forecast as the window approaches.</p>

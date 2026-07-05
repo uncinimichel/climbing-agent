@@ -235,7 +235,7 @@ Boolean tags (`1` = present, absent/`null` = not). Safety-critical ones (`loose`
 
 | Flag | Meaning | Feeds |
 |---|---|---|
-| `tidal` | Access/base tide-dependent (sea cliffs) | tide-window logic (planned) |
+| `tidal` | Access/base tide-dependent (sea cliffs) | tide-window logic (**live 5 Jul 2026** — see below) |
 | `seepage` | Weeps / holds water after rain | Predictive Condition Algorithm |
 | `abseil` | Requires an abseil (approach/descent) | gear & planning |
 | `traverse` | Significant traverse | rope management / commitment |
@@ -243,6 +243,15 @@ Boolean tags (`1` = present, absent/`null` = not). Safety-critical ones (`loose`
 | `polished` | Slick, polished rock | difficulty-in-practice |
 | `loose` | Loose / friable rock | safety |
 | `grassLedges` | Vegetated ledges (wet/awkward) | conditions |
+
+**`tidal` also exists at crag level** (the only flag that does, so far): a venue/crag whose
+approach or base needs a tide window carries `tidal: true` in `venues.json` / the planner's
+`GAZETTEER`. The crag flag is either set explicitly or derived from route evidence — one or
+more `tidal` routes within 10 km of the crag (tight radius: the flag is safety-critical, so
+a tidal route 50 km away says nothing about this crag). It drives the tide-times fetch
+(Open-Meteo Marine hourly sea level → per-day high/low water) shown in the planner's
+weather tiles, tags and static venue pages. Route-level `tidal` keeps meaning exactly what
+it always did: *this route* needs the tide.
 
 **Objective mountain hazards** (safety-critical for the alpine venues — Dolomites, Tyrol,
 Picos — that are our backups; set only from explicit evidence):
