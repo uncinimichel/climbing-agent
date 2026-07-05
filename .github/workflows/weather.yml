@@ -46,6 +46,12 @@ jobs:
             echo "sheet download failed or malformed — keeping the committed copy"
           fi
 
+      # Trip-INDEPENDENT weather + tide, fetched once per venue → venue-env.json
+      # (decision #24). update_report.py below consumes this cache; if this step is
+      # skipped or fails, update_report degrades to live per-venue fetches.
+      - name: Fetch venue environment (weather + tide, once per venue)
+        run: python3 trip-ni-july-2026/scripts/fetch_env.py
+
       - name: Build report (weather ranking + per-venue flights + HTML)
         env:
           SERPAPI_KEY: ${{ secrets.SERPAPI_KEY }}

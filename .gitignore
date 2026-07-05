@@ -3,6 +3,12 @@ __pycache__/
 .DS_Store
 prototypes/
 
+# Trip-independent weather/tide cache: produced by fetch_env.py and consumed by
+# update_report.py within the same daily run. Heavy (raw hourly × all venues) and
+# fully re-churned every day, so it's kept out of git history (decision #24). The
+# report degrades to live fetches when it's absent.
+trip-ni-july-2026/venue-env.json
+
 # Secrets — NEVER commit (this repo is public). Keys go in GitHub Actions secrets.
 .env
 .env.*

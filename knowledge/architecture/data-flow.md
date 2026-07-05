@@ -49,6 +49,29 @@ state is persisted. Follows the four layers end to end.
 8. **Persist.** `git commit + push` — the commit *is* the archive. `upload-pages-artifact`
    → `deploy-pages` publishes the site.
 
+## Planned: split the environment layer out of the monolith *(⛔ planned)*
+
+Steps 3–7 above run **inline in one script** (`update_report.py`) for one hardcoded trip.
+The planned refactor (decision [#24](../roadmap/decisions.md), design in
+[`venue-env-cache.md`](venue-env-cache.md)) breaks the single build along its natural seam —
+**trip-independent environment data** vs. **trip-specific booking data**:
+
+```
+  fetch_env.py    weather + tide + climo   ─▶  venue-env.json   (once per venue/day, latest-only)
+                     (steps 3–4 above)              │  keyed (venue, date)
+                                                    ▼
+  fetch_trip.py   flights + stays for a trip   ── reads env cache ──▶  trip data
+                     (steps 5–6 above)
+                                                    ▼
+  build_report.py  render index.html          ── env cache + trip data ──▶  site (step 7)
+```
+
+Weather stays **O(venues)** — computed once and reused by every trip, every user, and the
+website's "browse a venue before committing to a trip" path — while flights stay per-trip.
+`build_report` reads `fetched_at` from the cache and **degrades** (stale badge → last-good →
+climatology) rather than rendering silently-stale numbers. Nothing here is built yet; the
+current single-job flow above is what runs today.
+
 ## Where state lives (repo-as-database)
 
 | State | Where | Lifecycle |
@@ -56,6 +79,7 @@ state is persisted. Follows the four layers end to end.
 | Which venues to monitor | `venues.json` | Hand-edited; single source of truth. |
 | Flight route + date combos | `flights.json` | Hand-edited. |
 | Latest flight prices | `flights-latest.json` | Overwritten each run; not wiped by weather-only runs. |
+| Per-venue weather/tide *(⛔ planned)* | `venue-env.json` | Overwritten each run, latest-only, keyed `(venue, date)`; see [`venue-env-cache.md`](venue-env-cache.md). |
 | Today's dashboard | `index.html`, `daily-report.md` | Regenerated every run. |
 | Permanent history | `history/YYYY-MM-DD.md` + git log | Append-only; never overwritten. |
 | Secrets | `SERPAPI_KEY` (Actions secret + gitignored `.env`) | Rotated manually. |

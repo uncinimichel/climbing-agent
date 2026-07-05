@@ -54,9 +54,12 @@ _cfg = json.loads((ROOT / "venues.json").read_text())
 TAG_SPEC = json.loads((REPO_ROOT / "knowledge" / "data" / "tag-spec.json").read_text())
 _TAG_FAMS = TAG_SPEC["families"]
 _TAG_ORDER = {t["k"]: i for i, t in enumerate(TAG_SPEC["tags"])}
-# kind -> tier, so the client can start a new pill row per tier (Trip fit vs the
-# static Area-taxonomy families)
-TAG_TIER = {t["k"]: _TAG_FAMS[t["family"]]["tier"] for t in TAG_SPEC["tags"]}
+# kind -> family, and family -> {label, colour, tier}, so the client renders one
+# labelled pill row per family (Trip fit · Character · Scale & grade · Hazards),
+# with a rule marking the dynamic→static tier break.
+TAG_FAM = {t["k"]: t["family"] for t in TAG_SPEC["tags"]}
+TAG_FAMS = {fk: {"label": f["label"], "color": f["color"], "tier": f["tier"]}
+            for fk, f in _TAG_FAMS.items()}
 TAG_TIPS = {t["k"]: f"{_TAG_FAMS[t['family']]['tipLabel']} · {t['tip']}" for t in TAG_SPEC["tags"]}
 TAG_CSS = "".join(
     ",".join(f".tag-{t['k']}" for t in TAG_SPEC["tags"] if t["family"] == fk)
@@ -66,13 +69,10 @@ TAG_CSS = "".join(
 
 
 def _tag_legend():
-    def seg(f):
-        return f'<b style="color:{f["color"]}">{f["legendWord"]}</b> = {f["legendDesc"]}'
-    fams = sorted(_TAG_FAMS.values(), key=lambda f: f["order"])
-    t1 = " · ".join(seg(f) for f in fams if f["tier"] == 1)
-    t2 = " · ".join(seg(f) for f in fams if f["tier"] == 2)
-    return (f"two tiers · {t1} · then static area taxonomy: {t2}"
-            " — hover any tag, or open the ? for the full key")
+    # rows are now labelled per family, so the legend just states the tier idea
+    t1 = next(f["label"] for f in _TAG_FAMS.values() if f["tier"] == 1)
+    return (f"grouped by family · <b>{t1}</b> is about your trip; the rest is static "
+            "area taxonomy — hover any tag, or open the ? for the full key")
 
 
 TAG_LEG = _tag_legend()
@@ -421,11 +421,39 @@ def _get(url, retries=4):
 VENUES = build_venues()
 
 
+# ── Venue environment cache (decision #24; knowledge/architecture/venue-env-cache.md)
+# `fetch_env.py` fetches the trip-independent weather/tide layer ONCE per venue and
+# writes it here; this script then CONSUMES it instead of re-hitting the APIs. The cache
+# holds the raw provider payloads (what the functions below need), keyed by "lat,lon".
+# Degrade, never crash: if the file is missing (fetch_env didn't run) or a venue isn't
+# in it, every fetcher below falls back to a live call — so update_report still works
+# standalone. Loaded at import so the fetchers can see it.
+ENV_CACHE_F = ROOT / "venue-env.json"
+try:
+    _ENV = json.loads(ENV_CACHE_F.read_text())
+    _ENV_BY_COORD = {f"{x['lat']},{x['lon']}": x for x in _ENV.get("venues", {}).values()}
+    if _ENV_BY_COORD:
+        print(f"venue-env cache: {len(_ENV_BY_COORD)} venues "
+              f"(generated {_ENV.get('generated_at', '?')})", file=sys.stderr)
+except Exception:
+    _ENV, _ENV_BY_COORD = {}, {}
+
+
+def _env_raw(lat, lon, key):
+    """Cached raw provider payload for this venue, or None to trigger a live fetch."""
+    hit = _ENV_BY_COORD.get(f"{lat},{lon}")
+    return (hit.get("raw") or {}).get(key) if hit else None
+
+
 # ---- Weather --------------------------------------------------------------
 def forecast(lat, lon):
     """16-day live forecast (Open-Meteo's max). Beyond the sky/temp/wind basics we pull
     climbing-quality signals — gusts (exposed multi-pitch), sunshine + precip_hours (rock
-    drying), and hourly dewpoint/humidity (friction / 'grease'). All free, one request."""
+    drying), and hourly dewpoint/humidity (friction / 'grease'). All free, one request.
+    Served from the venue-env cache when present (fetch_env.py), else fetched live."""
+    cached = _env_raw(lat, lon, "forecast")
+    if cached is not None:
+        return cached
     return _get(
         "https://api.open-meteo.com/v1/forecast"
         f"?latitude={lat}&longitude={lon}"
@@ -455,7 +483,11 @@ def tide_extremes(lat, lon):
     {"2026-07-22": [{"t":"HH:MM","h":metres_vs_MSL,"k":"H"|"L"}, ...], ...}.
     Each turning point's time/height is refined by fitting a parabola through
     the three hours around it — the raw hourly grid would put high water up to
-    30 min off, which matters for a tide-window call."""
+    30 min off, which matters for a tide-window call.
+    Served from the venue-env cache when present (fetch_env.py), else derived live."""
+    cached = _env_raw(lat, lon, "tides")
+    if cached is not None:
+        return cached
     d = tides(lat, lon).get("hourly") or {}
     ts, vs = d.get("time") or [], d.get("sea_level_height_msl") or []
     out = {}
@@ -566,14 +598,23 @@ def climatology(lat, lon):
     return out
 
 
-def seasonal(lat, lon):
-    """Sub-seasonal (45-day) outlook for the trip window from Open-Meteo's free
-    Seasonal Forecast API (CFS ensemble, no key). Averages the ensemble members."""
-    d = _get(
+def _seasonal_raw(lat, lon):
+    """Raw Open-Meteo seasonal response — served from the venue-env cache when present
+    (fetch_env.py), else fetched live. Split out so the cache can hold the raw payload."""
+    cached = _env_raw(lat, lon, "seasonal")
+    if cached is not None:
+        return cached
+    return _get(
         "https://seasonal-api.open-meteo.com/v1/seasonal"
         f"?latitude={lat}&longitude={lon}"
         "&daily=temperature_2m_max,precipitation_sum,cloud_cover_mean&forecast_days=45&timezone=auto"
-    )["daily"]
+    )
+
+
+def seasonal(lat, lon):
+    """Sub-seasonal (45-day) outlook for the trip window from Open-Meteo's free
+    Seasonal Forecast API (CFS ensemble, no key). Averages the ensemble members."""
+    d = _seasonal_raw(lat, lon)["daily"]
     times = d["time"]
     tkeys = [k for k in d if k.startswith("temperature_2m_max")]
     pkeys = [k for k in d if k.startswith("precipitation_sum")]
@@ -2057,9 +2098,11 @@ a.xlink:hover{border-color:var(--muted)}
 .brk-total{display:flex;justify-content:space-between;gap:10px;border-top:1px solid var(--line2);margin-top:8px;padding-top:9px;font-family:var(--mono);font-size:12px;color:var(--muted)}
 .brk-total b{color:var(--ink)}
 .tagleg{font-size:10.5px;color:var(--faint);margin-bottom:9px}
-.tags{display:flex;gap:6px;flex-wrap:wrap;max-width:880px}
-.tags+.tags{margin-top:6px}
-.tags.tags-tb{margin-top:9px;padding-top:10px;border-top:1px solid var(--line)}
+.taglane{display:flex;gap:11px;align-items:flex-start;max-width:880px}
+.taglane+.taglane{margin-top:6px}
+.taglane.tags-tb{margin-top:9px;padding-top:10px;border-top:1px solid var(--line)}
+.tll{flex:0 0 84px;font-family:var(--mono);font-size:9px;letter-spacing:.04em;text-transform:uppercase;padding-top:5px;line-height:1.35}
+.tlp{display:flex;gap:6px;flex-wrap:wrap;flex:1;min-width:0}
 .tag{font-family:var(--mono);font-size:10.5px;padding:4px 9px;border-radius:5px;border:1px solid var(--line2);white-space:nowrap}
 /* per-family .tag-* colour rules are generated from knowledge/data/tag-spec.json
    and injected here by render_page() — do not hardcode them */
@@ -3005,7 +3048,8 @@ def render_page(data):
     return (PAGE_HEAD.replace("/*TAG_CSS*/", TAG_CSS)
             + "\n<script>window.DATA=" + blob
             + ";window.TAGT=" + tagt + ";window.TAGLEG=" + tagleg
-            + ";window.TAGTIER=" + json.dumps(TAG_TIER) + ";</script>\n"
+            + ";window.TAGFAM=" + json.dumps(TAG_FAM)
+            + ";window.TAGFAMS=" + json.dumps(TAG_FAMS, ensure_ascii=False) + ";</script>\n"
             + PAGE_BODY
             + footer
             + "<script>" + PAGE_JS + "</script>\n</body></html>\n")

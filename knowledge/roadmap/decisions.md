@@ -264,6 +264,57 @@ navigation. Venue selection is the crag-level `tidal` flag (see #21's taxonomy a
 multi-pitch.com routes flagged `tidal` within 10 km.
 **Status:** ✅ Live — tiles/tags/static pages; times reach the trip window ~10 Jul.
 
+### #23 — Chat mode runs on the Claude Code CLI, not the raw Anthropic API (2026-07-05)
+**Decision:** the retrieval agent's chat mode (decision #19) drives `claude -p`
+(Claude Code CLI, `agent/cli_agent.py`) instead of `client.messages.create()`
+directly (`agent/core.py`). The model gets one instructed capability — run
+`search_cli.py '<json>'` via its own Bash tool — and `cli_agent.py` parses
+`claude`'s `--output-format stream-json` into the same event shape (`text`/`tool`/
+`rows`/`refusal`/`done`) `core.py` produces, so both UIs (console, admin web page)
+render identically regardless of backend.
+**Why:** confirmed live that authenticating via `ant auth login` (OAuth) does
+**not** draw on a Claude Pro/Max subscription — any code calling the Messages API
+directly still bills against the account's separate, pay-as-you-go API credit
+balance, and returned `"Your credit balance is too low"` even after successful
+OAuth login. Shelling out to the actual `claude` binary instead uses Claude Code's
+own subscription-billed usage path — verified working in the exact scenario that
+blocked the raw-API route. `core.py` stays in the repo as an alternative backend
+for a future server deployment with funded API credits, where shelling out to a
+local `claude` binary isn't an option.
+**Trade-off:** the tool restriction (`--allowedTools Bash` / `--disallowedTools
+Edit Write NotebookEdit`) is prompt-guided scoping, not a hard sandbox boundary —
+fine for a local single-admin dev tool, not for anything exposed further. Console
+model defaults to `sonnet` (cheap, capable) rather than `opus-4-8`.
+**Status:** ✅ Live — both UIs verified end-to-end (search → tool call → grounded
+answer, including honest empty-result retry with a relaxed filter).
+
+### #24 — Split trip-independent environment data into a per-venue cache (2026-07-05)
+**Decision:** extract weather/wind/tide out of the monolithic daily build into a standalone
+`fetch_env.py` that writes a per-venue `venue-env.json` cache, keyed `(venue, date)`,
+**latest-only** (overwritten each run). Flights/stays become a separate `fetch_trip.py` that
+reads the env cache; `build_report.py` renders from both. Full design:
+[`../architecture/venue-env-cache.md`](../architecture/venue-env-cache.md).
+**Why:** weather/tide are a pure function of `(lat/lon, date)` — independent of trip, origin
+or user — so computing them once per venue and reusing them keeps the environment layer at
+**O(venues)** across every trip and user, and serves the website's "browse a venue before
+committing to a trip" path with no trip in existence. Primary driver is **structural
+clarity** (one 3086-line script doing three jobs → three single-purpose files), reuse second;
+it is *not* a cost play — Open-Meteo is free and the scarce quota lives in the booking layer.
+Latest-only (no `issued_at` history) because both use cases only want the current best
+forecast for a date; forecast-skill tracking is deferred and recoverable by adding a key
+column later. JSON shaped 1:1 with a future `venue_env` Postgres table (decision #18) to
+avoid a second migration.
+**Trade-off:** splitting the processes splits their failure modes — the renderer must read
+`fetched_at`, badge stale weather, and degrade to last-good/`climo` rather than render
+silently-stale numbers as fresh.
+**Status:** ⚠️ Partial (2026-07-05) — **`fetch_env.py` is live**: it fetches weather+tide
+once per venue → git-ignored `venue-env.json`, and `update_report.py` consumes it
+(`_env_raw`/`_seasonal_raw`/`tide_extremes`) with a live-fetch fallback; `weather.yml` runs
+`fetch_env → update_report`. Verified the cache-fed ranking is byte-identical to a live run.
+The cosmetic `fetch_trip.py`/`build_report.py` file-split is **deferred** — scoring and
+rendering share in-memory state across the 3-pass flight loop, so separating them is risk
+with no functional gain. Publishing the normalized `days` view to the website is a follow-up.
+
 ---
 
 *Template for new entries:*
