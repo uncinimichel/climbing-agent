@@ -1,6 +1,6 @@
 {
   "comment": "Latest flight prices per combo (round-trip, 1 pax, GBP). Updated on demand by Claude or by an API script. null = not yet checked.",
-  "checked_at": "2026-07-05 19:14 UTC (Google Flights/SerpApi)",
+  "checked_at": "2026-07-05 19:24 UTC (Google Flights/SerpApi)",
   "currency": "GBP",
   "rep_combo": {
     "id": "fri-tue",
@@ -9,6 +9,20 @@
     "nights": 4
   },
   "venues": {
+    "Aladaglar": {
+      "michel": {
+        "mode": "fly",
+        "options": [],
+        "to": "ASR",
+        "book_url": "https://www.skyscanner.net/transport/flights/lgw/asr/260724/260728/"
+      },
+      "dan": {
+        "mode": "fly",
+        "options": [],
+        "to": "ASR",
+        "book_url": "https://www.skyscanner.net/transport/flights/bfs/asr/260724/260728/"
+      }
+    },
     "Tenerife": {
       "michel": {
         "mode": "fly",
@@ -136,20 +150,6 @@
       },
       "dan": {
         "mode": "local"
-      }
-    },
-    "\u00c9crins (Aiguille Dibona)": {
-      "michel": {
-        "mode": "fly",
-        "options": [],
-        "to": "LYS",
-        "book_url": "https://www.skyscanner.net/transport/flights/lgw/lys/260724/260728/"
-      },
-      "dan": {
-        "mode": "fly",
-        "options": [],
-        "to": "LYS",
-        "book_url": "https://www.skyscanner.net/transport/flights/bfs/lys/260724/260728/"
       }
     }
   }
