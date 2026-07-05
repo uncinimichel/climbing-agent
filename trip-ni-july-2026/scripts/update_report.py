@@ -1176,52 +1176,74 @@ def climb_url(c):
 
 
 def venue_tags(v, cards, grades, cond_txt=None, tidal=False):
-    """Colored tag chips: the sheet's judgment columns + flagship-climbing traits
-    derived from nearby multi-pitch.com routes, named after the knowledge-base
-    taxonomy (route character & hazard flags, approach)."""
+    """Colored tag chips in two tiers, emitted in a FIXED order so every venue
+    card reads the same way (see knowledge/data/tags.md — the reader-facing key
+    the dashboard's "?" links to).
+
+    Tier 1 · Trip fit (dynamic — this trip's dates/origin/window; violet):
+        cond · time · trip
+    Tier 2 · Area taxonomy (static facts about the crag — the same vocabulary
+    that will tag each climb later), three families:
+        Character (grey):        rock · aspect · wallheight · appr
+        Scale & grade (green):   vol · diff · grade · pitches · tallest · routes
+        Hazards (amber):         tidal · hazard
+
+    Every kind maps to exactly one family colour; no kind is reused for two
+    unrelated facts (the old `height`/`grade` collisions are split into
+    wallheight/tallest and grade/pitches)."""
     sh = v.get("sheet") or {}
     tags = []
 
     def add(kind, text):
         if text:
             tags.append({"k": kind, "t": text})
+
+    def approach_txt():
+        walks = [x.get("approach") for x in cards if x.get("approach") is not None]
+        if not walks:
+            return None
+        med = sorted(walks)[len(walks) // 2]
+        return "long walk-ins" if med >= 60 else ("roadside cragging" if med <= 20 else f"~{med} min walk-ins")
+
+    # ── Tier 1 · Trip fit (dynamic: your dates, your origin, your window) ──
     if cond_txt:
         add("cond", cond_txt)
-    if tidal:
-        add("tidal", "tide-dependent access")
-    add("vol", sh.get("volume") and f"{sh['volume']} volume")
-    add("diff", sh.get("difficulty"))
     add("time", sh.get("travel_time") and f"{sh['travel_time']} from UK")
     add("trip", sh.get("min_trip") and f"min trip {sh['min_trip']}")
-    add("height", sh.get("max_height") and f"walls to {sh['max_height']}m")
+
+    # ── Tier 2a · Character (static physical crag) ──
     add("rock", v.get("rock"))
     asp = (v.get("aspect") or "").upper()
     if asp:
         adj = ASPECT_ADJ.get(asp, 0)
         add("aspect", f"{asp}-facing" + (" · shade" if adj < 0 else " · sun-baked" if adj >= 3 else ""))
+    add("wallheight", sh.get("max_height") and f"walls to {sh['max_height']}m")
+    if cards:
+        add("appr", approach_txt())
+
+    # ── Tier 2b · Scale & grade (how much / how hard / how big) ──
+    add("vol", sh.get("volume") and f"{sh['volume']} volume")
+    add("diff", sh.get("difficulty"))
     if grades:
         add("grade", f"Trad {grades}")
     if cards:
-        add("routes", f"{len(cards)} route{'s' if len(cards) != 1 else ''} on multi-pitch.com")
-        _tall = max(cards, key=lambda x: x.get("length") or 0)
-        if _tall.get("length"):
-            add("height", f"tallest {_tall['length']}m · {_tall['cliff']}")
-    if v.get("auto"):
-        add("auto", "from your sheet")
-    if cards:
         pitches = [x.get("pitches") or 0 for x in cards]
         if max(pitches) >= 6:
-            add("grade", f"up to {max(pitches)} pitches")
-        # taxonomy hazard/character flags aggregated over the area's routes
+            add("pitches", f"up to {max(pitches)} pitches")
+        _tall = max(cards, key=lambda x: x.get("length") or 0)
+        if _tall.get("length"):
+            add("tallest", f"tallest {_tall['length']}m · {_tall['cliff']}")
+        add("routes", f"{len(cards)} route{'s' if len(cards) != 1 else ''} on multi-pitch.com")
+
+    # ── Tier 2c · Hazards (safety & access; from explicit route evidence only) ──
+    if tidal:
+        add("tidal", "tide-dependent access")
+    if cards:
         seen_flags = {f for x in cards for f in (x.get("flags") or [])}
         if tidal:
             seen_flags.discard("Tidal")   # already the venue-level tidal chip
         for f in sorted(seen_flags):
             add("hazard", f)
-        walks = [x.get("approach") for x in cards if x.get("approach") is not None]
-        if walks:
-            med = sorted(walks)[len(walks) // 2]
-            add("appr", "long walk-ins" if med >= 60 else ("roadside cragging" if med <= 20 else f"~{med} min walk-ins"))
         if any((x.get("appDiff") or 0) >= 3 for x in cards):
             add("hazard", "serious approach")
     return tags[:18]
@@ -1837,7 +1859,7 @@ svg.topo .dseg{pointer-events:stroke}
 #wxtip{position:fixed;z-index:70;pointer-events:none;background:var(--card);border:1px solid var(--line2);color:var(--ink);font-family:var(--mono);font-size:11.5px;line-height:1.6;border-radius:7px;padding:8px 11px;max-width:260px;box-shadow:0 8px 24px rgba(0,0,0,.5);opacity:0;transition:opacity .12s}
 #wxtip .dim{color:var(--muted)}
 @media(prefers-reduced-motion:reduce){#wxtip{transition:none}}
-.tag-aspect{color:#8FB8C8;border-color:rgba(120,170,195,.4);background:rgba(120,170,195,.08)}
+.tag-aspect{color:var(--muted);border-color:var(--line2);background:var(--card)}
 .board-sub .lk{font-size:11px}
 .hovl{display:none;position:fixed;inset:0;background:rgba(10,11,14,.72);z-index:60;align-items:center;justify-content:center;padding:18px}
 .hbox{background:var(--panel);border:1px solid var(--line2);border-radius:14px;max-width:660px;max-height:86vh;overflow-y:auto;padding:18px 22px 20px;box-shadow:0 18px 60px rgba(0,0,0,.5)}
@@ -2003,19 +2025,16 @@ a.xlink:hover{border-color:var(--muted)}
 .tagleg{font-size:10.5px;color:var(--faint);margin-bottom:9px}
 .tags{display:flex;gap:6px;flex-wrap:wrap;max-width:880px}
 .tag{font-family:var(--mono);font-size:10.5px;padding:4px 9px;border-radius:5px;border:1px solid var(--line2);white-space:nowrap}
-.tag-vol{color:#7FB2E8;border-color:rgba(57,135,229,.4);background:rgba(57,135,229,.10)}
-.tag-height{color:#7FB2E8;border-color:rgba(57,135,229,.28);background:rgba(57,135,229,.06)}
-.tag-diff{color:#D08770;border-color:rgba(217,89,38,.4);background:rgba(217,89,38,.10)}
-.tag-time{color:#B9A0E8;border-color:rgba(144,110,220,.4);background:rgba(144,110,220,.10)}
-.tag-trip{color:#B9A0E8;border-color:rgba(144,110,220,.3);background:rgba(144,110,220,.06)}
-.tag-rock{color:var(--muted);background:var(--card)}
-.tag-grade{color:#79C289;border-color:rgba(87,166,100,.4);background:var(--dry-bg)}
-.tag-hazard{color:#D9B25E;border-color:rgba(185,138,46,.45);background:var(--mixed-bg)}
-.tag-tidal{color:#6FC7D9;border-color:rgba(78,168,190,.45);background:rgba(78,168,190,.10)}
-.tag-appr{color:var(--ink);background:var(--card)}
-.tag-cond{color:var(--ink);border-color:var(--line2);background:var(--card);font-weight:600}
-.tag-routes{color:#79C289;border-color:rgba(87,166,100,.3);background:rgba(87,166,100,.06)}
-.tag-auto{color:var(--muted);border-style:dashed}
+/* Tags colour by family, not by kind — one family, one colour, fixed order.
+   Tier 1 Trip fit = violet · Tier 2 Character = grey · Scale & grade = green ·
+   Hazards = amber. Keep in sync with venue_tags() and knowledge/data/tags.md. */
+.tag-cond,.tag-time,.tag-trip{color:#B9A0E8;border-color:rgba(144,110,220,.4);background:rgba(144,110,220,.10)}
+.tag-cond{font-weight:600}
+.tag-rock,.tag-aspect,.tag-wallheight,.tag-appr{color:var(--muted);border-color:var(--line2);background:var(--card)}
+.tag-vol,.tag-diff,.tag-grade,.tag-pitches,.tag-tallest,.tag-routes{color:#79C289;border-color:rgba(87,166,100,.4);background:var(--dry-bg)}
+.tag-tidal,.tag-hazard{color:#D9B25E;border-color:rgba(185,138,46,.45);background:var(--mixed-bg)}
+.taghelp{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border-radius:50%;border:1px solid var(--line2);color:var(--muted);font-size:10px;font-weight:600;text-decoration:none;vertical-align:1px;margin-left:6px}
+.taghelp:hover{color:var(--ink);border-color:var(--muted)}
 ::-webkit-scrollbar{width:8px;height:8px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--line2);border-radius:4px}
@@ -2609,10 +2628,12 @@ function breakdownHtml(v){
     +'</div></div>';
 }
 
-var TAGT={cond:'Typical share of wet days for your trip dates',tidal:'Access/base is tide-dependent (sea cliff) — low-water times show on the weather tiles once the 10-day tide forecast reaches those dates',vol:'Volume of multi-pitch climbing — from your sheet',diff:'Difficulty spread — from your sheet',time:'Rough travel time from the UK — from your sheet',trip:'Minimum sensible trip length — from your sheet',height:'Tallest route nearby on multi-pitch.com',rock:'Rock type',grade:'Trad grade range of nearby multi-pitch.com routes',routes:'Routes indexed on multi-pitch.com within 60 km',hazard:'Route character / hazard flag from multi-pitch.com route data',appr:'Approach character from route walk-in times',aspect:'Which way the crag faces — shifts felt temperature in sun',auto:'Venue generated from a row in your spreadsheet'};
+// Tooltips keyed by tag kind. Trip fit (cond/time/trip) is dynamic — about this
+// trip; everything else is static area taxonomy. Full key: knowledge/data/tags.md
+var TAGT={cond:'Trip fit · Typical share of wet days for your trip dates',time:'Trip fit · Rough travel time from the UK — from your sheet',trip:'Trip fit · Minimum sensible trip length — from your sheet',rock:'Character · Rock type',aspect:'Character · Which way the crag faces — shifts felt temperature in sun',wallheight:'Character · Estimated wall-height ceiling — from your sheet',appr:'Character · Approach character from route walk-in times',vol:'Scale & grade · Volume of multi-pitch climbing — from your sheet',diff:'Scale & grade · Difficulty spread — from your sheet',grade:'Scale & grade · Trad grade range of nearby multi-pitch.com routes',pitches:'Scale & grade · Longest route by pitch count on multi-pitch.com',tallest:'Scale & grade · Single tallest route nearby on multi-pitch.com',routes:'Scale & grade · Routes indexed on multi-pitch.com within 60 km',tidal:'Hazard · Access/base is tide-dependent (sea cliff) — low-water times show on the weather tiles once the 10-day tide forecast reaches those dates',hazard:'Hazard · Route character / hazard flag from multi-pitch.com route data'};
 function tagsHtml(v){
   if(!v.tags||!v.tags.length)return '';
-  return '<div class="sec"><div class="eyebrow">Area character</div><div class="tagleg">colours: blue/violet = your sheet · green = multi-pitch.com · amber = hazards · cyan = tides · grey = rock/approach — hover any tag for its meaning</div><div class="tags">'
+  return '<div class="sec"><div class="eyebrow">Area character<a class="taghelp" href="knowledge/data/tags.html" target="_blank" rel="noopener" title="What every tag means">?</a></div><div class="tagleg">two tiers · <b style="color:#B9A0E8">violet</b> = trip fit (your dates &amp; travel) · then static area taxonomy: <b style="color:var(--muted)">grey</b> = rock &amp; terrain · <b style="color:#79C289">green</b> = scale &amp; grade · <b style="color:#D9B25E">amber</b> = hazards — hover any tag, or open the ? for the full key</div><div class="tags">'
     +v.tags.map(function(t){return '<span class="tag tag-'+esc(t.k)+'" title="'+esc(TAGT[t.k]||'')+'">'+esc(t.t)+'</span>';}).join('')+'</div></div>';
 }
 

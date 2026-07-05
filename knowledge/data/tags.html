@@ -1,0 +1,98 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Area Character Tags · multi-pitch Live</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"><style>
+:root{--ink:#0C0D10;--ink2:#12141B;--ink3:#191C27;--ink4:#20243A;--seam:#252840;
+--chalk:#EAE6DD;--chalk2:#9B9890;--chalk3:#5A5860;--go:#6CB268;--amb:#C8A44A;
+--wet:#B94438;--spike:#C4FF5C;--r:6px;--r-lg:12px}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--ink);color:var(--chalk)}
+body{font-family:'Inter',system-ui,sans-serif;font-size:15px;line-height:1.65;
+-webkit-font-smoothing:antialiased}
+.top{position:sticky;top:0;z-index:10;height:48px;background:var(--ink2);
+border-bottom:1px solid var(--seam);display:flex;align-items:center;gap:12px;padding:0 18px}
+.logo{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--chalk);
+letter-spacing:-.2px;text-decoration:none}
+.top a.btn{margin-left:auto;font-size:12px;color:var(--chalk2);text-decoration:none;
+border:1px solid var(--seam);border-radius:var(--r);padding:5px 12px}
+.top a.btn:hover{color:var(--chalk);border-color:var(--chalk3)}
+.wrap{max-width:860px;margin:0 auto;padding:32px 22px 96px}
+.crumb{font-size:12px;color:var(--chalk3);margin-bottom:22px;font-family:'DM Mono',monospace}
+.crumb a{color:var(--chalk2);text-decoration:none}
+.crumb a:hover{color:var(--spike)}
+h1,h2,h3,h4{font-family:'Syne',sans-serif;letter-spacing:-.3px;line-height:1.25;
+scroll-margin-top:64px}
+h1{font-size:30px;font-weight:800;margin:.2em 0 .6em}
+h2{font-size:21px;font-weight:700;margin:1.8em 0 .5em;padding-top:.4em;
+border-top:1px solid var(--seam)}
+h3{font-size:16.5px;font-weight:700;margin:1.4em 0 .4em;color:var(--chalk)}
+h4{font-size:14px;font-weight:700;margin:1.2em 0 .3em;color:var(--chalk2)}
+p{margin:.7em 0}
+a{color:var(--amb);text-decoration:none;border-bottom:1px solid rgba(200,164,74,.28)}
+a:hover{color:var(--spike);border-bottom-color:var(--spike)}
+strong{color:#fff;font-weight:600}
+code{font-family:'DM Mono',ui-monospace,monospace;font-size:.86em;background:var(--ink3);
+border:1px solid var(--seam);border-radius:4px;padding:1px 5px;color:var(--amb)}
+pre{background:var(--ink2);border:1px solid var(--seam);border-radius:var(--r-lg);
+padding:16px 18px;overflow-x:auto;margin:1em 0}
+pre code{background:none;border:none;padding:0;color:var(--chalk2);font-size:12.5px;
+line-height:1.5;white-space:pre}
+blockquote{margin:1.1em 0;padding:.4em 16px;border-left:3px solid var(--amb);
+background:var(--amb-d,rgba(200,164,74,.07));border-radius:0 var(--r) var(--r) 0;
+color:var(--chalk2)}
+blockquote p{margin:.4em 0}
+hr{border:none;border-top:1px solid var(--seam);margin:2em 0}
+ul,ol{margin:.6em 0;padding-left:1.4em}
+li{margin:.28em 0}
+li>ul,li>ol{margin:.25em 0}
+.tw{overflow-x:auto;margin:1.1em 0;border:1px solid var(--seam);border-radius:var(--r-lg)}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--seam);
+vertical-align:top}
+th{background:var(--ink3);font-family:'Syne',sans-serif;font-weight:700;font-size:12px;
+color:var(--chalk);white-space:nowrap}
+tr:last-child td{border-bottom:none}
+td code{white-space:nowrap}
+.idx-group{margin:1.4em 0}
+.idx-group h3{border-bottom:1px solid var(--seam);padding-bottom:.3em}
+.idx-card{display:block;padding:12px 14px;margin:8px 0;background:var(--ink2);
+border:1px solid var(--seam);border-radius:var(--r-lg);color:var(--chalk);
+border-bottom:1px solid var(--seam)}
+.idx-card:hover{border-color:var(--chalk3);color:var(--chalk)}
+.idx-card b{font-family:'Syne',sans-serif}
+.idx-card span{display:block;color:var(--chalk2);font-size:13px;margin-top:2px}
+@media(max-width:600px){.wrap{padding:22px 15px 80px}h1{font-size:24px}body{font-size:14px}}
+</style></head><body><div class=top><a class=logo href="../../index.html">🧗 multi-pitch <span style="color:var(--spike)">Live</span></a><a class=btn href="../../knowledge/index.html">📚 Knowledge</a><a class=btn href="../../index.html">▶ Dashboard</a></div><div class=wrap><div class=crumb><a href="../index.html">📚 knowledge</a> / data / <b style='color:var(--chalk2)'>tags</b></div><h1 id="area-character-tags-the-key">Area Character Tags — the Key</h1>
+<p>The "Area character" pills on each venue card in the <a href="../../index.html">live dashboard</a> are the fastest read on what a venue offers. This page is the key the dashboard's <strong>?</strong> links to: what every tag means, what values it can take, and where it comes from. It is the reader-facing face of the <a href="taxonomy.html">Strict Data Dictionary</a> — the enums here are a friendly summary of the controlled vocabulary defined there.</p>
+<blockquote><p><strong>Terminology is checked against source.</strong> Field names and hazard wording follow <strong>multi-pitch.com</strong> (our primary route data), cross-checked against the <strong>UKClimbing</strong> crag database facets and our own <a href="taxonomy.html"><code>taxonomy.md</code></a>. Where a pill rewords a source flag for readability, the source term is noted.</p></blockquote>
+<h2 id="two-tiers">Two tiers</h2>
+<p>Every tag is one of two kinds of fact, and that split is the top of the hierarchy:</p>
+<ul><li><strong>Tier 1 · Trip fit — dynamic.</strong> About <em>this</em> trip: your dates, your origin, your</li></ul>
+<p>  window. Recomputed every run. The test: <em>it would never tag a single climb.</em></p>
+<ul><li><strong>Tier 2 · Area taxonomy — static.</strong> Guidebook facts about the place — rock,</li></ul>
+<p>  aspect, grade, scale, hazards. True whenever you go, and the <strong>same vocabulary   that will tag each individual climb</strong> once climb-level tagging lands (a venue   value is just a rollup of its climbs). See <a href="route-schema.html"><code>route-schema.md</code></a>.</p>
+<p>Tags always render in a <strong>fixed order</strong> — Trip fit, then Character, then Scale &amp; grade, then Hazards — so a pill keeps its place whether a card has three tags or sixteen. A family with no data for a venue simply doesn't draw.</p>
+<p>Each family has one colour: <strong>violet</strong> = Trip fit · <strong>grey</strong> = Character · <strong>green</strong> = Scale &amp; grade · <strong>amber</strong> = Hazards.</p>
+<hr>
+<h2 id="tier-1-trip-fit-dynamic-violet">Tier 1 · Trip fit — dynamic (violet)</h2>
+<p>Is this venue a good use of <em>this</em> trip? None of these would ever describe a single climb.</p>
+<div class="tw"><table><thead><tr><th>Tag</th><th>Meaning</th><th>Values</th><th>Source</th></tr></thead><tbody><tr><td><code>cond</code></td><td>Share of wet days typical for your trip dates.</td><td><code>Dry</code> ≤30% · <code>Mixed</code> 30–55% · <code>Wet</code> &gt;55% (with the exact %)</td><td>climatology (2021–2024) for your dates</td></tr><tr><td><code>time</code></td><td>Rough door-to-crag travel time from the UK.</td><td><code>&lt; 4h</code> · <code>4–6h</code> · <code>6–8h</code> · <code>8–10h</code> · <code>12–24h</code> from UK</td><td>your sheet · your origin</td></tr><tr><td><code>trip</code></td><td>Shortest trip length worth the travel, weighed against your window.</td><td><code>min trip 2 days</code> … <code>min trip 10 days</code></td><td>your sheet</td></tr></tbody></table></div>
+<hr>
+<h2 id="tier-2-area-taxonomy-static">Tier 2 · Area taxonomy — static</h2>
+<p>The guidebook facts about the crag. A venue value is an aggregate of its climbs (range / max / median / union); at climb level each field carries its own value.</p>
+<h3 id="character-grey">Character — grey</h3>
+<p>The physical crag — true regardless of which climb you pick.</p>
+<div class="tw"><table><thead><tr><th>Tag</th><th>Meaning</th><th>Values</th><th>Source</th></tr></thead><tbody><tr><td><code>rock</code></td><td>Rock type — governs friction, drying and seepage.</td><td><code>granite</code> <code>limestone</code> <code>dolerite</code> <code>dolomite</code> <code>sandstone</code> <code>conglomerate</code> <code>quartzite</code> <code>rhyolite</code> <code>volcanic</code> <code>chalk</code> …</td><td>multi-pitch.com · <em>Rock Type</em></td></tr><tr><td><code>aspect</code></td><td>Which way the crag faces (UKC: <em>Faces</em>) — north shades &amp; cools, south bakes.</td><td><code>N · shade</code> … <code>S · sun-baked</code> (8 compass points)</td><td>multi-pitch.com · <em>Aspect</em></td></tr><tr><td><code>wallheight</code></td><td>Estimated ceiling on wall height at the venue. <em>(was <code>height</code>)</em></td><td><code>walls to 150m</code></td><td>your sheet estimate</td></tr><tr><td><code>appr</code></td><td>Typical walk-in — median across indexed climbs.</td><td><code>roadside cragging</code> ≤20min · <code>~30–50 min walk-ins</code> · <code>long walk-ins</code> ≥60min</td><td>multi-pitch.com · <em>Approach (mins)</em></td></tr></tbody></table></div>
+<h3 id="scale-grade-green">Scale &amp; grade — green</h3>
+<p>How much, how hard, how big — coarse from your sheet, precise from the index. <code>vol</code>/<code>diff</code> are the sheet's coarse estimate of <code>routes</code>/<code>grade</code>.</p>
+<div class="tw"><table><thead><tr><th>Tag</th><th>Meaning</th><th>Values</th><th>Source</th></tr></thead><tbody><tr><td><code>vol</code></td><td>How much multi-pitch the area holds.</td><td><code>Smaller</code> · <code>Moderate</code> · <code>Large</code> · <code>Vast</code> volume</td><td>your sheet (coarse)</td></tr><tr><td><code>diff</code></td><td>Difficulty spread on offer.</td><td><code>Easy to Medium</code> · <code>Medium to Hard</code> · <code>Hard</code> · <code>Full Range</code></td><td>your sheet (coarse)</td></tr><tr><td><code>grade</code></td><td>Trad grade range (British Adjectival System) across indexed climbs.</td><td>e.g. <code>Trad VD–VS</code>, <code>Trad HS–HVS</code>, <code>Trad D–E1</code></td><td>multi-pitch.com · <em>Grade (BAS)</em></td></tr><tr><td><code>pitches</code></td><td>Longest climb by pitch count. <em>(was <code>grade</code>)</em></td><td><code>up to 6 pitches</code></td><td>multi-pitch.com · <em>Pitches</em></td></tr><tr><td><code>tallest</code></td><td>The single tallest indexed climb, named. <em>(was <code>height</code>)</em></td><td><code>tallest 160m · Slieve Lamagan</code></td><td>multi-pitch.com · <em>Length</em></td></tr><tr><td><code>routes</code></td><td>How many climbs are indexed within 60 km — coverage &amp; confidence.</td><td><code>5 routes on multi-pitch.com</code></td><td>multi-pitch.com</td></tr></tbody></table></div>
+<h3 id="hazards-amber">Hazards — amber</h3>
+<p>Safety &amp; access flags — never inferred, only set when a climb says so. Pill text mirrors the source flag (e.g. <em>Suffers Seepage</em> → "Seepage after rain").</p>
+<div class="tw"><table><thead><tr><th>Tag</th><th>Meaning</th><th>Source flag</th></tr></thead><tbody><tr><td><code>tidal</code></td><td>Approach or base is tide-dependent — low-water times appear once your trip enters the 10-day tide forecast.</td><td>multi-pitch.com · <em>Tidal</em> (≥1 tidal climb within 10 km)</td></tr><tr><td><code>hazard</code></td><td>Union of every flagged climb nearby.</td><td><em>Suffers Seepage</em> · <em>Loose Rock</em> · <em>Polished Rock</em> · <em>Abseil Required</em> · <em>Traverse Required</em> · <em>Boat approach</em> · <em>serious approach</em></td></tr></tbody></table></div>
+<hr>
+<h2 id="notes">Notes</h2>
+<ul><li><strong>Two collisions were removed (2026-07-05).</strong> <code>height</code> used to mean both a sheet</li></ul>
+<p>  wall-height estimate <em>and</em> the tallest indexed route; <code>grade</code> meant both the grade   range <em>and</em> a pitch count. They are now <code>wallheight</code>/<code>tallest</code> and <code>grade</code>/<code>pitches</code>   — distinct kinds, distinct colours.</p>
+<ul><li><strong><code>vol</code> and <code>diff</code> moved from Trip fit to Scale &amp; grade</strong> — a venue's volume and</li></ul>
+<p>  difficulty spread are static facts about the area, not about your trip.</p>
+<ul><li><strong>The <code>auto</code> "from your sheet" pill was dropped</strong> — it stated provenance, not a</li></ul>
+<p>  venue trait, and already repeats in the venue's summary line.</p>
+<ul><li>The full per-climb record these tags summarize is in</li></ul>
+<p>  <a href="route-schema.html"><code>route-schema.md</code></a>; the controlled vocabularies are in   <a href="taxonomy.html"><code>taxonomy.md</code></a>; grade systems in <a href="grade-conversion.html"><code>grade-conversion.md</code></a>.</p></div></body></html>
