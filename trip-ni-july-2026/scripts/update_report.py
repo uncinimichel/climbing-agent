@@ -2707,18 +2707,21 @@ function breakdownHtml(v){
 var TAGT=window.TAGT||{};
 function tagsHtml(v){
   if(!v.tags||!v.tags.length)return '';
-  // group pills into one row per tier: Trip fit (dynamic) then the static
-  // Area-taxonomy families — a rule marks the break between the two tiers.
-  var TIER=window.TAGTIER||{},rows=[],cur=[],curTier=null;
+  // one labelled pill row per family (Trip fit · Character · Scale & grade ·
+  // Hazards), in spec order; a rule marks the break between the dynamic tier and
+  // the static area taxonomy.
+  var FAM=window.TAGFAM||{},FAMS=window.TAGFAMS||{},rows=[],cur=[],curFam=null;
   v.tags.forEach(function(t){
-    var tr=TIER[t.k]||0;
-    if(curTier!==null&&tr!==curTier){rows.push({tier:curTier,html:cur.join('')});cur=[];}
-    curTier=tr;
+    var f=FAM[t.k]||'';
+    if(curFam!==null&&f!==curFam){rows.push({fam:curFam,html:cur.join('')});cur=[];}
+    curFam=f;
     cur.push('<span class="tag tag-'+esc(t.k)+'" title="'+esc(TAGT[t.k]||'')+'">'+esc(t.t)+'</span>');
   });
-  if(cur.length)rows.push({tier:curTier,html:cur.join('')});
+  if(cur.length)rows.push({fam:curFam,html:cur.join('')});
   var lanes=rows.map(function(r,i){
-    return '<div class="tags'+(i>0&&r.tier!==rows[i-1].tier?' tags-tb':'')+'">'+r.html+'</div>';
+    var meta=FAMS[r.fam]||{},prev=i>0?(FAMS[rows[i-1].fam]||{}):null;
+    var tb=(prev&&meta.tier!==prev.tier)?' tags-tb':'';
+    return '<div class="taglane'+tb+'"><div class="tll" style="color:'+(meta.color||'var(--muted)')+'">'+esc(meta.label||'')+'</div><div class="tlp">'+r.html+'</div></div>';
   }).join('');
   return '<div class="sec"><div class="eyebrow">Area character<a class="taghelp" href="knowledge/data/tags.html" target="_blank" rel="noopener" title="What every tag means">?</a></div><div class="tagleg">'+(window.TAGLEG||'')+'</div>'+lanes+'</div>';
 }
