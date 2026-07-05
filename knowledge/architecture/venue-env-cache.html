@@ -1,0 +1,143 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Venue Env Cache · multi-pitch Live</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"><style>
+:root{--ink:#0C0D10;--ink2:#12141B;--ink3:#191C27;--ink4:#20243A;--seam:#252840;
+--chalk:#EAE6DD;--chalk2:#9B9890;--chalk3:#5A5860;--go:#6CB268;--amb:#C8A44A;
+--wet:#B94438;--spike:#C4FF5C;--r:6px;--r-lg:12px}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--ink);color:var(--chalk)}
+body{font-family:'Inter',system-ui,sans-serif;font-size:15px;line-height:1.65;
+-webkit-font-smoothing:antialiased}
+.top{position:sticky;top:0;z-index:10;height:48px;background:var(--ink2);
+border-bottom:1px solid var(--seam);display:flex;align-items:center;gap:12px;padding:0 18px}
+.logo{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--chalk);
+letter-spacing:-.2px;text-decoration:none}
+.top a.btn{margin-left:auto;font-size:12px;color:var(--chalk2);text-decoration:none;
+border:1px solid var(--seam);border-radius:var(--r);padding:5px 12px}
+.top a.btn:hover{color:var(--chalk);border-color:var(--chalk3)}
+.wrap{max-width:860px;margin:0 auto;padding:32px 22px 96px}
+.crumb{font-size:12px;color:var(--chalk3);margin-bottom:22px;font-family:'DM Mono',monospace}
+.crumb a{color:var(--chalk2);text-decoration:none}
+.crumb a:hover{color:var(--spike)}
+h1,h2,h3,h4{font-family:'Syne',sans-serif;letter-spacing:-.3px;line-height:1.25;
+scroll-margin-top:64px}
+h1{font-size:30px;font-weight:800;margin:.2em 0 .6em}
+h2{font-size:21px;font-weight:700;margin:1.8em 0 .5em;padding-top:.4em;
+border-top:1px solid var(--seam)}
+h3{font-size:16.5px;font-weight:700;margin:1.4em 0 .4em;color:var(--chalk)}
+h4{font-size:14px;font-weight:700;margin:1.2em 0 .3em;color:var(--chalk2)}
+p{margin:.7em 0}
+a{color:var(--amb);text-decoration:none;border-bottom:1px solid rgba(200,164,74,.28)}
+a:hover{color:var(--spike);border-bottom-color:var(--spike)}
+strong{color:#fff;font-weight:600}
+code{font-family:'DM Mono',ui-monospace,monospace;font-size:.86em;background:var(--ink3);
+border:1px solid var(--seam);border-radius:4px;padding:1px 5px;color:var(--amb)}
+pre{background:var(--ink2);border:1px solid var(--seam);border-radius:var(--r-lg);
+padding:16px 18px;overflow-x:auto;margin:1em 0}
+pre code{background:none;border:none;padding:0;color:var(--chalk2);font-size:12.5px;
+line-height:1.5;white-space:pre}
+blockquote{margin:1.1em 0;padding:.4em 16px;border-left:3px solid var(--amb);
+background:var(--amb-d,rgba(200,164,74,.07));border-radius:0 var(--r) var(--r) 0;
+color:var(--chalk2)}
+blockquote p{margin:.4em 0}
+hr{border:none;border-top:1px solid var(--seam);margin:2em 0}
+ul,ol{margin:.6em 0;padding-left:1.4em}
+li{margin:.28em 0}
+li>ul,li>ol{margin:.25em 0}
+.tw{overflow-x:auto;margin:1.1em 0;border:1px solid var(--seam);border-radius:var(--r-lg)}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--seam);
+vertical-align:top}
+th{background:var(--ink3);font-family:'Syne',sans-serif;font-weight:700;font-size:12px;
+color:var(--chalk);white-space:nowrap}
+tr:last-child td{border-bottom:none}
+td code{white-space:nowrap}
+.idx-group{margin:1.4em 0}
+.idx-group h3{border-bottom:1px solid var(--seam);padding-bottom:.3em}
+.idx-card{display:block;padding:12px 14px;margin:8px 0;background:var(--ink2);
+border:1px solid var(--seam);border-radius:var(--r-lg);color:var(--chalk);
+border-bottom:1px solid var(--seam)}
+.idx-card:hover{border-color:var(--chalk3);color:var(--chalk)}
+.idx-card b{font-family:'Syne',sans-serif}
+.idx-card span{display:block;color:var(--chalk2);font-size:13px;margin-top:2px}
+@media(max-width:600px){.wrap{padding:22px 15px 80px}h1{font-size:24px}body{font-size:14px}}
+</style></head><body><div class=top><a class=logo href="../../index.html">🧗 multi-pitch <span style="color:var(--spike)">Live</span></a><a class=btn href="../../knowledge/index.html">📚 Knowledge</a><a class=btn href="../../index.html">▶ Dashboard</a></div><div class=wrap><div class=crumb><a href="../index.html">📚 knowledge</a> / architecture / <b style='color:var(--chalk2)'>venue-env-cache</b></div><h1 id="venue-environment-cache-weather-tide-computed-once-per-venue">Venue Environment Cache — weather &amp; tide, computed once per venue</h1>
+<p>The design for splitting <strong>trip-independent environment data</strong> (weather, wind, tide) out of the daily build and into a standalone, reusable cache keyed by venue. Today's monolith (<code>trip-ni-july-2026/scripts/update_report.py</code>) fetches weather <em>and</em> prices flights <em>and</em> renders HTML in one pass, re-deriving everything from scratch for one hardcoded trip. This doc describes the seam that separates the two, so the environment layer is computed <strong>once per day per venue</strong> and reused across every trip, every user, and the website's "browse a venue before I commit to a trip" path. Decision <a href="../roadmap/decisions.html">#24</a>. Storage target: <a href="../data/database.html"><code>../data/database.md</code></a>. Current flow it refactors: <a href="data-flow.html"><code>data-flow.md</code></a>.</p>
+<blockquote><p><strong>Status: ⚠️ Partial — env layer extracted (2026-07-05).</strong> <code>fetch_env.py</code> fetches the trip-independent weather/tide layer once per venue and writes <code>venue-env.json</code>; <code>update_report.py</code> <strong>consumes</strong> it (via <code>_env_raw()</code> in <code>forecast()</code>, <code>_seasonal_raw()</code>, <code>tide_extremes()</code>), falling back to live fetches when the cache is absent. <code>weather.yml</code> runs <code>fetch_env</code> before the report. Verified: the cache-fed ranking is byte-identical to a live run. <strong>Not done:</strong> the cosmetic <code>fetch_trip.py</code> / <code>build_report.py</code> file-split — scoring and rendering share rich in-memory state across a 3-pass flight-repricing loop, so splitting them into separate processes is risk with no functional gain today. They stay in <code>update_report.py</code>, which is now the env-cache <em>consumer</em> + trip/report orchestrator.</p></blockquote>
+<h2 id="why-split-at-all">Why split at all</h2>
+<p>Weather, wind and tide are a <strong>pure function of <code>(lat/lon, date)</code></strong> — they do not depend on who is going, where they fly from, or which trip is active. Flights and stays are a function of <code>(origin, venue, dates)</code>. That is the normalization boundary:</p>
+<div class="tw"><table><thead><tr><th>Layer</th><th>Depends on</th><th>Cardinality</th><th>Refresh</th></tr></thead><tbody><tr><td><strong>Environment</strong> (this doc)</td><td>venue × date</td><td><strong>O(venues)</strong></td><td>daily (later: sub-daily for weather; tide is astronomical, ~weekly is ample)</td></tr><tr><td><strong>Booking</strong> (flights/stays)</td><td>trip × person × venue × dates</td><td>O(trips × people × venues)</td><td>per trip, quota-guarded</td></tr></tbody></table></div>
+<p>Computing the environment layer once and letting every trip read it keeps weather at <strong>O(venues)</strong> no matter how many trips or users exist. It also serves the website directly: a visitor can open Fair Head and see its forecast <strong>without a trip existing at all</strong>.</p>
+<p>This is a <strong>structural</strong> win first (one 3086-line script doing three jobs → three files each doing one) and a <strong>reuse</strong> win second. It is <em>not</em> a cost optimization — Open-Meteo is free; the scarce resource remains SerpApi flight quota, which lives entirely in the booking layer.</p>
+<h2 id="the-join-key-is-the-venue-never-the-climb">The join key is the venue, never the climb</h2>
+<p>Weather is per <strong>lat/lon</strong> (venue); tide is per <strong>crag/coast</strong>. A venue has dozens to hundreds of climbs but one forecast. The reference therefore runs</p>
+<pre><code>climb ──▶ venue ──▶ environment</code></pre>
+<p>never <code>climb ──▶ environment</code>. A weather record is stored <strong>once per venue</strong>, and any climb inherits its venue's environment by lookup. Storing a forecast blob per route would duplicate the same numbers thousands of times.</p>
+<h2 id="latest-only-no-history">Latest-only, no history</h2>
+<p>One record per <code>(venue, date)</code>, <strong>overwritten every run</strong>. The two use cases — "create a trip for tomorrow/next weekend" and "browse a venue's weather before deciding" — both want only <em>the current best forecast for date X</em>. Neither needs "what did we predict for the 24th as seen from the 10th."</p>
+<p><strong>Given up:</strong> forecast-skill tracking (how right the 10-day-out call was). <strong>Recoverable later</strong> by adding an <code>issued_at</code> column to the key — additive, not a rewrite — if that need ever appears.</p>
+<h2 id="horizon-tiers">Horizon tiers</h2>
+<p>Open-Meteo's standard forecast API caps at <strong>16 days</strong> (<code>forecast_days=16</code>). Each daily date carries a <code>src</code> tag naming which model produced it, so a downstream renderer can say "forecast" vs. "typical for the region" honestly rather than guessing:</p>
+<div class="tw"><table><thead><tr><th><code>src</code></th><th>Horizon</th><th>Open-Meteo endpoint</th><th>Meaning</th></tr></thead><tbody><tr><td><code>forecast</code></td><td>days 0–16</td><td><code>api.open-meteo.com/v1/forecast</code></td><td>live forecast (+ tide from <code>marine-api</code>)</td></tr><tr><td><code>seasonal</code></td><td>~17–45</td><td><code>seasonal-api.open-meteo.com</code></td><td>sub-seasonal outlook — weak signal, label it so</td></tr><tr><td><code>climo</code></td><td>beyond</td><td><code>archive-api.open-meteo.com</code> (2021–24)</td><td>climatological typical, already disk-cached</td></tr></tbody></table></div>
+<p>A trip for tomorrow or next weekend is always well inside the 16-day <code>forecast</code> band, so it reads live numbers straight from cache with zero extra fetching.</p>
+<h2 id="shape-json-now-1-1-with-the-future-postgres-table">Shape (JSON now, 1:1 with the future Postgres table)</h2>
+<p>The file carries <strong>two views of the same data</strong>, because the report needs more than the normalized view exposes:</p>
+<ul><li><strong><code>raw</code></strong> — the raw Open-Meteo payloads (<code>forecast</code> incl. hourly dewpoint/precip,</li></ul>
+<p>  <code>seasonal</code>, derived tide <code>extremes</code>). This is what <code>update_report.py</code> consumes, so its   output stays identical to a live run — <code>evaluate()</code> reads hourly humidity, gusts, precip   probability and UV that the normalized view drops.</p>
+<ul><li><strong><code>days</code></strong> — the normalized, per-<code>(venue, date)</code>, latest-only view. This is the</li></ul>
+<p>  reuse/website/future-Postgres surface, and one entry <strong>is</strong> one future DB row — no second   migration when the Postgres corpus (<a href="../data/database.html"><code>../data/database.md</code></a>,   decision #18) comes online. <code>forecast</code> (0–16d) wins; <code>seasonal</code> fills the ~17–45d tail.</p>
+<pre><code>// venue-env.json  (generated by fetch_env.py — never hand-edit; regenerated each run)
+{
+  &quot;generated_at&quot;: &quot;2026-07-05T06:00Z&quot;,
+  &quot;target_window&quot;: { &quot;start&quot;: &quot;2026-07-22&quot;, &quot;end&quot;: &quot;2026-07-27&quot; },
+  &quot;venues&quot;: {
+    &quot;fair-head-ni&quot;: {
+      &quot;name&quot;: &quot;Fair Head, NI&quot;, &quot;lat&quot;: 55.222, &quot;lon&quot;: -6.156, &quot;tidal&quot;: true,
+      &quot;fetched_at&quot;: &quot;2026-07-05T06:00Z&quot;,
+      &quot;raw&quot;:  { &quot;forecast&quot;: { /* Open-Meteo 16-day, incl. hourly */ },
+                &quot;seasonal&quot;: { /* Open-Meteo ~45-day ensemble */ },
+                &quot;tides&quot;:    { &quot;2026-07-22&quot;: [ { &quot;t&quot;: &quot;05:12&quot;, &quot;h&quot;: 1.8, &quot;k&quot;: &quot;H&quot; } ] } },
+      &quot;days&quot;: {
+        &quot;2026-07-05&quot;: { &quot;src&quot;: &quot;forecast&quot;, &quot;tmax&quot;: 17, &quot;precip&quot;: 0.4, &quot;wind&quot;: 9,
+                        &quot;dir&quot;: 266, &quot;code&quot;: 3,
+                        &quot;tide_hw&quot;: [&quot;05:12&quot;, &quot;17:40&quot;], &quot;tide_lw&quot;: [&quot;11:20&quot;, &quot;23:48&quot;] },
+        &quot;2026-07-22&quot;: { &quot;src&quot;: &quot;seasonal&quot;, &quot;tmax&quot;: 18, &quot;precip&quot;: 1.1 }
+      }
+    }
+  }
+}</code></pre>
+<p><strong>Climatology is not in this file</strong> — it's the fixed 2021–24 archive, already persisted and committed in <code>climo-cache.json</code>, so re-caching it here would be waste; a <code>src: &quot;climo&quot;</code> tier can fill dates beyond the ~45-day seasonal reach when needed.</p>
+<p><strong>The file is git-ignored, not committed.</strong> With raw hourly payloads × ~42 venues it is ~2.6 MB and fully re-churned daily; committing it would bloat this public repo's history. <code>fetch_env.py</code> writes it and <code>update_report.py</code> reads it <strong>within the same CI run</strong>. Publishing the lightweight <code>days</code> view to the website (so a visitor can see a venue's weather with no trip) is a follow-up — the site is a separate surface.</p>
+<p>Maps directly to:</p>
+<pre><code>venue_env (
+  venue_id   text,
+  date       date,
+  src        text,          -- forecast | seasonal | climo
+  tmax       real,
+  precip     real,
+  wind       real,
+  dir        smallint,
+  code       smallint,      -- WMO weather code
+  tide_hw    text[],        -- high-water times, local; null for non-tidal venues
+  tide_lw    text[],        -- low-water times
+  fetched_at timestamptz,
+  primary key (venue_id, date)   -- upsert each run = latest-only
+)</code></pre>
+<p>Tide fields are populated only when the venue's crag-level <code>tidal</code> flag is set (decision <a href="../roadmap/decisions.html">#22</a>; <code>venue_is_tidal()</code>), and only within the marine model's ~10-day horizon — dates beyond it come back without tide times, which is expected.</p>
+<h2 id="repo-split-as-built">Repo split (as built)</h2>
+<pre><code>scripts/
+  fetch_env.py       # ✅ trip-independent: weather + tide, once per venue → venue-env.json
+  update_report.py   # consumes venue-env.json (via _env_raw / _seasonal_raw / tide_extremes),
+                     #   then does flights + stays + scoring + render. Live-fetch fallback.</code></pre>
+<p><code>weather.yml</code> runs <code>fetch_env → update_report</code>. <code>fetch_env.py</code> is the reusable core — the same cache serves the report today and (once its <code>days</code> view is published) the website.</p>
+<p><strong>Why not the full <code>fetch_trip.py</code> / <code>build_report.py</code> split yet:</strong> the clean seam is environment vs. everything-else. Scoring and rendering, by contrast, share rich in-memory state across a <strong>3-pass flight-repricing loop</strong> (score → rank → price top-N → re-score → re-rank → re-price → render). Forcing that into two separate OS processes means serializing the whole ranked/scored state between them — pure risk, no functional gain today. So the trip+render half stays in <code>update_report.py</code>, which is now the env-cache <em>consumer</em>. The file rename is a cosmetic follow-up, tracked but deliberately deferred.</p>
+<h2 id="staleness-splitting-processes-splits-failure-modes">Staleness (splitting processes splits failure modes)</h2>
+<p>One atomic run used to guarantee weather, flights and HTML were mutually consistent. Now <code>fetch_env</code> is a separate step, so <code>update_report</code> could read a cache a failed run left stale. Current behaviour and the intended hardening:</p>
+<ul><li>✅ <strong>Degrades, never crashes</strong> — if <code>venue-env.json</code> is absent or a venue is missing from it,</li></ul>
+<p>  every fetcher (<code>forecast</code>/<code>_seasonal_raw</code>/<code>tide_extremes</code>) falls back to a live call, so the   report still builds. Because <code>fetch_env</code> and <code>update_report</code> run in the same CI job, the   cache is fresh by construction.</p>
+<ul><li>⛔ <em>(planned)</em> a <strong>"weather N days old"</strong> badge from <code>fetched_at</code> for the day the two steps</li></ul>
+<p>  drift (e.g. <code>fetch_env</code> fails but a prior cache lingers) — not needed while the file is   git-ignored and rebuilt each run, but required before the <code>days</code> view is published to a   longer-lived surface.</p>
+<h2 id="what-this-does-not-change">What this does <em>not</em> change</h2>
+<ul><li><strong>Scoring stays put.</strong> <code>day_score</code> / <code>climo_score</code> and the composite blend</li></ul>
+<p>  (<a href="../data/condition-algorithm.html"><code>../data/condition-algorithm.md</code></a>) still consume the same   per-day fields; they just read them from the cache instead of a fresh fetch. Determinism of   the climatology base is preserved.</p>
+<ul><li><strong>Venues remain config-driven.</strong> <code>venue-env.json</code> is generated from the same venue list</li></ul>
+<p>  (<code>venues.json</code> + the curated sheet); no venue is defined here.</p>
+<ul><li><strong>Booking quota discipline is untouched</strong> — flight top-N capping stays in <code>fetch_trip.py</code>.</li></ul></div></body></html>
