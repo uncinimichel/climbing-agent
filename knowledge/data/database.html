@@ -1,0 +1,98 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Database (Postgres) · multi-pitch Live</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"><style>
+:root{--ink:#0C0D10;--ink2:#12141B;--ink3:#191C27;--ink4:#20243A;--seam:#252840;
+--chalk:#EAE6DD;--chalk2:#9B9890;--chalk3:#5A5860;--go:#6CB268;--amb:#C8A44A;
+--wet:#B94438;--spike:#C4FF5C;--r:6px;--r-lg:12px}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--ink);color:var(--chalk)}
+body{font-family:'Inter',system-ui,sans-serif;font-size:15px;line-height:1.65;
+-webkit-font-smoothing:antialiased}
+.top{position:sticky;top:0;z-index:10;height:48px;background:var(--ink2);
+border-bottom:1px solid var(--seam);display:flex;align-items:center;gap:12px;padding:0 18px}
+.logo{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--chalk);
+letter-spacing:-.2px;text-decoration:none}
+.top a.btn{margin-left:auto;font-size:12px;color:var(--chalk2);text-decoration:none;
+border:1px solid var(--seam);border-radius:var(--r);padding:5px 12px}
+.top a.btn:hover{color:var(--chalk);border-color:var(--chalk3)}
+.wrap{max-width:860px;margin:0 auto;padding:32px 22px 96px}
+.crumb{font-size:12px;color:var(--chalk3);margin-bottom:22px;font-family:'DM Mono',monospace}
+.crumb a{color:var(--chalk2);text-decoration:none}
+.crumb a:hover{color:var(--spike)}
+h1,h2,h3,h4{font-family:'Syne',sans-serif;letter-spacing:-.3px;line-height:1.25;
+scroll-margin-top:64px}
+h1{font-size:30px;font-weight:800;margin:.2em 0 .6em}
+h2{font-size:21px;font-weight:700;margin:1.8em 0 .5em;padding-top:.4em;
+border-top:1px solid var(--seam)}
+h3{font-size:16.5px;font-weight:700;margin:1.4em 0 .4em;color:var(--chalk)}
+h4{font-size:14px;font-weight:700;margin:1.2em 0 .3em;color:var(--chalk2)}
+p{margin:.7em 0}
+a{color:var(--amb);text-decoration:none;border-bottom:1px solid rgba(200,164,74,.28)}
+a:hover{color:var(--spike);border-bottom-color:var(--spike)}
+strong{color:#fff;font-weight:600}
+code{font-family:'DM Mono',ui-monospace,monospace;font-size:.86em;background:var(--ink3);
+border:1px solid var(--seam);border-radius:4px;padding:1px 5px;color:var(--amb)}
+pre{background:var(--ink2);border:1px solid var(--seam);border-radius:var(--r-lg);
+padding:16px 18px;overflow-x:auto;margin:1em 0}
+pre code{background:none;border:none;padding:0;color:var(--chalk2);font-size:12.5px;
+line-height:1.5;white-space:pre}
+blockquote{margin:1.1em 0;padding:.4em 16px;border-left:3px solid var(--amb);
+background:var(--amb-d,rgba(200,164,74,.07));border-radius:0 var(--r) var(--r) 0;
+color:var(--chalk2)}
+blockquote p{margin:.4em 0}
+hr{border:none;border-top:1px solid var(--seam);margin:2em 0}
+ul,ol{margin:.6em 0;padding-left:1.4em}
+li{margin:.28em 0}
+li>ul,li>ol{margin:.25em 0}
+.tw{overflow-x:auto;margin:1.1em 0;border:1px solid var(--seam);border-radius:var(--r-lg)}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--seam);
+vertical-align:top}
+th{background:var(--ink3);font-family:'Syne',sans-serif;font-weight:700;font-size:12px;
+color:var(--chalk);white-space:nowrap}
+tr:last-child td{border-bottom:none}
+td code{white-space:nowrap}
+.idx-group{margin:1.4em 0}
+.idx-group h3{border-bottom:1px solid var(--seam);padding-bottom:.3em}
+.idx-card{display:block;padding:12px 14px;margin:8px 0;background:var(--ink2);
+border:1px solid var(--seam);border-radius:var(--r-lg);color:var(--chalk);
+border-bottom:1px solid var(--seam)}
+.idx-card:hover{border-color:var(--chalk3);color:var(--chalk)}
+.idx-card b{font-family:'Syne',sans-serif}
+.idx-card span{display:block;color:var(--chalk2);font-size:13px;margin-top:2px}
+@media(max-width:600px){.wrap{padding:22px 15px 80px}h1{font-size:24px}body{font-size:14px}}
+</style></head><body><div class=top><a class=logo href="../../index.html">🧗 multi-pitch <span style="color:var(--spike)">Live</span></a><a class=btn href="../../knowledge/index.html">📚 Knowledge</a><a class=btn href="../../index.html">▶ Dashboard</a></div><div class=wrap><div class=crumb><a href="../index.html">📚 knowledge</a> / data / <b style='color:var(--chalk2)'>database</b></div><h1 id="database-the-postgres-schema-for-the-climbing-corpus">Database — the Postgres schema for the climbing corpus</h1>
+<p>The taxonomy and route corpus live in <strong>Postgres (+ PostGIS)</strong>, run locally via Docker (decision <a href="../roadmap/decisions.html">#18</a>). DDL, seeds and smoke test are in <a href="../../db/README.html"><code>db/</code></a> at the repo root; this page records the design and its rationale. The trip dashboard's repo-as-JSON model (decision #2) is unchanged — Postgres is the store for the <strong>Stage 3–5 corpus</strong>, and will eventually be the only source of truth for venue/route knowledge (including what's hand-researched today in <code>trip-ni-july-2026/extra-climbing.json</code>).</p>
+<h2 id="why-a-relational-db-not-an-ontology">Why a relational DB, not an ontology</h2>
+<p>The question was asked directly (2026-07-04): is the taxonomy an ontology use case (RDF/OWL, triple store) or a normal SQL database? <strong>SQL.</strong> The taxonomy is a <em>faceted classification with closed enums</em> (<a href="taxonomy.html"><code>taxonomy.md</code></a>'s explicit design rule), not a knowledge graph:</p>
+<ul><li>No <strong>open-world inference</strong> — rock behaviour, hazard semantics, grade relations are</li></ul>
+<p>  hand-authored curation decisions, not derived facts.</p>
+<ul><li>Facets are <strong>flat</strong> (~14 disciplines, 9 rock types, 8 aspects, boolean hazards). The</li></ul>
+<p>  only hierarchy is the OpenBeta-style area tree — a <code>parent_id</code> tree + recursive CTE.</p>
+<ul><li>External vocabularies (OpenBeta, theCrag, MP) are adopted by <strong>hand-curated mapping</strong></li></ul>
+<p>  (<a href="external-models.html"><code>external-models.md</code></a>), not automated ontology alignment.</p>
+<ul><li>The hard queries are <strong>geospatial + filter</strong> — exactly what PostGIS + indexes do.</li></ul>
+<p>Revisit only if the platform ever needs machine reasoning across many third-party schemas — and even then, SQL stays operational with an RDF <em>export</em>, not a triple store as primary. The same SQL-first logic governs retrieval: the planned admin chat agent queries this schema through enum-validated tools, with pgvector inside this same Postgres as the later semantic tier — see <a href="../architecture/retrieval-agent.html"><code>../architecture/retrieval-agent.md</code></a> (decision #19).</p>
+<h2 id="design-principles">Design principles</h2>
+<ol><li><strong>Closed enums → lookup tables.</strong> One table per vocabulary in</li></ol>
+<p>   <a href="taxonomy.html"><code>taxonomy.md</code></a> (which stays the human source of truth — extend there    first, then in the seeds). Rows carry the taxonomy's metadata (drying/seepage    behaviour, dry-friction coefficients, severity ordering, what each hazard feeds).    Off-dictionary values fail as <strong>FK violations</strong> — the DB itself enforces parser rule    #1 (<em>repair or reject, never surface</em>).</p>
+<ol><li><strong>Set-valued facets → junction tables</strong> (<code>route_discipline</code>, <code>route_feature</code>,</li></ol>
+<p>   <code>route_hazard</code>) — composable disciplines per OpenBeta's <code>ClimbType</code>.</p>
+<ol><li><strong>Safety-critical hazards require evidence.</strong> A trigger rejects</li></ol>
+<p>   <code>tidal</code>/<code>seepage</code>/<code>loose</code> and all objective hazards without an <code>evidence_span</code>    (parser rule #4).</p>
+<ol><li><strong>Grades are system-scoped.</strong> Verbatim <code>original_grade</code> + <code>grade_system_code</code> +</li></ol>
+<p>   normalized <code>data_grade</code> 1–7; the observed ladder from    <a href="grade-conversion.html"><code>grade-conversion.md</code></a> is seeded into <code>grade_conversion</code>;    <code>route_grade</code> holds the all-systems object (OpenBeta <code>GradeType</code>).</p>
+<ol><li><strong>Hierarchical areas with downward inheritance.</strong> <code>area</code> is a</li></ol>
+<p>   country → region → crag → sector tree; <code>grade_context</code>, rock, aspect and timezone    set on an area cascade to descendants via the <code>area_resolved</code> / <code>route_resolved</code>    views (external-models P0 #1–2).</p>
+<ol><li><strong>Provenance is first-class.</strong> `provenance(route_id, field, source, span,</li></ol>
+<p>   confidence)<code> implements parser rule #2; </code>external_ref<code> holds structured source IDs    (</code>ob_uuid<code>, </code>mp_id<code>, …) for dedup; </code>source<code> mirrors the ingestion plan&#x27;s    </code>sources.json` registry.</p>
+<ol><li><strong>Zero-Garbage UGC gate.</strong> <code>route.status ∈ publish | draft | quarantined</code>; every</li></ol>
+<p>   route FKs to an <code>area</code> sector or stays quarantined (parser rule #6).</p>
+<ol><li><strong>Geo via PostGIS</strong> <code>geography(Point)</code> + GIST, replacing the previously planned</li></ol>
+<p>   SQLite R-tree; <code>pg_trgm</code> indexes on names support the normalised-name dedup lookup.</p>
+<h2 id="table-map">Table map</h2>
+<div class="tw"><table><thead><tr><th>Group</th><th>Tables</th></tr></thead><tbody><tr><td>Taxonomy (seeded from <code>taxonomy.md</code>)</td><td><code>grade_system</code> <code>rock_type</code> <code>protection_grade</code> <code>discipline</code> <code>feature</code> <code>character</code> <code>incline</code> <code>sun_window</code> <code>hazard</code> <code>ascent_style</code> <code>commitment_grade</code> + domain <code>aspect_dir</code></td></tr><tr><td>Grades</td><td><code>grade_conversion</code> (dataGrade ladder) · <code>route_grade</code> (all-systems object)</td></tr><tr><td>Hierarchy</td><td><code>area</code> (tree) · <code>area_reference</code> (curated area links — absorbs <code>extra-climbing.json</code>)</td></tr><tr><td>Core record</td><td><code>route</code> (identity, physical, grade, safety, approach/descent, conditions, editorial, prose, media) · <code>pitch</code> · <code>first_ascent</code></td></tr><tr><td>Facets &amp; flags</td><td><code>route_discipline</code> · <code>route_feature</code> · <code>route_character</code> · <code>route_hazard</code> (+ evidence trigger)</td></tr><tr><td>Provenance &amp; interop</td><td><code>provenance</code> · <code>external_ref</code> · <code>source</code> · <code>route_reference</code> · <code>guidebook</code> · <code>route_guidebook</code></td></tr><tr><td>Conditions</td><td><code>route_climatology</code> (per-month rainyDays/tempH/tempL)</td></tr><tr><td>Views</td><td><code>area_resolved</code> · <code>route_resolved</code> (inheritance)</td></tr></tbody></table></div>
+<h2 id="running-it">Running it</h2>
+<pre><code>cd db &amp;&amp; docker-compose up -d   # first boot auto-applies sql/ (DDL + seeds)
+./smoke.sh                      # end-to-end test, rolls back after itself</code></pre>
+<p>See <a href="../../db/README.html"><code>db/README.md</code></a> for layout, connection string, and the migration path (rebuild-from-scratch now; append-only migrations once the corpus is durable).</p>
+<h2 id="what-this-supersedes">What this supersedes</h2>
+<p>The ingestion plan previously recommended a <strong>committed SQLite file</strong> as the durable tier. Postgres replaces that: richer constraints (triggers, arrays, recursive views), real geo (PostGIS), and no ceiling when ingestion scales. What is <em>versioned in git</em> is now the DDL + seeds (+ curated exports while other files remain sources of truth); the corpus itself lives in the DB. The ephemeral tier (raw captures, social firehose) is unchanged — never committed.</p></div></body></html>

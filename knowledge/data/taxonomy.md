@@ -18,14 +18,20 @@ guidebook prose into queryable structured data.
 **This file is the single source of truth for tags** — every other doc references these,
 none redefine them. The complete controlled vocabulary, in one scannable block for the
 Phase-3 curated list. Each value is a closed enum; detail + rationale follow below.
+These vocabularies are mirrored as **Postgres lookup tables** (`db/sql/`, seeded in
+`100_seed_taxonomy.sql` — see [`database.md`](database.md)); extend an enum here first,
+then in the seed, so the two never drift.
 
 | Facet | Type | Values |
 |---|---|---|
 | `discipline` | set | `trad` `sport` `multi-pitch` `single-pitch` `alpine` `big-wall` `bouldering` `ice` `mixed` `snow` `aid` `deepwatersolo` `tr` `via-ferrata` |
-| `feature` | set (opt.) | `slab` `face` `crack` `ridge` `arête` `chimney` |
-| `rock` | one | `granite` `limestone` `dolerite` `rhyolite` `sandstone` `gabbro` `quartzite` `volcanic` `dolomite` |
+| `feature` | set (opt.) | `slab` `face` `crack` `ridge` `arête` `chimney` `corner` `groove` `roof` `offwidth` `flake` `tufa` `pockets` `pillar` |
+| `character` | set (opt.) | `sustained` `pumpy` `powerful` `technical` `fingery` `crimpy` `reachy` `delicate` `exposed` `fluttery` |
+| `rock` | one | `granite` `limestone` `dolerite` `rhyolite` `sandstone` `gritstone` `gabbro` `quartzite` `volcanic` `dolomite` `slate` `gneiss` `schist` `basalt` `conglomerate` `andesite` |
 | `protection` | one | `G` `PG` `PG-13` `R` `X` `runout` `terrain` `UNSPECIFIED` |
-| `gradeSys` | one | `BAS` `UIAA` `YDS` `ALP` `FS` `N` `V` `Font` `WI` `AI` `M` `A`/`C` |
+| `protectionStyle` | one | `gear` `bolted` `mixed` `none` — how the route protects overall |
+| `belays` | one | `gear` `bolted` `mixed` — belay/anchor type (key multi-pitch fact) |
+| `gradeSys` | one | `BAS` `UIAA` `YDS` `ALP` `FS` `N` `EW` `SX` `BRZ` `V` `Font` `WI` `AI` `M` `D` `SCO` `A`/`C` `VF` `S` |
 | `commitmentGrade` | one | `I`–`VII` (NCCS) · `F`/`PD`/`AD`/`D`/`TD`/`ED` (alpine) |
 | `incline` | compose | `Slab` → `Vertical` → `Overhanging` |
 | `face` (aspect) | one | `N` `NE` `E` `SE` `S` `SW` `W` `NW` |
@@ -44,14 +50,48 @@ Phase-3 curated list. Each value is a closed enum; detail + rationale follow bel
 | `dolerite` | Fair Head — grippy, dries reasonably; sea-cliff exposure. |
 | `rhyolite` | Welsh mountain rock; lichenous, slow to dry high up. |
 | `sandstone` | **Fragile when wet — do not climb wet** (holds break). Porosity >20%; water kills inter-grain friction and cracks propagate fast when humid. Highest dry friction (~0.74). |
+| `gritstone` | Coarse UK sandstone (Peak/Yorkshire) — superb friction, rounded breaks; dries fast but greasy in humidity, brutal in heat. Same avoid-when-wet ethic as soft sandstone. |
 | `gabbro` | Extremely grippy (Skye); rough. |
 | `quartzite` | Hard, can be polished; variable drying. |
 | `volcanic` | Lake District; broken, mountain drainage. |
 | `dolomite` | Alpine; afternoon convection risk. |
+| `slate` | Non-porous — drains instantly, but **slick when wet**; positive edges; quarried faces (Llanberis). |
+| `gneiss` | Banded metamorphic (Alps, Norway); generally solid, good friction. |
+| `schist` | Layered; can be friable and ledgy; holds moisture in breaks. |
+| `basalt` | Columnar jointing → parallel crack systems; moderate drying. |
+| `conglomerate` | Cobbles in matrix (Montserrat, Meteora, Riglos) — pockety climbing; protection often spaced between cobbles. |
+| `andesite` | Volcanic; blocky, variable quality. |
 
 Extend deliberately — a new rock type is a curation decision, not a free-text field.
 Rock-friction/seepage figures are sourced in [`references.md`](references.md) (friction
-science; wet-sandstone hazard).
+science; wet-sandstone hazard). The 2026-07-04 extension (gritstone, slate, gneiss,
+schist, basalt, conglomerate, andesite) matches the faceted rocktype vocabulary the
+UKClimbing crag database searches on — these are the missing types our venue list
+already brushes against (UK grit/slate; Montserrat-style conglomerate).
+
+## Route character (how it climbs)
+
+**New facet (2026-07-04), set-valued.** The guidebook shorthand for *what kind of hard*
+a route is — adopted from the Rockfax database symbols (sustained/fingery/fluttery/
+powerful/technical) and theCrag's Rockfax-style route tags (crimpy, pumpy, reachy).
+This is the facet that answers "pumpy jug-haul or delicate slab?", which grade and
+feature alone cannot.
+
+| Value | Meaning |
+|---|---|
+| `sustained` | Lots of hard moves with little respite (Rockfax "s"). |
+| `pumpy` | Steep endurance climbing — the pump, not a single move, is the crux. |
+| `powerful` | Demands strength on steep ground (Rockfax "p"). |
+| `technical` | Intricate movement; body position over pulling. |
+| `fingery` | Significant small holds on the hard sections (Rockfax "f"). |
+| `crimpy` | Specifically small-edge crimping. |
+| `reachy` | Move spans favour reach; height-dependent. |
+| `delicate` | Balance/friction climbing; precision under little security. |
+| `exposed` | Big-air positions beyond what the protection grade captures. |
+| `fluttery` | Bold — big fall potential and scary run-outs (Rockfax "h"). Pair with `protection` R/X. |
+
+Parser guidance: these may be set from explicit prose ("a pumpy tour de force",
+"thin technical wall") — map adjectives, keep the span. Don't infer from grade.
 
 ## Climbing style / discipline
 
@@ -60,7 +100,7 @@ science; wet-sandstone hazard).
 
 | Value | Meaning |
 |---|---|
-| `trad` | Leader-placed removable protection. |
+| `trad` | Leader-placed removable protection. See also `protectionStyle`/`belays` below — a route can be gear-protected with bolted belays (common in the Alps). |
 | `sport` | Pre-placed bolts. |
 | `multi-pitch` | Multiple rope-lengths with belay stances (the platform's focus). |
 | `single-pitch` | One rope-length. |
@@ -74,7 +114,7 @@ science; wet-sandstone hazard).
 | `deepwatersolo` | Ropeless over water (DWS). |
 | `tr` | Top-rope. |
 | `via-ferrata` | Protected cabled route. |
-| `slab` / `face` / `crack` / `ridge` / `arête` / `chimney` | Feature type, optional secondary tag. |
+| `slab` / `face` / `crack` / `ridge` / `arête` / `chimney` / `corner` / `groove` / `roof` / `offwidth` / `flake` / `tufa` / `pockets` / `pillar` | Feature type, optional secondary tag. Extended 2026-07-04: `corner` (dihedral/open book), `groove`, `roof`, `offwidth` (wide crack), `flake`, `tufa` + `pockets` (the two defining limestone features), `pillar`. |
 
 Styles combine (e.g. `trad` + `multi-pitch` + `alpine`). The extended disciplines
 (`bouldering`…`via-ferrata`) are adopted from external models —
@@ -100,6 +140,14 @@ introduced by **Jim Erickson in 1980**, borrowed from the US **movie-rating** sy
 The `runout` / `terrain` / `UNSPECIFIED` values are adopted from OpenBeta — see
 [`external-models.md`](external-models.md).
 
+**Protection style & belays (added 2026-07-04).** Orthogonal to the safety grade:
+*what kind* of protection, not how good it is. Two one-of fields:
+
+| Field | Values | Meaning |
+|---|---|---|
+| `protectionStyle` | `gear` · `bolted` · `mixed` · `none` | Leader protection overall: trad gear, bolts, a mix (bolts + gear sections), or effectively unprotectable. |
+| `belays` | `gear` · `bolted` · `mixed` | Anchor type at stances — a first-order multi-pitch planning fact (bolted-belay trad routes retreat far more easily; drives the `escapable` judgement and rope/rack choice). |
+
 Parser guidance: map prose ("bold", "serious", "spaced gear", "committing", "no gear for
 10 m") to the grade **with a rationale and the source span**, then validate against this
 enum. **Seed a prior from the grade itself** — for UK trad, the adjectival↔technical gap
@@ -119,7 +167,10 @@ sorting. Full mapping + system definitions: [`grade-conversion.md`](grade-conver
 | `YDS` | Yosemite Decimal | US | `5.7`, `5.10a` |
 | `ALP` | Alpine (commitment: PD/AD/D/TD/ED) | Alps | `Difficile`, `TD (f6a+)` |
 | `FS` | French Sport | Europe/sport | `f4c`, `f6a+` |
-| `N` | Norwegian | Norway | `N6−` |
+| `N` | Norwegian/Scandinavian | Norway/Sweden/Finland | `N6−` |
+| `EW` | Ewbank | Australia/NZ/South Africa | `18`, `24` |
+| `SX` | Saxon (Dresden) | Saxon Switzerland/Bohemia | `VIIb`, `VIIIa` |
+| `BRZ` | Brazilian (overall + technical) | Brazil | `VIsup`, `7b` |
 
 **Discipline-specific systems** (needed now that `style` includes ice/mixed/aid/bouldering —
 map the leading characters, à la Mountain Project):
@@ -131,7 +182,21 @@ map the leading characters, à la Mountain Project):
 | `WI` | Water ice | `WI3`, `WI5` |
 | `AI` | Alpine ice | `AI3` |
 | `M` | Mixed (rock + ice) | `M6`, `M8` |
+| `D` | Drytooling | `D8` |
+| `SCO` | Scottish Winter (overall Roman + technical Arabic) | `VI,7` |
 | `A` / `C` | Aid / clean aid | `A2`, `C3` |
+| `VF` | Via ferrata (Hüsler/Schall) | `K3`, `C` |
+| `S` | Deep-water solo seriousness (objective risk: tide, depth, fall) | `S0`–`S3` |
+
+Systems added 2026-07-04 (`EW`, `SX`, `BRZ`, `D`, `SCO`, `VF`, `S`) close the gaps
+against the full grade-system landscape: Ewbank is OpenBeta-native (interop),
+`via-ferrata` and `deepwatersolo` disciplines previously had no grade system at all,
+and Scottish Winter matters the moment UK winter venues enter the corpus. The
+`dataGrade` ladder does **not** yet map these — extend
+[`grade-conversion.md`](grade-conversion.md) deliberately when routes in these systems
+are first ingested (log it in the decision log). Not adopted (yet, deliberately):
+Polish Kurtyka, Russian/Alaskan alpine, Canadian ice, Japanese Dankyū — no venue on
+our lists needs them; add on first contact, not speculatively.
 
 ## Commitment grade (overall seriousness / size of day)
 

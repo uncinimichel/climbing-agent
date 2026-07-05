@@ -165,6 +165,65 @@ wall. After the change the top of the table is high/cool venues (Gredos, Teide 2
 Écrins, Aladağlar) and deserts sit last — matching climber intuition.
 **Status:** ✅ Live.
 
+### #18 — Postgres (Docker) is the corpus database; supersedes the committed-SQLite plan (2026-07-04)
+**Decision:** store the climbing taxonomy + route corpus in **Postgres with PostGIS**, run
+locally via Docker (`db/docker-compose.yml`, `postgis/postgis:16-3.4`). The closed enums
+from [`data/taxonomy.md`](../data/taxonomy.md) become **lookup tables** (FK violations
+enforce "repair or reject, never surface"); safety-critical hazard flags require an
+evidence span (trigger); areas are a hierarchical tree with inherited `gradeContext`;
+grades stay system-scoped with the `dataGrade` ladder seeded from
+[`data/grade-conversion.md`](../data/grade-conversion.md). Full design:
+[`data/database.md`](../data/database.md). **Eventually the DB is the only source of
+truth** for venue/route knowledge — `venues.json` and `extra-climbing.json` (→
+`area_reference`) migrate in and become exports.
+**Why:** the taxonomy is a faceted classification with closed enums, not an ontology —
+plain SQL fits (no open-world inference; flat facets; hard queries are geo + filter).
+Postgres over the previously planned committed-SQLite: richer constraints, PostGIS geo,
+no ceiling at ingestion scale; Docker keeps it free and local (no managed DB yet).
+**Supersedes:** the SQLite recommendation inside #14's two-tier store — the *two tiers
+themselves stand* (durable vs ephemeral; no PII committed); only the durable tier's
+engine changes. Decision #2 (repo-as-DB) still governs the live trip dashboard.
+**Status:** ✅ DDL + seeds + smoke test in `db/`; ingestion into it is Stage-5/M2 work.
+
+### #19 — Natural-language retrieval: SQL-first tool-use agent; pgvector in Postgres, no separate vector DB (2026-07-04)
+**Decision:** the admin chat agent (roadmap Stage 5½) retrieves climbs via a **Claude
+tool-use loop calling a strict, enum-validated `search_climbs` tool** that builds
+parameterized SQL against the `db/` corpus — the model never writes raw SQL. Semantic
+search over prose/buzz, when it comes, is **pgvector inside the same Postgres**, not a
+separate vector database. Design: [`../architecture/retrieval-agent.md`](../architecture/retrieval-agent.md).
+**Why:** the target queries ("sandstone near me in August") decompose entirely into
+closed-enum + PostGIS + climatology filters — deterministic SQL answers them exactly,
+where embedding similarity only approximates. Vectors earn their place on prose and
+vague-qualitative asks; keeping them in Postgres lets one query filter by enum/geo *and*
+rank by similarity, and avoids operating a second store. Anthropic ships no embedding
+API (external provider needed, e.g. Voyage) — one more reason the vector tier stays
+budget-gated. Strict tool schemas generated from the DB lookup tables keep agent and
+taxonomy in lockstep, with no injection surface.
+**Status:** 🔜 Planned — blocked on the corpus having routes (ingestion M2+).
+
+### #20 — Taxonomy v1.1: character facet, richer rock/feature/grade vocabularies, protection style (2026-07-04)
+**Decision:** extend the strict data dictionary after an audit against real-world
+vocabularies: **+7 rock types** (gritstone, slate, gneiss, schist, basalt, conglomerate,
+andesite — the UKC crag-search rocktypes we lacked), **+8 features** (corner, groove,
+roof, offwidth, flake, tufa, pockets, pillar), a **new set-valued `character` facet**
+(sustained/pumpy/powerful/technical/fingery/crimpy/reachy/delicate/exposed/fluttery —
+the Rockfax database-symbol + theCrag route-tag vocabulary for *how a route climbs*),
+**+7 grade systems** (Ewbank, Saxon, Brazilian, Drytooling D, Scottish Winter, Via
+Ferrata, DWS S0–S3 — via-ferrata and DWS disciplines previously had no grade system at
+all), and **`protectionStyle` + `belays` fields** (gear/bolted/mixed — bolted-belay trad
+is a first-order multi-pitch planning fact). Applied in lockstep: taxonomy.md → DB
+schema/seeds (`character` table + junction, route columns) → retrieval agent (new
+`features`/`character` tool filters, enums auto-loaded).
+**Why:** Michel's review call — the v1 taxonomy under-described *how routes climb* and
+missed vocabularies our own venue list needs (UK grit/slate; Montserrat conglomerate;
+alpine gneiss). Sources: Rockfax database symbols (sustained "s"/fingery "f"/fluttery
+"h"), theCrag's Rockfax-style tag set (crimpy/pumpy/powerful/technical/reachy), the
+full grade-system landscape (Wikipedia "Grade (climbing)"), UKC rocktype facets.
+**Deliberately not adopted:** Polish Kurtyka, Russian/Alaskan alpine, Canadian ice,
+Japanese Dankyū grades — no venue on our lists needs them; add on first contact. The
+`dataGrade` ladder does not yet map the new systems (extend on first ingestion).
+**Status:** ✅ Docs + DB + agent updated; smoke test and agent test pass green.
+
 ---
 
 *Template for new entries:*

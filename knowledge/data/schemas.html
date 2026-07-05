@@ -61,6 +61,7 @@ border-bottom:1px solid var(--seam)}
 @media(max-width:600px){.wrap{padding:22px 15px 80px}h1{font-size:24px}body{font-size:14px}}
 </style></head><body><div class=top><a class=logo href="../../index.html">🧗 multi-pitch <span style="color:var(--spike)">Live</span></a><a class=btn href="../../knowledge/index.html">📚 Knowledge</a><a class=btn href="../../index.html">▶ Dashboard</a></div><div class=wrap><div class=crumb><a href="../index.html">📚 knowledge</a> / data / <b style='color:var(--chalk2)'>schemas</b></div><h1 id="data-schemas">Data Schemas</h1>
 <p>The JSON shapes that drive the engine. These are the <strong>single sources of truth</strong> — the build script reads them to decide what to query and price. Change behaviour by editing these, not the code.</p>
+<blockquote><p><strong>Direction of travel:</strong> the route/venue corpus now has a relational home — the Postgres schema in <code>db/</code> (<a href="database.html"><code>database.md</code></a>, decision #18). These JSON configs stay authoritative for the live trip dashboard; corpus-shaped data (<code>venues.json</code> venue facts, <code>extra-climbing.json</code> links) migrates into the DB, which eventually becomes the only source of truth.</p></blockquote>
 <h2 id="venues-json-the-master-index-phase-3-manual"><code>venues.json</code> — the master index (Phase 3, manual)</h2>
 <p>Which venues get monitored. The script reads this to decide what to query for weather and flights. Located at <code>trip-ni-july-2026/venues.json</code>.</p>
 <pre><code>{

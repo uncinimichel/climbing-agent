@@ -9,3 +9,4 @@ prototypes/
 *.secret
 secrets.json
 credentials*.json
+agent/.venv/

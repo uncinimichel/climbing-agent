@@ -56,6 +56,8 @@ these fields are populated with provenance.
 | `approachDifficulty` | int 1–3 | 1 = easy walk, 3 = serious (scramble/swim/exposed). |
 | `commitmentGrade` | string | Overall seriousness / size of day — NCCS `I`–`VII` (see [`taxonomy.md`](taxonomy.md)). |
 | `escapable` | bool | Can the party retreat mid-route? A key multi-pitch safety attribute. |
+| `protectionStyle` | enum | `gear` \| `bolted` \| `mixed` \| `none` — what protects the leader (see [`taxonomy.md`](taxonomy.md)). |
+| `belays` | enum | `gear` \| `bolted` \| `mixed` — anchor type at stances; drives `escapable` and retreat planning. |
 | `rack` | string | Gear needed — e.g. "single rack of cams to 3, doubles 0.5–2, nuts, 12 draws". |
 | `boltsCount` | int | Number of bolts/fixed anchors (`-1` = unknown), for sport/mixed. |
 | `rope` | string | Rope requirement — single 60 m · **double/half ropes** · twin · "2×60 m for the abseil". Critical for retreat/descent. |

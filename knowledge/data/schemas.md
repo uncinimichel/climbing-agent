@@ -4,6 +4,12 @@ The JSON shapes that drive the engine. These are the **single sources of truth**
 build script reads them to decide what to query and price. Change behaviour by editing
 these, not the code.
 
+> **Direction of travel:** the route/venue corpus now has a relational home — the
+> Postgres schema in `db/` ([`database.md`](database.md), decision #18). These JSON
+> configs stay authoritative for the live trip dashboard; corpus-shaped data
+> (`venues.json` venue facts, `extra-climbing.json` links) migrates into the DB, which
+> eventually becomes the only source of truth.
+
 ## `venues.json` — the master index (Phase 3, manual)
 
 Which venues get monitored. The script reads this to decide what to query for weather and

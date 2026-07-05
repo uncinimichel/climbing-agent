@@ -14,7 +14,7 @@
 |---|---|---|
 | **Scope** | Multi-pitch, worldwide | Bounded corpus (~30–150k routes, *not* millions) — keeps repo-as-DB viable. |
 | **Sourcing** | Aggressive, *but license-aware* | Max effort on clean/durable sources; social = aggregated signal, never raw PII. |
-| **Storage** | Repo-as-database (JSON) | Two-tier store (below) so a social firehose never enters git. |
+| **Storage** | ~~Repo-as-database (JSON)~~ → **Postgres in Docker** (decision #18) | Two-tier store (below) still applies; the durable tier's engine is now Postgres. |
 | **Budget** | Free / near-free to start | DIY scraping; LLM-tag a curated subset; defer paid infra (semantic search, scraping APIs). |
 
 These extend [`decisions.md`](decisions.md) #1–#13; the ingestion-specific call is logged as
@@ -23,18 +23,20 @@ other — is resolved by the **bounded scope** and the **two-tier store**.
 
 ## The two-tier store (how "aggressive + free + repo-as-DB" coexist)
 
-The rule: **the repo is the database for the product; the firehose lives outside it.**
+The rule: **the durable corpus is curated and PII-free; the firehose lives outside both
+git and the DB.**
 
 | Tier | Contents | Where | Committed? |
 |---|---|---|---|
-| **Durable** | Curated master index + fully-tagged route records + **aggregated, non-personal** condition/buzz summaries | git — sharded JSON by country, or one committed **SQLite** (R-tree geo index) | ✅ yes |
+| **Durable** | Curated master index + fully-tagged route records + **aggregated, non-personal** condition/buzz summaries | **Postgres + PostGIS in Docker** (`db/` — decision #18); git versions the DDL + seeds + curated exports | DDL/seeds ✅ · corpus lives in the DB |
 | **Ephemeral** | Raw HTML/API captures + the raw social stream | GitHub Actions cache/artifacts (gitignored local cache) | ❌ never |
 
 Phase 2 distils Tier-2 → Tier-1: raw social posts become *"Fair Head — reported dry, 3
-mentions, last 48 h"*, and **only that summary is committed**. Recommendation: move the
-durable corpus to a **committed SQLite file** once it passes a few thousand routes (still
-versioned, queryable, R-tree geo, no server, offline) — a smaller step than it sounds, and
-loss-lessly exportable back to JSON.
+mentions, last 48 h"*, and **only that summary** enters the durable tier.
+*(Superseded 2026-07-04: this section previously recommended a committed SQLite file;
+Postgres replaces it — see [`../data/database.md`](../data/database.md). The DB is on
+course to be the **only source of truth** for venue/route knowledge; `venues.json` and
+`extra-climbing.json` migrate in and become exports.)*
 
 ## Source registry — `sources.json` (config-as-truth)
 
@@ -147,9 +149,11 @@ OpenBeta's hierarchical-area model. Refine, don't rebuild.
 
 ## Retrieval
 
-Repo-as-DB → **SQLite R-tree** for geo (the planner already does haversine matching), plus
-normalised-name lookup for dedup/merge. Semantic search ("what are people saying about X")
-needs an embeddings index — **deferred** (budget-gated); until then, buzz is keyword/geo-matched.
+**PostGIS** `geography` + GIST for geo (the planner already does haversine matching), plus
+`pg_trgm` normalised-name lookup for dedup/merge — both live in the `db/` schema now.
+Semantic search ("what are people saying about X") needs an embeddings index — **deferred**
+(budget-gated; pgvector is the natural fit when it opens); until then, buzz is
+keyword/geo-matched.
 
 ## The first shippable slice (a vertical, not a layer)
 
@@ -159,7 +163,7 @@ Build one thin end-to-end path before widening — proves Phase 1+2+3 together:
 |---|---|
 | **M0** | `sources.json` registry + the OpenBeta GraphQL client (clean-licence, keyless). |
 | **M1** | Ingest OpenBeta for **one region** (propose: UK & Ireland) → raw records in the Tier-2 cache. |
-| **M2** | Normalise into the committed **SQLite** corpus against [`route-schema.md`](../data/route-schema.md); mechanical fields only. |
+| **M2** | Normalise into the **Postgres** corpus (`db/` schema, [`database.md`](../data/database.md)) against [`route-schema.md`](../data/route-schema.md); mechanical fields only. |
 | **M3** | LLM-tag the inferred fields for that region's routes; validate against the enums; `status: draft`. |
 | **M4** | Auto-map onto the master index (geo+name); quarantine unmatched; surface matched routes in the planner. |
 
@@ -167,8 +171,9 @@ Only after M0–M4 work do we add theCrag/UKC/MP scraping and the social tracks.
 
 ## Free-tier constraints & what's deferred
 
-- **Free now:** OpenBeta API, GitHub Actions/cache, SQLite in-repo, LLM-tagging a bounded subset.
-- **Deferred until budget opens:** managed Postgres/PostGIS, a semantic/vector index, a
+- **Free now:** OpenBeta API, GitHub Actions/cache, **Postgres+PostGIS in local Docker**
+  (decision #18), LLM-tagging a bounded subset.
+- **Deferred until budget opens:** *managed/hosted* Postgres (the schema ports as-is), a semantic/vector index, a
   managed scraping API (Apify/Bright Data) for hard/social targets, bulk LLM tagging at
   full-corpus scale.
 - **Guardrails:** cap LLM calls per run; bounded scrape batches; log what was dropped rather

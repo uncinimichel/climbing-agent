@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>climbing agent · admin</title>
+<style>
+  :root {
+    --bg: #f6f4ef; --panel: #ffffff; --ink: #22252a; --dim: #6b7280;
+    --accent: #0e7c66; --accent-soft: #e3f1ed; --warn: #b45309; --border: #e2ddd2;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14171b; --panel: #1d2126; --ink: #e8e6e1; --dim: #9aa2ad;
+      --accent: #34c39e; --accent-soft: #123d33; --warn: #f59e0b; --border: #2c323a;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font: 16px/1.55 -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    display: flex; flex-direction: column; height: 100dvh;
+  }
+  header {
+    padding: 12px 18px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: baseline; gap: 10px; background: var(--panel);
+  }
+  header h1 { font-size: 17px; }
+  header .sub { color: var(--dim); font-size: 13px; }
+  header button {
+    margin-left: auto; background: none; border: 1px solid var(--border);
+    color: var(--dim); border-radius: 8px; padding: 4px 10px; cursor: pointer; font-size: 13px;
+  }
+  #log { flex: 1; overflow-y: auto; padding: 18px; display: flex; flex-direction: column; gap: 14px; }
+  .msg { max-width: 780px; }
+  .you { align-self: flex-end; background: var(--accent-soft); border-radius: 14px 14px 4px 14px; padding: 9px 14px; }
+  .agent { align-self: flex-start; white-space: pre-wrap; }
+  .status { align-self: flex-start; color: var(--dim); font-size: 13px; }
+  .status::before { content: "⛏ "; }
+  .error { align-self: flex-start; color: #dc2626; font-size: 14px; }
+  .cards { align-self: stretch; display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; }
+  .card {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px;
+  }
+  .card b { font-size: 15px; }
+  .card .grade { color: var(--accent); font-weight: 600; margin-left: 6px; }
+  .card .meta { color: var(--dim); font-size: 13px; margin-top: 3px; }
+  .card .haz { color: var(--warn); font-size: 12.5px; margin-top: 5px; }
+  form { display: flex; gap: 10px; padding: 14px 18px; border-top: 1px solid var(--border); background: var(--panel); }
+  input[type=text] {
+    flex: 1; padding: 11px 14px; border: 1px solid var(--border); border-radius: 10px;
+    background: var(--bg); color: var(--ink); font-size: 15px; outline: none;
+  }
+  input[type=text]:focus { border-color: var(--accent); }
+  form button {
+    background: var(--accent); color: #fff; border: 0; border-radius: 10px;
+    padding: 0 18px; font-size: 15px; cursor: pointer;
+  }
+  form button:disabled { opacity: .5; }
+</style>
+</head>
+<body>
+<header>
+  <h1>⛰ climbing agent</h1>
+  <span class="sub">admin · local corpus (dev fixtures)</span>
+  <button id="reset">new chat</button>
+</header>
+<div id="log">
+  <div class="msg status" style="list-style:none">ask e.g. “sandstone multi-pitch in August, easy grades” — “near me” needs a place or lat/lon</div>
+</div>
+<form id="f">
+  <input type="text" id="q" placeholder="find me a climb…" autocomplete="off" autofocus>
+  <button id="send">➤</button>
+</form>
+<script>
+const log = document.getElementById("log"), form = document.getElementById("f"),
+      q = document.getElementById("q"), send = document.getElementById("send");
+
+function el(cls, text) {
+  const d = document.createElement("div");
+  d.className = "msg " + cls;
+  if (text !== undefined) d.textContent = text;
+  log.appendChild(d); log.scrollTop = log.scrollHeight;
+  return d;
+}
+
+function cards(rows) {
+  const wrap = el("cards");
+  for (const r of rows) {
+    const c = document.createElement("div"); c.className = "card";
+    const stars = "★".repeat(r.stars || 0);
+    const dist = r.distance_km != null ? ` · ${r.distance_km} km` : "";
+    const haz = (r.hazards || []).map(h => h.hazard).join(", ");
+    c.innerHTML = `<b></b><span class="grade"></span> <span>${stars}</span>
+      <div class="meta loc"></div>
+      <div class="meta facts"></div>` + (haz ? `<div class="haz">⚠ ${haz}</div>` : "");
+    c.querySelector("b").textContent = r.name;
+    c.querySelector(".grade").textContent = r.grade || "";
+    c.querySelector(".loc").textContent = (r.location || "") + dist;
+    c.querySelector(".facts").textContent =
+      [r.rock, r.aspect && r.aspect + "-facing", r.pitches_count && r.pitches_count + " pitches",
+       r.length_m && r.length_m + " m"].filter(Boolean).join(" · ");
+    wrap.appendChild(c);
+  }
+  log.scrollTop = log.scrollHeight;
+}
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const message = q.value.trim();
+  if (!message) return;
+  q.value = ""; send.disabled = true;
+  el("you", message);
+  let agentDiv = null;
+  try {
+    const resp = await fetch("/api/chat", {
+      method: "POST", headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({message}),
+    });
+    const reader = resp.body.getReader(), dec = new TextDecoder();
+    let buf = "";
+    while (true) {
+      const {done, value} = await reader.read();
+      if (done) break;
+      buf += dec.decode(value, {stream: true});
+      let nl;
+      while ((nl = buf.indexOf("\n")) >= 0) {
+        const line = buf.slice(0, nl); buf = buf.slice(nl + 1);
+        if (!line.trim()) continue;
+        const ev = JSON.parse(line);
+        if (ev.type === "text") {
+          if (!agentDiv) agentDiv = el("agent", "");
+          agentDiv.textContent += ev.text;
+          log.scrollTop = log.scrollHeight;
+        } else if (ev.type === "tool") { agentDiv = null; el("status", "searching: " + ev.label); }
+        else if (ev.type === "rows") { ev.rows.length ? cards(ev.rows) : el("status", "no matches"); }
+        else if (ev.type === "tool_error") { el("error", "search rejected: " + ev.message); }
+        else if (ev.type === "refusal") { el("error", "the model declined this request"); }
+        else if (ev.type === "error") { el("error", ev.message); }
+      }
+    }
+  } catch (err) {
+    el("error", "request failed: " + err);
+  } finally {
+    send.disabled = false; q.focus();
+  }
+});
+
+document.getElementById("reset").addEventListener("click", async () => {
+  await fetch("/api/reset", {method: "POST"});
+  log.innerHTML = ""; el("status", "new conversation");
+});
+</script>
+</body>
+</html>

@@ -60,6 +60,10 @@ Enhancements to what already runs. None are required for daily operation. Priori
    real browsers (same conclusion reached checking the accommodation links). Future
    maintenance: these links aren't re-checked automatically like the stays `web` links are
    (no periodic health-check wired up yet) — worth adding if link rot becomes visible.
+   **Destination (4 Jul 2026):** this data maps to the `area_reference` table in the
+   Postgres schema (decision #18) — once venues exist as `area` rows the JSON is imported
+   and becomes an export, with the DB as the only source of truth (`verified_at` then
+   drives the periodic health-check noted above).
 7. **"Confidence"** — show climatology spread + seasonal ensemble agreement, not just means.
 8. **Email/Slack digest** — daily top pick + cheapest fares to a channel.
 9. **Bump GitHub Action versions** to Node24 to clear the deprecation warning.
@@ -85,7 +89,9 @@ Turn the rain-proxy into the vision's **Predictive Condition Algorithm**:
 
 ## Stage 3 — Scale curation (industrialise Phase 3)
 
-- Grow `venues.json` into a **verified sector directory** with stable IDs + provenance.
+- Grow `venues.json` into a **verified sector directory** with stable IDs + provenance —
+  now concretely the `area` tree + `area_reference` tables in the Postgres schema
+  ([`../data/database.md`](../data/database.md), decision #18).
 - Automated mapping of parsed climbs onto the index; **quarantine unmatched** (never
   auto-surface — Zero-Garbage UGC).
 - A curation workflow to promote/demote/merge/verify sectors.
@@ -109,9 +115,33 @@ Turn the rain-proxy into the vision's **Predictive Condition Algorithm**:
 - **Schema v2 aligned to OpenBeta** — hierarchical areas + inheritance, `gradeContext`,
   all-systems `grades{}`, composable `ClimbType`, structured `pitches[]`, `SafetyEnum`
   (+`runout`/`terrain`), access/stewardship layer. Enables loss-less import/export.
+  **Started (4 Jul 2026):** the Postgres DDL in `db/` already implements the structural
+  core (area tree + inherited `gradeContext`, all-systems `route_grade`, junction-table
+  disciplines, structured `pitch`, evidence-gated hazards) — see
+  [`../data/database.md`](../data/database.md); what remains is the ingestion to fill it.
 - **Social condition scrapers** (Meta/X/TikTok geotags, guide whitelists) — respecting
   ToS + privacy; aggregated, non-personal summaries only.
 - **Static guidebook/register crawlers** at web scale, writing to a raw-record store.
+
+## Stage 5½ — Admin retrieval agent (chat over the DB)
+
+Added 4 Jul 2026 (decision #19). An **admin page with a chat agent** that retrieves
+climbs from the Postgres corpus in natural language — *"find me sandstone near me in
+August"* → enum + geo + climate filters → ranked climbs with a plain-language why.
+
+- **SQL-first, not a vector DB:** the example queries decompose entirely into closed-enum
+  / PostGIS / climatology filters — a Claude tool-use loop calling a strict,
+  enum-validated `search_climbs` tool (parameters generated from the DB lookup tables).
+  The model never writes raw SQL.
+- **Semantic tier later:** pgvector *inside the same Postgres* for prose/buzz similarity
+  ("something adventurous…"), budget-gated with the rest of the semantic index.
+- Doubles as the Phase-3 **curation console** front door, and is the internal precursor
+  of Stage 6's single question-and-answer flow.
+- Depends on the corpus having routes (M2+); full design:
+  [`../architecture/retrieval-agent.md`](../architecture/retrieval-agent.md).
+- **Started (4 Jul 2026):** step 1 shipped — `agent/` holds the `search_climbs`
+  handler + CLI chat harness, verified against dev fixtures (`db/dev/sample_routes.sql`);
+  next: `get_conditions`, the admin page, then pgvector.
 
 ## Stage 6 — Productise (multi-trip, multi-user)
 

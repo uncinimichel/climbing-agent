@@ -1,0 +1,126 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Retrieval Agent · multi-pitch Live</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"><style>
+:root{--ink:#0C0D10;--ink2:#12141B;--ink3:#191C27;--ink4:#20243A;--seam:#252840;
+--chalk:#EAE6DD;--chalk2:#9B9890;--chalk3:#5A5860;--go:#6CB268;--amb:#C8A44A;
+--wet:#B94438;--spike:#C4FF5C;--r:6px;--r-lg:12px}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--ink);color:var(--chalk)}
+body{font-family:'Inter',system-ui,sans-serif;font-size:15px;line-height:1.65;
+-webkit-font-smoothing:antialiased}
+.top{position:sticky;top:0;z-index:10;height:48px;background:var(--ink2);
+border-bottom:1px solid var(--seam);display:flex;align-items:center;gap:12px;padding:0 18px}
+.logo{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--chalk);
+letter-spacing:-.2px;text-decoration:none}
+.top a.btn{margin-left:auto;font-size:12px;color:var(--chalk2);text-decoration:none;
+border:1px solid var(--seam);border-radius:var(--r);padding:5px 12px}
+.top a.btn:hover{color:var(--chalk);border-color:var(--chalk3)}
+.wrap{max-width:860px;margin:0 auto;padding:32px 22px 96px}
+.crumb{font-size:12px;color:var(--chalk3);margin-bottom:22px;font-family:'DM Mono',monospace}
+.crumb a{color:var(--chalk2);text-decoration:none}
+.crumb a:hover{color:var(--spike)}
+h1,h2,h3,h4{font-family:'Syne',sans-serif;letter-spacing:-.3px;line-height:1.25;
+scroll-margin-top:64px}
+h1{font-size:30px;font-weight:800;margin:.2em 0 .6em}
+h2{font-size:21px;font-weight:700;margin:1.8em 0 .5em;padding-top:.4em;
+border-top:1px solid var(--seam)}
+h3{font-size:16.5px;font-weight:700;margin:1.4em 0 .4em;color:var(--chalk)}
+h4{font-size:14px;font-weight:700;margin:1.2em 0 .3em;color:var(--chalk2)}
+p{margin:.7em 0}
+a{color:var(--amb);text-decoration:none;border-bottom:1px solid rgba(200,164,74,.28)}
+a:hover{color:var(--spike);border-bottom-color:var(--spike)}
+strong{color:#fff;font-weight:600}
+code{font-family:'DM Mono',ui-monospace,monospace;font-size:.86em;background:var(--ink3);
+border:1px solid var(--seam);border-radius:4px;padding:1px 5px;color:var(--amb)}
+pre{background:var(--ink2);border:1px solid var(--seam);border-radius:var(--r-lg);
+padding:16px 18px;overflow-x:auto;margin:1em 0}
+pre code{background:none;border:none;padding:0;color:var(--chalk2);font-size:12.5px;
+line-height:1.5;white-space:pre}
+blockquote{margin:1.1em 0;padding:.4em 16px;border-left:3px solid var(--amb);
+background:var(--amb-d,rgba(200,164,74,.07));border-radius:0 var(--r) var(--r) 0;
+color:var(--chalk2)}
+blockquote p{margin:.4em 0}
+hr{border:none;border-top:1px solid var(--seam);margin:2em 0}
+ul,ol{margin:.6em 0;padding-left:1.4em}
+li{margin:.28em 0}
+li>ul,li>ol{margin:.25em 0}
+.tw{overflow-x:auto;margin:1.1em 0;border:1px solid var(--seam);border-radius:var(--r-lg)}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--seam);
+vertical-align:top}
+th{background:var(--ink3);font-family:'Syne',sans-serif;font-weight:700;font-size:12px;
+color:var(--chalk);white-space:nowrap}
+tr:last-child td{border-bottom:none}
+td code{white-space:nowrap}
+.idx-group{margin:1.4em 0}
+.idx-group h3{border-bottom:1px solid var(--seam);padding-bottom:.3em}
+.idx-card{display:block;padding:12px 14px;margin:8px 0;background:var(--ink2);
+border:1px solid var(--seam);border-radius:var(--r-lg);color:var(--chalk);
+border-bottom:1px solid var(--seam)}
+.idx-card:hover{border-color:var(--chalk3);color:var(--chalk)}
+.idx-card b{font-family:'Syne',sans-serif}
+.idx-card span{display:block;color:var(--chalk2);font-size:13px;margin-top:2px}
+@media(max-width:600px){.wrap{padding:22px 15px 80px}h1{font-size:24px}body{font-size:14px}}
+</style></head><body><div class=top><a class=logo href="../../index.html">🧗 multi-pitch <span style="color:var(--spike)">Live</span></a><a class=btn href="../../knowledge/index.html">📚 Knowledge</a><a class=btn href="../../index.html">▶ Dashboard</a></div><div class=wrap><div class=crumb><a href="../index.html">📚 knowledge</a> / architecture / <b style='color:var(--chalk2)'>retrieval-agent</b></div><h1 id="retrieval-agent-chat-over-the-climbing-db">Retrieval Agent — chat over the climbing DB</h1>
+<p>The design for the <strong>admin-page chat agent</strong> that answers natural-language questions from the Postgres corpus — <em>"I want to find some sandstone rock near me in August"</em> → the right climbs, ranked, with a plain-language why. Roadmap <strong>Stage 5½</strong>; decision <a href="../roadmap/decisions.html">#19</a>. Storage it queries: <a href="../data/database.html"><code>../data/database.md</code></a>.</p>
+<blockquote><p><strong>Status: ⚠️ Steps 1 + 3 built locally (4 Jul 2026).</strong> <a href="../../agent/README.html"><code>agent/</code></a> holds the <code>search_climbs</code> handler, a shared turn loop (<code>core.py</code> — one event-generator consumed by both surfaces), a <strong>rich terminal console</strong> (<code>chat.py</code>: streaming, result tables, hazard chips) and the <strong>admin web chat</strong> (<code>server.py</code> + <code>static/admin.html</code>: FastAPI on localhost, ndjson event stream, route cards, light/dark). Tested against dev fixtures (<code>db/dev/sample_routes.sql</code>); the no-LLM pass (<code>python agent/search.py</code>) verifies enum/geo/season filtering and off-dictionary rejection. <strong>Live LLM loop needs <code>ANTHROPIC_API_KEY</code></strong> (not yet configured on this machine). Real coverage still requires ingestion (M2+); <code>get_conditions</code> and pgvector remain planned.</p></blockquote>
+<h2 id="the-core-call-sql-first-vectors-later">The core call: SQL-first, vectors later</h2>
+<p>The obvious question — <em>"should this use a vector database?"</em> — has the same answer as the ontology question before it (see <a href="../data/database.html"><code>database.md</code></a>): <strong>not for these queries.</strong> Decompose the example:</p>
+<div class="tw"><table><thead><tr><th>Fragment</th><th>Resolves to</th><th>Mechanism</th></tr></thead><tbody><tr><td>"sandstone rocks"</td><td><code>rock = &#x27;sandstone&#x27;</code></td><td>closed enum (taxonomy)</td></tr><tr><td>"near me"</td><td><code>ST_DWithin(geom, &lt;user point&gt;, &lt;radius&gt;)</code></td><td>PostGIS</td></tr><tr><td>"in August"</td><td><code>8 = ANY(best_season)</code> + <code>route_climatology</code> month 8</td><td>climate columns</td></tr><tr><td><em>(implied)</em> "and dry/climbable"</td><td>condition score from the weather engine</td><td>Stage-1/2 logic</td></tr></tbody></table></div>
+<p>Every fragment is a <strong>structured filter over a closed vocabulary</strong> — deterministic SQL, exactly what the schema was built for. Embedding similarity would only <em>approximate</em> what an indexed <code>WHERE</code> clause answers exactly. Where semantic search does earn its place is <strong>prose and vagueness</strong>: "something adventurous with an easy escape", route descriptions, the social buzz summaries. That tier is <strong>pgvector inside the same Postgres</strong> — never a separate vector DB — so one query can filter by enum/geo <em>and</em> rank by similarity. It stays budget-gated as before: Anthropic ships no embedding API (their docs point to external providers like Voyage AI), so it's a new dependency, not a flip of a switch.</p>
+<h2 id="architecture">Architecture</h2>
+<pre><code>admin page (chat UI on the dashboard)
+    │
+    ▼
+Claude (tool-use loop; claude-opus-4-8, adaptive thinking)
+    │  1. search_climbs(...)      — strict, enum-validated parameters → SQL
+    │  2. get_conditions(...)     — venue/day scores from the weather engine
+    │  3. [later] semantic_search — pgvector over prose/buzz
+    ▼
+Postgres (db/ schema) → validated rows → LLM composes the answer with a why</code></pre>
+<p>The model <strong>never writes raw SQL</strong>. It calls a <code>search_climbs</code> tool whose JSON-Schema parameters are the taxonomy's closed enums (<code>strict: true</code>, so inputs validate exactly):</p>
+<pre><code>{
+  &quot;name&quot;: &quot;search_climbs&quot;,
+  &quot;description&quot;: &quot;Search the route corpus. Call when the user asks to find climbs/crags/routes by any attribute.&quot;,
+  &quot;strict&quot;: true,
+  &quot;input_schema&quot;: {
+    &quot;type&quot;: &quot;object&quot;,
+    &quot;properties&quot;: {
+      &quot;rock&quot;: { &quot;type&quot;: &quot;string&quot;, &quot;enum&quot;: [&quot;granite&quot;, &quot;limestone&quot;, &quot;dolerite&quot;, &quot;rhyolite&quot;, &quot;sandstone&quot;, &quot;gabbro&quot;, &quot;quartzite&quot;, &quot;volcanic&quot;, &quot;dolomite&quot;] },
+      &quot;disciplines&quot;: { &quot;type&quot;: &quot;array&quot;, &quot;items&quot;: { &quot;type&quot;: &quot;string&quot;, &quot;enum&quot;: [&quot;trad&quot;, &quot;sport&quot;, &quot;multi-pitch&quot;, &quot;...&quot;] } },
+      &quot;near&quot;: { &quot;type&quot;: &quot;object&quot;, &quot;properties&quot;: { &quot;lat&quot;: {&quot;type&quot;: &quot;number&quot;}, &quot;lon&quot;: {&quot;type&quot;: &quot;number&quot;}, &quot;radius_km&quot;: {&quot;type&quot;: &quot;number&quot;} }, &quot;additionalProperties&quot;: false },
+      &quot;month&quot;: { &quot;type&quot;: &quot;integer&quot;, &quot;enum&quot;: [1,2,3,4,5,6,7,8,9,10,11,12] },
+      &quot;max_data_grade&quot;: { &quot;type&quot;: &quot;integer&quot;, &quot;enum&quot;: [1,2,3,4,5,6,7] },
+      &quot;aspect&quot;: { &quot;type&quot;: &quot;string&quot;, &quot;enum&quot;: [&quot;N&quot;,&quot;NE&quot;,&quot;E&quot;,&quot;SE&quot;,&quot;S&quot;,&quot;SW&quot;,&quot;W&quot;,&quot;NW&quot;] }
+    },
+    &quot;additionalProperties&quot;: false
+  }
+}</code></pre>
+<p>The tool handler builds one parameterized query (enum FKs make bad values impossible; <code>status = &#x27;publish&#x27;</code> enforced server-side — Zero-Garbage UGC applies to retrieval too). Generate the enum lists <strong>from the DB lookup tables</strong> at startup so tool schema and taxonomy never drift.</p>
+<p>Why parameterized-tool over text-to-SQL: no injection surface, no invalid-column hallucinations, the closed taxonomy means ~a dozen parameters cover the real query space, and results are auditable (log the tool call = log the query). An admin-only <strong>read-only raw-SQL escape hatch</strong> (separate tool, read-only role, <code>statement_timeout</code>) can come later for power queries — it's a curation tool, not the user path.</p>
+<h2 id="answer-composition-rules">Answer composition rules</h2>
+<ol><li><strong>Grades display as <code>originalGrade</code></strong>, ranked by <code>dataGrade</code> — never show the bare</li></ol>
+<p>   number (grade-conversion rule).</p>
+<ol><li><strong>Every recommendation carries a why</strong> grounded in returned rows (rock/drying</li></ol>
+<p>   behaviour from <code>rock_type.notes</code>, aspect/sun, hazards with their evidence spans) —    same plain-language-why principle as the Stage-2 contingency engine.</p>
+<ol><li><strong>Weather claims come from the condition engine</strong>, not the LLM's prior. "Good in</li></ol>
+<p>   August" must trace to <code>route_climatology</code> / <code>best_season</code> / a live score.</p>
+<ol><li><strong>No results ≠ invent results.</strong> An empty result set is reported as such, with the</li></ol>
+<p>   nearest relaxation offered ("nothing within 50 km — 3 matches within 120 km").</p>
+<h2 id="admin-page">Admin page</h2>
+<ul><li>Lives with the dashboard (same static-hosting model); the chat backend is the one</li></ul>
+<p>  server-side piece — a small endpoint holding the Anthropic key and the DB connection.   It never runs in the browser (key + DB are server-side only).</p>
+<ul><li>Admin-only at first: it doubles as the Phase-3 curation console's front door</li></ul>
+<p>  (promote/demote/verify actions can become tools on the same loop later).</p>
+<ul><li>"Near me" uses browser geolocation or a typed place — **no personal locations in the</li></ul>
+<p>  public repo** (decision #7 discipline).</p>
+<ul><li>This is the internal precursor of Stage 6's <em>"single question-and-answer flow"</em> front</li></ul>
+<p>  door: prove the loop on the admin, then productise.</p>
+<h2 id="cost-model-notes">Cost &amp; model notes</h2>
+<ul><li><code>claude-opus-4-8</code>, adaptive thinking, tool-use loop (per the <code>/claude-api</code> reference —</li></ul>
+<p>  structured outputs and strict tools are GA). A cheaper tier (Haiku) can serve the   parse-only path later if cost demands; don't start there.</p>
+<ul><li>Token cost is bounded: the tools return compact rows, not documents. Cache the system</li></ul>
+<p>  prompt + tool schemas (stable prefix) per prompt-caching guidance.</p>
+<ul><li>Embedding costs (pgvector tier) stay deferred with the rest of the semantic budget</li></ul>
+<p>  (<a href="../roadmap/ingestion-plan.html">ingestion plan → free-tier constraints</a>).</p>
+<h2 id="build-order-when-its-turn-comes">Build order (when its turn comes)</h2>
+<ol><li><code>search_climbs</code> tool + handler over the <code>db/</code> schema; CLI harness first, no UI.</li><li>Wire the condition engine as <code>get_conditions</code> (reuse existing scoring).</li><li>Minimal admin chat page calling the loop server-side.</li><li>pgvector + embeddings for prose/buzz — only once real prose is ingested and budget</li></ol>
+<p>   opens.</p></div></body></html>

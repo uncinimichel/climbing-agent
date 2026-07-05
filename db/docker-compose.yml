@@ -1,0 +1,26 @@
+# Local Postgres for the climbing corpus (decision #18).
+# Old docker-compose 1.25 on this machine → stick to compose file format 3.7.
+version: "3.7"
+
+services:
+  db:
+    image: postgis/postgis:16-3.4
+    container_name: climbing-db
+    environment:
+      POSTGRES_DB: climbing
+      POSTGRES_USER: climbing
+      POSTGRES_PASSWORD: climbing   # local dev only — never a shared/prod credential
+    ports:
+      - "5432:5432"
+    volumes:
+      - climbing-pgdata:/var/lib/postgresql/data
+      # First boot auto-applies everything in sql/ in filename order.
+      - ./sql:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U climbing -d climbing"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+
+volumes:
+  climbing-pgdata:
