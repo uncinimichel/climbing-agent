@@ -1,6 +1,6 @@
 {
   "comment": "Latest flight prices per combo (round-trip, 1 pax, GBP). Updated on demand by Claude or by an API script. null = not yet checked.",
-  "checked_at": "2026-07-05 18:29 UTC (Google Flights/SerpApi)",
+  "checked_at": "2026-07-05 19:14 UTC (Google Flights/SerpApi)",
   "currency": "GBP",
   "rep_combo": {
     "id": "fri-tue",
@@ -9,6 +9,20 @@
     "nights": 4
   },
   "venues": {
+    "Tenerife": {
+      "michel": {
+        "mode": "fly",
+        "options": [],
+        "to": "TFS",
+        "book_url": "https://www.skyscanner.net/transport/flights/lgw/tfs/260724/260728/"
+      },
+      "dan": {
+        "mode": "fly",
+        "options": [],
+        "to": "TFS",
+        "book_url": "https://www.skyscanner.net/transport/flights/bfs/tfs/260724/260728/"
+      }
+    },
     "Gredos": {
       "michel": {
         "mode": "fly",
@@ -83,94 +97,6 @@
         "cached": true
       }
     },
-    "Tenerife": {
-      "michel": {
-        "mode": "fly",
-        "options": [],
-        "to": "TFS",
-        "book_url": "https://www.skyscanner.net/transport/flights/lgw/tfs/260724/260728/"
-      },
-      "dan": {
-        "mode": "fly",
-        "options": [],
-        "to": "TFS",
-        "book_url": "https://www.skyscanner.net/transport/flights/bfs/tfs/260724/260728/"
-      }
-    },
-    "Aladaglar": {
-      "michel": {
-        "mode": "fly",
-        "to": "ASR",
-        "options": [
-          {
-            "price": 300,
-            "airline": "Pegasus",
-            "from": "STN",
-            "to": "ASR",
-            "dep": "09:30",
-            "arr": "01:15",
-            "stops": 1
-          },
-          {
-            "price": 306,
-            "airline": "AJet",
-            "from": "STN",
-            "to": "ASR",
-            "dep": "22:30",
-            "arr": "20:40",
-            "stops": 1
-          },
-          {
-            "price": 326,
-            "airline": "Pegasus",
-            "from": "STN",
-            "to": "ASR",
-            "dep": "19:00",
-            "arr": "07:20",
-            "stops": 1
-          }
-        ],
-        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTA3LTI0agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDQVNSGkISCjIwMjYtMDctMjhqBwgBEgNBU1JyBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ",
-        "book_url": "https://www.skyscanner.net/transport/flights/stn/asr/260724/260728/",
-        "cached": true
-      },
-      "dan": {
-        "mode": "fly",
-        "to": "ASR",
-        "options": [
-          {
-            "price": 462,
-            "airline": "Turkish Airlines",
-            "from": "DUB",
-            "to": "ASR",
-            "dep": "10:40",
-            "arr": "20:00",
-            "stops": 1
-          },
-          {
-            "price": 462,
-            "airline": "Turkish Airlines",
-            "from": "DUB",
-            "to": "ASR",
-            "dep": "17:05",
-            "arr": "03:15",
-            "stops": 1
-          },
-          {
-            "price": 508,
-            "airline": "Turkish Airlines",
-            "from": "DUB",
-            "to": "ASR",
-            "dep": "05:35",
-            "arr": "16:00",
-            "stops": 1
-          }
-        ],
-        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQVNSGjASCjIwMjYtMDctMjhqBwgBEgNBU1JyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
-        "book_url": "https://www.skyscanner.net/transport/flights/dub/asr/260724/260728/",
-        "cached": true
-      }
-    },
     "Mournes, NI": {
       "michel": {
         "mode": "fly",
@@ -210,6 +136,20 @@
       },
       "dan": {
         "mode": "local"
+      }
+    },
+    "\u00c9crins (Aiguille Dibona)": {
+      "michel": {
+        "mode": "fly",
+        "options": [],
+        "to": "LYS",
+        "book_url": "https://www.skyscanner.net/transport/flights/lgw/lys/260724/260728/"
+      },
+      "dan": {
+        "mode": "fly",
+        "options": [],
+        "to": "LYS",
+        "book_url": "https://www.skyscanner.net/transport/flights/bfs/lys/260724/260728/"
       }
     }
   }
