@@ -6,6 +6,11 @@ Day-to-day operations: run it, verify it, maintain it. For the deploy pipeline s
 ## Run locally
 
 ```bash
+# Optional: refresh the trip-independent weather/tide cache first (once per venue →
+# git-ignored venue-env.json). update_report.py consumes it; skip it and update_report
+# just fetches live per venue instead (slower, same result).
+python3 trip-ni-july-2026/scripts/fetch_env.py
+
 # Full build (weather → rank → flights → HTML). Works without a key (flights degrade).
 python3 trip-ni-july-2026/scripts/update_report.py
 
@@ -13,8 +18,9 @@ python3 trip-ni-july-2026/scripts/update_report.py
 SERPAPI_KEY=... python3 trip-ni-july-2026/scripts/update_report.py
 ```
 
-Outputs written: `index.html`, `trip-ni-july-2026/daily-report.md`,
-`trip-ni-july-2026/history/<date>.md`, `trip-ni-july-2026/flights-latest.json`.
+Outputs written: `index.html`, `venues/<slug>.html`, `sitemap.xml`,
+`trip-ni-july-2026/daily-report.md`, `trip-ni-july-2026/history/<date>.md`,
+`trip-ni-july-2026/flights-latest.json`.
 
 ## Run in the cloud
 
@@ -73,4 +79,4 @@ Run after any change to the generator, config, or scoring:
 | Ranking didn't change day-to-day | Climatology is deterministic until ~8 July — this is correct. |
 | Seasonal outlook absent | Seasonal API failed → degraded to climatology. Non-fatal. |
 | Action didn't run on schedule | GitHub cron can lag a few min; jobs pause after ~60 d inactivity (not a risk — daily commits). |
-| Page didn't update | Check the deploy job; concurrency `cancel-in-progress` may have cancelled an overlapping run. |
+| Page didn't update | Check the deploy job. Deploys are **serialized** (`cancel-in-progress: false`) so they queue, never cancel; a `deploy-pages` "Deployment failed, try again later" is a transient GitHub Pages error (common when pushes land close together) — re-run the failed job. |

@@ -14,26 +14,36 @@ publishes to GitHub Pages. No laptop, no paid server, no Claude in the daily loo
 All three run the same build.
 
 ### Permissions & concurrency
+Least-privilege: the workflow grants **no** top-level permissions and each job requests
+only what it needs — so the job running untrusted upstream APIs never holds Pages/OIDC
+powers.
 ```yaml
-permissions:
-  contents: write   # commit the updated report back
-  pages: write      # deploy to GitHub Pages
-  id-token: write
+permissions: {}          # nothing by default; jobs opt in below
 concurrency:
   group: pages
-  cancel-in-progress: true   # avoid overlapping deploys
+  cancel-in-progress: false   # SERIALIZE (queue) deploys — cancelling mid-deploy
+                              # left runs failing when two pushes landed close together
 ```
 
 ### Jobs
-1. **build** (`ubuntu-latest`):
-   - `actions/checkout@v4`
-   - `actions/setup-python@v5` (Python 3.12)
-   - Run `python3 trip-ni-july-2026/scripts/update_report.py` with
-     `SERPAPI_KEY` from secrets in `env`.
-   - Commit changed outputs (`index.html`, `.nojekyll`, `daily-report.md`, `history/`,
-     `flights-latest.json`) as user `trip-bot`; **no-change → no commit**.
-   - `actions/upload-pages-artifact@v3` (path `.`).
-2. **deploy** (`needs: build`): `actions/deploy-pages@v4` → publishes to Pages.
+1. **build** (`ubuntu-latest`, `permissions: contents: write` only):
+   - `actions/checkout@v7`
+   - `actions/setup-python@v6` (Python 3.12)
+   - Refresh `climbing-trips.csv` from the Google Sheet (keeps the committed copy if the
+     download is malformed).
+   - Run `python3 trip-ni-july-2026/scripts/fetch_env.py` — trip-independent weather+tide
+     → git-ignored `venue-env.json` (decision #24).
+   - Run `python3 trip-ni-july-2026/scripts/update_report.py` (consumes `venue-env.json`)
+     with `SERPAPI_KEY` from secrets in `env`; then `serpapi_quota.py` and
+     `build_knowledge.py` (Markdown → HTML).
+   - Commit changed outputs as user `trip-bot` — `index.html`, `.nojekyll`,
+     `climbing-trips.csv`, `venues/`, `sitemap.xml`, `robots.txt`, `daily-report.md`,
+     `history/`, `flights-latest.json`, `serpapi-usage.json`, `climo-cache.json`,
+     `knowledge/`; **no-change → no commit**. (If `main` moved, skip — regenerated next run.)
+   - Stage a dedicated `site/` dir (page + `venues/` + `knowledge/` only — **not** scripts,
+     CSVs or plans) and `actions/upload-pages-artifact@v5` with `path: site`.
+2. **deploy** (`needs: build`, `permissions: pages: write` + `id-token: write` only):
+   `actions/deploy-pages@v5` → publishes to Pages.
 
 ### Output
 <https://uncinimichel.github.io/climbing-agent/> — public, mobile.

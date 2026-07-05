@@ -29,7 +29,7 @@ these fields are populated with provenance.
 | `county` | string | Region within country. |
 | `geoLocation` | `"lat,lon"` | The geo join key (weather, nearby-climbs). |
 | `timeZone` | IANA tz | e.g. `Europe/London` — for local forecast alignment. |
-| `status` | `publish`\|`draft` | Curation gate — only `publish` surfaces (Zero-Garbage UGC). |
+| `status` | `publish`\|`draft`\|`quarantined` | Curation gate — only `publish` surfaces (Zero-Garbage UGC); `draft` = WIP, `quarantined` = failed a parser rule (see [`database.md`](database.md) principle 7). |
 
 ### Physical character
 | Field | Type | Notes |

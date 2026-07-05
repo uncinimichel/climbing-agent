@@ -26,7 +26,7 @@ scrapers** to capture both historical records and live environmental reality:
   local mountain-guide whitelists, and geotagged hashtags across Meta, X, and TikTok to
   extract immediate, real-world condition updates.
 
-→ Detail: [`phases/phase-1-scraper.md`](../phases/phase-1-scraper.md)
+→ Detail: [`architecture/phases.md` — Phase 1](../architecture/phases.md#phase-1-raw-data-capture)
 
 ## Phase 2 — The AI Layer (Standardization & Intelligence)
 
@@ -40,7 +40,7 @@ system's translator and analyst:
   against physical rock parameters, mathematically scoring real-time **friction windows**
   and **drying / seepage rates**.
 
-→ Detail: [`phases/phase-2-ai-taxonomy.md`](../phases/phase-2-ai-taxonomy.md)
+→ Detail: [`architecture/phases.md` — Phase 2](../architecture/phases.md#phase-2-ai-standardization-scoring)
 
 ## Phase 3 — The Curated Filter (Human Taste)
 
@@ -54,7 +54,7 @@ from a total lack of quality filtering. This is the core competitive advantage:
   directory of classic sectors, so the engine only ever surfaces high-quality,
   worthwhile climbs.
 
-→ Detail: [`phases/phase-3-curation.md`](../phases/phase-3-curation.md)
+→ Detail: [`architecture/phases.md` — Phase 3](../architecture/phases.md#phase-3-curated-filter-human-taste)
 
 ## Phase 4 — The Trip Planner (Actionable Execution)
 
@@ -69,7 +69,7 @@ interactive **split-screen dashboard**:
   planner raises an instant alert and programmatically computes **three dry geographic
   alternatives** nearby.
 
-→ Detail: [`phases/phase-4-trip-planner.md`](../phases/phase-4-trip-planner.md)
+→ Detail: [`architecture/phases.md` — Phase 4](../architecture/phases.md#phase-4-trip-planner-actionable-execution)
 
 ---
 

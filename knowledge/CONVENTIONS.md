@@ -58,7 +58,8 @@ engine stays maintainable. Read this before contributing (human or agent).
 
 ## For AI agents picking up this repo
 
-1. Read `README.md` → `architecture/current-state.md` → the relevant `phases/` file.
+1. Read `README.md` → `architecture/current-state.md` → the relevant layer in
+   `architecture/phases.md`.
 2. Check `data/schemas.md` and `operations/` before writing code.
 3. Prefer config edits to code edits.
 4. Run the [verification checklist](operations/runbook.md) after changes.

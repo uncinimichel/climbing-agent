@@ -37,7 +37,7 @@ sync when new concepts appear in the code or docs.
 | **Weather basis** | Which horizon a ranking rests on: `live forecast` › `climatology + 45-day outlook`. Always stated to the user. |
 | **`day_score` / `climo_score`** | The per-day / climatological weather scoring functions — see `data/condition-algorithm.md`. |
 | **`dataGrade`** | A normalized **1–7** difficulty scale that maps every grading system onto one sortable integer. From the multi-pitch.com data model — see `data/grade-conversion.md`. |
-| **`gradeSys`** | Which grading system a grade is in (`BAS`, `UIAA`, `YDS`, `ALP`, `FS`, `N` + discipline systems `V`/`Font`/`WI`/`AI`/`M`/`A`/`C`). Always stored beside the raw grade. Canonical list in `data/taxonomy.md`. |
+| **`gradeSys`** | Which grading system a grade is in (`BAS`/`UIAA`/`YDS`/`ALP`/`FS`/`N` plus further trad systems `EW`/`SX`/`BRZ`/`D`/`SCO`/`VF`/`S` and discipline systems `V`/`Font`/`WI`/`AI`/`M`/`A`/`C`). Always stored beside the raw grade. **Canonical closed list in `data/taxonomy.md`** — treat this as illustrative. |
 | **Route record** | The canonical per-climb tagging target (identity, physical, grade, flags, prose, media) — see `data/route-schema.md`. |
 | **Hazard / character flags** | Boolean tags — route (`tidal`, `seepage`, `abseil`, `traverse`, `boat`, `polished`, `loose`, `grassLedges`) + objective mountain (`rockfall`, `avalanche`, `serac`, `crevasse`, `altitude`, `stormExposed`, `cornice`). Full list in `data/taxonomy.md`. |
 | **`incline`** | Route steepness: `Slab` → `Vertical` → `Overhanging`. |

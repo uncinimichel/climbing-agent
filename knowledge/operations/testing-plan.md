@@ -13,12 +13,13 @@ suite as a gate before the deploy step in [`weather.yml`](../../.github/workflow
 The engine already has the two seams testing needs — no big refactor required:
 
 1. **One network chokepoint.** Every external call — Open-Meteo `forecast` / `climatology` /
-   `seasonal`, SerpApi flights, and the multi-pitch.com climb DB — funnels through
-   `_get(url)` (`update_report.py:165`). Monkeypatch that one function and the whole
-   pipeline runs **offline and deterministic**.
+   `seasonal` / marine tide, SerpApi flights, and the multi-pitch.com climb DB — funnels
+   through the single `_get(url)` in `update_report.py` (and, since decision #24,
+   `fetch_env.py` reuses it via the same module). Monkeypatch that one function and the
+   whole pipeline runs **offline and deterministic**.
 2. **Time is already injected.** `build_html` / `build_md` take `now` as a parameter, so
    the generated output is reproducible once the network is mocked and the date is frozen.
-   (Only `main()` calls `datetime.now()` internally — `:1057`.)
+   (`main()` is where the run's `datetime.now()` originates.)
 
 This matches the repo's **determinism** convention ([`CONVENTIONS.md`](../CONVENTIONS.md)):
 climatology scoring must give two identical runs, so it is testable by construction.
@@ -53,7 +54,7 @@ climatology scoring must give two identical runs, so it is testable by construct
    with fresh fixtures, catches upstream schema drift too.
 
 4. **End-to-end smoke test.** Run `main()` with `_get` mocked and the output path constants
-   (`INDEX` / `DAILY` / `HISTORY`, `:35`) redirected to a temp dir. Assert: clean exit, a
+   (`INDEX` / `DAILY` / `HISTORY`) redirected to a temp dir. Assert: clean exit, a
    non-empty `index.html`, the embedded `window.DATA` JSON parses, and the HTML is
    well-formed (stdlib `html.parser`). Also assert the **degrade path**: with `_get` raising,
    the build still completes with a weaker basis rather than crashing.

@@ -6,7 +6,7 @@
 > pipeline — starting from a short, named list of sources.
 > **Status:** 🔜 **Planned** — nothing here is built yet. This is the blueprint the first
 > slice implements. Live ingestion today is the three structured pulls in
-> [`phase-1-scraper.md`](../phases/phase-1-scraper.md).
+> [`architecture/phases.md` — Phase 1](../architecture/phases.md#phase-1-raw-data-capture).
 
 ## Decisions locked (from the scoping session)
 
@@ -195,7 +195,7 @@ Only after M0–M4 work do we add theCrag/UKC/MP scraping and the social tracks.
 
 ---
 
-*See also: [`phase-1-scraper.md`](../phases/phase-1-scraper.md) (capture),
-[`phase-2-ai-taxonomy.md`](../phases/phase-2-ai-taxonomy.md) (tagging),
-[`phase-3-curation.md`](../phases/phase-3-curation.md) (the moat),
+*See also: [`phases.md` — Phase 1](../architecture/phases.md#phase-1-raw-data-capture) (capture),
+[Phase 2](../architecture/phases.md#phase-2-ai-standardization-scoring) (tagging),
+[Phase 3](../architecture/phases.md#phase-3-curated-filter-human-taste) (the moat),
 [`external-models.md`](../data/external-models.md) (source schema analysis).*

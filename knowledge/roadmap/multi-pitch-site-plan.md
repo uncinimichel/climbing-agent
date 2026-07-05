@@ -246,4 +246,4 @@ climbing map.
 | Tier 1 conditions engine (1.1–1.5) | [`roadmap/roadmap.md`](roadmap.md) Stage 1 (real condition intelligence) + [`data/condition-algorithm.md`](../data/condition-algorithm.md)'s "target: the physical condition model" |
 | Tier 2 curation-as-product (2.1–2.3) | Stage 3 (scale curation) — `area`/`area_reference` tables, [`data/database.md`](../data/database.md) |
 | Tier 3.3 seasonality climatology | Already partly live — `climo_score` over ERA5 archive in the NI trip planner |
-| 3.2 ground-truth reports | Phase 1 social/static scrapers ([`phases/phase-1-scraper.md`](../phases/phase-1-scraper.md)) + Phase 3's Zero-Garbage UGC principle |
+| 3.2 ground-truth reports | Phase 1 social/static scrapers ([`phases.md` — Phase 1](../architecture/phases.md#phase-1-raw-data-capture)) + Phase 3's Zero-Garbage UGC principle |

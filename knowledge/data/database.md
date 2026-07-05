@@ -17,7 +17,7 @@ not a knowledge graph:
 
 - No **open-world inference** — rock behaviour, hazard semantics, grade relations are
   hand-authored curation decisions, not derived facts.
-- Facets are **flat** (~14 disciplines, 9 rock types, 8 aspects, boolean hazards). The
+- Facets are **flat** (~14 disciplines, 16 rock types, 8 aspects, boolean hazards). The
   only hierarchy is the OpenBeta-style area tree — a `parent_id` tree + recursive CTE.
 - External vocabularies (OpenBeta, theCrag, MP) are adopted by **hand-curated mapping**
   ([`external-models.md`](external-models.md)), not automated ontology alignment.
