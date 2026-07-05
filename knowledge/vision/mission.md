@@ -95,3 +95,14 @@ dashboard with partial Phase-1/2 plumbing. Read
 [`architecture/current-state.md`](../architecture/current-state.md) for the honest
 snapshot, and [`roadmap/roadmap.md`](../roadmap/roadmap.md) for the path from here to
 there.
+
+## Engine vs. product surface
+
+This mission is deliberately written as an engine, not a website. **climbing-agent is the
+engine** (taxonomy, condition scoring, Postgres corpus, retrieval agent); **multi-pitch.com
+is the product surface** it's meant to power — a separate repo (`~/dev/multi-pitch`,
+Node/Lambda) that already ships the per-climb weather/tide lambdas and structured metadata
+this engine's Phase 2/4 need. [`roadmap/multi-pitch-site-plan.md`](../roadmap/multi-pitch-site-plan.md)
+is this same four-layer vision written as a concrete product/content roadmap for that site
+— see decision #21 for the open question of where the conditions-engine code should
+actually run.

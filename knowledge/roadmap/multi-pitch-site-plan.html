@@ -1,0 +1,175 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Multi Pitch Site Plan · multi-pitch Live</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"><style>
+:root{--ink:#0C0D10;--ink2:#12141B;--ink3:#191C27;--ink4:#20243A;--seam:#252840;
+--chalk:#EAE6DD;--chalk2:#9B9890;--chalk3:#5A5860;--go:#6CB268;--amb:#C8A44A;
+--wet:#B94438;--spike:#C4FF5C;--r:6px;--r-lg:12px}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--ink);color:var(--chalk)}
+body{font-family:'Inter',system-ui,sans-serif;font-size:15px;line-height:1.65;
+-webkit-font-smoothing:antialiased}
+.top{position:sticky;top:0;z-index:10;height:48px;background:var(--ink2);
+border-bottom:1px solid var(--seam);display:flex;align-items:center;gap:12px;padding:0 18px}
+.logo{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--chalk);
+letter-spacing:-.2px;text-decoration:none}
+.top a.btn{margin-left:auto;font-size:12px;color:var(--chalk2);text-decoration:none;
+border:1px solid var(--seam);border-radius:var(--r);padding:5px 12px}
+.top a.btn:hover{color:var(--chalk);border-color:var(--chalk3)}
+.wrap{max-width:860px;margin:0 auto;padding:32px 22px 96px}
+.crumb{font-size:12px;color:var(--chalk3);margin-bottom:22px;font-family:'DM Mono',monospace}
+.crumb a{color:var(--chalk2);text-decoration:none}
+.crumb a:hover{color:var(--spike)}
+h1,h2,h3,h4{font-family:'Syne',sans-serif;letter-spacing:-.3px;line-height:1.25;
+scroll-margin-top:64px}
+h1{font-size:30px;font-weight:800;margin:.2em 0 .6em}
+h2{font-size:21px;font-weight:700;margin:1.8em 0 .5em;padding-top:.4em;
+border-top:1px solid var(--seam)}
+h3{font-size:16.5px;font-weight:700;margin:1.4em 0 .4em;color:var(--chalk)}
+h4{font-size:14px;font-weight:700;margin:1.2em 0 .3em;color:var(--chalk2)}
+p{margin:.7em 0}
+a{color:var(--amb);text-decoration:none;border-bottom:1px solid rgba(200,164,74,.28)}
+a:hover{color:var(--spike);border-bottom-color:var(--spike)}
+strong{color:#fff;font-weight:600}
+code{font-family:'DM Mono',ui-monospace,monospace;font-size:.86em;background:var(--ink3);
+border:1px solid var(--seam);border-radius:4px;padding:1px 5px;color:var(--amb)}
+pre{background:var(--ink2);border:1px solid var(--seam);border-radius:var(--r-lg);
+padding:16px 18px;overflow-x:auto;margin:1em 0}
+pre code{background:none;border:none;padding:0;color:var(--chalk2);font-size:12.5px;
+line-height:1.5;white-space:pre}
+blockquote{margin:1.1em 0;padding:.4em 16px;border-left:3px solid var(--amb);
+background:var(--amb-d,rgba(200,164,74,.07));border-radius:0 var(--r) var(--r) 0;
+color:var(--chalk2)}
+blockquote p{margin:.4em 0}
+hr{border:none;border-top:1px solid var(--seam);margin:2em 0}
+ul,ol{margin:.6em 0;padding-left:1.4em}
+li{margin:.28em 0}
+li>ul,li>ol{margin:.25em 0}
+.tw{overflow-x:auto;margin:1.1em 0;border:1px solid var(--seam);border-radius:var(--r-lg)}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--seam);
+vertical-align:top}
+th{background:var(--ink3);font-family:'Syne',sans-serif;font-weight:700;font-size:12px;
+color:var(--chalk);white-space:nowrap}
+tr:last-child td{border-bottom:none}
+td code{white-space:nowrap}
+.idx-group{margin:1.4em 0}
+.idx-group h3{border-bottom:1px solid var(--seam);padding-bottom:.3em}
+.idx-card{display:block;padding:12px 14px;margin:8px 0;background:var(--ink2);
+border:1px solid var(--seam);border-radius:var(--r-lg);color:var(--chalk);
+border-bottom:1px solid var(--seam)}
+.idx-card:hover{border-color:var(--chalk3);color:var(--chalk)}
+.idx-card b{font-family:'Syne',sans-serif}
+.idx-card span{display:block;color:var(--chalk2);font-size:13px;margin-top:2px}
+@media(max-width:600px){.wrap{padding:22px 15px 80px}h1{font-size:24px}body{font-size:14px}}
+</style></head><body><div class=top><a class=logo href="../../index.html">🧗 multi-pitch <span style="color:var(--spike)">Live</span></a><a class=btn href="../../knowledge/index.html">📚 Knowledge</a><a class=btn href="../../index.html">▶ Dashboard</a></div><div class=wrap><div class=crumb><a href="../index.html">📚 knowledge</a> / roadmap / <b style='color:var(--chalk2)'>multi-pitch-site-plan</b></div><h1 id="the-multi-pitch-com-site-plan-the-engine-s-product-surface">The multi-pitch.com site plan — the engine's product surface</h1>
+<p><em>Compiled 2026-07-05. Sources: feature brainstorm + web research into climbing platforms (UKC, Mountain Project, theCrag, 27 Crags/The Topo, Kaya, Vertical-Life, Rockfax, Peakbagger, OpenBeta), water-sports conditions products (Surfline, Magicseaweed post-mortem, Windguru, Windfinder, Windy.com/Windy.app, Surf-Forecast, WeatherFlow/ iWindsurf, Buoyweather, Swellnet, kite apps), and adjacent outdoor apps (AllTrails Peak, Komoot, Gaia, FATMAP post-mortem, Outdooractive, OpenSnow, avalanche.org, Skitourenguru, Mountain-Forecast, MWIS, Fishbrain, onX, Strava).</em></p>
+<h2 id="where-this-sits">Where this sits</h2>
+<p><a href="../vision/mission.html"><code>vision/mission.md</code></a>'s north star is turning multi-pitch.com from a static guidebook into a <strong>Dynamic, Predictive Trip Decision Engine</strong>. This document is that vision made concrete as a <strong>product roadmap for the multi-pitch.com website itself</strong> — climbing-agent is the engine (taxonomy, condition scoring, Postgres corpus, retrieval agent); multi-pitch.com is the product surface the engine is meant to power. The two repos stay separate (<code>~/dev/multi-pitch</code>, Node/Lambda, vs. this repo's Python/Postgres stack); this doc is the shared plan, kept here because engine work in <code>roadmap/roadmap.md</code> and <code>data/condition-algorithm.md</code> should track it.</p>
+<p><strong>Open question, not yet decided:</strong> where the conditions-engine code actually runs — inside multi-pitch.com's own lambdas (<code>~/dev/multi-pitch/lambda-node/</code>), or exposed as a service climbing-agent's Postgres/agent stack serves and multi-pitch.com calls. See <a href="decisions.html"><code>roadmap/decisions.md</code></a> #21.</p>
+<h2 id="the-big-insight">The big insight</h2>
+<p><strong>No major climbing platform does live conditions.</strong> Mountain Project shows monthly climate averages; theCrag, 27 Crags and Kaya have nothing; real forecasting got pushed into onX Backcountry's paid tier. Tides: only Rockfax (static symbols) and UKC (a flag) acknowledge them at all.</p>
+<p>Meanwhile water sports proved the model a decade ago. Every successful product there is the same machine:</p>
+<blockquote><p>raw forecast in → per-spot calibration → <strong>one glanceable colored verdict</strong> → alerts on top → ground truth to close the loop</p></blockquote>
+<p>Multi-pitch.com already has: a per-climb weather lambda, a tides lambda, and structured per-climb metadata (seepage, tidal, loose, aspect, altitude, approach). It is uniquely positioned to be the <strong>first climbing site that answers "should I go, and where?"</strong> — and with only ~50 climbs, hand-calibrating each one is a weekend's work. Hand-tuned per-spot calibration is exactly the moat Surfline built with LOTUS.</p>
+<p><strong>climbing-agent already has a first cut of this exact idea running</strong> — the NI trip planner's <code>day_score</code>/<code>climo_score</code> (heat curve, aspect × sun, dew-point friction; see <a href="../data/condition-algorithm.html"><code>data/condition-algorithm.md</code></a>, decisions #16/#17) is a proto version of Tier 1.1 below, just scoped to ~40 candidate venues instead of per-climb. The gap documented there (rock type, seepage, antecedent rain not yet scored) is the same gap Tier 1.1 needs closed.</p>
+<hr>
+<h2 id="tier-1-the-conditions-engine">Tier 1 — The conditions engine</h2>
+<h3 id="1-1-per-climb-climbability-rating">1.1 Per-climb "climbability" rating</h3>
+<p><em>Inspired by: Surfline LOTUS, Skitourenguru, Magicseaweed</em></p>
+<ul><li>[ ] Rules-based score per climb per day/hour, computed in the existing weather lambda:</li></ul>
+<p>      rain now + trailing 48–72 h (drying/seepage), wind at the crag, temperature, tide       window for tidal climbs, daylight.</p>
+<ul><li>[ ] Calibration profile per climb from metadata that already exists (seepage-prone →</li></ul>
+<p>      weight trailing rain; exposed arête → weight wind; tidal → weight tide).</p>
+<ul><li>[ ] Output: <strong>Poor / Fair / Good / Prime</strong> pill with traffic-light colors on every card</li></ul>
+<p>      and map marker.</p>
+<ul><li>[ ] Steal Magicseaweed's beloved <strong>"faded stars"</strong>: show what the day <em>would</em> rate and</li></ul>
+<p>      name the limiting factor ("Prime but for 45 km/h gusts", "still drying from Tuesday's       rain"). It teaches the reasoning, builds trust, and is trivial to derive — it's       whichever input capped the score.</p>
+<ul><li>[ ] Publish the scoring rules on a page — Skitourenguru's lesson: **transparency is the</li></ul>
+<p>      credibility**.</p>
+<ul><li>[ ] <strong>Never paywall the rating</strong> — Magicseaweed's lesson: the free, glanceable, calibrated</li></ul>
+<p>      rating is beloved and currently unserved.</p>
+<h3 id="1-2-where-s-on-this-weekend-ranked-page">1.2 "Where's on this weekend?" ranked page</h3>
+<p><em>Inspired by: Surf-Forecast Wavefinder, meteoblue Where2Go, OpenSnow favorites-compare</em></p>
+<ul><li>[ ] One page ranking all ~50 climbs by rating over the next 3–5 days, filterable by</li></ul>
+<p>      region/grade.</p>
+<ul><li>[ ] Homepage sort option ("best conditions first").</li><li>Turns 50 forecasts into one decision; the single most differentiating page the site could</li></ul>
+<p>  ship.</p>
+<h3 id="1-3-best-window-7-day-strip-on-every-climb-page">1.3 Best-window + 7-day strip on every climb page</h3>
+<p><em>Inspired by: Windy.app Windybar, Surfline hourly strip, Buoyweather Captain's Brief</em></p>
+<ul><li>[ ] Colored 7-day outlook bar at the top of each climb page.</li><li>[ ] Computed best window for today: *"11:00–16:30 — dry rock, light W wind, tide clear of</li></ul>
+<p>      the base 10:40–17:50"*. For sea cliffs, daylight × dry × tide-below-X is computable       <strong>now</strong> from the two existing lambdas, and shown by no climbing site anywhere.</p>
+<ul><li>[ ] One-sentence plain-language verdict above the numbers (template-generated is fine —</li></ul>
+<p>      that's what Buoyweather does). No incumbent ships LLM forecast summaries yet; open       ground.</p>
+<h3 id="1-4-wishlist-alerts">1.4 Wishlist alerts</h3>
+<p><em>Inspired by: OpenSnow powder alerts, Surfline custom alerts</em></p>
+<ul><li>[ ] "Email me when a wishlisted climb goes Good+ on a weekend."</li><li>[ ] Key insight from every good alert system: constrain to when the user can actually go</li></ul>
+<p>      (days of week, daylight).</p>
+<ul><li>[ ] One scheduled lambda + an email endpoint.</li></ul>
+<h3 id="1-5-forecast-quality-upgrades">1.5 Forecast quality upgrades</h3>
+<p><em>Inspired by: Mountain-Forecast, meteoblue, yr.no</em></p>
+<ul><li>[ ] Forecast at route elevation (base vs top for long alpine routes).</li><li>[ ] Always show freezing level.</li><li>[ ] Simple per-day confidence indicator from model agreement — "only commit if</li></ul>
+<p>      predictability is high". open-meteo / api.met.no expose what's needed, free.</p>
+<hr>
+<h2 id="tier-2-curation-as-product-cheap-static-on-brand">Tier 2 — Curation as product (cheap, static, on-brand)</h2>
+<h3 id="2-1-rockfax-style-conditions-character-block-per-climb">2.1 Rockfax-style "conditions character" block per climb</h3>
+<ul><li>[ ] Hand-written structured fields per climb: faces SW · sun from 14:00 · dries in 2 days</li></ul>
+<p>      · seeps after wet winters · sheltered from N wind · tidal approach.</p>
+<ul><li>[ ] Structured fields (not prose) so the rating engine can also consume them.</li><li>Surfline's spot-guide fields map 1:1 to trad: ability level, hazards, crowd factor, best</li></ul>
+<p>  season/tide/wind, approach, ethics. The most-loved conditions feature in climbing needs no   backend.</p>
+<h3 id="2-2-season-grid-expiring-condition-notes">2.2 Season grid + expiring condition notes</h3>
+<p><em>Inspired by: Outdooractive</em></p>
+<ul><li>[ ] 12-month best-season bar per climb.</li><li>[ ] Dated condition notes ("Jun 2026: P4 anchor replaced") that visibly age and auto-flag</li></ul>
+<p>      as stale after N months. Solves guidebook rot; pure static content.</p>
+<h3 id="2-3-how-a-climb-earns-its-place-page">2.3 "How a climb earns its place" page</h3>
+<ul><li>[ ] Make the less-but-better criteria explicit; name the curator and when each route was</li></ul>
+<p>      last verified; optional "under consideration" pipeline list.</p>
+<ul><li>The 2024–26 pattern is unambiguous: FATMAP's expert guidebook layer was mourned, Kaya got</li></ul>
+<p>  burned for devaluing authors, 27 Crags pays authors 50%, Swellnet sells named humans,   Komoot torched its trust overnight. <strong>Small + trusted + opinionated is a market position   the big platforms keep vacating.</strong></p>
+<h3 id="2-4-ticklist-completion-mechanic">2.4 Ticklist completion mechanic</h3>
+<p><em>Inspired by: UKC Classic Rock, Peakbagger</em></p>
+<ul><li>[ ] "You've climbed 12 of 51" — completion percentage, localStorage only.</li><li>Completion is the strongest retention loop in the niche; Classic Rock (this site's direct</li></ul>
+<p>  ancestor) still drives engagement 50 years on.</p>
+<h3 id="2-5-shareable-wishlist-tick-log-with-conditions-snapshot">2.5 Shareable wishlist + tick log with conditions snapshot</h3>
+<ul><li>[ ] URL-encoded wishlist to share trip plans; CSV export (portability is a repeated user</li></ul>
+<p>      demand on every platform).</p>
+<ul><li>[ ] On marking a climb done, snapshot that day's weather with the tick (Fishbrain</li></ul>
+<p>      pattern) — "climbed 14 May, sunny, 18 °C". Aggregated, it becomes "usually climbed       May–Sept".</p>
+<h3 id="2-6-printable-route-sheet-offline-pwa">2.6 Printable route sheet + offline PWA</h3>
+<p><em>Inspired by: Outdooractive print; offline is every climbing app's #1 paid feature</em></p>
+<ul><li>[ ] One-pager per climb: topo, pitch table, approach/descent, tide + emergency numbers.</li></ul>
+<p>      Print CSS gets 80% of it.</p>
+<ul><li>[ ] Service-worker caching of visited climb pages = "works at the base of the wall".</li></ul>
+<hr>
+<h2 id="tier-3-bigger-swings-later-if-ever">Tier 3 — Bigger swings (later, if ever)</h2>
+<h3 id="3-1-3d-route-preview-fatmap-s-orphaned-legacy">3.1 3D route preview <em>(FATMAP's orphaned legacy)</em></h3>
+<p>Approach + route line + descent draped on 3D terrain (MapLibre GL terrain, free EU DEMs). FATMAP proved people love visually rehearsing a line; its guidebook-on-3D-map combo has been unclaimed since Oct 2024. Descent gullies with slope shading = safety bonus.</p>
+<h3 id="3-2-lightweight-ground-truth-reports">3.2 Lightweight ground-truth reports</h3>
+<p>One-tap "climbed today: dry / seeping P3 / wet", timestamped, auto-expiring. Seepage is the one variable no model sees; yesterday's report beats any forecast. Governance steal from Surfline: the model can only say "Good" — <strong>"Prime, confirmed" is reserved for a human report</strong>. Keep it structured and expiring; never open comments/reviews/grades.</p>
+<h3 id="3-3-seasonality-climatology">3.3 Seasonality climatology</h3>
+<p>Run the rating function over historical weather (ERA5/OWM history): "May: 61% of days Good+, October: 22%". Windfinder's monthly probability stats are the best trip-booking tool in any adjacent market. <strong>climbing-agent already runs this exact computation</strong> for the NI trip (<code>climo_score</code> over ERA5 archive) — the reusable part is the historical-scoring pipeline, not the UI.</p>
+<h3 id="3-4-weather-aware-map-mode">3.4 Weather-aware map mode</h3>
+<p>Map markers colored by today's rating — the Windguru color-scan experience applied to a climbing map.</p>
+<hr>
+<h2 id="deliberate-non-goals">Deliberate non-goals</h2>
+<ul><li><strong>No</strong> social feeds, forums, partner-finding, beta videos, grade votes, leaderboards —</li></ul>
+<p>  network-scale features the big five own; every failed mid-size platform died bolting them   on (Glassy: community + logging with no revenue = dead).</p>
+<ul><li><strong>No</strong> user-submitted routes or reviews — curation is the brand.</li><li><strong>Don't paywall the rating</strong> or the long-range view (Magicseaweed resentment is three</li></ul>
+<p>  years old and still driving users to rivals).</p>
+<ul><li>If anything is ever charged for: Windguru's non-recurring, no-dark-patterns pricing is the</li></ul>
+<p>  goodwill template.</p>
+<ul><li>Stay transparently open with your own data; link out generously (UKC ticks, Rockfax for</li></ul>
+<p>  depth). The industry is walling data off (UKC 402s, theCrag 403s, the Kaya scandal) —   openness is now a differentiator (see <a href="../data/external-models.html"><code>data/external-models.md</code></a>).</p>
+<hr>
+<h2 id="content-blog-plan">Content / blog plan</h2>
+<div class="tw"><table><thead><tr><th>Idea</th><th>Model</th><th>Notes</th></tr></thead><tbody><tr><td>Weekly "Conditions &amp; Picks" note</td><td>OpenSnow <em>Daily Snow</em>, Swellnet <em>Forecaster Notes</em></td><td>A named human interpreting the data. People pay for this in every adjacent sport; here it's free marketing + newsletter content (Mailchimp form already exists). Cheapest high-value item — can start now.</td></tr><tr><td>"Anatomy of a classic" series</td><td>—</td><td>One deep-dive per listed climb: history, first ascent, why it's on the list, link-up beta. Interlinks with climb pages; SEO compounds.</td></tr><tr><td>Impact-phrased weather literacy</td><td>MWIS</td><td>"What 40 km/h wind feels like on an exposed belay"; tide/swell judgement for sea cliffs; freezing level explained.</td></tr><tr><td>Skills for the VDiff–E1 leader</td><td>—</td><td>Belay changeovers, linking pitches, retreating without leaving the rack, route-finding, abseil descents. Underserved audience.</td></tr><tr><td>Seasonal routing</td><td>—</td><td>"Multi-pitch in January: Costa Blanca not Cornwall"; autumn sea-cliff windows.</td></tr><tr><td>Gear by grade</td><td>—</td><td>"What rack for VS?"; 2026 update of the trad gear tier list (they age fast, rank well).</td></tr><tr><td>Epics &amp; lessons</td><td>—</td><td>Honest near-miss write-ups; reinforces the safety-conscious tone.</td></tr><tr><td>"Why less but better"</td><td>—</td><td>The mission piece / curation criteria (pairs with 2.3).</td></tr></tbody></table></div>
+<hr>
+<h2 id="housekeeping-that-unlocks-the-above">Housekeeping that unlocks the above</h2>
+<ul><li>[ ] More climbs remains the core flywheel (1–2/month).</li><li>[ ] <strong>GA4</strong> (needs a <code>G-</code> measurement ID only the owner can create) — flying blind on</li></ul>
+<p>      content performance since UA died in 2023.</p>
+<ul><li>[ ] Newsletter: quarterly "new climbs + best condition windows" once the rating engine</li></ul>
+<p>      exists.</p>
+<ul><li>[ ] yr.no / open-meteo as free, reliable supplementary forecast APIs.</li></ul>
+<hr>
+<h2 id="suggested-sequence">Suggested sequence</h2>
+<ol><li><strong>Climbability rating</strong> — lambda + pill on cards/map <em>(1.1)</em></li><li><strong>"This weekend" ranked page</strong> + climb-page 7-day strip <em>(1.2, 1.3)</em></li><li><strong>Conditions-character blocks + season grids</strong> — content pass <em>(2.1, 2.2)</em></li><li><strong>Ticklist completion + shareable wishlist</strong> <em>(2.4, 2.5)</em></li><li><strong>Printable sheets</strong> <em>(2.6)</em></li><li><strong>Wishlist email alerts</strong> <em>(1.4)</em></li><li>Reassess; Tier 3 only if the above lands.</li></ol>
+<p><em>The weekly conditions note can start any time — it needs no code at all.</em></p>
+<h2 id="how-this-maps-onto-climbing-agent-s-roadmap">How this maps onto climbing-agent's roadmap</h2>
+<div class="tw"><table><thead><tr><th>This plan</th><th>climbing-agent equivalent</th></tr></thead><tbody><tr><td>Tier 1 conditions engine (1.1–1.5)</td><td><a href="roadmap.html"><code>roadmap/roadmap.md</code></a> Stage 1 (real condition intelligence) + <a href="../data/condition-algorithm.html"><code>data/condition-algorithm.md</code></a>'s "target: the physical condition model"</td></tr><tr><td>Tier 2 curation-as-product (2.1–2.3)</td><td>Stage 3 (scale curation) — <code>area</code>/<code>area_reference</code> tables, <a href="../data/database.html"><code>data/database.md</code></a></td></tr><tr><td>Tier 3.3 seasonality climatology</td><td>Already partly live — <code>climo_score</code> over ERA5 archive in the NI trip planner</td></tr><tr><td>3.2 ground-truth reports</td><td>Phase 1 social/static scrapers (<a href="../phases/phase-1-scraper.html"><code>phases/phase-1-scraper.md</code></a>) + Phase 3's Zero-Garbage UGC principle</td></tr></tbody></table></div></div></body></html>

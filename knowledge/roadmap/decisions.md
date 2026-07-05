@@ -224,6 +224,27 @@ Japanese Dankyū grades — no venue on our lists needs them; add on first conta
 `dataGrade` ladder does not yet map the new systems (extend on first ingestion).
 **Status:** ✅ Docs + DB + agent updated; smoke test and agent test pass green.
 
+### #21 — climbing-agent is the engine; multi-pitch.com is the product surface (2026-07-05)
+**Decision:** merge in the multi-pitch.com product/content plan (feature brainstorm +
+competitor research across Surfline, Magicseaweed, Windguru, OpenSnow, FATMAP, OpenBeta,
+etc.) as [`multi-pitch-site-plan.md`](multi-pitch-site-plan.md), cross-linked from
+`vision/mission.md` and `roadmap.md` rather than copied wholesale or deep-merged into the
+existing phase docs. Framing: **climbing-agent is the engine** (taxonomy, condition
+scoring, Postgres corpus, retrieval agent) and **multi-pitch.com is the product surface**
+that engine is meant to power — the two stay separate repos/codebases
+(`~/dev/multi-pitch`, Node/Lambda, vs. this repo's Python/Postgres stack).
+**Why:** the two plans converge almost exactly — mission.md's north star already *is*
+"turn multi-pitch.com into a predictive engine" (decision #11 already adopted its data
+model as the taxonomy target), and the new plan's Tier 1 conditions engine is a
+site-facing version of the condition-algorithm work already live for the NI trip
+(`day_score`/`climo_score`, decisions #16/#17). A light cross-linked doc captures the
+overlap without risking either doc's existing structure or losing nuance in a rewrite.
+**Open question:** where the conditions-engine code should actually run — inside
+multi-pitch.com's own lambdas, or exposed as a service climbing-agent's Postgres/agent
+stack serves and multi-pitch.com calls. Not decided; revisit once Stage 1 (real condition
+intelligence) or the site's Tier 1.1 gets built.
+**Status:** ✅ Docs merged/cross-linked; code-location question 🔜 open.
+
 ---
 
 *Template for new entries:*

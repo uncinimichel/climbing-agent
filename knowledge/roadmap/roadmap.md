@@ -10,6 +10,11 @@ A **live single-trip Phase-4 dashboard** on **partial Phase-1 ingestion** and a
 **deterministic slice of Phase-2 scoring**. Phase-3 curation is manual; Phase-1 social
 scrapers, Phase-2 NLP taxonomy, and the Phase-4 contingency engine are not built.
 
+**Product surface:** [`multi-pitch-site-plan.md`](multi-pitch-site-plan.md) is the same
+roadmap written as a product plan for multi-pitch.com itself — climbing-agent is the engine,
+multi-pitch.com is the surface it's meant to power (see decision #21). Stage 1 below is that
+plan's Tier 1 conditions engine; Stage 3 is its Tier 2 curation-as-product.
+
 ## Stage 0 — Harden the prototype (near-term, no new layers)
 
 Enhancements to what already runs. None are required for daily operation. Priority order
@@ -74,7 +79,9 @@ Enhancements to what already runs. None are required for daily operation. Priori
 
 ## Stage 1 — Real condition intelligence (deepen Phase 2)
 
-Turn the rain-proxy into the vision's **Predictive Condition Algorithm**:
+Turn the rain-proxy into the vision's **Predictive Condition Algorithm** — the engine side
+of [`multi-pitch-site-plan.md`](multi-pitch-site-plan.md) Tier 1.1's per-climb climbability
+rating:
 - Add per-sector `aspect` + `seepage_class` to the master index.
 - Combine Open-Meteo **hourly** (humidity, dew point, wind, temp) with rock/aspect →
   model **friction window**, **drying rate**, **seepage risk**.
@@ -91,7 +98,10 @@ Turn the rain-proxy into the vision's **Predictive Condition Algorithm**:
 
 - Grow `venues.json` into a **verified sector directory** with stable IDs + provenance —
   now concretely the `area` tree + `area_reference` tables in the Postgres schema
-  ([`../data/database.md`](../data/database.md), decision #18).
+  ([`../data/database.md`](../data/database.md), decision #18). Also the data side of
+  [`multi-pitch-site-plan.md`](multi-pitch-site-plan.md) Tier 2's conditions-character
+  blocks and season grids (structured fields, not prose, so the rating engine can consume
+  them too).
 - Automated mapping of parsed climbs onto the index; **quarantine unmatched** (never
   auto-surface — Zero-Garbage UGC).
 - A curation workflow to promote/demote/merge/verify sectors.

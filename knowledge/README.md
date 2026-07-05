@@ -56,8 +56,9 @@ knowledge/
 │   └── runbook.md            ← run / verify / maintain, day to day
 │
 └── roadmap/
-    ├── roadmap.md            ← prototype → platform, staged
-    └── decisions.md          ← lightweight ADR log (why we chose X)
+    ├── roadmap.md               ← prototype → platform, staged
+    ├── multi-pitch-site-plan.md ← the same vision as a multi-pitch.com product roadmap
+    └── decisions.md             ← lightweight ADR log (why we chose X)
 ```
 
 ## The four layers at a glance

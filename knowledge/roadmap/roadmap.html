@@ -63,6 +63,7 @@ border-bottom:1px solid var(--seam)}
 <p>The path from today's single-trip dashboard to the full four-layer engine. Staged so each step is shippable and useful on its own. For the honest starting point see <a href="../architecture/current-state.html"><code>architecture/current-state.md</code></a>.</p>
 <h2 id="where-we-are">Where we are</h2>
 <p>A <strong>live single-trip Phase-4 dashboard</strong> on <strong>partial Phase-1 ingestion</strong> and a <strong>deterministic slice of Phase-2 scoring</strong>. Phase-3 curation is manual; Phase-1 social scrapers, Phase-2 NLP taxonomy, and the Phase-4 contingency engine are not built.</p>
+<p><strong>Product surface:</strong> <a href="multi-pitch-site-plan.html"><code>multi-pitch-site-plan.md</code></a> is the same roadmap written as a product plan for multi-pitch.com itself — climbing-agent is the engine, multi-pitch.com is the surface it's meant to power (see decision #21). Stage 1 below is that plan's Tier 1 conditions engine; Stage 3 is its Tier 2 curation-as-product.</p>
 <h2 id="stage-0-harden-the-prototype-near-term-no-new-layers">Stage 0 — Harden the prototype (near-term, no new layers)</h2>
 <p>Enhancements to what already runs. None are required for daily operation. Priority order (carried from <code>PLAN.md</code>):</p>
 <ol><li><strong>Return-leg flight times</strong> — 2nd SerpApi call per option (≈2× searches) to show</li></ol>
@@ -80,7 +81,7 @@ border-bottom:1px solid var(--seam)}
 <ol><li><strong>"Confidence"</strong> — show climatology spread + seasonal ensemble agreement, not just means.</li><li><strong>Email/Slack digest</strong> — daily top pick + cheapest fares to a channel.</li><li><strong>Bump GitHub Action versions</strong> to Node24 to clear the deprecation warning.</li><li><strong>Tests</strong> — golden-master snapshot of the generated HTML/MD plus stdlib-<code>unittest</code></li></ol>
 <p>    coverage of <code>day_score</code>, <code>climo_score</code>, seasonal aggregation, flight ranking, and     banner logic; run in CI before deploy. Full plan:     <a href="../operations/testing-plan.html"><code>operations/testing-plan.md</code></a>.</p>
 <h2 id="stage-1-real-condition-intelligence-deepen-phase-2">Stage 1 — Real condition intelligence (deepen Phase 2)</h2>
-<p>Turn the rain-proxy into the vision's <strong>Predictive Condition Algorithm</strong>:</p>
+<p>Turn the rain-proxy into the vision's <strong>Predictive Condition Algorithm</strong> — the engine side of <a href="multi-pitch-site-plan.html"><code>multi-pitch-site-plan.md</code></a> Tier 1.1's per-climb climbability rating:</p>
 <ul><li>Add per-sector <code>aspect</code> + <code>seepage_class</code> to the master index.</li><li>Combine Open-Meteo <strong>hourly</strong> (humidity, dew point, wind, temp) with rock/aspect →</li></ul>
 <p>  model <strong>friction window</strong>, <strong>drying rate</strong>, <strong>seepage risk</strong>.</p>
 <ul><li>Emit the richer condition record (see <a href="../data/schemas.html"><code>data/schemas.md</code></a>).</li><li>Feed it into ranking so "dry" means <em>actually dry</em>, not <em>low forecast rain</em>.</li></ul>
@@ -90,7 +91,7 @@ border-bottom:1px solid var(--seam)}
 <ul><li>Wire alerting (issue / email / push) into the daily job.</li></ul>
 <h2 id="stage-3-scale-curation-industrialise-phase-3">Stage 3 — Scale curation (industrialise Phase 3)</h2>
 <ul><li>Grow <code>venues.json</code> into a <strong>verified sector directory</strong> with stable IDs + provenance —</li></ul>
-<p>  now concretely the <code>area</code> tree + <code>area_reference</code> tables in the Postgres schema   (<a href="../data/database.html"><code>../data/database.md</code></a>, decision #18).</p>
+<p>  now concretely the <code>area</code> tree + <code>area_reference</code> tables in the Postgres schema   (<a href="../data/database.html"><code>../data/database.md</code></a>, decision #18). Also the data side of   <a href="multi-pitch-site-plan.html"><code>multi-pitch-site-plan.md</code></a> Tier 2's conditions-character   blocks and season grids (structured fields, not prose, so the rating engine can consume   them too).</p>
 <ul><li>Automated mapping of parsed climbs onto the index; <strong>quarantine unmatched</strong> (never</li></ul>
 <p>  auto-surface — Zero-Garbage UGC).</p>
 <ul><li>A curation workflow to promote/demote/merge/verify sectors.</li></ul>
