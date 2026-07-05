@@ -54,6 +54,9 @@ _cfg = json.loads((ROOT / "venues.json").read_text())
 TAG_SPEC = json.loads((REPO_ROOT / "knowledge" / "data" / "tag-spec.json").read_text())
 _TAG_FAMS = TAG_SPEC["families"]
 _TAG_ORDER = {t["k"]: i for i, t in enumerate(TAG_SPEC["tags"])}
+# kind -> tier, so the client can start a new pill row per tier (Trip fit vs the
+# static Area-taxonomy families)
+TAG_TIER = {t["k"]: _TAG_FAMS[t["family"]]["tier"] for t in TAG_SPEC["tags"]}
 TAG_TIPS = {t["k"]: f"{_TAG_FAMS[t['family']]['tipLabel']} · {t['tip']}" for t in TAG_SPEC["tags"]}
 TAG_CSS = "".join(
     ",".join(f".tag-{t['k']}" for t in TAG_SPEC["tags"] if t["family"] == fk)
@@ -2055,6 +2058,8 @@ a.xlink:hover{border-color:var(--muted)}
 .brk-total b{color:var(--ink)}
 .tagleg{font-size:10.5px;color:var(--faint);margin-bottom:9px}
 .tags{display:flex;gap:6px;flex-wrap:wrap;max-width:880px}
+.tags+.tags{margin-top:6px}
+.tags.tags-tb{margin-top:9px;padding-top:10px;border-top:1px solid var(--line)}
 .tag{font-family:var(--mono);font-size:10.5px;padding:4px 9px;border-radius:5px;border:1px solid var(--line2);white-space:nowrap}
 /* per-family .tag-* colour rules are generated from knowledge/data/tag-spec.json
    and injected here by render_page() — do not hardcode them */
@@ -2659,8 +2664,20 @@ function breakdownHtml(v){
 var TAGT=window.TAGT||{};
 function tagsHtml(v){
   if(!v.tags||!v.tags.length)return '';
-  return '<div class="sec"><div class="eyebrow">Area character<a class="taghelp" href="knowledge/data/tags.html" target="_blank" rel="noopener" title="What every tag means">?</a></div><div class="tagleg">'+(window.TAGLEG||'')+'</div><div class="tags">'
-    +v.tags.map(function(t){return '<span class="tag tag-'+esc(t.k)+'" title="'+esc(TAGT[t.k]||'')+'">'+esc(t.t)+'</span>';}).join('')+'</div></div>';
+  // group pills into one row per tier: Trip fit (dynamic) then the static
+  // Area-taxonomy families — a rule marks the break between the two tiers.
+  var TIER=window.TAGTIER||{},rows=[],cur=[],curTier=null;
+  v.tags.forEach(function(t){
+    var tr=TIER[t.k]||0;
+    if(curTier!==null&&tr!==curTier){rows.push({tier:curTier,html:cur.join('')});cur=[];}
+    curTier=tr;
+    cur.push('<span class="tag tag-'+esc(t.k)+'" title="'+esc(TAGT[t.k]||'')+'">'+esc(t.t)+'</span>');
+  });
+  if(cur.length)rows.push({tier:curTier,html:cur.join('')});
+  var lanes=rows.map(function(r,i){
+    return '<div class="tags'+(i>0&&r.tier!==rows[i-1].tier?' tags-tb':'')+'">'+r.html+'</div>';
+  }).join('');
+  return '<div class="sec"><div class="eyebrow">Area character<a class="taghelp" href="knowledge/data/tags.html" target="_blank" rel="noopener" title="What every tag means">?</a></div><div class="tagleg">'+(window.TAGLEG||'')+'</div>'+lanes+'</div>';
 }
 
 function stayHtml(s){
@@ -2987,7 +3004,8 @@ def render_page(data):
     tagleg = json.dumps(TAG_LEG, ensure_ascii=False).replace("</", "<\\/")
     return (PAGE_HEAD.replace("/*TAG_CSS*/", TAG_CSS)
             + "\n<script>window.DATA=" + blob
-            + ";window.TAGT=" + tagt + ";window.TAGLEG=" + tagleg + ";</script>\n"
+            + ";window.TAGT=" + tagt + ";window.TAGLEG=" + tagleg
+            + ";window.TAGTIER=" + json.dumps(TAG_TIER) + ";</script>\n"
             + PAGE_BODY
             + footer
             + "<script>" + PAGE_JS + "</script>\n</body></html>\n")
