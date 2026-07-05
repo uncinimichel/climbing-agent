@@ -44,6 +44,36 @@ DAILY = ROOT / "daily-report.md"
 INDEX = REPO_ROOT / "index.html"
 
 _cfg = json.loads((ROOT / "venues.json").read_text())
+
+# ── Tag taxonomy: the single source of truth for the venue "Area character"
+# pills is knowledge/data/tag-spec.json. It is STATIC taxonomy (trip-independent),
+# so it lives with taxonomy.md, not under this trip folder. The dashboard's tag
+# colours, tooltips, legend line and emit-order are all GENERATED from it here;
+# the ? page's tables are generated from it in build_knowledge.py. Edit the spec,
+# not the code. What stays in venue_tags() is only how each pill's TEXT is built.
+TAG_SPEC = json.loads((REPO_ROOT / "knowledge" / "data" / "tag-spec.json").read_text())
+_TAG_FAMS = TAG_SPEC["families"]
+_TAG_ORDER = {t["k"]: i for i, t in enumerate(TAG_SPEC["tags"])}
+TAG_TIPS = {t["k"]: f"{_TAG_FAMS[t['family']]['tipLabel']} · {t['tip']}" for t in TAG_SPEC["tags"]}
+TAG_CSS = "".join(
+    ",".join(f".tag-{t['k']}" for t in TAG_SPEC["tags"] if t["family"] == fk)
+    + f"{{color:{f['color']};border-color:{f['border']};background:{f['bg']}}}"
+    for fk, f in _TAG_FAMS.items()
+) + "".join(f".tag-{t['k']}{{font-weight:600}}" for t in TAG_SPEC["tags"] if t.get("strong"))
+
+
+def _tag_legend():
+    def seg(f):
+        return f'<b style="color:{f["color"]}">{f["legendWord"]}</b> = {f["legendDesc"]}'
+    fams = sorted(_TAG_FAMS.values(), key=lambda f: f["order"])
+    t1 = " · ".join(seg(f) for f in fams if f["tier"] == 1)
+    t2 = " · ".join(seg(f) for f in fams if f["tier"] == 2)
+    return (f"two tiers · {t1} · then static area taxonomy: {t2}"
+            " — hover any tag, or open the ? for the full key")
+
+
+TAG_LEG = _tag_legend()
+
 TRIP_NAME = _cfg["trip"]
 TARGET_START = date.fromisoformat(_cfg["target_window"]["start"])
 TARGET_END = date.fromisoformat(_cfg["target_window"]["end"])
@@ -1246,6 +1276,8 @@ def venue_tags(v, cards, grades, cond_txt=None, tidal=False):
             add("hazard", f)
         if any((x.get("appDiff") or 0) >= 3 for x in cards):
             add("hazard", "serious approach")
+    # canonical family order comes from the spec — not the append sequence
+    tags.sort(key=lambda t: _TAG_ORDER.get(t["k"], 999))
     return tags[:18]
 
 
@@ -1859,7 +1891,6 @@ svg.topo .dseg{pointer-events:stroke}
 #wxtip{position:fixed;z-index:70;pointer-events:none;background:var(--card);border:1px solid var(--line2);color:var(--ink);font-family:var(--mono);font-size:11.5px;line-height:1.6;border-radius:7px;padding:8px 11px;max-width:260px;box-shadow:0 8px 24px rgba(0,0,0,.5);opacity:0;transition:opacity .12s}
 #wxtip .dim{color:var(--muted)}
 @media(prefers-reduced-motion:reduce){#wxtip{transition:none}}
-.tag-aspect{color:var(--muted);border-color:var(--line2);background:var(--card)}
 .board-sub .lk{font-size:11px}
 .hovl{display:none;position:fixed;inset:0;background:rgba(10,11,14,.72);z-index:60;align-items:center;justify-content:center;padding:18px}
 .hbox{background:var(--panel);border:1px solid var(--line2);border-radius:14px;max-width:660px;max-height:86vh;overflow-y:auto;padding:18px 22px 20px;box-shadow:0 18px 60px rgba(0,0,0,.5)}
@@ -2025,14 +2056,9 @@ a.xlink:hover{border-color:var(--muted)}
 .tagleg{font-size:10.5px;color:var(--faint);margin-bottom:9px}
 .tags{display:flex;gap:6px;flex-wrap:wrap;max-width:880px}
 .tag{font-family:var(--mono);font-size:10.5px;padding:4px 9px;border-radius:5px;border:1px solid var(--line2);white-space:nowrap}
-/* Tags colour by family, not by kind — one family, one colour, fixed order.
-   Tier 1 Trip fit = violet · Tier 2 Character = grey · Scale & grade = green ·
-   Hazards = amber. Keep in sync with venue_tags() and knowledge/data/tags.md. */
-.tag-cond,.tag-time,.tag-trip{color:#B9A0E8;border-color:rgba(144,110,220,.4);background:rgba(144,110,220,.10)}
-.tag-cond{font-weight:600}
-.tag-rock,.tag-aspect,.tag-wallheight,.tag-appr{color:var(--muted);border-color:var(--line2);background:var(--card)}
-.tag-vol,.tag-diff,.tag-grade,.tag-pitches,.tag-tallest,.tag-routes{color:#79C289;border-color:rgba(87,166,100,.4);background:var(--dry-bg)}
-.tag-tidal,.tag-hazard{color:#D9B25E;border-color:rgba(185,138,46,.45);background:var(--mixed-bg)}
+/* per-family .tag-* colour rules are generated from knowledge/data/tag-spec.json
+   and injected here by render_page() — do not hardcode them */
+/*TAG_CSS*/
 .taghelp{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border-radius:50%;border:1px solid var(--line2);color:var(--muted);font-size:10px;font-weight:600;text-decoration:none;vertical-align:1px;margin-left:6px}
 .taghelp:hover{color:var(--ink);border-color:var(--muted)}
 ::-webkit-scrollbar{width:8px;height:8px}
@@ -2628,12 +2654,12 @@ function breakdownHtml(v){
     +'</div></div>';
 }
 
-// Tooltips keyed by tag kind. Trip fit (cond/time/trip) is dynamic — about this
-// trip; everything else is static area taxonomy. Full key: knowledge/data/tags.md
-var TAGT={cond:'Trip fit · Typical share of wet days for your trip dates',time:'Trip fit · Rough travel time from the UK — from your sheet',trip:'Trip fit · Minimum sensible trip length — from your sheet',rock:'Character · Rock type',aspect:'Character · Which way the crag faces — shifts felt temperature in sun',wallheight:'Character · Estimated wall-height ceiling — from your sheet',appr:'Character · Approach character from route walk-in times',vol:'Scale & grade · Volume of multi-pitch climbing — from your sheet',diff:'Scale & grade · Difficulty spread — from your sheet',grade:'Scale & grade · Trad grade range of nearby multi-pitch.com routes',pitches:'Scale & grade · Longest route by pitch count on multi-pitch.com',tallest:'Scale & grade · Single tallest route nearby on multi-pitch.com',routes:'Scale & grade · Routes indexed on multi-pitch.com within 60 km',tidal:'Hazard · Access/base is tide-dependent (sea cliff) — low-water times show on the weather tiles once the 10-day tide forecast reaches those dates',hazard:'Hazard · Route character / hazard flag from multi-pitch.com route data'};
+// Tooltips (TAGT) and the colour legend (TAGLEG) are generated from
+// knowledge/data/tag-spec.json and injected by render_page — see window.DATA line.
+var TAGT=window.TAGT||{};
 function tagsHtml(v){
   if(!v.tags||!v.tags.length)return '';
-  return '<div class="sec"><div class="eyebrow">Area character<a class="taghelp" href="knowledge/data/tags.html" target="_blank" rel="noopener" title="What every tag means">?</a></div><div class="tagleg">two tiers · <b style="color:#B9A0E8">violet</b> = trip fit (your dates &amp; travel) · then static area taxonomy: <b style="color:var(--muted)">grey</b> = rock &amp; terrain · <b style="color:#79C289">green</b> = scale &amp; grade · <b style="color:#D9B25E">amber</b> = hazards — hover any tag, or open the ? for the full key</div><div class="tags">'
+  return '<div class="sec"><div class="eyebrow">Area character<a class="taghelp" href="knowledge/data/tags.html" target="_blank" rel="noopener" title="What every tag means">?</a></div><div class="tagleg">'+(window.TAGLEG||'')+'</div><div class="tags">'
     +v.tags.map(function(t){return '<span class="tag tag-'+esc(t.k)+'" title="'+esc(TAGT[t.k]||'')+'">'+esc(t.t)+'</span>';}).join('')+'</div></div>';
 }
 
@@ -2956,8 +2982,12 @@ def render_page(data):
               + links + '</nav><div class="allv-note">Multi-pitch venues ranked daily by weather · '
               f'routes from <a href="{SITE_URL}" rel="noopener">multi-pitch.com</a> · '
               f'weather from <a href="https://open-meteo.com/" rel="noopener">Open-Meteo</a></div></footer>')
-    return (PAGE_HEAD
-            + "\n<script>window.DATA=" + blob + ";</script>\n"
+    # tag colours (CSS) + tooltips + legend are generated from tag-spec.json
+    tagt = json.dumps(TAG_TIPS, ensure_ascii=False).replace("</", "<\\/")
+    tagleg = json.dumps(TAG_LEG, ensure_ascii=False).replace("</", "<\\/")
+    return (PAGE_HEAD.replace("/*TAG_CSS*/", TAG_CSS)
+            + "\n<script>window.DATA=" + blob
+            + ";window.TAGT=" + tagt + ";window.TAGLEG=" + tagleg + ";</script>\n"
             + PAGE_BODY
             + footer
             + "<script>" + PAGE_JS + "</script>\n</body></html>\n")

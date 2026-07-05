@@ -14,11 +14,28 @@ links are rewritten to `.html`.
 Run: python3 trip-ni-july-2026/scripts/build_knowledge.py
 """
 import html
+import json
 import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 KDIR = ROOT / "knowledge"
+TAG_SPEC_FILE = KDIR / "data" / "tag-spec.json"
+
+
+def _tag_table(fam: str) -> str:
+    """Render one family's rows from the tag-spec single source of truth."""
+    spec = json.loads(TAG_SPEC_FILE.read_text(encoding="utf-8"))
+    out = ["| Tag | Meaning | Values | Source |", "|---|---|---|---|"]
+    for t in spec["tags"]:
+        if t["family"] == fam:
+            out.append(f"| `{t['k']}` | {t['meaning']} | {t.get('values', '')} | {t['source']} |")
+    return "\n".join(out)
+
+
+def _expand_tag_tables(md: str) -> str:
+    """Fill {{TAGTABLE:family}} placeholders from knowledge/data/tag-spec.json."""
+    return re.sub(r"\{\{TAGTABLE:([a-z]+)\}\}", lambda m: _tag_table(m.group(1)), md)
 
 # ── inline formatting ───────────────────────────────────────────────────────
 _CODE = re.compile(r"`([^`]+)`")
@@ -326,7 +343,10 @@ def build():
         key = rel.as_posix()
         depth = len(rel.parts)  # for ../ back to repo root from inside knowledge/
         title = TITLES.get(key, (md_path.stem.replace("-", " ").title(), ""))[0]
-        body = md_to_html(md_path.read_text(encoding="utf-8"))
+        raw = md_path.read_text(encoding="utf-8")
+        if "{{TAGTABLE:" in raw:
+            raw = _expand_tag_tables(raw)
+        body = md_to_html(raw)
         parts = ['<a href="' + ("../" * (depth - 1)) + 'index.html">📚 knowledge</a>']
         for p in rel.parts[:-1]:
             parts.append(p)

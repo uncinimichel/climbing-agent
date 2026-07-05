@@ -1,0 +1,44 @@
+{
+  "_comment": "SINGLE SOURCE OF TRUTH for the venue-card 'Area character' tags. Lives in knowledge/data/ (with taxonomy.md + tags.md) because it is STATIC taxonomy — trip-independent, not tied to any date, so it does not belong under trip-ni-july-2026/. update_report.py generates the tag colours (CSS), tooltips (TAGT), legend line, and emit order from this file; build_knowledge.py generates the tables in tags.md from it (via {{TAGTABLE:family}} placeholders). The only thing NOT here is how each pill's TEXT is computed from venue/route data — that stays in venue_tags(). Edit a tag's family/colour/tooltip/wording HERE and both the dashboard and the ? page follow. 'tags' array order = the fixed render order.",
+  "families": {
+    "trip":      {"tier": 1, "label": "Trip fit",      "tipLabel": "Trip fit",      "order": 1, "color": "#B9A0E8",     "border": "rgba(144,110,220,.4)", "bg": "rgba(144,110,220,.10)", "legendWord": "violet", "legendDesc": "trip fit (your dates &amp; travel)"},
+    "character": {"tier": 2, "label": "Character",      "tipLabel": "Character",      "order": 2, "color": "var(--muted)", "border": "var(--line2)",         "bg": "var(--card)",           "legendWord": "grey",   "legendDesc": "rock &amp; terrain"},
+    "scale":     {"tier": 2, "label": "Scale & grade",  "tipLabel": "Scale & grade",  "order": 3, "color": "#79C289",     "border": "rgba(87,166,100,.4)",  "bg": "var(--dry-bg)",         "legendWord": "green",  "legendDesc": "scale &amp; grade"},
+    "hazard":    {"tier": 2, "label": "Hazards",        "tipLabel": "Hazard",         "order": 4, "color": "#D9B25E",     "border": "rgba(185,138,46,.45)", "bg": "var(--mixed-bg)",       "legendWord": "amber",  "legendDesc": "hazards"}
+  },
+  "tags": [
+    {"k": "cond",       "family": "trip",      "strong": true, "tip": "Typical share of wet days for your trip dates",
+      "meaning": "Share of wet days typical for your trip dates.", "values": "`Dry` ≤30% · `Mixed` 30–55% · `Wet` >55% (with the exact %)", "source": "climatology (2021–2024) for your dates"},
+    {"k": "time",       "family": "trip",      "tip": "Rough travel time from the UK — from your sheet",
+      "meaning": "Rough door-to-crag travel time from the UK.", "values": "`< 4h` · `4–6h` · `6–8h` · `8–10h` · `12–24h` from UK", "source": "your sheet · your origin"},
+    {"k": "trip",       "family": "trip",      "tip": "Minimum sensible trip length — from your sheet",
+      "meaning": "Shortest trip length worth the travel, weighed against your window.", "values": "`min trip 2 days` … `min trip 10 days`", "source": "your sheet"},
+
+    {"k": "rock",       "family": "character", "tip": "Rock type",
+      "meaning": "Rock type — governs friction, drying and seepage.", "values": "`granite` `limestone` `dolerite` `dolomite` `sandstone` `conglomerate` `quartzite` `rhyolite` `volcanic` `chalk` …", "source": "multi-pitch.com · *Rock Type*"},
+    {"k": "aspect",     "family": "character", "tip": "Which way the crag faces — shifts felt temperature in sun",
+      "meaning": "Which way the crag faces (UKC: *Faces*) — north shades & cools, south bakes.", "values": "`N · shade` … `S · sun-baked` (8 compass points)", "source": "multi-pitch.com · *Aspect*"},
+    {"k": "wallheight", "family": "character", "tip": "Estimated wall-height ceiling — from your sheet",
+      "meaning": "Estimated ceiling on wall height at the venue. *(was `height`)*", "values": "`walls to 150m`", "source": "your sheet estimate"},
+    {"k": "appr",       "family": "character", "tip": "Approach character from route walk-in times",
+      "meaning": "Typical walk-in — median across indexed climbs.", "values": "`roadside cragging` ≤20min · `~30–50 min walk-ins` · `long walk-ins` ≥60min", "source": "multi-pitch.com · *Approach (mins)*"},
+
+    {"k": "vol",        "family": "scale",     "tip": "Volume of multi-pitch climbing — from your sheet",
+      "meaning": "How much multi-pitch the area holds.", "values": "`Smaller` · `Moderate` · `Large` · `Vast` volume", "source": "your sheet (coarse)"},
+    {"k": "diff",       "family": "scale",     "tip": "Difficulty spread — from your sheet",
+      "meaning": "Difficulty spread on offer.", "values": "`Easy to Medium` · `Medium to Hard` · `Hard` · `Full Range`", "source": "your sheet (coarse)"},
+    {"k": "grade",      "family": "scale",     "tip": "Trad grade range of nearby multi-pitch.com routes",
+      "meaning": "Trad grade range (British Adjectival System) across indexed climbs.", "values": "e.g. `Trad VD–VS`, `Trad HS–HVS`, `Trad D–E1`", "source": "multi-pitch.com · *Grade (BAS)*"},
+    {"k": "pitches",    "family": "scale",     "tip": "Longest route by pitch count on multi-pitch.com",
+      "meaning": "Longest climb by pitch count. *(was `grade`)*", "values": "`up to 6 pitches`", "source": "multi-pitch.com · *Pitches*"},
+    {"k": "tallest",    "family": "scale",     "tip": "Single tallest route nearby on multi-pitch.com",
+      "meaning": "The single tallest indexed climb, named. *(was `height`)*", "values": "`tallest 160m · Slieve Lamagan`", "source": "multi-pitch.com · *Length*"},
+    {"k": "routes",     "family": "scale",     "tip": "Routes indexed on multi-pitch.com within 60 km",
+      "meaning": "How many climbs are indexed within 60 km — coverage & confidence.", "values": "`5 routes on multi-pitch.com`", "source": "multi-pitch.com"},
+
+    {"k": "tidal",      "family": "hazard",    "tip": "Access/base is tide-dependent (sea cliff) — low-water times show on the weather tiles once the 10-day tide forecast reaches those dates",
+      "meaning": "Approach or base is tide-dependent — low-water times appear once your trip enters the 10-day tide forecast.", "values": "≥1 tidal climb within 10 km", "source": "multi-pitch.com · *Tidal*"},
+    {"k": "hazard",     "family": "hazard",    "tip": "Route character / hazard flag from multi-pitch.com route data",
+      "meaning": "Union of every flagged climb nearby. Pill text mirrors the source flag.", "values": "*Suffers Seepage* · *Loose Rock* · *Polished Rock* · *Abseil Required* · *Traverse Required* · *Boat approach* · *serious approach*", "source": "multi-pitch.com flags"}
+  ]
+}

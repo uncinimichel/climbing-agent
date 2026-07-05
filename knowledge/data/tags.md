@@ -35,11 +35,7 @@ Each family has one colour: **violet** = Trip fit · **grey** = Character ·
 
 Is this venue a good use of *this* trip? None of these would ever describe a single climb.
 
-| Tag | Meaning | Values | Source |
-|---|---|---|---|
-| `cond` | Share of wet days typical for your trip dates. | `Dry` ≤30% · `Mixed` 30–55% · `Wet` >55% (with the exact %) | climatology (2021–2024) for your dates |
-| `time` | Rough door-to-crag travel time from the UK. | `< 4h` · `4–6h` · `6–8h` · `8–10h` · `12–24h` from UK | your sheet · your origin |
-| `trip` | Shortest trip length worth the travel, weighed against your window. | `min trip 2 days` … `min trip 10 days` | your sheet |
+{{TAGTABLE:trip}}
 
 ---
 
@@ -52,36 +48,21 @@ The guidebook facts about the crag. A venue value is an aggregate of its climbs
 
 The physical crag — true regardless of which climb you pick.
 
-| Tag | Meaning | Values | Source |
-|---|---|---|---|
-| `rock` | Rock type — governs friction, drying and seepage. | `granite` `limestone` `dolerite` `dolomite` `sandstone` `conglomerate` `quartzite` `rhyolite` `volcanic` `chalk` … | multi-pitch.com · *Rock Type* |
-| `aspect` | Which way the crag faces (UKC: *Faces*) — north shades & cools, south bakes. | `N · shade` … `S · sun-baked` (8 compass points) | multi-pitch.com · *Aspect* |
-| `wallheight` | Estimated ceiling on wall height at the venue. *(was `height`)* | `walls to 150m` | your sheet estimate |
-| `appr` | Typical walk-in — median across indexed climbs. | `roadside cragging` ≤20min · `~30–50 min walk-ins` · `long walk-ins` ≥60min | multi-pitch.com · *Approach (mins)* |
+{{TAGTABLE:character}}
 
 ### Scale & grade — green
 
 How much, how hard, how big — coarse from your sheet, precise from the index.
 `vol`/`diff` are the sheet's coarse estimate of `routes`/`grade`.
 
-| Tag | Meaning | Values | Source |
-|---|---|---|---|
-| `vol` | How much multi-pitch the area holds. | `Smaller` · `Moderate` · `Large` · `Vast` volume | your sheet (coarse) |
-| `diff` | Difficulty spread on offer. | `Easy to Medium` · `Medium to Hard` · `Hard` · `Full Range` | your sheet (coarse) |
-| `grade` | Trad grade range (British Adjectival System) across indexed climbs. | e.g. `Trad VD–VS`, `Trad HS–HVS`, `Trad D–E1` | multi-pitch.com · *Grade (BAS)* |
-| `pitches` | Longest climb by pitch count. *(was `grade`)* | `up to 6 pitches` | multi-pitch.com · *Pitches* |
-| `tallest` | The single tallest indexed climb, named. *(was `height`)* | `tallest 160m · Slieve Lamagan` | multi-pitch.com · *Length* |
-| `routes` | How many climbs are indexed within 60 km — coverage & confidence. | `5 routes on multi-pitch.com` | multi-pitch.com |
+{{TAGTABLE:scale}}
 
 ### Hazards — amber
 
 Safety & access flags — never inferred, only set when a climb says so. Pill text
 mirrors the source flag (e.g. *Suffers Seepage* → "Seepage after rain").
 
-| Tag | Meaning | Source flag |
-|---|---|---|
-| `tidal` | Approach or base is tide-dependent — low-water times appear once your trip enters the 10-day tide forecast. | multi-pitch.com · *Tidal* (≥1 tidal climb within 10 km) |
-| `hazard` | Union of every flagged climb nearby. | *Suffers Seepage* · *Loose Rock* · *Polished Rock* · *Abseil Required* · *Traverse Required* · *Boat approach* · *serious approach* |
+{{TAGTABLE:hazard}}
 
 ---
 
@@ -95,6 +76,11 @@ mirrors the source flag (e.g. *Suffers Seepage* → "Seepage after rain").
   difficulty spread are static facts about the area, not about your trip.
 - **The `auto` "from your sheet" pill was dropped** — it stated provenance, not a
   venue trait, and already repeats in the venue's summary line.
+- **Single source of truth:** `knowledge/data/tag-spec.json`. The dashboard's tag
+  colours, tooltips, legend and order are generated from it (`update_report.py`),
+  and the tables on this page are generated from it too (the `{{TAGTABLE:…}}`
+  placeholders, filled by `build_knowledge.py`). It lives here, not under the trip
+  folder, because it is static taxonomy — trip-independent. Edit the spec, not the code.
 - The full per-climb record these tags summarize is in
   [`route-schema.md`](route-schema.md); the controlled vocabularies are in
   [`taxonomy.md`](taxonomy.md); grade systems in [`grade-conversion.md`](grade-conversion.md).
