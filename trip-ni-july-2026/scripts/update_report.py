@@ -77,6 +77,63 @@ def _tag_legend():
 
 TAG_LEG = _tag_legend()
 
+# CSS for the tag chips on the static venue pages (the SPA gets its rules injected
+# by render_page). Includes the two bg vars the venue page's :root lacks, then the
+# spec-generated per-family colours (TAG_CSS) — so the static pages colour tags from
+# the same single source as the dashboard.
+VENUE_TAG_CSS = (
+    ":root{--dry-bg:rgba(87,166,100,.10);--mixed-bg:rgba(185,138,46,.10)}"
+    ".tagleg{font-size:11.5px;color:var(--faint);margin:2px 0 13px;max-width:760px}"
+    ".taghelp{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;"
+    "border-radius:50%;border:1px solid var(--line2);color:var(--muted);font-size:11px;font-weight:600;"
+    "text-decoration:none;vertical-align:2px;margin-left:6px}"
+    ".taghelp:hover{color:var(--ink);border-color:var(--muted)}"
+    ".taglanes{display:flex;flex-direction:column;gap:6px;max-width:820px}"
+    ".taglane{display:flex;gap:11px;align-items:flex-start}"
+    ".taglane.tb{margin-top:3px;padding-top:10px;border-top:1px solid var(--line)}"
+    ".tll{flex:0 0 92px;font-family:var(--mono);font-size:9.5px;letter-spacing:.04em;text-transform:uppercase;"
+    "padding-top:5px;line-height:1.35}"
+    ".tlp{display:flex;gap:6px;flex-wrap:wrap;flex:1;min-width:0}"
+    ".tag{font-family:var(--mono);font-size:11px;padding:4px 9px;border-radius:5px;border:1px solid var(--line2);"
+    "white-space:nowrap;color:var(--ink)}"
+    + TAG_CSS
+)
+
+
+def venue_tag_section(v):
+    """Server-rendered 'Area character' section for a static venue page — reads the
+    same v['tags'] already in the venue's JSON payload (no recompute, no hardcoding)
+    and groups them into one labelled row per family, exactly like the dashboard."""
+    tags = v.get("tags") or []
+    if not tags:
+        return ""
+    rows, cur, curfam = [], [], None
+    for t in tags:                       # tags arrive pre-sorted in spec/family order
+        fam = TAG_FAM.get(t["k"], "")
+        if curfam is not None and fam != curfam:
+            rows.append((curfam, cur))
+            cur = []
+        curfam = fam
+        cur.append(t)
+    if cur:
+        rows.append((curfam, cur))
+    lanes, prev_tier = [], None
+    for fam, ts in rows:
+        meta = TAG_FAMS.get(fam, {})
+        tb = " tb" if prev_tier is not None and meta.get("tier") != prev_tier else ""
+        prev_tier = meta.get("tier")
+        pills = "".join(
+            f'<span class="tag tag-{_esc(t["k"])}" title="{_esc(TAG_TIPS.get(t["k"], ""))}">'
+            f'{_esc(t["t"])}</span>' for t in ts)
+        lanes.append(
+            f'<div class="taglane{tb}"><div class="tll" style="color:{meta.get("color", "var(--muted)")}">'
+            f'{_esc(meta.get("label", ""))}</div><div class="tlp">{pills}</div></div>')
+    return ('<h2>Area character <a class="taghelp" href="../knowledge/data/tags.html" '
+            'title="What every tag means">?</a></h2>'
+            f'<p class="tagleg">{TAG_LEG}</p>'
+            f'<div class="taglanes">{"".join(lanes)}</div>')
+
+
 TRIP_NAME = _cfg["trip"]
 TARGET_START = date.fromisoformat(_cfg["target_window"]["start"])
 TARGET_END = date.fromisoformat(_cfg["target_window"]["end"])
@@ -693,21 +750,24 @@ def day_score(code, mm, prob, m=None):
 # with the scorer about what counts as "hot" or "windy" is worse than no
 # colour at all.
 COLD_C = 8            # numb-fingers threshold (climo_score)
-HEAT_WARM_C = 20       # heat_penalty: gentle slope starts
-HEAT_HOT_C = 25        # heat_penalty: steep slope starts
-HEAT_BRUTAL_C = 30     # heat_penalty: brutal slope starts
+HEAT_WARM_C = 18       # heat_penalty: gentle slope starts (top of the ideal band)
+HEAT_HOT_C = 24        # heat_penalty: steep slope starts
+HEAT_BRUTAL_C = 28     # heat_penalty: brutal slope starts
 GUST_BAD_KMH = 30      # day_score: gust penalty starts
 
 
 def heat_penalty(tmax):
     """Climbing-specific heat curve. Friction research puts ideal sending temps at
     ~7–18°C (climbing.com 'Science of Friction'; UKC conditions threads agree);
-    rubber and skin grease out past ~20–25°C, and multi-pitch means HOURS exposed
-    on the wall with no shade retreat. Cumulative slopes: gentle from 20°C, steep
-    from 25°C, brutal from 30°C — a 31°C coastal venue loses ~36 points."""
-    return (max(0, tmax - HEAT_WARM_C) * 1.2
-            + max(0, tmax - HEAT_HOT_C) * 3
-            + max(0, tmax - HEAT_BRUTAL_C) * 5)
+    rubber and skin grease out past ~18–24°C, and multi-pitch means HOURS exposed
+    on the wall with no shade retreat. Slopes bite from the top of the ideal band:
+    gentle from 18°C, steep from 24°C, brutal from 28°C — a 25°C felt-on-rock venue
+    loses ~15 points, a 31°C coastal venue ~66. Deliberately harsher than the rain
+    curve is generous: on multi-pitch, hours of baking heat outweigh a chance of
+    showers, so a dry-but-hot venue should not out-rank a cool-but-showery one."""
+    return (max(0, tmax - HEAT_WARM_C) * 1.5
+            + max(0, tmax - HEAT_HOT_C) * 4
+            + max(0, tmax - HEAT_BRUTAL_C) * 6)
 
 
 def climo_score(c):
@@ -2189,9 +2249,9 @@ PAGE_BODY = """<body>
       <p><b style="color:var(--rain)">Weather · 55%</b> — rain first: wet days and rain
       probability cost points, and a forecast rain day is hard-capped. Temperature is scored
       <b>through a climbing lens</b>: friction research puts ideal sending temps around
-      <b>7–18°C</b>, so points fall away gently above 20°C, steeply above 25°C, and brutally
-      above 30°C (numb-fingers penalty below 8°C too — this is multi-pitch, hours exposed on
-      the wall). <b>Sun exposure matters as much as air temperature</b>: a south-facing wall
+      <b>7–18°C</b>, so points fall away gently above 18°C, steeply above 24°C, and brutally
+      above 28°C (numb-fingers penalty below 8°C too — this is multi-pitch, hours exposed on
+      the wall, so heat is penalised harder than a chance of showers). <b>Sun exposure matters as much as air temperature</b>: a south-facing wall
       in full sun feels far hotter than the thermometer says, while a shaded north face
       climbs cooler — each crag's <b>aspect</b> shifts its felt temperature, weighted by how
       sunny it actually is (cloud/sunshine from the live forecast once in range; dryness as
@@ -2955,6 +3015,7 @@ table{{border-collapse:collapse;width:100%;font-size:12.5px;font-family:var(--mo
 th{{color:var(--muted);font-weight:600}} li{{margin-bottom:7px}} ul{{padding-left:20px}}
 .cta{{display:inline-block;margin-top:20px;background:var(--ink);color:var(--bg);border-radius:8px;padding:8px 14px;text-decoration:none;font-weight:600}}
 footer{{margin-top:34px;color:var(--faint);font-size:12px;border-top:1px solid var(--line);padding-top:12px}}
+{VENUE_TAG_CSS}
 </style></head><body>
 <header class="top">
   <a class="wordmark" href="../"><img class="mplogo" src="https://multi-pitch.com/img/logo/mp-logo-white.png" alt="" onerror="this.style.display='none'">multi<b>·</b>pitch<em>trip planner</em></a>
@@ -2972,6 +3033,7 @@ footer{{margin-top:34px;color:var(--faint);font-size:12px;border-top:1px solid v
 <h1>{_esc(name)} — multi-pitch climbing</h1>
 <p class="meta">{_esc(v.get('country',''))} · {_esc(v.get('rock',''))} · {_esc(v.get('style',''))}{(' · grades ' + _esc(v['grades'])) if v.get('grades') else ''}{' · tidal access — plan around low water' if v.get('tidal') else ''}</p>
 {f'<p>{_esc(why)}</p>' if why else ''}
+{venue_tag_section(v)}
 <h2>Weather — typical {_esc(period)} vs current outlook</h2>
 <div class="twrap"><table>
 <tr><th>Day</th><th>Sky</th><th>Outlook high</th><th>Typical high</th><th>Rain mm</th><th>Wind km/h</th><th>Sunrise</th><th>Sunset</th><th>Daylight</th><th>UV</th>{'<th>Low water</th>' if has_tide else ''}</tr>
