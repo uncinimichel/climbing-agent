@@ -70,16 +70,12 @@ border-bottom:1px solid var(--seam)}
 <a class=idx-card href="vision/glossary.html"><b>Glossary</b><span>Climbing + system vocabulary.</span></a>
 </div>
 <div class=idx-group><h3>Architecture</h3>
-<a class=idx-card href="architecture/overview.html"><b>Architecture Overview</b><span>The four layers → concrete components.</span></a>
 <a class=idx-card href="architecture/current-state.html"><b>Current State</b><span>Honest snapshot: what runs today vs planned.</span></a>
+<a class=idx-card href="architecture/overview.html"><b>Architecture Overview</b><span>The four layers → concrete components.</span></a>
 <a class=idx-card href="architecture/data-flow.html"><b>Data Flow</b><span>How a data point travels scraper → dashboard.</span></a>
+<a class=idx-card href="architecture/phases.html"><b>The Four Layers</b><span>Per-layer developer guide: interfaces + when building here.</span></a>
 <a class=idx-card href="architecture/retrieval-agent.html"><b>Retrieval Agent</b><span>Admin chat over the DB: SQL-first tool use; pgvector later.</span></a>
-</div>
-<div class=idx-group><h3>Phases</h3>
-<a class=idx-card href="phases/phase-1-scraper.html"><b>Phase 1 · Scraper</b><span>Raw data capture — static + social scrapers.</span></a>
-<a class=idx-card href="phases/phase-2-ai-taxonomy.html"><b>Phase 2 · AI Taxonomy</b><span>Standardization + predictive conditions.</span></a>
-<a class=idx-card href="phases/phase-3-curation.html"><b>Phase 3 · Curation</b><span>Human taste / master index / zero-garbage UGC.</span></a>
-<a class=idx-card href="phases/phase-4-trip-planner.html"><b>Phase 4 · Trip Planner</b><span>The actionable dashboard (live today).</span></a>
+<a class=idx-card href="architecture/venue-env-cache.html"><b>Venue Env Cache</b><span>Trip-independent weather/tide, once per venue (decision #24).</span></a>
 </div>
 <div class=idx-group><h3>Data & Taxonomy</h3>
 <a class=idx-card href="data/taxonomy.html"><b>Strict Data Dictionary</b><span>Controlled vocabularies for tagging a climb.</span></a>
@@ -96,9 +92,11 @@ border-bottom:1px solid var(--seam)}
 <a class=idx-card href="operations/deployment.html"><b>Deployment</b><span>GitHub Actions + Pages + secrets.</span></a>
 <a class=idx-card href="operations/external-apis.html"><b>External APIs</b><span>Open-Meteo, SerpApi, multi-pitch data.json.</span></a>
 <a class=idx-card href="operations/runbook.html"><b>Runbook</b><span>Run / verify / maintain, day to day.</span></a>
+<a class=idx-card href="operations/testing-plan.html"><b>Testing Plan</b><span>How to test the build: one network chokepoint, determinism.</span></a>
 </div>
 <div class=idx-group><h3>Roadmap</h3>
 <a class=idx-card href="roadmap/roadmap.html"><b>Roadmap</b><span>Prototype → platform, staged.</span></a>
 <a class=idx-card href="roadmap/ingestion-plan.html"><b>Ingestion Plan</b><span>The free, staged build of Phase 1→3 — sources, scraping, tagging, curation.</span></a>
+<a class=idx-card href="roadmap/multi-pitch-site-plan.html"><b>multi-pitch.com Site Plan</b><span>The same vision as a multi-pitch.com product roadmap.</span></a>
 <a class=idx-card href="roadmap/decisions.html"><b>Decision Log</b><span>Lightweight ADRs — why we chose X.</span></a>
 </div></div></body></html>

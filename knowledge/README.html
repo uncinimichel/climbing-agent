@@ -65,8 +65,8 @@ border-bottom:1px solid var(--seam)}
 <h2 id="how-to-use-this-folder">How to use this folder</h2>
 <ul><li><strong>New here / an AI agent picking up the project?</strong> Read in this order:</li></ul>
 <p>  <code>vision/mission.md</code> → <code>architecture/current-state.md</code> → <code>architecture/overview.md</code>.</p>
-<ul><li><strong>Building a feature?</strong> Find its layer in <code>phases/</code>, then check <code>data/schemas.md</code></li></ul>
-<p>  and <code>operations/</code> before writing code.</p>
+<ul><li><strong>Building a feature?</strong> Find its layer in <code>architecture/phases.md</code>, then check</li></ul>
+<p>  <code>data/schemas.md</code> and <code>operations/</code> before writing code.</p>
 <ul><li><strong>Making a non-obvious call?</strong> Log it in <code>roadmap/decisions.md</code>.</li><li><strong>Keep it honest.</strong> If a doc describes something aspirational, label it</li></ul>
 <p>  <em>(planned)</em>. Today only a slice of the vision is live — see <code>current-state.md</code>.</p>
 <h2 id="map">Map</h2>
@@ -79,21 +79,20 @@ border-bottom:1px solid var(--seam)}
 │   └── glossary.md           ← domain vocabulary (climbing + system terms)
 │
 ├── architecture/
-│   ├── overview.md           ← the 4 layers → concrete components + diagram
 │   ├── current-state.md      ← HONEST snapshot: what exists &amp; runs today
-│   └── data-flow.md          ← how a data point travels scraper → dashboard
-│
-├── phases/                   ← one file per operational layer
-│   ├── phase-1-scraper.md    ← raw data capture (static + social scrapers)
-│   ├── phase-2-ai-taxonomy.md← standardization + predictive condition AI
-│   ├── phase-3-curation.md   ← human taste / master index / zero-garbage UGC
-│   └── phase-4-trip-planner.md← the actionable dashboard (LIVE today)
+│   ├── overview.md           ← the 4 layers → concrete components + diagram
+│   ├── data-flow.md          ← how a data point travels scraper → dashboard
+│   ├── phases.md             ← per-layer developer guide (interfaces + when building here)
+│   ├── retrieval-agent.md    ← the admin chat agent over the climbing DB
+│   └── venue-env-cache.md    ← trip-independent weather/tide cache (decision #24)
 │
 ├── data/
 │   ├── taxonomy.md           ← the strict data dictionary (rock/style/protection/incline/flags)
+│   ├── tags.md               ← venue-card &quot;Area character&quot; pills (generated from tag-spec.json)
 │   ├── route-schema.md       ← the tagging target: full route record (from multi-pitch.com)
 │   ├── grade-conversion.md   ← normalized dataGrade 1–7 ladder across grade systems
 │   ├── schemas.md            ← JSON shapes: venues, flights, conditions
+│   ├── database.md           ← the Postgres corpus schema (decision #18)
 │   ├── condition-algorithm.md← the predictive condition scoring maths
 │   ├── references.md         ← authorities: people, books, encyclopedias + grade origins
 │   └── external-models.md    ← how UKC/theCrag/MP/OpenBeta model data + what to adopt
@@ -101,15 +100,17 @@ border-bottom:1px solid var(--seam)}
 ├── operations/
 │   ├── deployment.md         ← GitHub Actions + Pages + secrets
 │   ├── external-apis.md      ← Open-Meteo, SerpApi, multi-pitch.com data.json
-│   └── runbook.md            ← run / verify / maintain, day to day
+│   ├── runbook.md            ← run / verify / maintain, day to day
+│   └── testing-plan.md       ← how to test the build (one network chokepoint, determinism)
 │
 └── roadmap/
     ├── roadmap.md               ← prototype → platform, staged
+    ├── ingestion-plan.md        ← detailed Phase-1/2 ingestion build plan
     ├── multi-pitch-site-plan.md ← the same vision as a multi-pitch.com product roadmap
     └── decisions.md             ← lightweight ADR log (why we chose X)</code></pre>
 <h2 id="the-four-layers-at-a-glance">The four layers at a glance</h2>
 <pre><code>[1. THE SCRAPER]  ──&gt; [2. THE AI TAXONOMY] ──&gt; [3. THE CURATED FILTER] ──&gt; [4. THE TRIP PLANNER]
 (Raw Data Capture)     (Standardization)        (Human Taste &amp; Curation)     (Actionable Execution)
    planned/partial         partial                    planned                    ✅ LIVE (single-trip)</code></pre>
-<div class="tw"><table><thead><tr><th>Layer</th><th>What it does</th><th>Status today</th></tr></thead><tbody><tr><td><strong>1 · Scraper</strong></td><td>Ingest static guidebooks + live social condition reports</td><td>⚠️ Partial — weather/flight/climb pulls only, no social scrapers</td></tr><tr><td><strong>2 · AI Taxonomy</strong></td><td>Clean raw text → strict data dictionary; score friction/seepage</td><td>⚠️ Partial — deterministic weather scoring, no NLP taxonomy yet</td></tr><tr><td><strong>3 · Curated Filter</strong></td><td>Map data onto a verified master index of classic sectors</td><td>⛔ Planned — curation is manual (<code>venues.json</code>)</td></tr><tr><td><strong>4 · Trip Planner</strong></td><td>Split-screen dashboard: topos + transit + weather + conditions</td><td>✅ Live for one trip (NI, July 2026)</td></tr></tbody></table></div>
+<div class="tw"><table><thead><tr><th>Layer</th><th>What it does</th><th>Status today</th></tr></thead><tbody><tr><td><strong>1 · Scraper</strong></td><td>Ingest static guidebooks + live social condition reports</td><td>⚠️ Partial — weather/flight/climb pulls only, no social scrapers</td></tr><tr><td><strong>2 · AI Taxonomy</strong></td><td>Clean raw text → strict data dictionary; score friction/seepage</td><td>⚠️ Partial — deterministic weather scoring, no NLP taxonomy yet</td></tr><tr><td><strong>3 · Curated Filter</strong></td><td>Map data onto a verified master index of classic sectors</td><td>⚠️ Partial — curation is real but manual (Google Sheet → ~42 venues; <code>venues.json</code> enriches)</td></tr><tr><td><strong>4 · Trip Planner</strong></td><td>Split-screen dashboard: topos + transit + weather + conditions</td><td>✅ Live for one trip (NI, July 2026)</td></tr></tbody></table></div>
 <p>See <code>architecture/current-state.md</code> for the unvarnished detail.</p></div></body></html>

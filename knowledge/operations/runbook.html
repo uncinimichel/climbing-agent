@@ -62,12 +62,17 @@ border-bottom:1px solid var(--seam)}
 </style></head><body><div class=top><a class=logo href="../../index.html">🧗 multi-pitch <span style="color:var(--spike)">Live</span></a><a class=btn href="../../knowledge/index.html">📚 Knowledge</a><a class=btn href="../../index.html">▶ Dashboard</a></div><div class=wrap><div class=crumb><a href="../index.html">📚 knowledge</a> / operations / <b style='color:var(--chalk2)'>runbook</b></div><h1 id="runbook">Runbook</h1>
 <p>Day-to-day operations: run it, verify it, maintain it. For the deploy pipeline see <a href="deployment.html"><code>deployment.md</code></a>; for APIs see <a href="external-apis.html"><code>external-apis.md</code></a>.</p>
 <h2 id="run-locally">Run locally</h2>
-<pre><code># Full build (weather → rank → flights → HTML). Works without a key (flights degrade).
+<pre><code># Optional: refresh the trip-independent weather/tide cache first (once per venue →
+# git-ignored venue-env.json). update_report.py consumes it; skip it and update_report
+# just fetches live per venue instead (slower, same result).
+python3 trip-ni-july-2026/scripts/fetch_env.py
+
+# Full build (weather → rank → flights → HTML). Works without a key (flights degrade).
 python3 trip-ni-july-2026/scripts/update_report.py
 
 # With flights:
 SERPAPI_KEY=... python3 trip-ni-july-2026/scripts/update_report.py</code></pre>
-<p>Outputs written: <code>index.html</code>, <code>trip-ni-july-2026/daily-report.md</code>, <code>trip-ni-july-2026/history/&lt;date&gt;.md</code>, <code>trip-ni-july-2026/flights-latest.json</code>.</p>
+<p>Outputs written: <code>index.html</code>, <code>venues/&lt;slug&gt;.html</code>, <code>sitemap.xml</code>, <code>trip-ni-july-2026/daily-report.md</code>, <code>trip-ni-july-2026/history/&lt;date&gt;.md</code>, <code>trip-ni-july-2026/flights-latest.json</code>.</p>
 <h2 id="run-in-the-cloud">Run in the cloud</h2>
 <ul><li><strong>Manual:</strong> Actions tab → "Run workflow", or <code>gh workflow run weather.yml</code>.</li><li><strong>Automatic:</strong> daily 06:00 UTC, and on any non-docs push to <code>main</code>.</li></ul>
 <h2 id="verification-checklist">Verification checklist</h2>
@@ -90,4 +95,4 @@ SERPAPI_KEY=... python3 trip-ni-july-2026/scripts/update_report.py</code></pre>
 <ul><li><strong>~10 days out (~14 July):</strong> start reading the daily forecast log closely.</li><li><strong>~8 July:</strong> live forecast enters range → ranking basis switches from climatology to live.</li><li><strong>~3–4 days before:</strong> make the go / no-go destination call.</li><li><strong>Once destination likely:</strong> check flights (London ⇄ Belfast for Michel), several times</li></ul>
 <p>  near booking; then <strong>book</strong>.</p>
 <h2 id="troubleshooting">Troubleshooting</h2>
-<div class="tw"><table><thead><tr><th>Symptom</th><th>Likely cause / fix</th></tr></thead><tbody><tr><td>Flight cells show "search ↗" only</td><td><code>SERPAPI_KEY</code> missing/exhausted — expected degradation. Check quota.</td></tr><tr><td>Ranking didn't change day-to-day</td><td>Climatology is deterministic until ~8 July — this is correct.</td></tr><tr><td>Seasonal outlook absent</td><td>Seasonal API failed → degraded to climatology. Non-fatal.</td></tr><tr><td>Action didn't run on schedule</td><td>GitHub cron can lag a few min; jobs pause after ~60 d inactivity (not a risk — daily commits).</td></tr><tr><td>Page didn't update</td><td>Check the deploy job; concurrency <code>cancel-in-progress</code> may have cancelled an overlapping run.</td></tr></tbody></table></div></div></body></html>
+<div class="tw"><table><thead><tr><th>Symptom</th><th>Likely cause / fix</th></tr></thead><tbody><tr><td>Flight cells show "search ↗" only</td><td><code>SERPAPI_KEY</code> missing/exhausted — expected degradation. Check quota.</td></tr><tr><td>Ranking didn't change day-to-day</td><td>Climatology is deterministic until ~8 July — this is correct.</td></tr><tr><td>Seasonal outlook absent</td><td>Seasonal API failed → degraded to climatology. Non-fatal.</td></tr><tr><td>Action didn't run on schedule</td><td>GitHub cron can lag a few min; jobs pause after ~60 d inactivity (not a risk — daily commits).</td></tr><tr><td>Page didn't update</td><td>Check the deploy job. Deploys are <strong>serialized</strong> (<code>cancel-in-progress: false</code>) so they queue, never cancel; a <code>deploy-pages</code> "Deployment failed, try again later" is a transient GitHub Pages error (common when pushes land close together) — re-run the failed job.</td></tr></tbody></table></div></div></body></html>

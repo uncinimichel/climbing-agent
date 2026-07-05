@@ -71,28 +71,28 @@ border-bottom:1px solid var(--seam)}
 <p>  registers across the web.</p>
 <ul><li><strong>Live social scrapers</strong> — continuously monitor active regional climbing groups,</li></ul>
 <p>  local mountain-guide whitelists, and geotagged hashtags across Meta, X, and TikTok to   extract immediate, real-world condition updates.</p>
-<p>→ Detail: <a href="../phases/phase-1-scraper.html"><code>phases/phase-1-scraper.md</code></a></p>
+<p>→ Detail: <a href="../architecture/phases.html#phase-1-raw-data-capture"><code>architecture/phases.md</code> — Phase 1</a></p>
 <h2 id="phase-2-the-ai-layer-standardization-intelligence">Phase 2 — The AI Layer (Standardization &amp; Intelligence)</h2>
 <p>Raw internet data is chaotic, inconsistent, and full of text-heavy noise. The AI is the system's translator and analyst:</p>
 <ul><li><strong>The Taxonomy Engine</strong> — uses NLP / LLM-driven parsing to clean raw, unstructured</li></ul>
 <p>  text and force it into a <strong>strict data dictionary</strong>. It isolates explicit technical   metadata: climbing style, rock type, and <strong>protection quality</strong> (<code>PG-13</code>, <code>R</code>, <code>X</code>).</p>
 <ul><li><strong>The Predictive Condition Algorithm</strong> — evaluates live micro-climate forecasts</li></ul>
 <p>  against physical rock parameters, mathematically scoring real-time <strong>friction windows</strong>   and <strong>drying / seepage rates</strong>.</p>
-<p>→ Detail: <a href="../phases/phase-2-ai-taxonomy.html"><code>phases/phase-2-ai-taxonomy.md</code></a></p>
+<p>→ Detail: <a href="../architecture/phases.html#phase-2-ai-standardization-scoring"><code>architecture/phases.md</code> — Phase 2</a></p>
 <h2 id="phase-3-the-curated-filter-human-taste">Phase 3 — The Curated Filter (Human Taste)</h2>
 <p>AI and code can only take the platform so far; automated aggregators inevitably suffer from a total lack of quality filtering. This is the core competitive advantage:</p>
 <ul><li><strong>Zero-Garbage UGC</strong> — the platform actively rejects the messy, unverified</li></ul>
 <p>  user-generated content of legacy sites.</p>
 <ul><li><strong>The Standard of Taste</strong> — every recommendation is filtered through a carefully</li></ul>
 <p>  managed <strong>master index</strong>. Automated data flows are mapped <em>exclusively</em> onto a verified   directory of classic sectors, so the engine only ever surfaces high-quality,   worthwhile climbs.</p>
-<p>→ Detail: <a href="../phases/phase-3-curation.html"><code>phases/phase-3-curation.md</code></a></p>
+<p>→ Detail: <a href="../architecture/phases.html#phase-3-curated-filter-human-taste"><code>architecture/phases.md</code> — Phase 3</a></p>
 <h2 id="phase-4-the-trip-planner-actionable-execution">Phase 4 — The Trip Planner (Actionable Execution)</h2>
 <p>The final stage translates the curated, intelligent data matrix into a practical, interactive <strong>split-screen dashboard</strong>:</p>
 <ul><li><strong>The Dual Workspace</strong> — premium vector climbing topos side-by-side with real-time</li></ul>
 <p>  transit pricing, hyper-local weather tracking, and active social-media condition   summaries.</p>
 <ul><li><strong>The Automated Contingency Engine</strong> — continuously watches the plan. If ingestion</li></ul>
 <p>  scrapers detect incoming bad weather or high seepage for a scheduled weekend, the   planner raises an instant alert and programmatically computes <strong>three dry geographic   alternatives</strong> nearby.</p>
-<p>→ Detail: <a href="../phases/phase-4-trip-planner.html"><code>phases/phase-4-trip-planner.md</code></a></p>
+<p>→ Detail: <a href="../architecture/phases.html#phase-4-trip-planner-actionable-execution"><code>architecture/phases.md</code> — Phase 4</a></p>
 <hr>
 <h2 id="design-principles-the-why-behind-the-layers">Design principles (the "why" behind the layers)</h2>
 <ol><li><strong>Free and always-on by default.</strong> The reference implementation runs entirely on</li></ol>

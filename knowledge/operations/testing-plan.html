@@ -65,9 +65,9 @@ border-bottom:1px solid var(--seam)}
 <h2 id="why-this-is-cheap-to-do-here">Why this is cheap to do here</h2>
 <p>The engine already has the two seams testing needs — no big refactor required:</p>
 <ol><li><strong>One network chokepoint.</strong> Every external call — Open-Meteo <code>forecast</code> / <code>climatology</code> /</li></ol>
-<p>   <code>seasonal</code>, SerpApi flights, and the multi-pitch.com climb DB — funnels through    <code>_get(url)</code> (<code>update_report.py:165</code>). Monkeypatch that one function and the whole    pipeline runs <strong>offline and deterministic</strong>.</p>
+<p>   <code>seasonal</code> / marine tide, SerpApi flights, and the multi-pitch.com climb DB — funnels    through the single <code>_get(url)</code> in <code>update_report.py</code> (and, since decision #24,    <code>fetch_env.py</code> reuses it via the same module). Monkeypatch that one function and the    whole pipeline runs <strong>offline and deterministic</strong>.</p>
 <ol><li><strong>Time is already injected.</strong> <code>build_html</code> / <code>build_md</code> take <code>now</code> as a parameter, so</li></ol>
-<p>   the generated output is reproducible once the network is mocked and the date is frozen.    (Only <code>main()</code> calls <code>datetime.now()</code> internally — <code>:1057</code>.)</p>
+<p>   the generated output is reproducible once the network is mocked and the date is frozen.    (<code>main()</code> is where the run's <code>datetime.now()</code> originates.)</p>
 <p>This matches the repo's <strong>determinism</strong> convention (<a href="../CONVENTIONS.html"><code>CONVENTIONS.md</code></a>): climatology scoring must give two identical runs, so it is testable by construction.</p>
 <h2 id="framework-dependencies">Framework &amp; dependencies</h2>
 <ul><li><strong>Stdlib <code>unittest</code>, no new dependencies.</strong> The engine is deliberately stdlib-only and CI</li></ul>
@@ -84,7 +84,7 @@ border-bottom:1px solid var(--seam)}
 <ul><li>Text/normalisation: <code>_norm</code>, <code>_grade_norm</code>, <code>grade_range</code>, <code>wx_band</code>, <code>match_sheet_row</code>.</li><li>Geo/format: <code>_haversine</code> (known city pairs), <code>_hhmm</code>, <code>skyscanner_url</code>.</li></ul><ol><li><strong>Parser / API-contract tests — guards the "calling the API" side.</strong> Feed a *recorded</li></ol>
 <p>   real* Open-Meteo and SerpApi response into <code>forecast</code>, <code>climatology</code>, <code>seasonal</code>,    <code>serp_flights</code> and assert the right fields are extracted. Catches parsing regressions;    with fresh fixtures, catches upstream schema drift too.</p>
 <ol><li><strong>End-to-end smoke test.</strong> Run <code>main()</code> with <code>_get</code> mocked and the output path constants</li></ol>
-<p>   (<code>INDEX</code> / <code>DAILY</code> / <code>HISTORY</code>, <code>:35</code>) redirected to a temp dir. Assert: clean exit, a    non-empty <code>index.html</code>, the embedded <code>window.DATA</code> JSON parses, and the HTML is    well-formed (stdlib <code>html.parser</code>). Also assert the <strong>degrade path</strong>: with <code>_get</code> raising,    the build still completes with a weaker basis rather than crashing.</p>
+<p>   (<code>INDEX</code> / <code>DAILY</code> / <code>HISTORY</code>) redirected to a temp dir. Assert: clean exit, a    non-empty <code>index.html</code>, the embedded <code>window.DATA</code> JSON parses, and the HTML is    well-formed (stdlib <code>html.parser</code>). Also assert the <strong>degrade path</strong>: with <code>_get</code> raising,    the build still completes with a weaker basis rather than crashing.</p>
 <ol><li><strong>Opt-in live contract test.</strong> A test that actually hits Open-Meteo/SerpApi to detect</li></ol>
 <p>   real API changes. Skipped by default (env flag); run weekly or on demand — never in the    PR suite, to protect quota.</p>
 <h2 id="layout">Layout</h2>

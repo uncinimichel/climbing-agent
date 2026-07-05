@@ -68,19 +68,25 @@ border-bottom:1px solid var(--seam)}
 <ul><li><code>workflow_dispatch</code> — manual "Run workflow" button.</li></ul>
 <p>All three run the same build.</p>
 <h3 id="permissions-concurrency">Permissions &amp; concurrency</h3>
-<pre><code>permissions:
-  contents: write   # commit the updated report back
-  pages: write      # deploy to GitHub Pages
-  id-token: write
+<p>Least-privilege: the workflow grants <strong>no</strong> top-level permissions and each job requests only what it needs — so the job running untrusted upstream APIs never holds Pages/OIDC powers.</p>
+<pre><code>permissions: {}          # nothing by default; jobs opt in below
 concurrency:
   group: pages
-  cancel-in-progress: true   # avoid overlapping deploys</code></pre>
+  cancel-in-progress: false   # SERIALIZE (queue) deploys — cancelling mid-deploy
+                              # left runs failing when two pushes landed close together</code></pre>
 <h3 id="jobs">Jobs</h3>
-<ol><li><strong>build</strong> (<code>ubuntu-latest</code>):<ul><li><code>actions/checkout@v4</code></li><li><code>actions/setup-python@v5</code> (Python 3.12)</li><li>Run <code>python3 trip-ni-july-2026/scripts/update_report.py</code> with</li></ul></li></ol>
-<p>     <code>SERPAPI_KEY</code> from secrets in <code>env</code>.</p>
-<ul><li>Commit changed outputs (<code>index.html</code>, <code>.nojekyll</code>, <code>daily-report.md</code>, <code>history/</code>,</li></ul>
-<p>     <code>flights-latest.json</code>) as user <code>trip-bot</code>; <strong>no-change → no commit</strong>.</p>
-<ul><li><code>actions/upload-pages-artifact@v3</code> (path <code>.</code>).</li></ul><ol><li><strong>deploy</strong> (<code>needs: build</code>): <code>actions/deploy-pages@v4</code> → publishes to Pages.</li></ol>
+<ol><li><strong>build</strong> (<code>ubuntu-latest</code>, <code>permissions: contents: write</code> only):<ul><li><code>actions/checkout@v7</code></li><li><code>actions/setup-python@v6</code> (Python 3.12)</li><li>Refresh <code>climbing-trips.csv</code> from the Google Sheet (keeps the committed copy if the</li></ul></li></ol>
+<p>     download is malformed).</p>
+<ul><li>Run <code>python3 trip-ni-july-2026/scripts/fetch_env.py</code> — trip-independent weather+tide</li></ul>
+<p>     → git-ignored <code>venue-env.json</code> (decision #24).</p>
+<ul><li>Run <code>python3 trip-ni-july-2026/scripts/update_report.py</code> (consumes <code>venue-env.json</code>)</li></ul>
+<p>     with <code>SERPAPI_KEY</code> from secrets in <code>env</code>; then <code>serpapi_quota.py</code> and      <code>build_knowledge.py</code> (Markdown → HTML).</p>
+<ul><li>Commit changed outputs as user <code>trip-bot</code> — <code>index.html</code>, <code>.nojekyll</code>,</li></ul>
+<p>     <code>climbing-trips.csv</code>, <code>venues/</code>, <code>sitemap.xml</code>, <code>robots.txt</code>, <code>daily-report.md</code>,      <code>history/</code>, <code>flights-latest.json</code>, <code>serpapi-usage.json</code>, <code>climo-cache.json</code>,      <code>knowledge/</code>; <strong>no-change → no commit</strong>. (If <code>main</code> moved, skip — regenerated next run.)</p>
+<ul><li>Stage a dedicated <code>site/</code> dir (page + <code>venues/</code> + <code>knowledge/</code> only — <strong>not</strong> scripts,</li></ul>
+<p>     CSVs or plans) and <code>actions/upload-pages-artifact@v5</code> with <code>path: site</code>.</p>
+<ol><li><strong>deploy</strong> (<code>needs: build</code>, <code>permissions: pages: write</code> + <code>id-token: write</code> only):</li></ol>
+<p>   <code>actions/deploy-pages@v5</code> → publishes to Pages.</p>
 <h3 id="output">Output</h3>
 <p>&lt;https://uncinimichel.github.io/climbing-agent/&gt; — public, mobile.</p>
 <h2 id="secrets">Secrets</h2>

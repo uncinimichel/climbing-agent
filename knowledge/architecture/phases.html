@@ -1,0 +1,94 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>The Four Layers · multi-pitch Live</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"><style>
+:root{--ink:#0C0D10;--ink2:#12141B;--ink3:#191C27;--ink4:#20243A;--seam:#252840;
+--chalk:#EAE6DD;--chalk2:#9B9890;--chalk3:#5A5860;--go:#6CB268;--amb:#C8A44A;
+--wet:#B94438;--spike:#C4FF5C;--r:6px;--r-lg:12px}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--ink);color:var(--chalk)}
+body{font-family:'Inter',system-ui,sans-serif;font-size:15px;line-height:1.65;
+-webkit-font-smoothing:antialiased}
+.top{position:sticky;top:0;z-index:10;height:48px;background:var(--ink2);
+border-bottom:1px solid var(--seam);display:flex;align-items:center;gap:12px;padding:0 18px}
+.logo{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--chalk);
+letter-spacing:-.2px;text-decoration:none}
+.top a.btn{margin-left:auto;font-size:12px;color:var(--chalk2);text-decoration:none;
+border:1px solid var(--seam);border-radius:var(--r);padding:5px 12px}
+.top a.btn:hover{color:var(--chalk);border-color:var(--chalk3)}
+.wrap{max-width:860px;margin:0 auto;padding:32px 22px 96px}
+.crumb{font-size:12px;color:var(--chalk3);margin-bottom:22px;font-family:'DM Mono',monospace}
+.crumb a{color:var(--chalk2);text-decoration:none}
+.crumb a:hover{color:var(--spike)}
+h1,h2,h3,h4{font-family:'Syne',sans-serif;letter-spacing:-.3px;line-height:1.25;
+scroll-margin-top:64px}
+h1{font-size:30px;font-weight:800;margin:.2em 0 .6em}
+h2{font-size:21px;font-weight:700;margin:1.8em 0 .5em;padding-top:.4em;
+border-top:1px solid var(--seam)}
+h3{font-size:16.5px;font-weight:700;margin:1.4em 0 .4em;color:var(--chalk)}
+h4{font-size:14px;font-weight:700;margin:1.2em 0 .3em;color:var(--chalk2)}
+p{margin:.7em 0}
+a{color:var(--amb);text-decoration:none;border-bottom:1px solid rgba(200,164,74,.28)}
+a:hover{color:var(--spike);border-bottom-color:var(--spike)}
+strong{color:#fff;font-weight:600}
+code{font-family:'DM Mono',ui-monospace,monospace;font-size:.86em;background:var(--ink3);
+border:1px solid var(--seam);border-radius:4px;padding:1px 5px;color:var(--amb)}
+pre{background:var(--ink2);border:1px solid var(--seam);border-radius:var(--r-lg);
+padding:16px 18px;overflow-x:auto;margin:1em 0}
+pre code{background:none;border:none;padding:0;color:var(--chalk2);font-size:12.5px;
+line-height:1.5;white-space:pre}
+blockquote{margin:1.1em 0;padding:.4em 16px;border-left:3px solid var(--amb);
+background:var(--amb-d,rgba(200,164,74,.07));border-radius:0 var(--r) var(--r) 0;
+color:var(--chalk2)}
+blockquote p{margin:.4em 0}
+hr{border:none;border-top:1px solid var(--seam);margin:2em 0}
+ul,ol{margin:.6em 0;padding-left:1.4em}
+li{margin:.28em 0}
+li>ul,li>ol{margin:.25em 0}
+.tw{overflow-x:auto;margin:1.1em 0;border:1px solid var(--seam);border-radius:var(--r-lg)}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--seam);
+vertical-align:top}
+th{background:var(--ink3);font-family:'Syne',sans-serif;font-weight:700;font-size:12px;
+color:var(--chalk);white-space:nowrap}
+tr:last-child td{border-bottom:none}
+td code{white-space:nowrap}
+.idx-group{margin:1.4em 0}
+.idx-group h3{border-bottom:1px solid var(--seam);padding-bottom:.3em}
+.idx-card{display:block;padding:12px 14px;margin:8px 0;background:var(--ink2);
+border:1px solid var(--seam);border-radius:var(--r-lg);color:var(--chalk);
+border-bottom:1px solid var(--seam)}
+.idx-card:hover{border-color:var(--chalk3);color:var(--chalk)}
+.idx-card b{font-family:'Syne',sans-serif}
+.idx-card span{display:block;color:var(--chalk2);font-size:13px;margin-top:2px}
+@media(max-width:600px){.wrap{padding:22px 15px 80px}h1{font-size:24px}body{font-size:14px}}
+</style></head><body><div class=top><a class=logo href="../../index.html">🧗 multi-pitch <span style="color:var(--spike)">Live</span></a><a class=btn href="../../knowledge/index.html">📚 Knowledge</a><a class=btn href="../../index.html">▶ Dashboard</a></div><div class=wrap><div class=crumb><a href="../index.html">📚 knowledge</a> / architecture / <b style='color:var(--chalk2)'>phases</b></div><h1 id="the-four-layers-developer-guide">The Four Layers — developer guide</h1>
+<p>One section per operational layer of the engine. This is the <strong>developer contract</strong> for each layer: its interfaces and the rules for building in it. The <em>vision</em> for each layer lives in <a href="../vision/mission.html"><code>../vision/mission.md</code></a>; the <em>honest live/planned status</em> lives in <a href="current-state.html"><code>current-state.md</code></a> — this file links to both rather than restating them, so there is one place for each fact.</p>
+<p>The pipeline: <strong>Phase 1</strong> captures raw data → <strong>Phase 2</strong> standardizes + scores it → <strong>Phase 3</strong> filters it through human taste → <strong>Phase 4</strong> renders the actionable plan.</p>
+<hr>
+<h2 id="phase-1-raw-data-capture">Phase 1 — Raw data capture</h2>
+<p><em>Vision:</em> <a href="../vision/mission.html"><code>mission.md</code></a> (static + live-social scrapers). <em>Status:</em> ⚠️ Partial — structured API pulls only; social/guidebook scrapers planned.</p>
+<p><strong>Live sources today</strong> (all inside <code>fetch_env.py</code> / <code>update_report.py</code>; endpoints, quotas and retry behaviour in <a href="../operations/external-apis.html"><code>../operations/external-apis.md</code></a>):</p>
+<div class="tw"><table><thead><tr><th>Source</th><th>Pulls</th><th>Key?</th></tr></thead><tbody><tr><td>Open-Meteo Archive / Forecast / Seasonal</td><td>July climatology · 16-day live · ~45-day outlook</td><td>none</td></tr><tr><td>Open-Meteo Marine</td><td>hourly tide → high/low water for tidal crags (decision #22)</td><td>none</td></tr><tr><td>multi-pitch.com <code>data.json</code></td><td>nearby curated climbs, geo-matched to venue lat/lon</td><td>none</td></tr><tr><td>OSM Overpass</td><td>named lodging near each venue (houses/campsites/hotels)</td><td>none</td></tr><tr><td>SerpApi (Google Flights)</td><td>round-trip fares, top-N venues × travellers</td><td><code>SERPAPI_KEY</code></td></tr></tbody></table></div>
+<p>Since decision #24, the trip-independent weather+tide layer is fetched <strong>once per venue</strong> by <code>fetch_env.py</code> → <code>venue-env.json</code> and consumed by the build (see <a href="venue-env-cache.html"><code>venue-env-cache.md</code></a>). Still missing ⛔: live social condition scrapers (the highest-value gap), web-scale static guidebook crawlers, and a raw-record store distinct from normalized data so Phase 2 can re-parse.</p>
+<p><strong>Principles:</strong> free-tier/keyless first, paid sources quota-guarded; retry, don't crash (any one source failing must degrade, not fail the build); respect ToS/rate-limits/privacy (no personal data into the public repo); raw ≠ clean (capture only — cleaning is Phase 2); geo is the join key.</p>
+<p><strong>Interface:</strong> in — <code>venues.json</code> (what to query) + <code>flights.json</code> (routes); out — per-venue normalized records (weather day-records, climb lists, flight quotes) for Phase 2.</p>
+<p><strong>When building here:</strong> wrap each new source in a retrying fetch, degrade gracefully, document it in <code>external-apis.md</code>, never commit its key; keep social captures out of the public repo; add venues in <code>venues.json</code>, not in scraper code.</p>
+<hr>
+<h2 id="phase-2-ai-standardization-scoring">Phase 2 — AI standardization &amp; scoring</h2>
+<p><em>Vision:</em> <a href="../vision/mission.html"><code>mission.md</code></a>. Two engines:</p>
+<p><strong>2a · Taxonomy Engine</strong> <em>(planned)</em> — NLP/LLM parsing of free guidebook text into a strict data dictionary (style, rock, protection grade). Contract: <em>free text in → validated route record out</em>, with a confidence score and the extracted source span. Vocabulary: <a href="../data/taxonomy.html"><code>../data/taxonomy.md</code></a>; record shape: <a href="../data/route-schema.html"><code>../data/route-schema.md</code></a>; grades: <a href="../data/grade-conversion.html"><code>../data/grade-conversion.md</code></a>. Validate LLM output against the enums — reject/repair anything off-dictionary. Nothing parses free text yet; structured metadata comes pre-cleaned from <code>venues.json</code> and multi-pitch.com's <code>data.json</code>.</p>
+<p><strong>2b · Predictive Condition Algorithm</strong> — ✅ a simplified slice is live: a deterministic weather score (rain/precip proxy, extended on the live horizon with friction/drying/heat terms) meaned over trip days across three horizons (live 16-day › climatology 70 / seasonal 30), ranked desc, tie-broken by venue <code>priority</code>. <strong><a href="../data/condition-algorithm.html"><code>../data/condition-algorithm.md</code></a> is the single source of truth for the formula — don't restate it.</strong> The gap ⚠️→⛔: today's score ignores rock type (seepage), aspect (sun/drying), humidity/dew (friction), wind-as-scored, and antecedent-rain seepage lag — the real model needs Open-Meteo hourly fields × per-venue rock/aspect params.</p>
+<p><strong>Interface:</strong> in — Phase-1 normalized records; out — validated taxonomy records + per-venue condition scores + the active <strong>weather-basis</strong> label, for Phases 3/4.</p>
+<p><strong>When building here:</strong> keep scoring <strong>deterministic and reproducible</strong> (climatology must give identical output across two runs); document formula changes in <code>condition-algorithm.md</code> and log the decision in <code>../roadmap/decisions.md</code>; validate any taxonomy parsing against <code>taxonomy.md</code> enums (prefer Claude models — see <code>/claude-api</code>); always surface <strong>which basis</strong> a ranking rests on.</p>
+<hr>
+<h2 id="phase-3-curated-filter-human-taste">Phase 3 — Curated filter (human taste)</h2>
+<p><em>Vision:</em> <a href="../vision/mission.html"><code>mission.md</code></a> — the quality moat: <strong>Zero-Garbage UGC</strong> (reject unvetted content) and a verified <strong>master index</strong> of classic sectors that all automated data must map onto, or it doesn't surface. More data is not the goal; better-filtered data is.</p>
+<p><em>Status:</em> ⚠️ Partial — curation is real but <strong>manual</strong>. The master list is the Google Sheet (<code>climbing-trips.csv</code>, ~38 rows), which <code>build_venues()</code> turns into ~42 ranked venues (decision #15); <code>venues.json</code> (~13 entries) only <strong>enriches/overrides</strong> curated rows with coords, <code>priority</code>, <code>rock</code>, <code>style</code>, and a <code>why</code>. Editing the sheet changes the ranking. Missing ⛔: a verified sector directory with stable IDs beyond one trip's shortlist; automated geo+name mapping of parsed climbs onto sectors (unmatched → <strong>quarantined</strong>, never surfaced); a promote/demote/merge curation workflow; and per-sector provenance/verification state.</p>
+<p><strong>Principles:</strong> allow-list not block-list (default-deny keeps garbage out); config over code (the index is data, edited independently of the engine); traceable taste (every entry carries a <code>why</code>); <code>priority</code> is editorial (human preference, the tie-breaker on equal weather).</p>
+<p><strong>Interface:</strong> in — Phase-2 validated records seeking a home in the index; out — the curated, ranked venue/sector set for Phase 4. Human-in-the-loop: the curation edits themselves.</p>
+<p><strong>When building here:</strong> grow the index in <code>venues.json</code> / a future sector directory (keep <code>lat</code>/<code>lon</code>, <code>priority</code>, <code>rock</code>, <code>style</code>, <code>why</code> — see <a href="../data/schemas.html"><code>../data/schemas.md</code></a>); when you add automated mapping, <strong>quarantine</strong> unmatched climbs, never auto-surface them; record curation-policy calls in <a href="../roadmap/decisions.html"><code>../roadmap/decisions.md</code></a>.</p>
+<hr>
+<h2 id="phase-4-trip-planner-actionable-execution">Phase 4 — Trip planner (actionable execution)</h2>
+<p><em>Vision:</em> <a href="../vision/mission.html"><code>mission.md</code></a> — the Dual Workspace (vector topos + live logistics side by side) and the Automated Contingency Engine (watch the plan; on bad weather, compute three dry nearby alternatives).</p>
+<p><em>Status:</em> ✅ <strong>Live (single-trip).</strong> The dashboard at &lt;https://uncinimichel.github.io/climbing-agent/&gt;, generated into <code>index.html</code> by <code>update_report.py</code>: one card per venue best-first (mobile-first, no h-scroll at 390 px); a per-venue weather mini-graph; an <strong>honest basis banner</strong> (live forecast vs "typical July + 45-day outlook", degrading if seasonal fails); per-traveller flights folded in; data-driven source links (Maps, geo-matched climbs, sheet row, Windy); and a dated <code>history/</code> snapshot + <code>daily-report.md</code> mirror each day. Missing ⛔: the contingency engine, embedded topos, live social summaries in-card, price-drop/return-leg/date-lock tracking, and multi-trip/multi-user.</p>
+<p><strong>Principles:</strong> concise, best-first, mobile-first; every recommendation is sourced; honest about basis and forecast horizon; advisory (the humans decide); <strong>regenerated, never hand-edited</strong> — change the generator, not the HTML.</p>
+<p><strong>Interface:</strong> in — the curated, ranked, scored venue set (Phases 2–3) + flight quotes; out — <code>index.html</code>, <code>venues/&lt;slug&gt;.html</code>, <code>daily-report.md</code>, <code>history/&lt;date&gt;.md</code>, deployed to Pages.</p>
+<p><strong>When building here:</strong> edit <code>update_report.py</code>, not <code>index.html</code>; keep the 390 px no-h-scroll constraint as a verification checkpoint; build the contingency engine by reusing the ranking (on an alert, surface the top-3 dry venues by score within a distance bound, and explain why) — log the design in <a href="../roadmap/decisions.html"><code>../roadmap/decisions.md</code></a>.</p></div></body></html>

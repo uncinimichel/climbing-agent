@@ -1,6 +1,6 @@
 {
   "comment": "Latest flight prices per combo (round-trip, 1 pax, GBP). Updated on demand by Claude or by an API script. null = not yet checked.",
-  "checked_at": "2026-07-05 19:24 UTC (Google Flights/SerpApi)",
+  "checked_at": "2026-07-05 20:38 UTC (Google Flights/SerpApi)",
   "currency": "GBP",
   "rep_combo": {
     "id": "fri-tue",
@@ -111,45 +111,18 @@
         "cached": true
       }
     },
-    "Mournes, NI": {
+    "\u00c9crins (Aiguille Dibona)": {
       "michel": {
         "mode": "fly",
-        "to": "BFS",
-        "options": [
-          {
-            "price": 111,
-            "airline": "easyJet",
-            "from": "LTN",
-            "to": "BFS",
-            "dep": "07:05",
-            "arr": "08:20",
-            "stops": 0
-          },
-          {
-            "price": 114,
-            "airline": "easyJet",
-            "from": "STN",
-            "to": "BFS",
-            "dep": "22:10",
-            "arr": "23:25",
-            "stops": 0
-          },
-          {
-            "price": 116,
-            "airline": "easyJet",
-            "from": "LTN",
-            "to": "BFS",
-            "dep": "22:15",
-            "arr": "23:30",
-            "stops": 0
-          }
-        ],
-        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTA3LTI0agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDQkZTGkISCjIwMjYtMDctMjhqBwgBEgNCRlNyBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ",
-        "book_url": "https://www.skyscanner.net/transport/flights/ltn/bfs/260724/260728/",
-        "cached": true
+        "options": [],
+        "to": "LYS",
+        "book_url": "https://www.skyscanner.net/transport/flights/lgw/lys/260724/260728/"
       },
       "dan": {
-        "mode": "local"
+        "mode": "fly",
+        "options": [],
+        "to": "LYS",
+        "book_url": "https://www.skyscanner.net/transport/flights/bfs/lys/260724/260728/"
       }
     }
   }

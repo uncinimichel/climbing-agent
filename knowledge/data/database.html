@@ -65,7 +65,7 @@ border-bottom:1px solid var(--seam)}
 <p>The question was asked directly (2026-07-04): is the taxonomy an ontology use case (RDF/OWL, triple store) or a normal SQL database? <strong>SQL.</strong> The taxonomy is a <em>faceted classification with closed enums</em> (<a href="taxonomy.html"><code>taxonomy.md</code></a>'s explicit design rule), not a knowledge graph:</p>
 <ul><li>No <strong>open-world inference</strong> — rock behaviour, hazard semantics, grade relations are</li></ul>
 <p>  hand-authored curation decisions, not derived facts.</p>
-<ul><li>Facets are <strong>flat</strong> (~14 disciplines, 9 rock types, 8 aspects, boolean hazards). The</li></ul>
+<ul><li>Facets are <strong>flat</strong> (~14 disciplines, 16 rock types, 8 aspects, boolean hazards). The</li></ul>
 <p>  only hierarchy is the OpenBeta-style area tree — a <code>parent_id</code> tree + recursive CTE.</p>
 <ul><li>External vocabularies (OpenBeta, theCrag, MP) are adopted by <strong>hand-curated mapping</strong></li></ul>
 <p>  (<a href="external-models.html"><code>external-models.md</code></a>), not automated ontology alignment.</p>
