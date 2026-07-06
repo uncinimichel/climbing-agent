@@ -850,6 +850,8 @@ PAGE_BODY = """<body>
   <nav class="top-links">
     <button class="tl" onclick="help(1)" title="How the ranking works" aria-label="How the ranking works">?</button>
     <a class="tl" href="knowledge/index.html">Knowledge</a>
+    <a class="tl" href="knowledge/corpus-inspector.html" title="Browse every climb with its taxonomy + weather (reads corpus.json)">Inspector</a>
+    <a class="tl" href="knowledge/data-dependencies.html" title="How climb/venue data flows — the source of truth (decision #27)">Data map</a>
     <a class="tl" href="knowledge/operations/serpapi-quota.html" title="Live SerpApi/flight-search quota and API cost status">API Status</a>
     <a class="tl" id="mapBtn" target="_blank" rel="noopener">Map</a>
     <a class="tl" id="sheetBtn" target="_blank" rel="noopener">Spreadsheet</a>

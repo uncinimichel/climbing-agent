@@ -1,0 +1,580 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Corpus Inspector — climbing-agent</title>
+<style>
+  :root{
+    --paper:#EAECE7; --panel:#F3F4F0; --panel-2:#E1E4DD;
+    --ink:#232A27; --muted:#616B64; --faint:#8A938C; --line:#D2D6CE; --line-2:#C3C8BE;
+    --accent:#5E6B14; --accent-soft:#E7EBCF; --accent-ink:#3F4A0D;
+    --weather:#2F6076; --weather-soft:#D9E5EA;
+    --hazard:#A8432A; --hazard-soft:#F0DBD3;
+    --gap:#9A6A12; --gap-soft:#F3E6C9;
+    --star:#B8860B;
+    --g1:#DDE2D2; --g2:#C6D0B4; --g3:#A9BC90; --g4:#87A46B; --g5:#61864A; --g6:#446634; --g7:#2C4723;
+    --shadow:0 1px 2px rgba(35,42,39,.06),0 6px 18px rgba(35,42,39,.06);
+    --radius:10px;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --serif:ui-serif,"Iowan Old Style","Palatino Linotype",Georgia,serif;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --paper:#171B19; --panel:#1F2421; --panel-2:#272D29;
+      --ink:#E7EBE4; --muted:#9BA59D; --faint:#6E786F; --line:#2E332F; --line-2:#3A413B;
+      --accent:#A9BF4E; --accent-soft:#2C3316; --accent-ink:#C7D97A;
+      --weather:#79B0C6; --weather-soft:#1B2C34;
+      --hazard:#D98368; --hazard-soft:#33201A;
+      --gap:#D6A94E; --gap-soft:#332711;
+      --star:#D6A94E;
+      --g1:#2A312A; --g2:#39472F; --g3:#4C5F37; --g4:#617A44; --g5:#7C9855; --g6:#9AB768; --g7:#B8D286;
+      --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 22px rgba(0,0,0,.28);
+    }
+  }
+  :root[data-theme="light"]{
+    --paper:#EAECE7; --panel:#F3F4F0; --panel-2:#E1E4DD; --ink:#232A27; --muted:#616B64; --faint:#8A938C;
+    --line:#D2D6CE; --line-2:#C3C8BE; --accent:#5E6B14; --accent-soft:#E7EBCF; --accent-ink:#3F4A0D;
+    --weather:#2F6076; --weather-soft:#D9E5EA; --hazard:#A8432A; --hazard-soft:#F0DBD3;
+    --gap:#9A6A12; --gap-soft:#F3E6C9; --star:#B8860B;
+    --g1:#DDE2D2; --g2:#C6D0B4; --g3:#A9BC90; --g4:#87A46B; --g5:#61864A; --g6:#446634; --g7:#2C4723;
+    --shadow:0 1px 2px rgba(35,42,39,.06),0 6px 18px rgba(35,42,39,.06);
+  }
+  :root[data-theme="dark"]{
+    --paper:#171B19; --panel:#1F2421; --panel-2:#272D29; --ink:#E7EBE4; --muted:#9BA59D; --faint:#6E786F;
+    --line:#2E332F; --line-2:#3A413B; --accent:#A9BF4E; --accent-soft:#2C3316; --accent-ink:#C7D97A;
+    --weather:#79B0C6; --weather-soft:#1B2C34; --hazard:#D98368; --hazard-soft:#33201A;
+    --gap:#D6A94E; --gap-soft:#332711; --star:#D6A94E;
+    --g1:#2A312A; --g2:#39472F; --g3:#4C5F37; --g4:#617A44; --g5:#7C9855; --g6:#9AB768; --g7:#B8D286;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 22px rgba(0,0,0,.28);
+  }
+
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.5;
+    -webkit-font-smoothing:antialiased;font-size:15px}
+  .wrap{max-width:1220px;margin:0 auto;padding:0 20px 64px}
+  a{color:inherit}
+  .tnum{font-variant-numeric:tabular-nums}
+
+  /* ---- masthead ---- */
+  header.mast{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--paper) 88%,transparent);
+    backdrop-filter:saturate(1.1) blur(8px);border-bottom:1px solid var(--line);margin-bottom:22px}
+  .mast-in{max-width:1220px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+  .brand{display:flex;align-items:baseline;gap:10px;margin-right:auto}
+  .brand .mark{font-family:var(--serif);font-size:22px;font-weight:600;letter-spacing:-.01em}
+  .brand .sub{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+  .homelink{font-size:12px;color:var(--muted);text-decoration:none;border:1px solid var(--line);
+    padding:5px 10px;border-radius:999px;display:inline-flex;gap:6px;align-items:center}
+  .homelink:hover{border-color:var(--line-2);color:var(--ink)}
+  .ro{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);
+    border:1px dashed var(--line-2);padding:4px 8px;border-radius:6px}
+
+  /* ---- health strip ---- */
+  .health{display:flex;gap:0;flex-wrap:wrap;border:1px solid var(--line);border-radius:var(--radius);
+    background:var(--panel);box-shadow:var(--shadow);overflow:hidden;margin-bottom:20px}
+  .stat{flex:1 1 130px;padding:14px 18px;border-right:1px solid var(--line);min-width:130px}
+  .stat:last-child{border-right:0}
+  .stat .n{font-family:var(--mono);font-size:24px;font-weight:600;line-height:1;letter-spacing:-.02em}
+  .stat .n small{font-size:13px;color:var(--muted);font-weight:500}
+  .stat .l{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:7px}
+  .stat.warn .n{color:var(--gap)}
+
+  /* ---- controls ---- */
+  .controls{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:18px}
+  .search{flex:1 1 260px;position:relative;min-width:220px}
+  .search input{width:100%;padding:9px 12px 9px 34px;border:1px solid var(--line-2);border-radius:8px;
+    background:var(--panel);color:var(--ink);font:inherit;font-size:14px}
+  .search input:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:transparent}
+  .search svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--muted)}
+  .seg{display:inline-flex;background:var(--panel-2);border:1px solid var(--line);border-radius:9px;padding:3px}
+  .seg button{border:0;background:transparent;color:var(--muted);font:inherit;font-size:13px;font-weight:500;
+    padding:6px 13px;border-radius:6px;cursor:pointer;display:flex;align-items:center;gap:6px}
+  .seg button[aria-pressed="true"]{background:var(--paper);color:var(--ink);box-shadow:var(--shadow)}
+  .toggle{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);cursor:pointer;
+    border:1px solid var(--line-2);background:var(--panel);padding:7px 12px;border-radius:8px;user-select:none}
+  .toggle[aria-pressed="true"]{color:var(--gap);border-color:var(--gap);background:var(--gap-soft)}
+  .toggle .dot{width:8px;height:8px;border-radius:50%;background:currentColor;opacity:.5}
+  .toggle[aria-pressed="true"] .dot{opacity:1}
+
+  .filt{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:20px}
+  .filt .fl{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);
+    align-self:center;margin-right:4px}
+  .chip{font-size:12.5px;padding:5px 11px;border-radius:999px;border:1px solid var(--line-2);
+    background:var(--panel);color:var(--muted);cursor:pointer;font-family:var(--mono)}
+  .chip[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+
+  .count{font-size:12.5px;color:var(--muted);margin:0 0 14px}
+  .count b{color:var(--ink);font-family:var(--mono)}
+
+  /* ---- shared bits ---- */
+  .stars{color:var(--star);letter-spacing:1px;font-size:13px}
+  .stars .off{color:var(--line-2)}
+  .grade{font-family:var(--mono);font-weight:600;font-size:13px;padding:3px 8px;border-radius:6px;
+    color:#fff;display:inline-block;white-space:nowrap}
+  .badge{display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:3px 9px;border-radius:999px;
+    border:1px solid var(--line-2);background:var(--panel);color:var(--muted);white-space:nowrap}
+  .badge.disc{background:var(--accent-soft);border-color:transparent;color:var(--accent-ink);font-weight:600}
+  .badge.gap{background:var(--gap-soft);border-color:transparent;color:var(--gap);font-weight:600}
+  .badge.haz{background:var(--hazard-soft);border-color:transparent;color:var(--hazard);font-weight:600}
+  .badge.wx{background:var(--weather-soft);border-color:transparent;color:var(--weather);font-weight:600}
+  .badge.pub{background:var(--accent-soft);border-color:transparent;color:var(--accent-ink);font-weight:600}
+  .badge.seed{background:var(--gap-soft);border-color:transparent;color:var(--gap);font-weight:600}
+  .path{font-size:12.5px;color:var(--muted)}
+  .path b{color:var(--ink);font-weight:600}
+  .path .sep{opacity:.4;margin:0 5px}
+
+  /* ---- condition strip (signature) ---- */
+  .cond{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  .season{display:flex;flex-direction:column;gap:4px}
+  .season .row{display:flex;gap:3px}
+  .mo{width:15px;height:15px;border-radius:3px;background:var(--panel-2);border:1px solid var(--line);
+    font-size:8px;display:flex;align-items:center;justify-content:center;color:var(--faint);font-family:var(--mono)}
+  .mo.on{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+  .clab{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint)}
+  .compass{flex:0 0 auto}
+  .climo{display:flex;gap:10px;align-items:flex-end}
+  .cbar{display:flex;flex-direction:column;align-items:center;gap:4px}
+  .cbar .track{width:26px;height:44px;background:var(--panel-2);border-radius:4px;position:relative;overflow:hidden;
+    border:1px solid var(--line)}
+  .cbar .rain{position:absolute;left:0;right:0;bottom:0;background:var(--weather);opacity:.85}
+  .cbar .m{font-size:10px;color:var(--muted);font-family:var(--mono)}
+  .cbar .t{font-size:10px;color:var(--ink);font-family:var(--mono);font-weight:600}
+  .cbar .t .lo{color:var(--muted)}
+  .nowx{font-size:12px;color:var(--gap);background:var(--gap-soft);border-radius:8px;padding:8px 12px;
+    display:inline-flex;align-items:center;gap:8px;align-self:center}
+
+  /* ---- LEDGER (table) ---- */
+  .tblwrap{border:1px solid var(--line);border-radius:var(--radius);overflow-x:auto;background:var(--panel);
+    box-shadow:var(--shadow)}
+  table{border-collapse:collapse;width:100%;font-size:13.5px}
+  thead th{position:sticky;top:0;background:var(--panel-2);text-align:left;font-size:11px;letter-spacing:.05em;
+    text-transform:uppercase;color:var(--muted);font-weight:600;padding:11px 14px;white-space:nowrap;
+    border-bottom:1px solid var(--line-2);cursor:pointer;user-select:none}
+  thead th.n{text-align:right}
+  thead th .ar{opacity:.4;font-size:9px;margin-left:3px}
+  thead th[data-active] .ar{opacity:1;color:var(--accent)}
+  tbody td{padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:middle;white-space:nowrap}
+  tbody tr{cursor:pointer}
+  tbody tr:hover{background:var(--panel-2)}
+  tbody tr:last-child td{border-bottom:0}
+  td.n{text-align:right;font-family:var(--mono)}
+  td.name{font-family:var(--serif);font-size:15px;font-weight:600;white-space:normal;min-width:150px}
+  .rockdot{display:inline-flex;align-items:center;gap:6px}
+  .rockdot i{width:9px;height:9px;border-radius:50%;display:inline-block;flex:0 0 auto}
+
+  /* ---- CARDS (flip tiles) ---- */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px}
+  .card{position:relative;height:462px;perspective:1700px}
+  .flip-inner{position:absolute;inset:0;transform-style:preserve-3d;
+    transition:transform .62s cubic-bezier(.5,.05,.2,1)}
+  .card.flipped .flip-inner{transform:rotateY(180deg)}
+  .face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden;
+    border:1px solid var(--line);border-radius:var(--radius);background:var(--panel);box-shadow:var(--shadow)}
+  .face.front{cursor:pointer;transition:border-color .14s}
+  .face.front:hover{border-color:var(--accent)}
+  .face.back{transform:rotateY(180deg)}
+  .scroll{position:absolute;inset:0;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:14px}
+  .flipcue{position:absolute;right:12px;bottom:12px;z-index:2;font-size:11px;color:var(--muted);
+    background:var(--paper);border:1px solid var(--line-2);padding:4px 10px;border-radius:999px;
+    display:flex;gap:6px;align-items:center;pointer-events:none}
+  .face.front:hover .flipcue{color:var(--accent);border-color:var(--accent)}
+  .backbtn{position:absolute;right:12px;top:12px;z-index:3;font:inherit;font-size:12px;cursor:pointer;
+    background:var(--paper);border:1px solid var(--line-2);color:var(--ink);padding:5px 12px;border-radius:999px}
+  .backbtn:hover{border-color:var(--accent);color:var(--accent)}
+  .card .top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+  .card .nm{font-family:var(--serif);font-size:20px;font-weight:600;letter-spacing:-.01em;line-height:1.15}
+  .card .chips{display:flex;gap:6px;flex-wrap:wrap}
+  .card .meta{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted);font-family:var(--mono);
+    border-top:1px solid var(--line);padding-top:12px;margin-top:auto}
+  .card .meta b{color:var(--ink);font-weight:600}
+  .card .haz{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+  .back .bsect{border-top:1px solid var(--line);padding-top:11px}
+  .back .bsect:first-of-type{border-top:0;padding-top:0}
+  .back h4{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent-ink);font-weight:700;margin:0 0 8px}
+  .back .fieldgrid{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}
+
+  /* ---- INSPECTOR ---- */
+  .insp{display:grid;grid-template-columns:280px 1fr;gap:18px;align-items:start}
+  .masterlist{border:1px solid var(--line);border-radius:var(--radius);background:var(--panel);
+    box-shadow:var(--shadow);overflow:hidden;position:sticky;top:88px}
+  .mi{display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:1px solid var(--line);cursor:pointer}
+  .mi:last-child{border-bottom:0}
+  .mi:hover{background:var(--panel-2)}
+  .mi[aria-selected="true"]{background:var(--accent-soft)}
+  .mi .mn{font-family:var(--serif);font-weight:600;font-size:14.5px;flex:1;line-height:1.2}
+  .mi .mg{font-family:var(--mono);font-size:11px;color:var(--muted)}
+  .mi .warn{width:7px;height:7px;border-radius:50%;background:var(--gap);flex:0 0 auto}
+  .detail{border:1px solid var(--line);border-radius:var(--radius);background:var(--panel);
+    box-shadow:var(--shadow);padding:24px;min-height:400px}
+  .detail h2{font-family:var(--serif);font-size:28px;font-weight:600;margin:0 0 4px;letter-spacing:-.015em}
+  .fieldgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:2px 24px;margin-top:8px}
+  .f{padding:10px 0;border-bottom:1px solid var(--line)}
+  .f .k{font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--faint);margin-bottom:3px}
+  .f .v{font-size:14px;font-family:var(--mono)}
+  .f .v.empty{color:var(--gap);font-style:italic;font-family:var(--sans);font-size:13px}
+  .sect{margin-top:22px}
+  .sect > h3{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent-ink);
+    font-weight:700;margin:0 0 10px;padding-bottom:6px;border-bottom:2px solid var(--accent-soft)}
+  @media (prefers-color-scheme:dark){.sect>h3{color:var(--accent)}}
+  :root[data-theme="dark"] .sect>h3{color:var(--accent)}
+  .climotable{width:100%;font-size:13px;border-collapse:collapse;margin-top:4px}
+  .climotable th,.climotable td{padding:7px 10px;text-align:left;border-bottom:1px solid var(--line);
+    font-family:var(--mono)}
+  .climotable th{font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);font-weight:600}
+
+  .hidden{display:none !important}
+  footer{margin-top:34px;font-size:12px;color:var(--faint);text-align:center;line-height:1.7}
+  footer code{font-family:var(--mono);background:var(--panel-2);padding:2px 6px;border-radius:4px;color:var(--muted)}
+
+  @media (max-width:720px){
+    .insp{grid-template-columns:1fr}
+    .masterlist{position:static;max-height:260px;overflow-y:auto}
+    .stat{flex-basis:50%}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none !important}}
+</style>
+
+<header class="mast">
+  <div class="mast-in">
+    <div class="brand">
+      <span class="mark">Corpus Inspector</span>
+      <span class="sub">Source of Truth · db/corpus.json</span>
+    </div>
+    <span class="ro">Read-only</span>
+    <a class="homelink" href="../index.html">← Trip report</a>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="health" id="health"></div>
+
+  <div class="controls">
+    <label class="search">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <input id="q" type="search" placeholder="Search climbs, crags, countries…" autocomplete="off">
+    </label>
+    <div class="seg" id="viewseg" role="tablist" aria-label="View mode">
+      <button data-view="cards" aria-pressed="true">Field cards</button>
+      <button data-view="ledger" aria-pressed="false">Ledger</button>
+      <button data-view="inspector" aria-pressed="false">Inspector</button>
+    </div>
+    <div class="seg" id="statusseg" aria-label="Curation status">
+      <button data-status="" aria-pressed="true">All</button>
+      <button data-status="publish" aria-pressed="false">Curated</button>
+      <button data-status="draft" aria-pressed="false">Seeded</button>
+    </div>
+    <button class="toggle" id="gaps" aria-pressed="false"><span class="dot"></span>Only weather gaps</button>
+  </div>
+
+  <div class="filt" id="discfilt"></div>
+  <p class="count" id="count"></p>
+
+  <div id="view-ledger"></div>
+  <div id="view-cards" class="hidden"></div>
+  <div id="view-inspector" class="hidden"></div>
+
+  <footer>
+    Read-only view of <code>db/corpus.json</code> · <span id="src">loading…</span> · no edits, no writes.<br>
+    <b>Curated</b> = status:publish (hand-verified). <b>Seeded</b> = status:draft, pulled from multi-pitch.com — sparse by design. Amber marks a data gap.
+  </footer>
+</div>
+
+<script>
+let ROUTES=[];
+function adapt(rt, areaById){
+  const A=areaById[rt.area]||{};
+  const tokens=[A.country,A.region,A.name].filter(Boolean);
+  const cl=(rt.climatology||[]).map(c=>({month:c.month,rainy_days:c.rainyDays,temp_high:c.tempHigh,temp_low:c.tempLow}));
+  const geo=Array.isArray(rt.geoLocation)?rt.geoLocation:[null,null];
+  return {id:String(rt.id),name:rt.name,status:rt.status,source:rt.source,path_tokens:tokens,
+    eff_grade_context:A.gradeContext,length_m:rt.length,pitches_count:rt.pitches,incline_code:rt.incline,
+    eff_rock_code:A.rock,eff_aspect:A.aspect,grade_system_code:rt.gradeSys,original_grade:rt.originalGrade,
+    trad_grade:rt.tradGrade,tech_grade:rt.techGrade,data_grade:rt.dataGrade,protection_code:rt.protection,
+    protection_style:rt.protectionStyle,belays:rt.belays,approach_time_min:rt.approachTime,elevation_m:rt.elevation,
+    sun_window_code:rt.sunWindow,best_season:rt.bestSeason,stars:rt.stars,lat:geo[0],lon:geo[1],
+    disciplines:rt.disciplines||[],features:rt.features||[],character:rt.character||[],hazards:rt.hazards||[],climatology:cl};
+}
+
+const MONTHS=['J','F','M','A','M','J','J','A','S','O','N','D'];
+const MONTH3=['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const GRADEC=['','var(--g1)','var(--g2)','var(--g3)','var(--g4)','var(--g5)','var(--g6)','var(--g7)'];
+const ROCKC={sandstone:'#C08A4A',gritstone:'#8A6A4A',limestone:'#9AA0A6',dolerite:'#4A5560',rhyolite:'#7A6A72',
+  volcanic:'#6A5A5A',granite:'#B8B0A6',dolomite:'#C9C2B4',slate:'#4C5560',gneiss:'#8C8478',schist:'#7C7A6E',
+  basalt:'#3A3E44',quartzite:'#C4B8C0',gabbro:'#42484E',conglomerate:'#A88C6A',andesite:'#70746E'};
+const ASPECT_DEG={N:0,NE:45,E:90,SE:135,S:180,SW:225,W:270,NW:315};
+const SUN={morning:'☀ AM shade-free early',afternoon:'☀ PM sun',"all-day":'☀ Sun all day',shade:'☾ Shaded / seepage-prone'};
+
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const hasWx=r=>Array.isArray(r.climatology)&&r.climatology.length>0;
+const cap=s=>s?s[0].toUpperCase()+s.slice(1):s;
+
+function stars(n){let h='';for(let i=1;i<=3;i++)h+=`<span class="${i<=n?'':'off'}">★</span>`;return `<span class="stars" title="${n}/3">${h}</span>`;}
+function gradeBadge(r){const g=r.original_grade||'?';return `<span class="grade" style="background:${GRADEC[r.data_grade]||'var(--muted)'}" title="data-grade ${r.data_grade||'?'}/7 · ${esc(r.grade_system_code||'')}">${esc(g)}</span>`;}
+function rockDot(r){const c=ROCKC[r.eff_rock_code]||'var(--muted)';return `<span class="rockdot"><i style="background:${c}"></i>${esc(r.eff_rock_code)}</span>`;}
+function pathLine(r){const t=(r.path_tokens||[]).filter(Boolean);if(!t.length)return '<span class="path" style="color:var(--faint)">— no area —</span>';const last=t[t.length-1],head=t.slice(0,-1).map(esc).join('<span class="sep">›</span>');return `<span class="path">${head}${head?'<span class="sep">›</span>':''}<b>${esc(last)}</b></span>`;}
+const val=(v,su='')=>(v==null||v==='')?'—':v+su;
+function coord(r){return (r.lat==null||r.lon==null)?'—':r.lat.toFixed(3)+', '+r.lon.toFixed(3);}
+function statusBadge(r){return r.status==='publish'?'<span class="badge pub" title="hand-verified">curated</span>':`<span class="badge seed" title="seeded from ${esc(r.source||'source')}, unverified">seeded</span>`;}
+
+function compass(aspect){
+  const deg=ASPECT_DEG[aspect]??null;const cx=26,cy=26,r=20;
+  const rad=deg==null?0:(deg-90)*Math.PI/180;
+  const nx=cx+Math.cos(rad)*r, ny=cy+Math.sin(rad)*r;
+  const marks=['N','E','S','W'].map((L,i)=>{const a=(i*90-90)*Math.PI/180;
+    return `<text x="${cx+Math.cos(a)*(r+0)}" y="${cy+Math.sin(a)*(r+0)+3}" text-anchor="middle" font-size="7" fill="var(--faint)" font-family="monospace">${L}</text>`;}).join('');
+  const needle=deg==null?'':`<line x1="${cx}" y1="${cy}" x2="${nx}" y2="${ny}" stroke="var(--accent)" stroke-width="2.4" stroke-linecap="round"/><circle cx="${nx}" cy="${ny}" r="3" fill="var(--accent)"/>`;
+  return `<div class="compass" title="Faces ${aspect}"><svg width="52" height="52" viewBox="0 0 52 52"><circle cx="${cx}" cy="${cy}" r="${r+3}" fill="none" stroke="var(--line-2)" stroke-width="1"/><circle cx="${cx}" cy="${cy}" r="2" fill="var(--muted)"/>${marks}${needle}</svg></div>`;
+}
+
+function seasonBar(r){
+  const on=new Set(r.best_season||[]);
+  let cells='';for(let m=1;m<=12;m++)cells+=`<div class="mo ${on.has(m)?'on':''}" title="${MONTH3[m]}${on.has(m)?' · in season':''}">${MONTHS[m-1]}</div>`;
+  return `<div class="season"><div class="clab">Season</div><div class="row">${cells}</div></div>`;
+}
+
+function climo(r){
+  if(!hasWx(r)) return `<div class="nowx" title="No route_climatology rows">⚠ No weather data</div>`;
+  const maxR=Math.max(...r.climatology.map(c=>c.rainy_days),1);
+  const bars=r.climatology.map(c=>{const h=Math.round(c.rainy_days/maxR*100);
+    return `<div class="cbar"><div class="t">${c.temp_high}°<span class="lo">/${c.temp_low}°</span></div><div class="track" title="${c.rainy_days} rainy days"><div class="rain" style="height:${h}%"></div></div><div class="m">${MONTH3[c.month]}</div></div>`;}).join('');
+  return `<div class="climo" title="temp high/low · rain-day fill">${bars}</div>`;
+}
+
+function condStrip(r){return `<div class="cond">${seasonBar(r)}${compass(r.eff_aspect)}${climo(r)}</div>`;}
+
+/* ---------- state ---------- */
+const state={view:'cards',q:'',gaps:false,disc:null,status:null,sortKey:'data_grade',sortDir:-1,sel:null};
+
+function filtered(){
+  let rs=ROUTES.slice();
+  if(state.status) rs=rs.filter(r=>r.status===state.status);
+  if(state.q){const q=state.q.toLowerCase();
+    rs=rs.filter(r=>(r.name+' '+(r.path_tokens||[]).join(' ')+' '+(r.eff_rock_code||'')+' '+(r.disciplines||[]).join(' ')).toLowerCase().includes(q));}
+  if(state.gaps) rs=rs.filter(r=>!hasWx(r));
+  if(state.disc) rs=rs.filter(r=>(r.disciplines||[]).includes(state.disc));
+  return rs;
+}
+
+/* ---------- health ---------- */
+function renderHealth(){
+  const total=ROUTES.length, pub=ROUTES.filter(r=>r.status==='publish').length, wx=ROUTES.filter(hasWx).length;
+  const countries=new Set(ROUTES.map(r=>(r.path_tokens||[])[0]).filter(Boolean)).size;
+  document.getElementById('health').innerHTML=`
+    <div class="stat"><div class="n">${total}</div><div class="l">Climbs in corpus</div></div>
+    <div class="stat"><div class="n" style="color:var(--accent)">${pub}</div><div class="l">Curated · publish</div></div>
+    <div class="stat"><div class="n" style="color:var(--gap)">${total-pub}</div><div class="l">Seeded · draft</div></div>
+    <div class="stat"><div class="n">${wx}<small> / ${total}</small></div><div class="l">With weather</div></div>
+    <div class="stat warn"><div class="n">${total-wx}</div><div class="l">Weather gaps</div></div>
+    <div class="stat"><div class="n">${countries}</div><div class="l">Countries</div></div>`;
+}
+
+/* ---------- disc filter ---------- */
+function renderDiscFilter(){
+  const set=new Set();ROUTES.forEach(r=>(r.disciplines||[]).forEach(d=>set.add(d)));
+  const el=document.getElementById('discfilt');
+  el.innerHTML=`<span class="fl">Discipline</span>`+[...set].sort().map(d=>
+    `<button class="chip" data-disc="${d}" aria-pressed="${state.disc===d}">${d}</button>`).join('');
+  el.querySelectorAll('[data-disc]').forEach(b=>b.onclick=()=>{
+    state.disc=state.disc===b.dataset.disc?null:b.dataset.disc;renderAll();});
+}
+
+/* ---------- ledger ---------- */
+const COLS=[
+  {k:'name',t:'Climb'},{k:'path',t:'Location',nosort:1},{k:'data_grade',t:'Grade',n:1},
+  {k:'incline_code',t:'Steepness'},{k:'eff_rock_code',t:'Rock'},{k:'eff_aspect',t:'Aspect'},
+  {k:'length_m',t:'Len',n:1},{k:'pitches_count',t:'P',n:1},{k:'stars',t:'★',n:1},
+  {k:'disciplines',t:'Disciplines',nosort:1},{k:'wx',t:'Weather',nosort:1},{k:'hazards',t:'Hazards',nosort:1}];
+
+function renderLedger(){
+  const rs=filtered().sort((a,b)=>{
+    let x=a[state.sortKey],y=b[state.sortKey];
+    if(state.sortKey==='name'){x=a.name;y=b.name;return state.sortDir*x.localeCompare(y);}
+    return state.sortDir*((x??-1)-(y??-1));});
+  const head=COLS.map(c=>`<th class="${c.n?'n':''}" data-k="${c.k}" ${c.nosort?'':'data-sortable'} ${state.sortKey===c.k?'data-active':''}>${c.t}${c.nosort?'':`<span class="ar">${state.sortKey===c.k?(state.sortDir<0?'▼':'▲'):'▾'}</span>`}</th>`).join('');
+  const body=rs.map(r=>`<tr data-id="${r.id}">
+    <td class="name">${esc(r.name)}</td>
+    <td>${pathLine(r)}</td>
+    <td class="n">${gradeBadge(r)}</td>
+    <td>${esc(r.incline_code)}</td>
+    <td>${rockDot(r)}</td>
+    <td class="n">${esc(r.eff_aspect)}</td>
+    <td class="n">${r.length_m}m</td>
+    <td class="n">${r.pitches_count}</td>
+    <td class="n">${stars(r.stars)}</td>
+    <td>${(r.disciplines||[]).map(d=>`<span class="badge disc">${d}</span>`).join(' ')}</td>
+    <td>${hasWx(r)?`<span class="badge wx">✓ ${r.climatology.length} mo</span>`:`<span class="badge gap">gap</span>`}</td>
+    <td>${(r.hazards||[]).map(h=>`<span class="badge haz">${h}</span>`).join(' ')||'<span style="color:var(--faint)">—</span>'}</td>
+  </tr>`).join('');
+  document.getElementById('view-ledger').innerHTML=`<div class="tblwrap"><table><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
+  document.querySelectorAll('#view-ledger th[data-sortable]').forEach(th=>th.onclick=()=>{
+    const k=th.dataset.k;if(state.sortKey===k)state.sortDir*=-1;else{state.sortKey=k;state.sortDir=k==='name'?1:-1;}renderLedger();});
+  document.querySelectorAll('#view-ledger tr[data-id]').forEach(tr=>tr.onclick=()=>openInspector(tr.dataset.id));
+}
+
+/* ---------- cards (flip tiles) ---------- */
+function cardFront(r){
+  return `<div class="face front" role="button" tabindex="0" aria-label="${esc(r.name)} — flip for full detail"><div class="scroll">
+    <div class="top">
+      <div><div class="nm">${esc(r.name)}</div><div style="margin-top:4px">${pathLine(r)}</div></div>
+      <div style="text-align:right;display:flex;flex-direction:column;gap:6px;align-items:flex-end">${gradeBadge(r)}${stars(r.stars)}${statusBadge(r)}</div>
+    </div>
+    <div class="chips">
+      ${(r.disciplines||[]).map(d=>`<span class="badge disc">${d}</span>`).join('')}
+      ${(r.features||[]).map(f=>`<span class="badge">${f}</span>`).join('')}
+      ${(r.character||[]).map(c=>`<span class="badge" style="font-style:italic">${c}</span>`).join('')}
+    </div>
+    ${condStrip(r)}
+    ${(r.hazards&&r.hazards.length)?`<div class="haz"><span style="font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--faint)">Hazards</span>${r.hazards.map(h=>`<span class="badge haz">⚠ ${h}</span>`).join('')}</div>`:''}
+    <div class="meta">
+      <span>${rockDot(r)}</span>
+      <span><b>${val(r.length_m)}</b>m · <b>${val(r.pitches_count)}</b>p</span>
+      <span>approach <b>${val(r.approach_time_min)}</b>′</span>
+      <span><b>${val(r.elevation_m)}</b>m alt</span>
+      <span>${esc(r.protection_code||'—')}·${esc(r.belays||'—')}</span>
+    </div>
+  </div><span class="flipcue">↻ Full detail</span></div>`;
+}
+
+function cardBack(r){
+  const climoTbl=hasWx(r)
+    ?`<table class="climotable"><thead><tr><th>Mo</th><th>High</th><th>Low</th><th>Rain d</th></tr></thead><tbody>${r.climatology.map(c=>`<tr><td>${MONTH3[c.month]}</td><td>${c.temp_high}°</td><td>${c.temp_low}°</td><td>${c.rainy_days}</td></tr>`).join('')}</tbody></table>`
+    :`<div class="nowx" style="margin-top:2px">⚠ No route_climatology rows — weather gap</div>`;
+  return `<div class="face back"><button class="backbtn" type="button">← Front</button><div class="scroll">
+    <div><div class="nm" style="font-size:18px">${esc(r.name)}</div>
+      <div style="font-size:11px;color:var(--faint);font-family:var(--mono);margin-top:2px">route.id ${r.id} · ${esc(r.status)} · ${esc(r.eff_grade_context)}</div></div>
+    <div class="bsect"><h4>Grade</h4><div class="fieldgrid">
+      ${fld('Original',r.original_grade)}${fld('System',r.grade_system_code)}
+      ${fld('Trad',r.trad_grade,'n/a')}${fld('Tech',r.tech_grade,'n/a')}
+      ${fld('Data-grade',r.data_grade+' / 7')}${fld('Protection',r.protection_code+' · '+r.protection_style)}
+    </div></div>
+    <div class="bsect"><h4>Terrain</h4><div class="fieldgrid">
+      ${fld('Rock',r.eff_rock_code)}${fld('Incline',r.incline_code)}
+      ${fld('Aspect',r.eff_aspect)}${fld('Belays',r.belays)}
+      ${fld('Features',r.features)}${fld('Character',r.character,'none')}
+    </div></div>
+    <div class="bsect"><h4>Logistics</h4><div class="fieldgrid">
+      ${fld('Length',r.length_m+' m')}${fld('Pitches',r.pitches_count)}
+      ${fld('Approach',r.approach_time_min+' min')}${fld('Elevation',r.elevation_m+' m')}
+      ${fld('Sun',r.sun_window_code)}${fld('Coords',r.lat==null?null:coord(r))}
+    </div></div>
+    <div class="bsect"><h4>Season &amp; weather</h4>
+      <div style="display:flex;gap:14px;align-items:center;margin-bottom:10px;flex-wrap:wrap">${seasonBar(r)}${compass(r.eff_aspect)}</div>
+      ${climoTbl}
+    </div>
+    <div class="bsect"><h4>Hazards</h4>
+      ${(r.hazards&&r.hazards.length)?`<div style="display:flex;gap:6px;flex-wrap:wrap">${r.hazards.map(h=>`<span class="badge haz">⚠ ${h}</span>`).join('')}</div>`:'<div style="color:var(--faint);font-size:13px">None recorded.</div>'}
+    </div>
+  </div></div>`;
+}
+
+function renderCards(){
+  const rs=filtered();
+  document.getElementById('view-cards').innerHTML=`<div class="grid">${rs.map(r=>
+    `<div class="card" data-id="${r.id}"><div class="flip-inner">${cardFront(r)}${cardBack(r)}</div></div>`).join('')}</div>`;
+  document.querySelectorAll('#view-cards .card').forEach(card=>{
+    const flip=v=>card.classList.toggle('flipped',v);
+    const front=card.querySelector('.face.front');
+    front.onclick=()=>flip(true);
+    front.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();flip(true);}};
+    card.querySelector('.backbtn').onclick=e=>{e.stopPropagation();flip(false);};
+  });
+}
+
+/* ---------- inspector ---------- */
+function fld(k,v,empty){const e=(v==null||v===''||(Array.isArray(v)&&!v.length));
+  return `<div class="f"><div class="k">${k}</div><div class="v ${e?'empty':''}">${e?(empty||'not set'):esc(Array.isArray(v)?v.join(', '):v)}</div></div>`;}
+
+function renderInspector(){
+  const rs=filtered();
+  if(rs.length&&!rs.find(r=>r.id===state.sel))state.sel=rs[0].id;
+  const list=rs.map(r=>`<div class="mi" data-id="${r.id}" aria-selected="${r.id===state.sel}">
+    ${!hasWx(r)?'<span class="warn" title="weather gap"></span>':'<span style="width:7px"></span>'}
+    <span class="mn">${esc(r.name)}</span><span class="mg">${esc(r.original_grade)}</span></div>`).join('');
+  const r=ROUTES.find(x=>x.id===state.sel)||rs[0];
+  const detail=r?inspectorDetail(r):'<div class="detail" style="color:var(--muted)">No climbs match the current filters.</div>';
+  document.getElementById('view-inspector').innerHTML=`<div class="insp"><div class="masterlist">${list}</div>${detail}</div>`;
+  document.querySelectorAll('#view-inspector .mi').forEach(m=>m.onclick=()=>{state.sel=m.dataset.id;renderInspector();});
+}
+
+function inspectorDetail(r){
+  const climoTbl=hasWx(r)?`<table class="climotable"><thead><tr><th>Month</th><th>High</th><th>Low</th><th>Rainy days</th></tr></thead><tbody>${r.climatology.map(c=>`<tr><td>${MONTH3[c.month]}</td><td>${c.temp_high}°C</td><td>${c.temp_low}°C</td><td>${c.rainy_days}</td></tr>`).join('')}</tbody></table>`:`<div class="nowx" style="margin-top:2px">⚠ No <code style="font-family:var(--mono)">route_climatology</code> rows for this climb — weather gap.</div>`;
+  return `<div class="detail">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap">
+      <div><h2>${esc(r.name)}</h2><div style="margin-top:2px">${pathLine(r)}</div></div>
+      <div style="text-align:right;display:flex;flex-direction:column;gap:8px;align-items:flex-end">
+        <div style="display:flex;gap:8px;align-items:center">${gradeBadge(r)}${stars(r.stars)}</div>
+        <span class="badge">id ${esc(r.id)}</span>${statusBadge(r)}${r.source?`<span class="badge">${esc(r.source)}</span>`:''}
+      </div>
+    </div>
+
+    <div class="sect"><h3>Grade</h3><div class="fieldgrid">
+      ${fld('Original',r.original_grade)}${fld('System',r.grade_system_code)}${fld('Context',r.eff_grade_context)}
+      ${fld('Trad',r.trad_grade,'n/a for system')}${fld('Tech',r.tech_grade,'n/a for system')}${fld('Data-grade (1–7)',r.data_grade)}
+    </div></div>
+
+    <div class="sect"><h3>Terrain</h3><div class="fieldgrid">
+      ${fld('Rock',r.eff_rock_code)}${fld('Incline',r.incline_code)}${fld('Aspect',r.eff_aspect)}
+      ${fld('Features',r.features)}${fld('Character',r.character,'no character tags')}${fld('Protection',r.protection_code+' · '+r.protection_style)}
+    </div></div>
+
+    <div class="sect"><h3>Logistics</h3><div class="fieldgrid">
+      ${fld('Length',r.length_m+' m')}${fld('Pitches',r.pitches_count)}${fld('Belays',r.belays)}
+      ${fld('Approach',r.approach_time_min+' min')}${fld('Elevation',r.elevation_m+' m')}${fld('Coordinates',r.lat==null?null:coord(r))}
+    </div></div>
+
+    <div class="sect"><h3>Season &amp; sun</h3>
+      <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:center;margin-bottom:14px">
+        ${seasonBar(r)}${compass(r.eff_aspect)}
+        <div style="font-size:13px;color:var(--muted)">${SUN[r.sun_window_code]||r.sun_window_code}</div>
+      </div>
+      ${climoTbl}
+    </div>
+
+    <div class="sect"><h3>Hazards</h3>
+      ${(r.hazards&&r.hazards.length)?`<div style="display:flex;gap:8px;flex-wrap:wrap">${r.hazards.map(h=>`<span class="badge haz">⚠ ${h}</span>`).join('')}</div>`:'<div style="color:var(--faint);font-size:13px">None recorded.</div>'}
+    </div>
+  </div>`;
+}
+
+/* ---------- orchestration ---------- */
+function openInspector(id){state.sel=id;state.view='inspector';syncSeg();renderAll();window.scrollTo({top:0,behavior:'smooth'});}
+function syncSeg(){document.querySelectorAll('#viewseg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.view===state.view));}
+
+function renderAll(){
+  const rs=filtered();
+  document.getElementById('count').innerHTML=`Showing <b>${rs.length}</b> of <b>${ROUTES.length}</b> climbs${state.gaps?' · weather gaps only':''}${state.disc?' · '+state.disc:''}`;
+  document.getElementById('discfilt').querySelectorAll('[data-disc]').forEach(b=>b.setAttribute('aria-pressed',state.disc===b.dataset.disc));
+  ['ledger','cards','inspector'].forEach(v=>document.getElementById('view-'+v).classList.toggle('hidden',state.view!==v));
+  if(state.view==='ledger')renderLedger();
+  else if(state.view==='cards')renderCards();
+  else renderInspector();
+}
+
+function bindControls(){
+  document.querySelectorAll('#viewseg button').forEach(b=>b.onclick=()=>{state.view=b.dataset.view;syncSeg();renderAll();});
+  document.querySelectorAll('#statusseg button').forEach(b=>b.onclick=()=>{state.status=b.dataset.status||null;
+    document.querySelectorAll('#statusseg button').forEach(x=>x.setAttribute('aria-pressed',x===b));renderAll();});
+  document.getElementById('q').oninput=e=>{state.q=e.target.value;renderAll();};
+  document.getElementById('gaps').onclick=e=>{state.gaps=!state.gaps;e.currentTarget.setAttribute('aria-pressed',state.gaps);renderAll();};
+}
+async function load(){
+  const host=document.getElementById('health');
+  try{
+    const res=await fetch('data/corpus.json',{cache:'no-store'});
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const corpus=await res.json();
+    const areaById=Object.fromEntries((corpus.areas||[]).map(a=>[a.id,a]));
+    ROUTES=(corpus.routes||[]).map(rt=>adapt(rt,areaById));
+    const c=corpus.counts||{}, sp=document.getElementById('src');
+    if(sp) sp.textContent=`${c.routes??ROUTES.length} routes (${c.routesCurated??'?'} curated + ${c.routesSeeded??'?'} seeded) · built ${corpus.generated||'—'}`;
+  }catch(e){
+    host.innerHTML=`<div class="stat" style="flex-basis:100%;border:0"><div class="n" style="color:var(--hazard);font-size:16px">Couldn't load data/corpus.json — ${esc(e.message)}</div><div class="l">Browsers block fetch on file://. Open via the deployed site, or run <code>python3 -m http.server</code> in the repo and browse to it.</div></div>`;
+    return;
+  }
+  state.sel=ROUTES[0]?ROUTES[0].id:null;
+  renderHealth();renderDiscFilter();bindControls();renderAll();
+}
+load();
+</script>
+
+</html>

@@ -98,6 +98,9 @@
     .recipes{grid-template-columns:1fr}
   }
   @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+  .nlink{color:inherit;text-decoration:none;border-bottom:1px dotted currentColor;opacity:.95}
+  .nlink:hover{color:var(--accent);border-bottom-style:solid}
+  .npath a.nlink{font-family:var(--mono)}
 </style>
 
 <div class="wrap">
@@ -105,7 +108,7 @@
   <h1>Where the source of truth lives</h1>
   <p class="lede">Your repo holds <b>two parallel data worlds that never touch</b>. Each has its own place to add data, its own weather source, and its own idea of what a "climb" is. This map shows what's hand-authored (the real sources of truth), what's generated, and — at the bottom — exactly where to add a new climb or venue.</p>
   <div style="margin:16px 0 4px;border:1.5px solid var(--accent);background:var(--accent-soft);border-radius:12px;padding:14px 18px;font-size:14px;color:var(--accent-ink)">
-    <b>Decided — <a href="roadmap/decisions.html" style="color:inherit">#27</a>:</b> one authored <b>db/corpus.json</b> is now the single source of truth (curated <code style="font-family:var(--mono)">status:publish</code> + seeded <code style="font-family:var(--mono)">status:draft</code>). The diagram below is <b>today's wiring</b> — the trip pipeline still reads the old files until it's switched to <code style="font-family:var(--mono)">corpus.json</code>. Full design: <a href="data/source-of-truth.html" style="color:inherit">source-of-truth</a>.
+    <b>Decided — <a href="roadmap/decisions.html" style="color:inherit">#27</a>:</b> one authored <a class="nlink" href="data/corpus.json" target="_blank" rel="noopener"><b>db/corpus.json</b> ↗</a> is now the single source of truth (curated <code style="font-family:var(--mono)">status:publish</code> + seeded <code style="font-family:var(--mono)">status:draft</code>). The diagram below is <b>today's wiring</b> — the trip pipeline still reads the old files until it's switched to <code style="font-family:var(--mono)">corpus.json</code>. Full design: <a href="data/source-of-truth.html" style="color:inherit">source-of-truth</a>. <b>Tip:</b> click any file below to open it.
   </div>
 
   <div class="legend">
@@ -125,20 +128,20 @@
       <div class="lane">
         <div class="lanehead">World A · Corpus DB<small>Individual routes · read by the agent · my inspector reads this</small></div>
 
-        <div class="tier"><div class="node hand" id="taxonomyMd"><div class="ntag">source of truth · vocabulary</div><div class="npath">knowledge/data/taxonomy.md</div><div class="ndesc">Grades, rock, features, hazards. Edit vocab here first.</div></div></div>
+        <div class="tier"><div class="node hand" id="taxonomyMd"><div class="ntag">source of truth · vocabulary</div><div class="npath"><a class="nlink" href="data/taxonomy.html" target="_blank" rel="noopener">knowledge/data/taxonomy.md ↗</a></div><div class="ndesc">Grades, rock, features, hazards. Edit vocab here first.</div></div></div>
 
         <div class="tier">
-          <div class="node hand" id="dbsql"><div class="ntag">source of truth · schema</div><div class="npath">db/sql/*.sql</div><div class="ndesc">DDL + enum seeds. A manual mirror of taxonomy.md.</div></div>
-          <div class="node hand" id="samplesql"><div class="ntag">source of truth · rows</div><div class="npath">db/dev/sample_routes.sql</div><div class="ndesc">The only INSERTs. Routes + hand-typed route_climatology weather.</div></div>
+          <div class="node hand" id="dbsql"><div class="ntag">source of truth · schema</div><div class="npath"><a class="nlink" href="https://github.com/uncinimichel/climbing-agent/tree/main/db/sql" target="_blank" rel="noopener">db/sql/*.sql ↗</a></div><div class="ndesc">DDL + enum seeds. A manual mirror of taxonomy.md.</div></div>
+          <div class="node hand" id="samplesql"><div class="ntag">source of truth · rows</div><div class="npath"><a class="nlink" href="https://github.com/uncinimichel/climbing-agent/blob/main/db/dev/sample_routes.sql" target="_blank" rel="noopener">db/dev/sample_routes.sql ↗</a></div><div class="ndesc">The only INSERTs. Routes + hand-typed route_climatology weather.</div></div>
         </div>
 
-        <div class="tier"><div class="node gen" id="pg"><div class="ntag">generated store</div><div class="npath">Postgres climbing.*</div><div class="ndesc">route · route_climatology · area · taxonomy. Rebuilt by db/apply.sh.</div></div></div>
+        <div class="tier"><div class="node gen" id="pg"><div class="ntag">generated store</div><div class="npath"><a class="nlink" href="data/database.html" target="_blank" rel="noopener">Postgres climbing.* ↗</a></div><div class="ndesc">route · route_climatology · area · taxonomy. Rebuilt by db/apply.sh.</div></div></div>
 
-        <div class="tier"><div class="node gen" id="views"><div class="ntag">generated</div><div class="npath">route_resolved / area_resolved</div><div class="ndesc">Views that resolve inherited rock / aspect / grade.</div></div></div>
+        <div class="tier"><div class="node gen" id="views"><div class="ntag">generated</div><div class="npath"><a class="nlink" href="https://github.com/uncinimichel/climbing-agent/blob/main/db/sql/030_views.sql" target="_blank" rel="noopener">route_resolved / area_resolved ↗</a></div><div class="ndesc">Views that resolve inherited rock / aspect / grade.</div></div></div>
 
         <div class="tier">
-          <div class="node gen" id="searchpy"><div class="ntag">read-only consumer</div><div class="npath">agent/search.py</div><div class="ndesc">Chat / CLI / server. Only reader of the DB.</div></div>
-          <div class="node gen" id="adminui"><div class="ntag">read-only consumer</div><div class="npath">Corpus Inspector</div><div class="ndesc">The admin page — snapshot baked from this DB.</div></div>
+          <div class="node gen" id="searchpy"><div class="ntag">read-only consumer</div><div class="npath"><a class="nlink" href="https://github.com/uncinimichel/climbing-agent/blob/main/agent/search.py" target="_blank" rel="noopener">agent/search.py ↗</a></div><div class="ndesc">Chat / CLI / server. Only reader of the DB.</div></div>
+          <div class="node gen" id="adminui"><div class="ntag">read-only consumer</div><div class="npath"><a class="nlink" href="corpus-inspector.html" target="_blank" rel="noopener">Corpus Inspector ↗</a></div><div class="ndesc">The admin page — snapshot baked from this DB.</div></div>
         </div>
       </div>
 
@@ -149,23 +152,23 @@
         <div class="lanehead">World B · Trip planner<small>Crags / venues · builds the live GitHub Pages dashboard</small></div>
 
         <div class="tier">
-          <div class="node hand" id="sheetCsv"><div class="ntag">master list · wishlist</div><div class="npath">climbing-trips.csv</div><div class="ndesc">Every candidate crag + judgment cols (cost, difficulty…). No coords. The master, per decision #15.</div></div>
-          <div class="node hand" id="venuesJson"><div class="ntag">curated overlay · shortlist</div><div class="npath">trip-ni-july-2026/venues.json</div><div class="ndesc">Hand-detailed subset: coords, per-person travel, priority. Enriches matching sheet rows.</div></div>
-          <div class="node gen" id="gazetteer"><div class="ntag">coords crutch</div><div class="npath">sheet_venues.py · GAZETTEER</div><div class="ndesc">Coords for ~30 sheet areas not in venues.json. The wart to delete.</div></div>
+          <div class="node hand" id="sheetCsv"><div class="ntag">master list · wishlist</div><div class="npath"><a class="nlink" href="https://github.com/uncinimichel/climbing-agent/blob/main/climbing-trips.csv" target="_blank" rel="noopener">climbing-trips.csv ↗</a></div><div class="ndesc">Every candidate crag + judgment cols (cost, difficulty…). No coords. The master, per decision #15.</div></div>
+          <div class="node hand" id="venuesJson"><div class="ntag">curated overlay · shortlist</div><div class="npath"><a class="nlink" href="https://github.com/uncinimichel/climbing-agent/blob/main/trip-ni-july-2026/venues.json" target="_blank" rel="noopener">trip-ni-july-2026/venues.json ↗</a></div><div class="ndesc">Hand-detailed subset: coords, per-person travel, priority. Enriches matching sheet rows.</div></div>
+          <div class="node gen" id="gazetteer"><div class="ntag">coords crutch</div><div class="npath"><a class="nlink" href="https://github.com/uncinimichel/climbing-agent/blob/main/engine/sheet_venues.py" target="_blank" rel="noopener">sheet_venues.py · GAZETTEER ↗</a></div><div class="ndesc">Coords for ~30 sheet areas not in venues.json. The wart to delete.</div></div>
         </div>
 
         <div class="tier">
-          <div class="node ext" id="weatherApi"><div class="ntag">external</div><div class="npath">Open-Meteo · OSM · Flights</div><div class="ndesc">Live weather, stays, flight prices.</div></div>
-          <div class="node ext" id="mpData"><div class="ntag">external climbs</div><div class="npath">multi-pitch.com/data.json</div><div class="ndesc">Live climbs — a 3rd climb source, not the DB.</div></div>
+          <div class="node ext" id="weatherApi"><div class="ntag">external</div><div class="npath"><a class="nlink" href="operations/external-apis.html" target="_blank" rel="noopener">Open-Meteo · OSM · Flights ↗</a></div><div class="ndesc">Live weather, stays, flight prices.</div></div>
+          <div class="node ext" id="mpData"><div class="ntag">external climbs</div><div class="npath"><a class="nlink" href="https://multi-pitch.com/data/data.json" target="_blank" rel="noopener">multi-pitch.com/data.json ↗</a></div><div class="ndesc">Live climbs — a 3rd climb source, not the DB.</div></div>
         </div>
 
-        <div class="tier"><div class="node gen" id="driver"><div class="ntag">transform · the driver</div><div class="npath">scripts/update_report.py + engine/</div><div class="ndesc">Merges venues+sheet, fetches weather, scores, renders. Daily via CI.</div></div></div>
+        <div class="tier"><div class="node gen" id="driver"><div class="ntag">transform · the driver</div><div class="npath"><a class="nlink" href="https://github.com/uncinimichel/climbing-agent/blob/main/trip-ni-july-2026/scripts/update_report.py" target="_blank" rel="noopener">scripts/update_report.py + engine/ ↗</a></div><div class="ndesc">Merges venues+sheet, fetches weather, scores, renders. Daily via CI.</div></div></div>
 
-        <div class="tier"><div class="node gen" id="caches"><div class="ntag">generated cache (committed)</div><div class="npath">climo-cache.json · venue-env.json …</div><div class="ndesc">Weather lives here — keyed by lat/lon, not linked to any climb.</div></div></div>
+        <div class="tier"><div class="node gen" id="caches"><div class="ntag">generated cache (committed)</div><div class="npath"><a class="nlink" href="https://github.com/uncinimichel/climbing-agent/blob/main/trip-ni-july-2026/climo-cache.json" target="_blank" rel="noopener">climo-cache.json · venue-env.json … ↗</a></div><div class="ndesc">Weather lives here — keyed by lat/lon, not linked to any climb.</div></div></div>
 
         <div class="tier">
-          <div class="node gen" id="indexHtml"><div class="ntag">generated output</div><div class="npath">index.html</div><div class="ndesc">The live dashboard on GitHub Pages.</div></div>
-          <div class="node gen" id="venuePages"><div class="ntag">generated output</div><div class="npath">venues/*.html + sitemap.xml</div><div class="ndesc">Per-venue SEO pages. Rebuilt from scratch each run.</div></div>
+          <div class="node gen" id="indexHtml"><div class="ntag">generated output</div><div class="npath"><a class="nlink" href="../index.html" target="_blank" rel="noopener">index.html ↗</a></div><div class="ndesc">The live dashboard on GitHub Pages.</div></div>
+          <div class="node gen" id="venuePages"><div class="ntag">generated output</div><div class="npath"><a class="nlink" href="../sitemap.xml" target="_blank" rel="noopener">venues/*.html + sitemap.xml ↗</a></div><div class="ndesc">Per-venue SEO pages. Rebuilt from scratch each run.</div></div>
         </div>
       </div>
     </div>
@@ -178,7 +181,7 @@
       <div class="world">The source of truth — db/corpus.json (#27)</div>
       <h3>Add a climb or crag</h3>
       <ol class="steps">
-        <li>Add an <code>areas[]</code> entry (crag with <code>lat/lon</code>, rock, aspect) and/or a <code>routes[]</code> entry to <code>db/corpus.json</code>. Coordinates live here now — no GAZETTEER.</li>
+        <li>Add an <code>areas[]</code> entry (crag with <code>lat/lon</code>, rock, aspect) and/or a <code>routes[]</code> entry to <a class="nlink" href="data/corpus.json" target="_blank" rel="noopener"><code>db/corpus.json</code> ↗</a>. Coordinates live here now — no GAZETTEER.</li>
         <li>Set <code>status: "publish"</code> for verified data, <code>status: "draft"</code> for unverified. Tags (<code>disciplines</code>, <code>features</code>, <code>hazards</code>) are values from <code>tag-spec.json</code>.</li>
         <li>Or bulk-seed from multi-pitch.com: re-run <code>python3 db/tools/build_corpus.py</code> (adds <code>draft</code> rows to review).</li>
       </ol>

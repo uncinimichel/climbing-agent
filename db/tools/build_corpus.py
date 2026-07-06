@@ -34,6 +34,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "db" / "corpus.json"
+# A deployed copy under knowledge/ (the only tree GitHub Pages serves), so the
+# corpus is fetchable by the Corpus Inspector and clickable from the data map.
+DEPLOY_OUT = ROOT / "knowledge" / "data" / "corpus.json"
 VENUES_JSON = ROOT / "trip-ni-july-2026" / "venues.json"
 MP_URL = "https://multi-pitch.com/data/data.json"
 DB_DSN = "postgresql://climbing:climbing@localhost:5432/climbing"
@@ -221,10 +224,12 @@ def build():
         "areas": area_list,
         "routes": routes,
     }
-    OUT.write_text(json.dumps(corpus, ensure_ascii=False, indent=2) + "\n")
-    print(f"wrote {OUT.relative_to(ROOT)} — {len(area_list)} areas "
-          f"({pub_a} curated), {len(routes)} routes ({pub_r} curated, "
-          f"{len(routes)-pub_r} seeded from multi-pitch)")
+    payload = json.dumps(corpus, ensure_ascii=False, indent=2) + "\n"
+    OUT.write_text(payload)
+    DEPLOY_OUT.write_text(payload)          # served copy for the site
+    print(f"wrote {OUT.relative_to(ROOT)} + {DEPLOY_OUT.relative_to(ROOT)} — "
+          f"{len(area_list)} areas ({pub_a} curated), {len(routes)} routes "
+          f"({pub_r} curated, {len(routes)-pub_r} seeded from multi-pitch)")
 
 
 if __name__ == "__main__":
