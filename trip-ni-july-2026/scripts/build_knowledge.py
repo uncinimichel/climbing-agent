@@ -285,6 +285,8 @@ def page(title: str, body: str, depth: int, crumb: str) -> str:
         f"<style>{CSS}</style></head><body>"
         f'<div class=top><a class=logo href="{home}index.html">🧗 multi-pitch <span style="color:var(--spike)">Live</span></a>'
         f'<a class=btn href="{home}knowledge/index.html">📚 Knowledge</a>'
+        f'<a class=btn href="{home}knowledge/corpus-inspector.html">🧗 Inspector</a>'
+        f'<a class=btn href="{home}knowledge/data-dependencies.html">🗺 Data map</a>'
         f'<a class=btn href="{home}index.html">▶ Dashboard</a></div>'
         f'<div class=wrap><div class=crumb>{crumb}</div>{body}</div></body></html>'
     )
