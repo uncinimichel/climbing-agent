@@ -100,3 +100,53 @@ These encode the conventions, so a refactor can't silently violate them:
 - **Quota cap:** flights are priced for at most `TOP_N_FLIGHTS` venues.
 - **No secrets / key-free build:** with `SERPAPI_KEY` unset, the build completes and emits
   search links instead of prices.
+
+## Site & data integrity — mechanizing the manual inspections *(planned)*
+
+Every check done by eye while building the corpus / inspector / data-map (decision
+[#27](../roadmap/decisions.md)) is mechanizable — stdlib-only, offline, deterministic. A
+machine won't skip one. Proposed `engine/tests/test_site_integrity.py` (the pipeline smoke,
+type 4 above, already exists as [`test_ni_smoke.py`](../../engine/tests/test_ni_smoke.py)).
+Each row is a check I currently run by hand → the assertion that replaces it.
+
+**A · Corpus data integrity** (`db/corpus.json` + the served copy)
+- Valid JSON; has `schemaVersion` / `areas[]` / `routes[]` / `counts`.
+- `counts.*` equal the real lengths + status splits (`routes`, `routesCurated`=publish, `routesSeeded`=draft).
+- **Referential:** every `route.area` resolves to an `areas[]` id — no dangling refs.
+- **Closed-enum:** every `disciplines`/`features`/`character`/`hazards`/`incline`/`gradeSys`/`protection` value is in the taxonomy (cross-checked against [`tag-spec.json`](../data/tag-spec.json) / [`taxonomy.md`](../data/taxonomy.md)) — off-dictionary → fail, mirroring the DB's FK guard (#18).
+- `status` ∈ {publish, draft, quarantined}; `dataGrade` ∈ 1–7 or null; lat/lon in range or null.
+- **No drift:** `db/corpus.json` byte-equals `knowledge/data/corpus.json` (the deployed copy).
+
+**B · Link integrity** — kills the "`…/source-of-truth.html` 404" class. Crawl every committed
+`knowledge/**/*.html` **and the `render.py` nav template** for `href`/`src`; each relative
+target must exist on disk. (External URLs → the live smoke, G.)
+
+**C · HTML structure** — each standalone page (`corpus-inspector`, `data-dependencies`)
+parses with `html.parser`; exactly one `<script>`/`<style>`; has doctype, `<title>`, viewport
+meta. `data-dependencies`: **every `EDGES` node id exists as an element id** (the check I run
+by hand each time).
+
+**D · Knowledge-index completeness** — every `knowledge/**/*.md` has a `TITLES` entry and
+appears in a `GROUPS` group, and every `GROUPS` key resolves to a real page. Catches "added a
+doc, forgot to list it."
+
+**E · Generator determinism** — `build_knowledge.py` run twice → identical output;
+`render_page(...)` output contains the nav links; `build_corpus.py` importable and, with a
+stubbed multi-pitch fetch, yields both curated and seeded rows.
+
+**F · Render smoke** *(browser, CI-gated — skip if no Chrome)* — the mechanical form of the
+screenshots: headless-load `corpus-inspector.html`, assert **no uncaught console errors** and
+card count == `counts.routes`; load `data-dependencies.html`, assert N edge `<path>` elements
+drawn. Asserts *"it rendered,"* not pixels.
+
+**G · Post-deploy live smoke** — the *"automatically after deployed"* gate: a job that runs
+**after** the Pages deploy and `curl`s the live URLs, asserting `200` + a marker string:
+`/` contains the Inspector + Data-map nav links · `/knowledge/corpus-inspector.html` &
+`/knowledge/data-dependencies.html` → 200 · `/knowledge/data/corpus.json` → 200, parses,
+counts match.
+
+**Wiring:** A–E run offline in the **separate `tests.yml`** (Phase 3) on push — cheap, no
+SerpApi, gates deploy. F is opt-in (needs a browser). **G is a new `verify-deploy` job that
+runs after `deploy-pages`** in [`weather.yml`](../../.github/workflows/weather.yml). This is
+the ordering you asked for: build → deploy → **then** the live checks. *(CI wiring in
+`weather.yml` is the trip-planner process's file — coordinate before adding G.)*
