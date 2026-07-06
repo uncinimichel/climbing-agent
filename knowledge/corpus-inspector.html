@@ -181,9 +181,16 @@
     background:var(--paper);border:1px solid var(--line-2);padding:4px 10px;border-radius:999px;
     display:flex;gap:6px;align-items:center;pointer-events:none}
   .face.front:hover .flipcue{color:var(--accent);border-color:var(--accent)}
-  .backbtn{position:absolute;right:12px;top:12px;z-index:3;font:inherit;font-size:12px;cursor:pointer;
-    background:var(--paper);border:1px solid var(--line-2);color:var(--ink);padding:5px 12px;border-radius:999px}
-  .backbtn:hover{border-color:var(--accent);color:var(--accent)}
+  .backbtn{position:absolute;right:14px;top:12px;z-index:3;font:inherit;font-size:12px;cursor:pointer;
+    background:transparent;border:0;color:var(--muted);padding:2px;text-decoration:underline;text-underline-offset:3px}
+  .backbtn:hover{color:var(--accent)}
+  /* compact 12-month climograph (fits any card width) */
+  .climo2{display:flex;gap:2px;align-items:flex-end;margin-top:4px}
+  .cbar2{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;gap:3px}
+  .cbar2 .track2{width:100%;height:34px;background:var(--panel-2);border:1px solid var(--line);
+    border-radius:2px;position:relative;overflow:hidden}
+  .cbar2 .rain2{position:absolute;left:0;right:0;bottom:0;background:var(--weather);opacity:.85}
+  .cbar2 .m2{font-size:8px;color:var(--faint);font-family:var(--mono)}
   .card .top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
   .card .nm{font-family:var(--serif);font-size:20px;font-weight:600;letter-spacing:-.01em;line-height:1.15}
   .card .chips{display:flex;gap:6px;flex-wrap:wrap}
@@ -323,6 +330,8 @@ function rockDot(r){const c=ROCKC[r.eff_rock_code]||'var(--muted)';return `<span
 function pathLine(r){const t=(r.path_tokens||[]).filter(Boolean);if(!t.length)return '<span class="path" style="color:var(--faint)">— no area —</span>';const last=t[t.length-1],head=t.slice(0,-1).map(esc).join('<span class="sep">›</span>');return `<span class="path">${head}${head?'<span class="sep">›</span>':''}<b>${esc(last)}</b></span>`;}
 const val=(v,su='')=>(v==null||v==='')?'—':v+su;
 function coord(r){return (r.lat==null||r.lon==null)?'—':r.lat.toFixed(3)+', '+r.lon.toFixed(3);}
+const mnum=(v,su)=>(v==null||v==='')?null:v+su;
+function prot(r){return r.protection_code?r.protection_code+(r.protection_style?' · '+r.protection_style:''):null;}
 function statusBadge(r){return r.status==='publish'?'<span class="badge pub" title="hand-verified">curated</span>':`<span class="badge seed" title="seeded from ${esc(r.source||'source')}, unverified">seeded</span>`;}
 
 function compass(aspect){
@@ -342,11 +351,12 @@ function seasonBar(r){
 }
 
 function climo(r){
-  if(!hasWx(r)) return `<div class="nowx" title="No route_climatology rows">⚠ No weather data</div>`;
-  const maxR=Math.max(...r.climatology.map(c=>c.rainy_days),1);
-  const bars=r.climatology.map(c=>{const h=Math.round(c.rainy_days/maxR*100);
-    return `<div class="cbar"><div class="t">${c.temp_high}°<span class="lo">/${c.temp_low}°</span></div><div class="track" title="${c.rainy_days} rainy days"><div class="rain" style="height:${h}%"></div></div><div class="m">${MONTH3[c.month]}</div></div>`;}).join('');
-  return `<div class="climo" title="temp high/low · rain-day fill">${bars}</div>`;
+  if(!hasWx(r)) return `<div class="nowx" title="no monthly weather">⚠ No weather data</div>`;
+  const cs=r.climatology, maxR=Math.max(...cs.map(c=>c.rainy_days||0),1);
+  const warm=cs.reduce((a,b)=>((b.temp_high??-99)>(a.temp_high??-99)?b:a));
+  const bars=cs.map(c=>{const h=Math.round((c.rainy_days||0)/maxR*100);
+    return `<div class="cbar2" title="${MONTH3[c.month]}: ${c.temp_high}°/${c.temp_low}° · ${c.rainy_days} rain days"><div class="track2"><div class="rain2" style="height:${h}%"></div></div><div class="m2">${MONTHS[c.month-1]}</div></div>`;}).join('');
+  return `<div style="flex:1 1 100%"><div class="clab">Weather · warmest ${MONTH3[warm.month]} ${warm.temp_high}°/${warm.temp_low}° · rain-days ↓</div><div class="climo2">${bars}</div></div>`;
 }
 
 function condStrip(r){return `<div class="cond">${seasonBar(r)}${compass(r.eff_aspect)}${climo(r)}</div>`;}
@@ -448,13 +458,13 @@ function cardBack(r){
   const climoTbl=hasWx(r)
     ?`<table class="climotable"><thead><tr><th>Mo</th><th>High</th><th>Low</th><th>Rain d</th></tr></thead><tbody>${r.climatology.map(c=>`<tr><td>${MONTH3[c.month]}</td><td>${c.temp_high}°</td><td>${c.temp_low}°</td><td>${c.rainy_days}</td></tr>`).join('')}</tbody></table>`
     :`<div class="nowx" style="margin-top:2px">⚠ No route_climatology rows — weather gap</div>`;
-  return `<div class="face back"><button class="backbtn" type="button">← Front</button><div class="scroll">
+  return `<div class="face back"><button class="backbtn" type="button">← Back</button><div class="scroll">
     <div><div class="nm" style="font-size:18px">${esc(r.name)}</div>
       <div style="font-size:11px;color:var(--faint);font-family:var(--mono);margin-top:2px">route.id ${r.id} · ${esc(r.status)} · ${esc(r.eff_grade_context)}</div></div>
     <div class="bsect"><h4>Grade</h4><div class="fieldgrid">
       ${fld('Original',r.original_grade)}${fld('System',r.grade_system_code)}
       ${fld('Trad',r.trad_grade,'n/a')}${fld('Tech',r.tech_grade,'n/a')}
-      ${fld('Data-grade',r.data_grade+' / 7')}${fld('Protection',r.protection_code+' · '+r.protection_style)}
+      ${fld('Data-grade',mnum(r.data_grade,' / 7'))}${fld('Protection',prot(r))}
     </div></div>
     <div class="bsect"><h4>Terrain</h4><div class="fieldgrid">
       ${fld('Rock',r.eff_rock_code)}${fld('Incline',r.incline_code)}
@@ -462,8 +472,8 @@ function cardBack(r){
       ${fld('Features',r.features)}${fld('Character',r.character,'none')}
     </div></div>
     <div class="bsect"><h4>Logistics</h4><div class="fieldgrid">
-      ${fld('Length',r.length_m+' m')}${fld('Pitches',r.pitches_count)}
-      ${fld('Approach',r.approach_time_min+' min')}${fld('Elevation',r.elevation_m+' m')}
+      ${fld('Length',mnum(r.length_m,' m'))}${fld('Pitches',r.pitches_count)}
+      ${fld('Approach',mnum(r.approach_time_min,' min'))}${fld('Elevation',mnum(r.elevation_m,' m'))}
       ${fld('Sun',r.sun_window_code)}${fld('Coords',r.lat==null?null:coord(r))}
     </div></div>
     <div class="bsect"><h4>Season &amp; weather</h4>
@@ -524,12 +534,12 @@ function inspectorDetail(r){
 
     <div class="sect"><h3>Terrain</h3><div class="fieldgrid">
       ${fld('Rock',r.eff_rock_code)}${fld('Incline',r.incline_code)}${fld('Aspect',r.eff_aspect)}
-      ${fld('Features',r.features)}${fld('Character',r.character,'no character tags')}${fld('Protection',r.protection_code+' · '+r.protection_style)}
+      ${fld('Features',r.features)}${fld('Character',r.character,'no character tags')}${fld('Protection',prot(r))}
     </div></div>
 
     <div class="sect"><h3>Logistics</h3><div class="fieldgrid">
-      ${fld('Length',r.length_m+' m')}${fld('Pitches',r.pitches_count)}${fld('Belays',r.belays)}
-      ${fld('Approach',r.approach_time_min+' min')}${fld('Elevation',r.elevation_m+' m')}${fld('Coordinates',r.lat==null?null:coord(r))}
+      ${fld('Length',mnum(r.length_m,' m'))}${fld('Pitches',r.pitches_count)}${fld('Belays',r.belays)}
+      ${fld('Approach',mnum(r.approach_time_min,' min'))}${fld('Elevation',mnum(r.elevation_m,' m'))}${fld('Coordinates',r.lat==null?null:coord(r))}
     </div></div>
 
     <div class="sect"><h3>Season &amp; sun</h3>
