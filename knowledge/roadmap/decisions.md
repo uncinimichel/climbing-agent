@@ -369,6 +369,35 @@ it. The live composite (weather 55% + travel + fit) reshuffles on the next `weat
 **Status:** ✅ Live — curve + "?" explainer + docstrings shipped in `update_report.py`; site
 ranking updates on the next scheduled build.
 
+### #27 — One authored `corpus.json` is the source of truth; supersedes the sheet-as-master (#15) (2026-07-06)
+**Decision:** consolidate the five scattered climb/venue sources into a **single authored
+`db/corpus.json`** — `areas[]` (crag/region tree with coords, rock, aspect) + `routes[]`
+(climbs carrying taxonomy *values* inline), shaped 1:1 with the `route`/`area` schema
+([`../data/route-schema.md`](../data/route-schema.md)) so it is a **drop-in Postgres seed**,
+not a rival store. Curated vs uncurated is a **field, not a file**: `status`
+(`publish|draft|quarantined`) + `dataGrade` 1–7. **`GAZETTEER` is deleted** — every area,
+curated or not, is a row with coords. **multi-pitch.com/data.json is a *seed*, not a third
+live source** (`build_corpus.py` pulls it once into `status: draft` rows). The Google Sheet
+stops being the master (**reverses #15**): `climbing-trips.csv` becomes a *derived export*
+of the curated slice. Trips become **derived selections** — a `trip.json` holds refs +
+per-person travel/priority overlay, never crag facts. Taxonomy *definitions* stay in
+`tag-spec.json`/[`taxonomy.md`](../data/taxonomy.md) (**#25**), referenced not duplicated.
+Full design: [`../data/source-of-truth.md`](../data/source-of-truth.md).
+**Why:** three places (`venues.json`, `GAZETTEER`, geocoder) independently answered "where is
+this crag?", and nothing linked the corpus DB (World A) to the trip dashboard (World B) — so
+"where do I add a climb?" had five answers. One authored file with a `status` flag gives the
+curated/uncurated split Michel wanted, kills the coordinate sprawl, and is exactly the seed/
+export shape #18 already wants (JSON now → Postgres at scale). The sheet can't hold coords or
+per-climb taxonomy, so mastering venue data in it (#15) had hit its ceiling.
+**Supersedes:** #15 (sheet-as-master → derived export). Extends #18 (corpus.json is the
+human-authored seed the DB loads) and #25 (taxonomy authority unchanged). Decision #2
+(repo-as-DB for the live dashboard) still governs `index.html` generation until the pipeline
+reads `corpus.json`.
+**Status:** ⚠️ Partial — `db/corpus.json` + `db/tools/build_corpus.py` (seeded from
+multi-pitch + `venues.json` + the curated DB routes) and the docs/dependency-map land now;
+rewiring `update_report.py`/`sheet_venues.py` to *read* corpus.json (and drop `GAZETTEER`) is
+the trip-planner pipeline's follow-up, then ingestion into Postgres (Stage 5 / M2).
+
 ---
 
 *Template for new entries:*

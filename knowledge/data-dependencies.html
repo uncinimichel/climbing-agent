@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Data map — climbing-agent</title>
+<style>
+  :root{
+    --paper:#EAECE7; --panel:#F3F4F0; --panel-2:#E1E4DD; --ink:#232A27; --muted:#616B64; --faint:#8A938C;
+    --line:#D2D6CE; --line-2:#C3C8BE;
+    --accent:#5E6B14; --accent-soft:#E7EBCF; --accent-ink:#3F4A0D;
+    --weather:#2F6076; --weather-soft:#DAE6EB;
+    --amber:#9A6A12; --amber-soft:#F3E6C9;
+    --ghost:#9AA39B;
+    --shadow:0 1px 2px rgba(35,42,39,.06),0 6px 18px rgba(35,42,39,.06);
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --serif:ui-serif,"Iowan Old Style",Georgia,serif;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  }
+  @media (prefers-color-scheme:dark){:root{
+    --paper:#171B19; --panel:#1F2421; --panel-2:#272D29; --ink:#E7EBE4; --muted:#9BA59D; --faint:#6E786F;
+    --line:#2E332F; --line-2:#3A413B; --accent:#A9BF4E; --accent-soft:#2C3316; --accent-ink:#C7D97A;
+    --weather:#79B0C6; --weather-soft:#1B2C34; --amber:#D6A94E; --amber-soft:#332711; --ghost:#5A635B;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 22px rgba(0,0,0,.28);}}
+  :root[data-theme="light"]{--paper:#EAECE7;--panel:#F3F4F0;--panel-2:#E1E4DD;--ink:#232A27;--muted:#616B64;--faint:#8A938C;--line:#D2D6CE;--line-2:#C3C8BE;--accent:#5E6B14;--accent-soft:#E7EBCF;--accent-ink:#3F4A0D;--weather:#2F6076;--weather-soft:#DAE6EB;--amber:#9A6A12;--amber-soft:#F3E6C9;--ghost:#9AA39B;--shadow:0 1px 2px rgba(35,42,39,.06),0 6px 18px rgba(35,42,39,.06);}
+  :root[data-theme="dark"]{--paper:#171B19;--panel:#1F2421;--panel-2:#272D29;--ink:#E7EBE4;--muted:#9BA59D;--faint:#6E786F;--line:#2E332F;--line-2:#3A413B;--accent:#A9BF4E;--accent-soft:#2C3316;--accent-ink:#C7D97A;--weather:#79B0C6;--weather-soft:#1B2C34;--amber:#D6A94E;--amber-soft:#332711;--ghost:#5A635B;--shadow:0 1px 2px rgba(0,0,0,.3),0 8px 22px rgba(0,0,0,.28);}
+
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.5;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1180px;margin:0 auto;padding:34px 20px 70px}
+  h1{font-family:var(--serif);font-size:30px;font-weight:600;letter-spacing:-.02em;margin:0 0 6px}
+  .lede{font-size:15.5px;color:var(--muted);max-width:70ch;margin:0 0 8px}
+  .lede b{color:var(--ink)}
+  .homelink{font-size:12px;color:var(--muted);text-decoration:none;border:1px solid var(--line);padding:5px 10px;border-radius:999px;display:inline-block;margin-bottom:20px}
+
+  .legend{display:flex;gap:16px;flex-wrap:wrap;margin:18px 0 26px;font-size:12.5px;color:var(--muted)}
+  .lg{display:inline-flex;align-items:center;gap:7px}
+  .sw{width:22px;height:0;border-top:3px solid var(--accent)}
+  .sw.b{border-color:var(--weather)}
+  .sw.m{border-top-style:dashed;border-color:var(--amber)}
+  .sw.g{border-top-style:dashed;border-color:var(--ghost)}
+  .swb{width:14px;height:14px;border-radius:4px;border:2px solid var(--accent);background:var(--accent-soft)}
+  .swb.gen{border-style:dashed;border-color:var(--line-2);background:var(--panel)}
+  .swb.ext{border-color:var(--weather);background:var(--weather-soft)}
+
+  .diagram{position:relative}
+  svg.edges{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;overflow:visible}
+  .lanes{position:relative;z-index:1;display:grid;grid-template-columns:1fr 56px 1fr;gap:0;align-items:start}
+  .lane{display:flex;flex-direction:column;gap:26px}
+  .lanehead{font-family:var(--serif);font-size:17px;font-weight:600;padding:9px 14px;border-radius:10px;
+    border:1px solid var(--line-2);background:var(--panel);box-shadow:var(--shadow)}
+  .lanehead small{display:block;font-family:var(--sans);font-size:11.5px;font-weight:400;color:var(--muted);margin-top:2px}
+  .tier{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+  .tierlabel{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);text-align:center;margin-bottom:-16px}
+
+  .node{background:var(--panel);border:1.5px solid var(--line-2);border-radius:10px;padding:11px 13px;
+    box-shadow:var(--shadow);min-width:150px;max-width:230px;flex:1 1 auto}
+  .node.hand{border-color:var(--accent);border-left-width:5px}
+  .node.gen{border-style:dashed;border-color:var(--line-2)}
+  .node.ext{border-color:var(--weather);border-left-width:5px;background:var(--weather-soft)}
+  .node.orphan{opacity:.55}
+  .ntag{font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;font-weight:700;margin-bottom:5px}
+  .node.hand .ntag{color:var(--accent-ink)}
+  .node.gen .ntag{color:var(--faint)}
+  .node.ext .ntag{color:var(--weather)}
+  @media (prefers-color-scheme:dark){.node.hand .ntag{color:var(--accent)}}
+  :root[data-theme="dark"] .node.hand .ntag{color:var(--accent)}
+  .npath{font-family:var(--mono);font-size:12.5px;font-weight:600;line-height:1.3;word-break:break-word}
+  .ndesc{font-size:11.5px;color:var(--muted);margin-top:4px;line-height:1.35}
+
+  .divider{position:relative;align-self:stretch;display:flex;align-items:center;justify-content:center}
+  .divider::before{content:"";position:absolute;top:44px;bottom:0;left:50%;width:0;border-left:2px dashed var(--line-2)}
+  .divider span{writing-mode:vertical-rl;transform:rotate(180deg);font-size:10px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--faint);background:var(--paper);padding:8px 0;z-index:1;font-weight:600}
+
+  .callout{margin:30px 0 0;border:1.5px dashed var(--amber);background:var(--amber-soft);border-radius:12px;
+    padding:16px 20px;font-size:14px}
+  .callout b{color:var(--amber)}
+
+  .recipes{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:34px}
+  .recipe{border:1px solid var(--line);border-radius:12px;background:var(--panel);box-shadow:var(--shadow);padding:20px 22px}
+  .recipe h3{font-family:var(--serif);font-size:19px;margin:0 0 3px}
+  .recipe .world{font-size:11px;letter-spacing:.09em;text-transform:uppercase;font-weight:700;color:var(--accent-ink);margin-bottom:14px}
+  @media (prefers-color-scheme:dark){.recipe .world{color:var(--accent)}}
+  :root[data-theme="dark"] .recipe .world{color:var(--accent)}
+  ol.steps{margin:0;padding:0;list-style:none;counter-reset:s;display:flex;flex-direction:column;gap:13px}
+  ol.steps li{counter-increment:s;padding-left:34px;position:relative;font-size:13.5px;line-height:1.5}
+  ol.steps li::before{content:counter(s);position:absolute;left:0;top:0;width:23px;height:23px;border-radius:50%;
+    background:var(--accent);color:#fff;font-family:var(--mono);font-size:12px;font-weight:700;
+    display:flex;align-items:center;justify-content:center}
+  ol.steps code{font-family:var(--mono);font-size:12px;background:var(--panel-2);padding:1.5px 6px;border-radius:5px;
+    color:var(--ink);word-break:break-word}
+  .recipe .out{margin-top:15px;font-size:12px;color:var(--muted);border-top:1px solid var(--line);padding-top:11px}
+
+  footer{margin-top:36px;font-size:12px;color:var(--faint);line-height:1.7;text-align:center}
+  @media (max-width:820px){
+    .lanes{grid-template-columns:1fr;gap:28px}
+    .divider{display:none}
+    .recipes{grid-template-columns:1fr}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <a class="homelink" href="../index.html">← Trip report</a>
+  <h1>Where the source of truth lives</h1>
+  <p class="lede">Your repo holds <b>two parallel data worlds that never touch</b>. Each has its own place to add data, its own weather source, and its own idea of what a "climb" is. This map shows what's hand-authored (the real sources of truth), what's generated, and — at the bottom — exactly where to add a new climb or venue.</p>
+  <div style="margin:16px 0 4px;border:1.5px solid var(--accent);background:var(--accent-soft);border-radius:12px;padding:14px 18px;font-size:14px;color:var(--accent-ink)">
+    <b>Decided — <a href="roadmap/decisions.html" style="color:inherit">#27</a>:</b> one authored <b>db/corpus.json</b> is now the single source of truth (curated <code style="font-family:var(--mono)">status:publish</code> + seeded <code style="font-family:var(--mono)">status:draft</code>). The diagram below is <b>today's wiring</b> — the trip pipeline still reads the old files until it's switched to <code style="font-family:var(--mono)">corpus.json</code>. Full design: <a href="data/source-of-truth.html" style="color:inherit">source-of-truth</a>.
+  </div>
+
+  <div class="legend">
+    <span class="lg"><span class="swb"></span>Hand-authored (source of truth)</span>
+    <span class="lg"><span class="swb gen"></span>Generated / cache</span>
+    <span class="lg"><span class="swb ext"></span>External API</span>
+    <span class="lg"><span class="sw"></span>writes / feeds</span>
+    <span class="lg"><span class="sw b"></span>live fetch</span>
+    <span class="lg"><span class="sw m"></span>manual sync (no automation)</span>
+    <span class="lg"><span class="sw g"></span>planned bridge — not built</span>
+  </div>
+
+  <div class="diagram">
+    <svg class="edges" id="edges" aria-hidden="true"></svg>
+    <div class="lanes">
+      <!-- WORLD A -->
+      <div class="lane">
+        <div class="lanehead">World A · Corpus DB<small>Individual routes · read by the agent · my inspector reads this</small></div>
+
+        <div class="tier"><div class="node hand" id="taxonomyMd"><div class="ntag">source of truth · vocabulary</div><div class="npath">knowledge/data/taxonomy.md</div><div class="ndesc">Grades, rock, features, hazards. Edit vocab here first.</div></div></div>
+
+        <div class="tier">
+          <div class="node hand" id="dbsql"><div class="ntag">source of truth · schema</div><div class="npath">db/sql/*.sql</div><div class="ndesc">DDL + enum seeds. A manual mirror of taxonomy.md.</div></div>
+          <div class="node hand" id="samplesql"><div class="ntag">source of truth · rows</div><div class="npath">db/dev/sample_routes.sql</div><div class="ndesc">The only INSERTs. Routes + hand-typed route_climatology weather.</div></div>
+        </div>
+
+        <div class="tier"><div class="node gen" id="pg"><div class="ntag">generated store</div><div class="npath">Postgres climbing.*</div><div class="ndesc">route · route_climatology · area · taxonomy. Rebuilt by db/apply.sh.</div></div></div>
+
+        <div class="tier"><div class="node gen" id="views"><div class="ntag">generated</div><div class="npath">route_resolved / area_resolved</div><div class="ndesc">Views that resolve inherited rock / aspect / grade.</div></div></div>
+
+        <div class="tier">
+          <div class="node gen" id="searchpy"><div class="ntag">read-only consumer</div><div class="npath">agent/search.py</div><div class="ndesc">Chat / CLI / server. Only reader of the DB.</div></div>
+          <div class="node gen" id="adminui"><div class="ntag">read-only consumer</div><div class="npath">Corpus Inspector</div><div class="ndesc">The admin page — snapshot baked from this DB.</div></div>
+        </div>
+      </div>
+
+      <div class="divider"><span>Not connected</span></div>
+
+      <!-- WORLD B -->
+      <div class="lane">
+        <div class="lanehead">World B · Trip planner<small>Crags / venues · builds the live GitHub Pages dashboard</small></div>
+
+        <div class="tier">
+          <div class="node hand" id="sheetCsv"><div class="ntag">master list · wishlist</div><div class="npath">climbing-trips.csv</div><div class="ndesc">Every candidate crag + judgment cols (cost, difficulty…). No coords. The master, per decision #15.</div></div>
+          <div class="node hand" id="venuesJson"><div class="ntag">curated overlay · shortlist</div><div class="npath">trip-ni-july-2026/venues.json</div><div class="ndesc">Hand-detailed subset: coords, per-person travel, priority. Enriches matching sheet rows.</div></div>
+          <div class="node gen" id="gazetteer"><div class="ntag">coords crutch</div><div class="npath">sheet_venues.py · GAZETTEER</div><div class="ndesc">Coords for ~30 sheet areas not in venues.json. The wart to delete.</div></div>
+        </div>
+
+        <div class="tier">
+          <div class="node ext" id="weatherApi"><div class="ntag">external</div><div class="npath">Open-Meteo · OSM · Flights</div><div class="ndesc">Live weather, stays, flight prices.</div></div>
+          <div class="node ext" id="mpData"><div class="ntag">external climbs</div><div class="npath">multi-pitch.com/data.json</div><div class="ndesc">Live climbs — a 3rd climb source, not the DB.</div></div>
+        </div>
+
+        <div class="tier"><div class="node gen" id="driver"><div class="ntag">transform · the driver</div><div class="npath">scripts/update_report.py + engine/</div><div class="ndesc">Merges venues+sheet, fetches weather, scores, renders. Daily via CI.</div></div></div>
+
+        <div class="tier"><div class="node gen" id="caches"><div class="ntag">generated cache (committed)</div><div class="npath">climo-cache.json · venue-env.json …</div><div class="ndesc">Weather lives here — keyed by lat/lon, not linked to any climb.</div></div></div>
+
+        <div class="tier">
+          <div class="node gen" id="indexHtml"><div class="ntag">generated output</div><div class="npath">index.html</div><div class="ndesc">The live dashboard on GitHub Pages.</div></div>
+          <div class="node gen" id="venuePages"><div class="ntag">generated output</div><div class="npath">venues/*.html + sitemap.xml</div><div class="ndesc">Per-venue SEO pages. Rebuilt from scratch each run.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout">⚠ <b>They don't sync.</b> Adding a venue to <code style="font-family:var(--mono)">venues.json</code> does <b>not</b> create a DB route, and adding a DB route does <b>not</b> appear on the dashboard. The dotted line is a <b>planned</b> importer (<code style="font-family:var(--mono)">extra-climbing.json → area_reference</code>) that isn't built yet. To have something in both worlds today, add it in both.</div>
+
+  <div class="recipes">
+    <div class="recipe">
+      <div class="world">The source of truth — db/corpus.json (#27)</div>
+      <h3>Add a climb or crag</h3>
+      <ol class="steps">
+        <li>Add an <code>areas[]</code> entry (crag with <code>lat/lon</code>, rock, aspect) and/or a <code>routes[]</code> entry to <code>db/corpus.json</code>. Coordinates live here now — no GAZETTEER.</li>
+        <li>Set <code>status: "publish"</code> for verified data, <code>status: "draft"</code> for unverified. Tags (<code>disciplines</code>, <code>features</code>, <code>hazards</code>) are values from <code>tag-spec.json</code>.</li>
+        <li>Or bulk-seed from multi-pitch.com: re-run <code>python3 db/tools/build_corpus.py</code> (adds <code>draft</code> rows to review).</li>
+      </ol>
+      <div class="out">→ One file. Loads into Postgres later unchanged. Curated list = filter <code>status=publish</code>.</div>
+    </div>
+
+    <div class="recipe">
+      <div class="world">Trips are derived selections</div>
+      <h3>Plan a trip</h3>
+      <ol class="steps">
+        <li>Make a <code>trip.json</code> that <b>references</b> area IDs from the corpus — never copies crag facts.</li>
+        <li>Add only the trip overlay: who's going, from which airport, this-trip priority, the date window.</li>
+        <li>Compose as many trip lists as you like from the one corpus.</li>
+      </ol>
+      <div class="out">→ Splits crag facts (corpus) from trip choices (overlay) that venues.json used to conflate.</div>
+    </div>
+  </div>
+
+  <div class="callout" style="border-color:var(--ghost);background:transparent;color:var(--muted)">🔜 <b>Pending (trip-planner process):</b> switch <code style="font-family:var(--mono)">update_report.py</code>/<code style="font-family:var(--mono)">sheet_venues.py</code> to read <code style="font-family:var(--mono)">corpus.json</code>, delete <code style="font-family:var(--mono)">GAZETTEER</code>, make <code style="font-family:var(--mono)">climbing-trips.csv</code> a generated export. Until then the diagram above is live.</div>
+
+  <footer>Traced from update_report.py, engine/render.py, engine/sheet_venues.py, agent/search.py, and db/sql + db/dev.<br>Weather is stored twice, differently: hand-typed <code style="font-family:var(--mono)">route_climatology</code> (World A) vs live Open-Meteo <code style="font-family:var(--mono)">climo-cache.json</code> (World B).</footer>
+</div>
+
+<script>
+const EDGES=[
+  ['taxonomyMd','dbsql','manual'],
+  ['dbsql','pg','solid'],['samplesql','pg','solid'],
+  ['pg','views','solid'],
+  ['views','searchpy','solid'],['views','adminui','solid'],
+  ['venuesJson','driver','solid'],['sheetCsv','driver','solid'],['gazetteer','driver','solid'],
+  ['weatherApi','driver','api'],['mpData','driver','api'],
+  ['driver','caches','solid'],
+  ['driver','indexHtml','solid'],['driver','venuePages','solid'],
+  ['venuesJson','pg','ghost'],
+];
+const COL={solid:'var(--accent)',api:'var(--weather)',manual:'var(--amber)',ghost:'var(--ghost)'};
+const svg=document.getElementById('edges');
+const NS='http://www.w3.org/2000/svg';
+
+function draw(){
+  while(svg.firstChild)svg.removeChild(svg.firstChild);
+  const box=svg.getBoundingClientRect();
+  const defs=document.createElementNS(NS,'defs');
+  for(const k in COL){
+    const m=document.createElementNS(NS,'marker');
+    m.setAttribute('id','ah-'+k);m.setAttribute('viewBox','0 0 10 10');m.setAttribute('refX','8');m.setAttribute('refY','5');
+    m.setAttribute('markerWidth','7');m.setAttribute('markerHeight','7');m.setAttribute('orient','auto-start-reverse');
+    const p=document.createElementNS(NS,'path');p.setAttribute('d','M0,1 L9,5 L0,9 Z');p.setAttribute('fill',COL[k]);
+    m.appendChild(p);defs.appendChild(m);
+  }
+  svg.appendChild(defs);
+  for(const [a,b,kind] of EDGES){
+    const na=document.getElementById(a),nb=document.getElementById(b);
+    if(!na||!nb)continue;
+    const ra=na.getBoundingClientRect(),rb=nb.getBoundingClientRect();
+    const acx=ra.left+ra.width/2-box.left, bcx=rb.left+rb.width/2-box.left;
+    const dx=bcx-acx, dy=(rb.top-ra.top);
+    let x1,y1,x2,y2,c1x,c1y,c2x,c2y;
+    if(Math.abs(dx)>Math.abs(dy)*1.1){ // horizontal (cross-lane)
+      const fromRight=dx>0;
+      x1=(fromRight?ra.right:ra.left)-box.left; y1=ra.top+ra.height/2-box.top;
+      x2=(fromRight?rb.left:rb.right)-box.left; y2=rb.top+rb.height/2-box.top;
+      const mx=(x1+x2)/2; c1x=mx;c1y=y1;c2x=mx;c2y=y2;
+    }else{ // vertical
+      const down=dy>=0;
+      x1=acx; y1=(down?ra.bottom:ra.top)-box.top;
+      x2=bcx; y2=(down?rb.top:rb.bottom)-box.top;
+      const my=(y1+y2)/2; c1x=x1;c1y=my;c2x=x2;c2y=my;
+    }
+    const path=document.createElementNS(NS,'path');
+    path.setAttribute('d',`M${x1},${y1} C${c1x},${c1y} ${c2x},${c2y} ${x2},${y2}`);
+    path.setAttribute('fill','none');path.setAttribute('stroke',COL[kind]);
+    path.setAttribute('stroke-width',kind==='ghost'?'1.8':'2.2');
+    path.setAttribute('marker-end','url(#ah-'+kind+')');
+    if(kind==='manual'||kind==='ghost')path.setAttribute('stroke-dasharray','6 5');
+    if(kind==='ghost')path.setAttribute('opacity','.75');
+    svg.appendChild(path);
+  }
+}
+const ro=new ResizeObserver(draw);ro.observe(document.querySelector('.diagram'));
+window.addEventListener('load',draw);window.addEventListener('resize',draw);
+setTimeout(draw,60);setTimeout(draw,300);
+</script>
+
+</html>

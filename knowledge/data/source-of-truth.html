@@ -1,0 +1,146 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Source of Truth · multi-pitch Live</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"><style>
+:root{--ink:#0C0D10;--ink2:#12141B;--ink3:#191C27;--ink4:#20243A;--seam:#252840;
+--chalk:#EAE6DD;--chalk2:#9B9890;--chalk3:#5A5860;--go:#6CB268;--amb:#C8A44A;
+--wet:#B94438;--spike:#C4FF5C;--r:6px;--r-lg:12px}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--ink);color:var(--chalk)}
+body{font-family:'Inter',system-ui,sans-serif;font-size:15px;line-height:1.65;
+-webkit-font-smoothing:antialiased}
+.top{position:sticky;top:0;z-index:10;height:48px;background:var(--ink2);
+border-bottom:1px solid var(--seam);display:flex;align-items:center;gap:12px;padding:0 18px}
+.logo{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--chalk);
+letter-spacing:-.2px;text-decoration:none}
+.top a.btn{margin-left:auto;font-size:12px;color:var(--chalk2);text-decoration:none;
+border:1px solid var(--seam);border-radius:var(--r);padding:5px 12px}
+.top a.btn:hover{color:var(--chalk);border-color:var(--chalk3)}
+.wrap{max-width:860px;margin:0 auto;padding:32px 22px 96px}
+.crumb{font-size:12px;color:var(--chalk3);margin-bottom:22px;font-family:'DM Mono',monospace}
+.crumb a{color:var(--chalk2);text-decoration:none}
+.crumb a:hover{color:var(--spike)}
+h1,h2,h3,h4{font-family:'Syne',sans-serif;letter-spacing:-.3px;line-height:1.25;
+scroll-margin-top:64px}
+h1{font-size:30px;font-weight:800;margin:.2em 0 .6em}
+h2{font-size:21px;font-weight:700;margin:1.8em 0 .5em;padding-top:.4em;
+border-top:1px solid var(--seam)}
+h3{font-size:16.5px;font-weight:700;margin:1.4em 0 .4em;color:var(--chalk)}
+h4{font-size:14px;font-weight:700;margin:1.2em 0 .3em;color:var(--chalk2)}
+p{margin:.7em 0}
+a{color:var(--amb);text-decoration:none;border-bottom:1px solid rgba(200,164,74,.28)}
+a:hover{color:var(--spike);border-bottom-color:var(--spike)}
+strong{color:#fff;font-weight:600}
+code{font-family:'DM Mono',ui-monospace,monospace;font-size:.86em;background:var(--ink3);
+border:1px solid var(--seam);border-radius:4px;padding:1px 5px;color:var(--amb)}
+pre{background:var(--ink2);border:1px solid var(--seam);border-radius:var(--r-lg);
+padding:16px 18px;overflow-x:auto;margin:1em 0}
+pre code{background:none;border:none;padding:0;color:var(--chalk2);font-size:12.5px;
+line-height:1.5;white-space:pre}
+blockquote{margin:1.1em 0;padding:.4em 16px;border-left:3px solid var(--amb);
+background:var(--amb-d,rgba(200,164,74,.07));border-radius:0 var(--r) var(--r) 0;
+color:var(--chalk2)}
+blockquote p{margin:.4em 0}
+hr{border:none;border-top:1px solid var(--seam);margin:2em 0}
+ul,ol{margin:.6em 0;padding-left:1.4em}
+li{margin:.28em 0}
+li>ul,li>ol{margin:.25em 0}
+.tw{overflow-x:auto;margin:1.1em 0;border:1px solid var(--seam);border-radius:var(--r-lg)}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--seam);
+vertical-align:top}
+th{background:var(--ink3);font-family:'Syne',sans-serif;font-weight:700;font-size:12px;
+color:var(--chalk);white-space:nowrap}
+tr:last-child td{border-bottom:none}
+td code{white-space:nowrap}
+.idx-group{margin:1.4em 0}
+.idx-group h3{border-bottom:1px solid var(--seam);padding-bottom:.3em}
+.idx-card{display:block;padding:12px 14px;margin:8px 0;background:var(--ink2);
+border:1px solid var(--seam);border-radius:var(--r-lg);color:var(--chalk);
+border-bottom:1px solid var(--seam)}
+.idx-card:hover{border-color:var(--chalk3);color:var(--chalk)}
+.idx-card b{font-family:'Syne',sans-serif}
+.idx-card span{display:block;color:var(--chalk2);font-size:13px;margin-top:2px}
+@media(max-width:600px){.wrap{padding:22px 15px 80px}h1{font-size:24px}body{font-size:14px}}
+</style></head><body><div class=top><a class=logo href="../../index.html">🧗 multi-pitch <span style="color:var(--spike)">Live</span></a><a class=btn href="../../knowledge/index.html">📚 Knowledge</a><a class=btn href="../../index.html">▶ Dashboard</a></div><div class=wrap><div class=crumb><a href="../index.html">📚 knowledge</a> / data / <b style='color:var(--chalk2)'>source-of-truth</b></div><h1 id="where-the-source-of-truth-lives-and-the-plan-to-make-it-one-place">Where the source of truth lives — and the plan to make it <em>one</em> place</h1>
+<blockquote><p><strong>Purpose:</strong> kill the recurring "wait, where do I add a climb?" confusion. Names every place climb/venue truth lives <strong>today</strong>, then proposes collapsing them into <strong>one authored corpus</strong> that is the seed/export for the Postgres DB — reconciling decisions <a href="../roadmap/decisions.html">#15</a>, <a href="../roadmap/decisions.html">#18</a> and <a href="../roadmap/decisions.html">#25</a>. <strong>Status:</strong> ⚠️ <strong>Decided — <a href="../roadmap/decisions.html">#27</a>, option 1.</strong> The one authored <code>db/corpus.json</code> + its builder land now (seeded from multi-pitch); rewiring the trip pipeline to <em>read</em> it, and Postgres ingestion, are follow-ups. This <strong>supersedes #15</strong> (sheet-as-master → derived export).</p></blockquote>
+<h2 id="the-problem-stated-plainly">The problem, stated plainly</h2>
+<p>"Climb/venue truth" is currently spread across <strong>five</strong> places, and three of them independently answer <em>"where is this crag?"</em>. Nothing links World A (the corpus DB) to World B (the trip dashboard) — see <a href="../architecture/data-flow.html"><code>../architecture/data-flow.md</code></a>.</p>
+<h2 id="today-the-five-sources-real">Today — the five sources (✅ = real)</h2>
+<div class="tw"><table><thead><tr><th>#</th><th>Source</th><th>Grain</th><th>Owns (authoritative for)</th><th>Authored</th></tr></thead><tbody><tr><td>1</td><td>✅ <code>db/dev/sample_routes.sql</code></td><td>route</td><td>The only route <strong>rows</strong> in Postgres (+ hand-typed <code>route_climatology</code>)</td><td>hand SQL, dev fixtures</td></tr><tr><td>2</td><td>✅ <code>trip-ni-july-2026/venues.json</code></td><td>venue/crag</td><td><strong>Curated</strong> coords · per-person travel/airport · priority · rock · "why"</td><td>hand JSON</td></tr><tr><td>3</td><td>✅ <code>engine/sheet_venues.py</code> <code>GAZETTEER</code></td><td>venue/crag</td><td>Coords + airports for <strong>~30 sheet areas not in <code>venues.json</code></strong></td><td>hand Python dict</td></tr><tr><td>4</td><td>✅ <code>climbing-trips.csv</code> (Google Sheet)</td><td>venue/crag</td><td>The <strong>master candidate list</strong> + judgment columns (volume, difficulty, cost, min-trip, monthly weather) — <strong>no coords</strong></td><td>Google Sheet, exported each CI run</td></tr><tr><td>5</td><td>✅ <code>multi-pitch.com/data/data.json</code></td><td>route</td><td><strong>Live</strong> external route DB (S3-backed): grades, pitches, geoLocation, hazard flags. <strong>The schema our DB copies</strong></td><td>external, read live</td></tr></tbody></table></div>
+<p><strong>What's already decided about these:</strong></p>
+<ul><li><strong><a href="../roadmap/decisions.html">#15</a></strong> — the <strong>sheet (4) is the venue master list</strong>; <code>venues.json</code> (2)</li></ul>
+<p>  is the curated overlay; <code>GAZETTEER</code> (3)/geocoder fill coords for sheet rows without a   curated entry. So <em>"venues.json vs the sheet"</em> = <strong>curated detail vs broad master list</strong>, not   two rivals.</p>
+<ul><li><strong><a href="../roadmap/decisions.html">#11</a></strong> — we adopted <strong>multi-pitch.com's data model (5)</strong> as the</li></ul>
+<p>  tagging target; the DB <code>route</code> schema (<a href="route-schema.html"><code>route-schema.md</code></a>) mirrors it.</p>
+<ul><li><strong><a href="../roadmap/decisions.html">#18</a></strong> — **Postgres is the corpus DB and *eventually the only</li></ul>
+<p>  source of truth*<strong>; <code>venues.json</code>/<code>extra-climbing.json</code> migrate in and become </strong>exports**.</p>
+<ul><li><strong><a href="../roadmap/decisions.html">#25</a></strong> — **<code>tag-spec.json</code> is the single source of truth for the</li></ul>
+<p>  taxonomy** (families, colours, tooltips); <em>"a venue value is a rollup of its climbs."</em></p>
+<h3 id="why-it-feels-like-chaos">Why it <em>feels</em> like chaos</h3>
+<p>Coordinates + travel for a crag can live in <strong>(2) or (3) or a geocode</strong> — there is no single authoritative answer to "where is this crag and how do we get there." <code>GAZETTEER</code> (3) exists <strong>only</strong> because the sheet has no coords and <code>venues.json</code> only covers curated entries. That split is the wart.</p>
+<h2 id="target-one-authored-corpus-shaped-as-the-db-seed">Target — one authored corpus, shaped as the DB seed</h2>
+<p>One file, everything in it, no coordinate fallbacks. It is <strong>not a rival to Postgres (#18)</strong> — it is the <strong>human-authored seed/export</strong> the DB loads from. Same schema, two homes over time: <strong>JSON now → Postgres when scale demands it.</strong> This is the natural <em>now-form</em> of #18, and it collapses sources 1–3 into one place.</p>
+<pre><code>// corpus.json  — the authored source of truth (loads into Postgres; is the export shape)
+{
+  &quot;schemaVersion&quot;: &quot;1.0&quot;,
+  // Taxonomy DEFINITIONS are NOT duplicated here — they stay in tag-spec.json (#25).
+  // Entities carry taxonomy VALUES (tags); the dictionary is referenced once.
+  &quot;taxonomyRef&quot;: &quot;knowledge/data/tag-spec.json&quot;,
+
+  &quot;areas&quot;: [                                   // crag/region/sector tree (shared facts)
+    { &quot;id&quot;: &quot;gb-assynt-stoer&quot;, &quot;kind&quot;: &quot;crag&quot;, &quot;parent&quot;: &quot;gb-assynt&quot;,
+      &quot;name&quot;: &quot;Old Man of Stoer&quot;, &quot;lat&quot;: 58.258, &quot;lon&quot;: -5.361,
+      &quot;rock&quot;: &quot;sandstone&quot;, &quot;aspect&quot;: &quot;SE&quot;, &quot;gradeContext&quot;: &quot;GB&quot;,
+      &quot;status&quot;: &quot;publish&quot;, &quot;dataGrade&quot;: 5 }    // curated flag = status + confidence (#18)
+  ],
+
+  &quot;routes&quot;: [                                  // climbs hang off an area; inherit its facts
+    { &quot;id&quot;: 5, &quot;area&quot;: &quot;gb-assynt-stoer&quot;, &quot;name&quot;: &quot;Original Route&quot;,
+      &quot;status&quot;: &quot;publish&quot;, &quot;dataGrade&quot;: 5,     // status:draft = uncurated/auto-imported
+      &quot;originalGrade&quot;: &quot;VS 5a&quot;, &quot;gradeSystem&quot;: &quot;BAS&quot;, &quot;tradGrade&quot;: &quot;VS&quot;, &quot;techGrade&quot;: &quot;5a&quot;,
+      &quot;length&quot;: 67, &quot;pitches&quot;: 5, &quot;incline&quot;: &quot;Vertical&quot;, &quot;protection&quot;: &quot;PG&quot;,
+      &quot;disciplines&quot;: [&quot;trad&quot;,&quot;multi-pitch&quot;], &quot;features&quot;: [&quot;face&quot;,&quot;crack&quot;],   // VALUES, inline
+      &quot;character&quot;: [&quot;sustained&quot;,&quot;exposed&quot;], &quot;hazards&quot;: [&quot;tidal&quot;,&quot;abseil&quot;],
+      &quot;climatology&quot;: [ { &quot;month&quot;: 7, &quot;tempHigh&quot;: 16, &quot;tempLow&quot;: 11, &quot;rainyDays&quot;: 13 } ] }
+  ]
+}</code></pre>
+<h3 id="four-rules-this-encodes">Four rules this encodes</h3>
+<ol><li>**Curated vs uncurated is a <em>field</em>, not a <em>file</em>.** Reuse the DB's existing model (#18):</li></ol>
+<p>   <code>status</code> ∈ <code>publish | draft | quarantined</code> + <code>dataGrade</code> 1–7. <em>Curated list</em> = a filter    (<code>status=publish</code>), <em>uncurated</em> = <code>status=draft</code> (a sheet row or scrape not yet verified).    Never a second file. This is exactly the Phase-3 "allow-list, default-deny" of    <a href="../roadmap/ingestion-plan.html"><code>../roadmap/ingestion-plan.md</code></a>.</p>
+<ol><li><strong>Taxonomy: values inline, definitions referenced.</strong> Each entity carries its <em>tags</em></li></ol>
+<p>   (<code>disciplines</code>, <code>features</code>, <code>hazards</code>…). The <em>dictionary</em> of allowed values + their meaning    (which rock seeps, which hazards are safety-critical, the grade ladder) stays in    <code>tag-spec.json</code>/<a href="taxonomy.html"><code>taxonomy.md</code></a> — the single authority per <strong>#25</strong>. Embedding    the dictionary in every climb would duplicate it thousands of times and let it drift.    <em>This is what "put the taxonomy in the JSON" should mean.</em></p>
+<ol><li><strong>Areas vs routes are distinct grains; a venue is a rollup.</strong> An <code>area</code> carries shared</li></ol>
+<p>   facts (coords, rock, aspect, gradeContext) that routes <strong>inherit</strong> — so you don't repeat    "granite, faces SE" on every line. A venue-card value is a <strong>rollup of its routes</strong> (#25).    Matches the DB's <code>area</code>→<code>route</code> inheritance (<a href="database.html"><code>database.md</code></a>).</p>
+<ol><li>**A trip is a <em>derived selection</em>, not a copy.<strong> The corpus holds stable </strong>facts**; a trip</li></ol>
+<p>   is a short list of references + this-trip overlay. This finally splits the two things    <code>venues.json</code> conflates today (crag facts <strong>vs</strong> who-flies-where-and-priority):</p>
+<pre><code>   // trip-ni-july-2026/trip.json — &quot;other lists that make up trips&quot;
+   { &quot;trip&quot;: &quot;~24 July 2026 — Michel &amp; Dan&quot;, &quot;window&quot;: { &quot;start&quot;: &quot;2026-07-22&quot;, &quot;end&quot;: &quot;2026-07-27&quot; },
+     &quot;venues&quot;: [
+       { &quot;ref&quot;: &quot;ni-fairhead&quot;, &quot;priority&quot;: 1,
+         &quot;travel&quot;: { &quot;michel&quot;: { &quot;mode&quot;: &quot;fly&quot;, &quot;to&quot;: &quot;BFS&quot; }, &quot;dan&quot;: { &quot;mode&quot;: &quot;local&quot; } } }
+     ] }</code></pre>
+<h3 id="what-collapses">What collapses</h3>
+<div class="tw"><table><thead><tr><th>Was</th><th>Becomes</th></tr></thead><tbody><tr><td><code>sample_routes.sql</code> route rows</td><td><code>corpus.json</code> <code>routes[]</code> (loaded into PG)</td></tr><tr><td><code>venues.json</code> crag facts (coords/rock/aspect)</td><td><code>corpus.json</code> <code>areas[]</code></td></tr><tr><td><code>venues.json</code> priority + travel</td><td><code>trip.json</code> overlay</td></tr><tr><td><code>GAZETTEER</code> (~30 areas)</td><td><code>corpus.json</code> <code>areas[]</code> with <code>status: &quot;draft&quot;</code> — <strong>deleted from code</strong></td></tr><tr><td>geocoder fallback</td><td>one-off authoring aid when <em>adding</em> an area; never a runtime source</td></tr></tbody></table></div>
+<p><strong><code>GAZETTEER</code> dies</strong> because every area — curated or not — is now a row with coords. No fallbacks; one file answers "where is this crag."</p>
+<h2 id="how-this-maps-to-the-roadmap-all-the-world-s-climbs">How this maps to the roadmap (all the world's climbs)</h2>
+<p>The world's corpus is 30–150k routes (<a href="../roadmap/ingestion-plan.html"><code>ingestion-plan.md</code></a> — <em>not</em> millions, bounded to multi-pitch), which outgrows a hand-edited file. That's fine and already planned:</p>
+<ul><li><strong>Now:</strong> <code>corpus.json</code> is small and hand-authored — the curated seed.</li><li><strong>Later (Stage 5 / M2):</strong> ingestion writes <code>status: draft</code> routes straight into Postgres;</li></ul>
+<p>  Michel promotes to <code>publish</code>. The JSON becomes a <strong>generated export</strong> of the curated slice.</p>
+<ul><li>The schema <strong>never changes</strong> — that's why shaping <code>corpus.json</code> like the <code>route</code>/<code>area</code></li></ul>
+<p>  tables now (multi-pitch field names, #11) makes it a drop-in seed, not a dead end.</p>
+<ul><li><strong>Bonus:</strong> a shared corpus is what finally <strong>connects World A and World B</strong> — dashboard and</li></ul>
+<p>  agent read one source instead of five.</p>
+<h2 id="adding-data-under-the-target-model">Adding data, under the target model</h2>
+<ul><li><strong>New climb</strong> → add a <code>routes[]</code> entry to <code>corpus.json</code> (<code>status: draft</code> until you've</li></ul>
+<p>  checked it). Reload into PG.</p>
+<ul><li><strong>New crag</strong> → add an <code>areas[]</code> entry (coords live here now — no GAZETTEER).</li><li><strong>Plan a trip</strong> → add refs + travel to a <code>trip.json</code>; never copy crag facts.</li><li><strong>New vocabulary</strong> → extend <a href="taxonomy.html"><code>taxonomy.md</code></a> + <code>tag-spec.json</code> first (#25), then</li></ul>
+<p>  use the value — off-dictionary values are rejected by design (#18 FK/enums).</p>
+<h2 id="decided-27-roadmap-decisions-md">Decided — <a href="../roadmap/decisions.html">#27</a></h2>
+<p><strong>Option 1: <code>corpus.json</code> is the master; the sheet becomes a derived export.</strong> This reverses <strong>#15</strong> (which made the sheet the master) and is logged as <strong>#27</strong>. It's the only option that delivers "one massive JSON, no fallbacks", and it's the shape <strong>#18</strong> wants anyway.</p>
+<h3 id="what-landed-now-vs-next">What landed now vs next</h3>
+<ul><li>✅ <strong><code>db/corpus.json</code></strong> — the one authored file, built by <strong><code>db/tools/build_corpus.py</code></strong>,</li></ul>
+<p>  seeded from multi-pitch.com (<code>status: draft</code>) + <code>venues.json</code> crags + the curated DB routes   (<code>status: publish</code>). Re-run the builder to refresh.</p>
+<ul><li>✅ Docs + the <a href="../data-dependencies.html">data-dependency map</a> (linked from the homepage).</li><li>🔜 <strong>Trip pipeline reads <code>corpus.json</code></strong> — <code>update_report.py</code>/<code>sheet_venues.py</code> switch to it</li></ul>
+<p>  and <strong><code>GAZETTEER</code> is deleted</strong>; <code>climbing-trips.csv</code> becomes a generated export. <em>(Owned by   the trip-planner process.)</em></p>
+<ul><li>🔜 <strong>Postgres ingestion</strong> (Stage 5 / M2) — <code>corpus.json</code> becomes a generated export of the</li></ul>
+<p>  curated slice; the DB is the store at scale (#18).</p>
+<hr>
+<p><em>See also: <a href="route-schema.html"><code>route-schema.md</code></a> (the field-level schema this mirrors) · <a href="database.html"><code>database.md</code></a> (the Postgres home) · <a href="external-models.html"><code>external-models.md</code></a> (source schemas) · <a href="../roadmap/ingestion-plan.html"><code>../roadmap/ingestion-plan.md</code></a> (scale path) · decisions <a href="../roadmap/decisions.html">#15/#18/#25</a>.</em></p></div></body></html>
