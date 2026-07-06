@@ -3222,9 +3222,17 @@ def main():
         days_out = (TARGET_START - now.date()).days
         has_sea = any(r.get("seasonal") for r in ranked)
         sea_txt = (" blended with a <b>long-range outlook</b> (model reach ~45 days; shown per venue)" if has_sea else "")
-        banner = ("", f"📅 Trip is {days_out} days out — beyond the 16-day live forecast (reaches {horizon}). "
+        # The 16-day forecast covers today + 15 days, so it first reaches the trip
+        # start 15 days before it — that's the day this banner flips to the ✅ version.
+        reaches_start = TARGET_START - timedelta(days=15)
+        try:
+            horizon_lbl = date.fromisoformat(horizon).strftime("%-d %b")
+        except ValueError:
+            horizon_lbl = horizon
+        banner = ("", f"📅 Trip starts <b>{TARGET_START:%-d %b}</b> ({days_out} days out) — still past the live "
+                      f"forecast, which currently reaches {horizon_lbl}. "
                       f"Ranked on <b>typical {PERIOD_LBL} weather</b> ({CLIMO_YEARS[0]}–{CLIMO_YEARS[-1]}){sea_txt}. "
-                      f"Full live forecast fills in from ~8 July.")
+                      f"Live forecast reaches your dates on {reaches_start:%-d %b}.")
 
     data = build_data(ranked, now, banner)
     INDEX.write_text(render_page(data))
