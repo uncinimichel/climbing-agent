@@ -1,0 +1,1049 @@
+{
+  "mp-1": {
+    "features": [
+      "crack",
+      "slab",
+      "chimney",
+      "corner"
+    ],
+    "character": [
+      "exposed"
+    ],
+    "protection": "PG",
+    "discipline": [
+      "trad",
+      "multi-pitch"
+    ],
+    "_prov": {
+      "model": "claude-cli",
+      "date": "2026-07-06",
+      "descHash": "af75029ac7"
+    }
+  },
+  "mp-10": {
+    "features": [
+      "slab",
+      "arête",
+      "ridge",
+      "crack",
+      "pillar"
+    ],
+    "character": [
+      "exposed"
+    ],
+    "protection": "R",
+    "discipline": [
+      "trad",
+      "multi-pitch"
+    ],
+    "_prov": {
+      "model": "claude-cli",
+      "date": "2026-07-06",
+      "descHash": "dcecf039f7"
+    }
+  },
+  "mp-11": {
+    "features": [
+      "ridge"
+    ],
+    "character": [],
+    "protection": "UNSPECIFIED",
+    "discipline": [
+      "trad",
+      "multi-pitch"
+    ],
+    "_prov": {
+      "model": "claude-cli",
+      "date": "2026-07-06",
+      "descHash": "90a512f987"
+    }
+  },
+  "mp-12": {
+    "features": [
+      "slab",
+      "face",
+      "ridge",
+      "pockets",
+      "pillar"
+    ],
+    "character": [
+      "sustained",
+      "exposed",
+      "delicate",
+      "reachy"
+    ],
+    "protection": "PG-13",
+    "discipline": [
+      "trad",
+      "multi-pitch",
+      "mixed"
+    ],
+    "_prov": {
+      "model": "claude-cli",
+      "date": "2026-07-06",
+      "descHash": "91861b3712"
+    }
+  },
+  "mp-13": {
+    "features": [
+      "slab"
+    ],
+    "character": [],
+    "protection": "G",
+    "discipline": [
+      "trad",
+      "multi-pitch"
+    ],
+    "_prov": {
+      "model": "claude-cli",
+      "date": "2026-07-06",
+      "descHash": "263418bc42"
+    }
+  },
+  "mp-14": {
+    "features": [
+      "crack",
+      "corner",
+      "slab",
+      "face"
+    ],
+    "character": [],
+    "protection": "UNSPECIFIED",
+    "discipline": [
+      "trad",
+      "multi-pitch"
+    ],
+    "_prov": {
+      "model": "claude-cli",
+      "date": "2026-07-06",
+      "descHash": "0b4689b4a0"
+    }
+  },
+  "mp-15": {
+    "features": [
+      "offwidth",
+      "crack",
+      "chimney"
+    ],
+    "character": [
+      "exposed"
+    ],
+    "protection": "UNSPECIFIED",
+    "discipline": [
+      "trad",
+      "multi-pitch"
+    ],
+    "_prov": {
+      "model": "claude-cli",
+      "date": "2026-07-06",
+      "descHash": "44268da763"
+    }
+  },
+  "mp-16": {
+    "features": [
+      "slab",
+      "groove"
+    ],
+    "character": [
+      "delicate",
+      "exposed"
+    ],
+    "protection": "PG",
+    "discipline": [
+      "trad",
+      "multi-pitch"
+    ],
+    "_prov": {
+      "model": "claude-cli",
+      "date": "2026-07-06",
+      "descHash": "b4dfece0cd"
+    }
+  },
+  "mp-17": {
+    "features": [
+      "pillar",
+      "ridge"
+    ],
+    "character": [
+      "sustained",
+      "exposed"
+    ],
+    "protection": "UNSPECIFIED",
+    "discipline": [
+      "trad",
+      "multi-pitch",
+      "alpine"
+    ],
+    "_prov": {
+      "model": "claude-cli",
+      "date": "2026-07-06",
+      "descHash": "467b508ccc"
+    }
+  },
+  "mp-18": {
+    "features": [
+      "slab",
+      "groove"
+    ],
+    "character": [],
+    "protection": "UNSPECIFIED",
+    "discipline": [
+      "trad",
+      "multi-pitch"
+    ],
+    "_prov": {
+      "model": "claude-cli",
+      "date": "2026-07-06",
+      "descHash": "b61ebe9012"
+    }
+  },
+  "mp-19": {
+    "features": [
+      "slab",
+      "corner"
+    ],
+    "character": [],
+    "protection": "G",
+    "discipline": [
+      "trad",
+      "multi-pitch"
+    ],
+    "_prov": {
+      "model": "claude-cli",
+      "date": "2026-07-06",
+      "descHash": "9a78849b98"
+    }
+  },
+  "mp-2": {
+    "features": [
+      "crack",
+      "corner"
+    ],
+    "character": [
+      "delicate",
+      "exposed"
+    ],
+    "protection": "G",
+    "discipline": [
+      "trad",
+      "multi-pitch"
+    ],
+    "_prov": {
+      "model": "claude-cli",
+      "date": "2026-07-06",
+      "descHash": "bad71f33cc"
+    }
+  },
+  "mp-20": {
+    "features": [
+      "crack",
+      "slab",
+      "corner"
+    ],
+    "character": [
+      "sustained",
+      "exposed"
+    ],
+    "protection": "PG",
+    "discipline": [
+      "trad",
+      "multi-pitch"
+    ],
+    "_prov": {
+      "model": "claude-cli",
+      "date": "2026-07-06",
+      "descHash": "6f95f65174"
+    }
+  },
+  "mp-22": {
+    "features": [
+      "corner",
+      "crack",
+      "chimney",
+      "slab",
+      "roof",
+      "pockets"
+    ],
+    "character": [
+      "sustained",
+      "delicate",
+      "exposed"
+    ],
+    "protection": "PG",
+    "discipline": [
+      "trad",
+      "sport",
+      "multi-pitch"
+    ],
+    "_prov": {
+      "model": "claude-cli",
+      "date": "2026-07-06",
+      "descHash": "622c306625"
+    }
+  },
+  "mp-23": {
+    "features": [
+      "pillar"
+    ],
+    "character": [
+      "exposed"
+    ],
+    "protection": "PG-13",
+    "discipline": [
+      "trad",
+      "sport",
+      "multi-pitch"
+    ],
+    "_prov": {
+      "model": "claude-cli",
+      "date": "2026-07-06",
+      "descHash": "ecbd7c8f90"
+    }
+  },
+  "mp-25": {
+    "features": [
+      "slab",
+      "face"
+    ],
+    "character": [],
+    "protection": "runout",
+    "discipline": [
+      "sport",
+      "trad",
+      "multi-pitch"
+    ],
+    "_prov": {
+      "model": "claude-cli",
+      "date": "2026-07-06",
+      "descHash": "25fd6c6a1a"
+    }
+  },
+  "mp-26": {
+    "features": [
+      "arête",
+      "ridge",
+      "crack",
+      "flake"
+    ],
+    "character": [
+      "exposed",
+      "sustained"
+    ],
+    "protection": "PG",
+    "discipline": [
+      "trad",
+      "multi-pitch",
+      "alpine"
+    ],
+    "_prov": {
+      "model": "claude-cli",
+      "date": "2026-07-06",
+      "descHash": "84f41447b4"
+    }
+  },
+  "mp-28": {
+    "features": [
+      "offwidth",
+      "crack",
+      "corner",
+      "groove",
+      "arête",
+      "face"
+    ],
+    "character": [
+      "exposed",
+      "sustained"
+    ],
+    "protection": "UNSPECIFIED",
+    "discipline": [
+      "trad",
+      "multi-pitch"
+    ],
+    "_prov": {
+      "model": "claude-cli",
+      "date": "2026-07-06",
+      "descHash": "9c0dd5d7c5"
+    }
+  },
+  "mp-29": {
+    "features": [
+      "crack",
+      "slab",
+      "chimney",
+      "groove"
+    ],
+    "character": [
+      "sustained",
+      "exposed"
+    ],
+    "protection": "G",
+    "discipline": [
+      "trad",
+      "multi-pitch"
+    ],
+    "_prov": {
+      "model": "claude-cli",
+      "date": "2026-07-06",
+      "descHash": "45a0c04305"
+    }
+  },
+  "mp-3": {
+    "features": [
+      "slab",
+      "corner"
+    ],
+    "character": [
+      "technical"
+    ],
+    "protection": "UNSPECIFIED",
+    "discipline": [
+      "trad",
+      "multi-pitch"
+    ],
+    "_prov": {
+      "model": "claude-cli",
+      "date": "2026-07-06",
+      "descHash": "cf12499033"
+    }
+  },
+  "mp-30": {
+    "features": [
+      "crack",
+      "corner",
+      "flake"
+    ],
+    "character": [
+      "crimpy",
+      "delicate",
+      "reachy"
+    ],
+    "protection": "G",
+    "discipline": [
+      "trad",
+      "multi-pitch"
+    ],
+    "_prov": {
+      "model": "claude-cli",
+      "date": "2026-07-06",
+      "descHash": "d2b4ed8461"
+    }
+  },
+  "mp-32": {
+    "features": [
+      "arête",
+      "face"
+    ],
+    "character": [],
+    "protection": "UNSPECIFIED",
+    "discipline": [
+      "multi-pitch",
+      "trad",
+      "mixed"
+    ],
+    "_prov": {
+      "model": "claude-cli",
+      "date": "2026-07-06",
+      "descHash": "3ee8031b59"
+    }
+  },
+  "mp-33": {
+    "features": [],
+    "character": [
+      "delicate",
+      "exposed"
+    ],
+    "protection": "UNSPECIFIED",
+    "discipline": [
+      "multi-pitch",
+      "alpine"
+    ],
+    "_prov": {
+      "model": "claude-cli",
+      "date": "2026-07-06",
+      "descHash": "282686de35"
+    }
+  },
+  "mp-34": {
+    "features": [
+      "face",
+      "crack"
+    ],
+    "character": [
+      "technical",
+      "exposed"
+    ],
+    "protection": "UNSPECIFIED",
+    "discipline": [
+      "trad",
+      "multi-pitch"
+    ],
+    "_prov": {
+      "model": "claude-cli",
+      "date": "2026-07-06",
+      "descHash": "d9bd0911bd"
+    }
+  },
+  "mp-35": {
+    "features": [
+      "slab",
+      "crack",
+      "corner",
+      "groove",
+      "flake"
+    ],
+    "character": [
+      "technical"
+    ],
+    "protection": "UNSPECIFIED",
+    "discipline": [
+      "trad",
+      "multi-pitch"
+    ],
+    "_prov": {
+      "model": "claude-cli",
+      "date": "2026-07-06",
+      "descHash": "894831cef2"
+    }
+  },
+  "mp-37": {
+    "features": [
+      "slab",
+      "crack",
+      "corner",
+      "flake"
+    ],
+    "character": [
+      "technical",
+      "delicate"
+    ],
+    "protection": "PG",
+    "discipline": [
+      "trad",
+      "multi-pitch"
+    ],
+    "_prov": {
+      "model": "claude-cli",
+      "date": "2026-07-06",
+      "descHash": "fc914978ca"
+    }
+  },
+  "mp-38": {
+    "features": [
+      "slab",
+      "crack",
+      "pillar",
+      "roof"
+    ],
+    "character": [],
+    "protection": "PG",
+    "discipline": [
+      "trad",
+      "multi-pitch"
+    ],
+    "_prov": {
+      "model": "claude-cli",
+      "date": "2026-07-06",
+      "descHash": "1dc98985d4"
+    }
+  },
+  "mp-39": {
+    "features": [
+      "slab",
+      "crack",
+      "corner",
+      "groove",
+      "pillar",
+      "face",
+      "roof"
+    ],
+    "character": [],
+    "protection": "UNSPECIFIED",
+    "discipline": [
+      "trad",
+      "multi-pitch"
+    ],
+    "_prov": {
+      "model": "claude-cli",
+      "date": "2026-07-06",
+      "descHash": "1b6c9546d2"
+    }
+  },
+  "mp-4": {
+    "features": [
+      "face"
+    ],
+    "character": [],
+    "protection": "UNSPECIFIED",
+    "discipline": [
+      "trad",
+      "multi-pitch",
+      "aid"
+    ],
+    "_prov": {
+      "model": "claude-cli",
+      "date": "2026-07-06",
+      "descHash": "85fec66334"
+    }
+  },
+  "mp-40": {
+    "features": [
+      "ridge",
+      "arête",
+      "crack",
+      "groove"
+    ],
+    "character": [
+      "exposed"
+    ],
+    "protection": "PG",
+    "discipline": [
+      "trad",
+      "multi-pitch"
+    ],
+    "_prov": {
+      "model": "claude-cli",
+      "date": "2026-07-06",
+      "descHash": "d8ceb7645c"
+    }
+  },
+  "mp-41": {
+    "features": [
+      "slab",
+      "ridge",
+      "crack",
+      "corner"
+    ],
+    "character": [
+      "technical",
+      "delicate"
+    ],
+    "protection": "runout",
+    "discipline": [
+      "trad",
+      "multi-pitch"
+    ],
+    "_prov": {
+      "model": "claude-cli",
+      "date": "2026-07-06",
+      "descHash": "2dbc205de8"
+    }
+  },
+  "mp-42": {
+    "features": [
+      "face",
+      "slab",
+      "crack",
+      "chimney",
+      "pillar",
+      "roof"
+    ],
+    "character": [
+      "sustained",
+      "exposed"
+    ],
+    "protection": "PG",
+    "discipline": [
+      "trad",
+      "multi-pitch",
+      "alpine"
+    ],
+    "_prov": {
+      "model": "claude-cli",
+      "date": "2026-07-06",
+      "descHash": "2025938787"
+    }
+  },
+  "mp-43": {
+    "features": [
+      "crack",
+      "chimney",
+      "corner",
+      "arête"
+    ],
+    "character": [
+      "exposed"
+    ],
+    "protection": "G",
+    "discipline": [
+      "trad",
+      "multi-pitch",
+      "alpine"
+    ],
+    "_prov": {
+      "model": "claude-cli",
+      "date": "2026-07-06",
+      "descHash": "35830cdfff"
+    }
+  },
+  "mp-44": {
+    "features": [
+      "face",
+      "crack",
+      "ridge",
+      "arête",
+      "corner",
+      "groove",
+      "pillar"
+    ],
+    "character": [],
+    "protection": "G",
+    "discipline": [
+      "trad",
+      "multi-pitch"
+    ],
+    "_prov": {
+      "model": "claude-cli",
+      "date": "2026-07-06",
+      "descHash": "012c247fa9"
+    }
+  },
+  "mp-45": {
+    "features": [
+      "slab",
+      "crack",
+      "arête",
+      "face"
+    ],
+    "character": [
+      "technical",
+      "crimpy"
+    ],
+    "protection": "PG",
+    "discipline": [
+      "trad",
+      "sport",
+      "multi-pitch"
+    ],
+    "_prov": {
+      "model": "claude-cli",
+      "date": "2026-07-06",
+      "descHash": "27d7673f33"
+    }
+  },
+  "mp-46": {
+    "features": [
+      "ridge",
+      "arête",
+      "chimney",
+      "slab",
+      "face"
+    ],
+    "character": [
+      "exposed"
+    ],
+    "protection": "G",
+    "discipline": [
+      "trad",
+      "multi-pitch"
+    ],
+    "_prov": {
+      "model": "claude-cli",
+      "date": "2026-07-06",
+      "descHash": "4682f6a306"
+    }
+  },
+  "mp-47": {
+    "features": [
+      "slab",
+      "arête",
+      "crack",
+      "ridge",
+      "groove"
+    ],
+    "character": [
+      "exposed"
+    ],
+    "protection": "PG",
+    "discipline": [
+      "trad",
+      "multi-pitch"
+    ],
+    "_prov": {
+      "model": "claude-cli",
+      "date": "2026-07-06",
+      "descHash": "40064848a0"
+    }
+  },
+  "mp-48": {
+    "features": [
+      "groove",
+      "slab",
+      "crack",
+      "chimney",
+      "corner",
+      "face",
+      "roof"
+    ],
+    "character": [
+      "delicate"
+    ],
+    "protection": "UNSPECIFIED",
+    "discipline": [
+      "trad",
+      "multi-pitch"
+    ],
+    "_prov": {
+      "model": "claude-cli",
+      "date": "2026-07-06",
+      "descHash": "0153e0365b"
+    }
+  },
+  "mp-49": {
+    "features": [
+      "chimney",
+      "crack",
+      "groove"
+    ],
+    "character": [
+      "reachy"
+    ],
+    "protection": "PG",
+    "discipline": [
+      "trad",
+      "multi-pitch"
+    ],
+    "_prov": {
+      "model": "claude-cli",
+      "date": "2026-07-06",
+      "descHash": "7df330c5a9"
+    }
+  },
+  "mp-5": {
+    "features": [
+      "ridge"
+    ],
+    "character": [],
+    "protection": "R",
+    "discipline": [
+      "trad",
+      "multi-pitch"
+    ],
+    "_prov": {
+      "model": "claude-cli",
+      "date": "2026-07-06",
+      "descHash": "f4b1b9624e"
+    }
+  },
+  "mp-50": {
+    "features": [
+      "crack",
+      "corner",
+      "flake",
+      "roof"
+    ],
+    "character": [
+      "sustained",
+      "technical",
+      "exposed"
+    ],
+    "protection": "PG",
+    "discipline": [
+      "trad",
+      "multi-pitch"
+    ],
+    "_prov": {
+      "model": "claude-cli",
+      "date": "2026-07-06",
+      "descHash": "2d552c7ad3"
+    }
+  },
+  "mp-51": {
+    "features": [
+      "groove",
+      "arête",
+      "corner",
+      "slab"
+    ],
+    "character": [
+      "technical"
+    ],
+    "protection": "G",
+    "discipline": [
+      "trad",
+      "multi-pitch"
+    ],
+    "_prov": {
+      "model": "claude-cli",
+      "date": "2026-07-06",
+      "descHash": "faf920b5cf"
+    }
+  },
+  "mp-52": {
+    "features": [
+      "arête",
+      "groove",
+      "corner",
+      "slab",
+      "crack",
+      "pillar"
+    ],
+    "character": [
+      "reachy",
+      "powerful"
+    ],
+    "protection": "G",
+    "discipline": [
+      "trad",
+      "multi-pitch"
+    ],
+    "_prov": {
+      "model": "claude-cli",
+      "date": "2026-07-06",
+      "descHash": "1e9fe1fd56"
+    }
+  },
+  "mp-53": {
+    "features": [
+      "arête",
+      "crack",
+      "slab"
+    ],
+    "character": [
+      "delicate"
+    ],
+    "protection": "G",
+    "discipline": [
+      "trad",
+      "multi-pitch"
+    ],
+    "_prov": {
+      "model": "claude-cli",
+      "date": "2026-07-06",
+      "descHash": "3bcb16e644"
+    }
+  },
+  "mp-54": {
+    "features": [
+      "slab",
+      "crack",
+      "arête",
+      "corner",
+      "roof",
+      "offwidth"
+    ],
+    "character": [
+      "delicate",
+      "exposed"
+    ],
+    "protection": "PG",
+    "discipline": [
+      "trad",
+      "multi-pitch"
+    ],
+    "_prov": {
+      "model": "claude-cli",
+      "date": "2026-07-06",
+      "descHash": "a2d758b238"
+    }
+  },
+  "mp-6": {
+    "features": [
+      "face"
+    ],
+    "character": [],
+    "protection": "UNSPECIFIED",
+    "discipline": [
+      "multi-pitch",
+      "alpine"
+    ],
+    "_prov": {
+      "model": "claude-cli",
+      "date": "2026-07-06",
+      "descHash": "2371828a05"
+    }
+  },
+  "mp-7": {
+    "features": [
+      "slab",
+      "crack",
+      "corner",
+      "groove"
+    ],
+    "character": [
+      "sustained",
+      "exposed"
+    ],
+    "protection": "UNSPECIFIED",
+    "discipline": [
+      "trad",
+      "multi-pitch"
+    ],
+    "_prov": {
+      "model": "claude-cli",
+      "date": "2026-07-06",
+      "descHash": "5fe06c2f91"
+    }
+  },
+  "mp-9": {
+    "features": [
+      "slab",
+      "face"
+    ],
+    "character": [
+      "technical"
+    ],
+    "protection": "UNSPECIFIED",
+    "discipline": [
+      "trad",
+      "sport",
+      "multi-pitch"
+    ],
+    "_prov": {
+      "model": "claude-cli",
+      "date": "2026-07-06",
+      "descHash": "e70a789408"
+    }
+  },
+  "mp-21": {
+    "features": [],
+    "character": [],
+    "protection": "PG",
+    "discipline": [
+      "trad",
+      "multi-pitch"
+    ],
+    "_prov": {
+      "model": "claude-cli",
+      "date": "2026-07-06",
+      "descHash": "7692dad7a2"
+    }
+  },
+  "mp-24": {
+    "features": [],
+    "character": [
+      "sustained",
+      "technical"
+    ],
+    "protection": "PG",
+    "discipline": [
+      "trad",
+      "sport",
+      "multi-pitch",
+      "alpine"
+    ],
+    "_prov": {
+      "model": "claude-cli",
+      "date": "2026-07-06",
+      "descHash": "6ea64d0153"
+    }
+  },
+  "mp-8": {
+    "features": [
+      "slab",
+      "groove"
+    ],
+    "character": [
+      "exposed"
+    ],
+    "protection": null,
+    "discipline": [
+      "trad",
+      "multi-pitch"
+    ],
+    "_prov": {
+      "model": "claude-cli",
+      "date": "2026-07-06",
+      "descHash": "2c63a57f16"
+    }
+  }
+}

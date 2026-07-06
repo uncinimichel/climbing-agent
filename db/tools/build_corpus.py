@@ -95,6 +95,7 @@ class Areas:
 
 
 MP_SNAPSHOT = ROOT / "db" / "mp-climbs.json"
+ENRICH_CACHE = ROOT / "db" / "enrichment-cache.json"   # Phase-2 AI tags (ai_tag.py), cached once
 ROCK_MAP = {"shale & sandstone": "sandstone", "qurtzite": "quartzite", "phonolite": "volcanic"}
 
 
@@ -266,6 +267,22 @@ def build():
         areas.add(name.title(), "crag", lat=g.get("lat"), lon=g.get("lon"),
                   rock=norm_rock(g.get("rock")), aspect=g.get("aspect"),
                   status="draft", source="sheet-gazetteer")
+
+    # 5. merge Phase-2 AI tags (feature/character/protection/discipline), tagged once by ai_tag.py
+    if ENRICH_CACHE.exists():
+        enrich = json.loads(ENRICH_CACHE.read_text())
+        for r in routes:
+            e = enrich.get(str(r["id"]))
+            if not e:
+                continue
+            if e.get("features"):
+                r["features"] = e["features"]
+            if e.get("character"):
+                r["character"] = e["character"]
+            if e.get("protection"):
+                r["protection"] = e["protection"]
+            if e.get("discipline"):
+                r["disciplines"] = sorted(set((r.get("disciplines") or []) + e["discipline"]))
 
     area_list = areas.list()
     pub_a = sum(a["status"] == "publish" for a in area_list)
