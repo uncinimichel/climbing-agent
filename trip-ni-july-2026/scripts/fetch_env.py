@@ -17,26 +17,49 @@ What we cache:
   in `climo-cache.json` and committed (it never changes), so re-fetching it would be waste.
 
 The file carries two views of the same data:
-  • `raw`  — the provider payloads `update_report.py` consumes (so output is identical
+  • `raw`  — the provider payloads engine.weather consumes (so output is identical
              to a live run: it needs hourly dewpoint/precip/gusts the normalized view drops).
   • `days` — a normalized, per-(venue, date), latest-only view {src, tmax, precip, wind,
              dir, code, tide_hw/lw} — the reuse/website/future-Postgres surface.
 
 Latest-only: overwritten every run, no forecast-as-of history (see the design doc).
 Degrade, never crash: any venue whose fetch fails is written with nulls and skipped —
-`update_report.py` then falls back to a live fetch for that venue.
+engine.weather then falls back to a live fetch for that venue.
 
 Stdlib only. Run BEFORE update_report.py.
 """
 import json
 import sys
 from datetime import date, datetime, timezone
+from pathlib import Path
 
-import update_report as R
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
+from engine import climbs, sheet_venues, weather  # noqa: E402
+from engine.http import redact  # noqa: E402
+from engine.models import TripContext  # noqa: E402
+from engine.render import _slug  # noqa: E402
+
+ROOT = Path(__file__).resolve().parent.parent
+REPO_ROOT = ROOT.parent
+CLIMBING_CSV = REPO_ROOT / "climbing-trips.csv"
+ENV_CACHE_F = ROOT / "venue-env.json"
 
 
 def _iso(d):
     return d.isoformat()
+
+
+def _load_context():
+    venues_cfg = json.loads((ROOT / "venues.json").read_text())
+    flights_cfg = json.loads((ROOT / "flights.json").read_text())
+    merged_venues = sheet_venues.build_venues(venues_cfg["venues"], CLIMBING_CSV)
+    return TripContext(
+        trip_name=venues_cfg["trip"],
+        target_start=date.fromisoformat(venues_cfg["target_window"]["start"]),
+        target_end=date.fromisoformat(venues_cfg["target_window"]["end"]),
+        venues=merged_venues,
+        flights_cfg=flights_cfg,
+    )
 
 
 def _norm_days(fc_raw, sea_raw, tide_ex):
@@ -89,53 +112,55 @@ def _norm_days(fc_raw, sea_raw, tide_ex):
 
 
 def build_env():
-    R._ENV_BY_COORD = {}               # always fetch LIVE — never read a prior cache back
-    R.MP_CLIMBS = R.load_mp_climbs()   # tidal derivation reads nearby MP routes
-    print(f"multi-pitch climbs loaded: {len(R.MP_CLIMBS)}", file=sys.stderr)
+    ctx = _load_context()
+    mp_climbs = climbs.load_mp_climbs()   # tidal derivation reads nearby MP routes
+    print(f"multi-pitch climbs loaded: {len(mp_climbs)}", file=sys.stderr)
     now = datetime.now(timezone.utc)
     out = {
         "generated_at": now.isoformat(),
-        "target_window": {"start": _iso(R.TARGET_START), "end": _iso(R.TARGET_END)},
+        "target_window": {"start": _iso(ctx.target_start), "end": _iso(ctx.target_end)},
         "venues": {},
     }
-    for v in R.VENUES:
+    for v in ctx.venues:
         lat, lon = v["lat"], v["lon"]
         tidal = False
         try:
-            tidal = R.venue_is_tidal(v)
+            tidal = climbs.venue_is_tidal(v, mp_climbs)
         except Exception as e:
-            print(f"[warn] tidal check failed for {v['name']}: {R._redact(e)}", file=sys.stderr)
+            print(f"[warn] tidal check failed for {v['name']}: {redact(e)}", file=sys.stderr)
         fc_raw = sea_raw = tide_ex = None
+        # env_cache=None here forces a LIVE fetch of every venue — this script's whole
+        # job is to populate that cache fresh, never to read a prior run's copy back.
         try:
-            fc_raw = R.forecast(lat, lon)
+            fc_raw = weather.forecast(lat, lon, env_cache=None)
         except Exception as e:
-            print(f"[warn] forecast failed for {v['name']}: {R._redact(e)}", file=sys.stderr)
+            print(f"[warn] forecast failed for {v['name']}: {redact(e)}", file=sys.stderr)
         try:
-            sea_raw = R._seasonal_raw(lat, lon)
+            sea_raw = weather.seasonal_raw(lat, lon, env_cache=None)
         except Exception as e:
-            print(f"[warn] seasonal failed for {v['name']}: {R._redact(e)}", file=sys.stderr)
+            print(f"[warn] seasonal failed for {v['name']}: {redact(e)}", file=sys.stderr)
         if tidal:
             try:
-                tide_ex = R.tide_extremes(lat, lon)
+                tide_ex = weather.tide_extremes(lat, lon, env_cache=None)
             except Exception as e:
-                print(f"[warn] tides failed for {v['name']}: {R._redact(e)}", file=sys.stderr)
-        out["venues"][R._slug(v["name"])] = {
+                print(f"[warn] tides failed for {v['name']}: {redact(e)}", file=sys.stderr)
+        out["venues"][_slug(v["name"])] = {
             "name": v["name"], "lat": lat, "lon": lon, "tidal": tidal,
             "fetched_at": now.isoformat(),
             "raw": {"forecast": fc_raw, "seasonal": sea_raw, "tides": tide_ex},
             "days": _norm_days(fc_raw, sea_raw, tide_ex),
         }
-        print(f"env: {v['name']} — {len(out['venues'][R._slug(v['name'])]['days'])} days"
+        print(f"env: {v['name']} — {len(out['venues'][_slug(v['name'])]['days'])} days"
               f"{' (tidal)' if tidal else ''}", file=sys.stderr)
     return out
 
 
 def main():
     env = build_env()
-    R.ENV_CACHE_F.write_text(json.dumps(env))
+    ENV_CACHE_F.write_text(json.dumps(env))
     n = len(env["venues"])
     tot = sum(len(x["days"]) for x in env["venues"].values())
-    print(f"Wrote {R.ENV_CACHE_F.name}: {n} venues, {tot} venue-days "
+    print(f"Wrote {ENV_CACHE_F.name}: {n} venues, {tot} venue-days "
           f"(generated {env['generated_at']})")
 
 
