@@ -5,7 +5,7 @@ the Postgres corpus — *"I want to find some sandstone rock near me in August"*
 climbs, ranked, with a plain-language why. Roadmap **Stage 5½**; decision
 [#19](../roadmap/decisions.md). Storage it queries: [`../data/database.md`](../data/database.md).
 
-> **Status: ⚠️ Steps 1 + 3 built locally (4 Jul 2026).** [`agent/`](../../agent/README.md)
+> **Status: ⚠️ Steps 1 + 3 built locally (4 Jul 2026).** [`agent/`](https://github.com/uncinimichel/climbing-agent/blob/main/agent/README.md)
 > holds the `search_climbs` handler, a shared turn loop (`core.py` — one event-generator
 > consumed by both surfaces), a **rich terminal console** (`chat.py`: streaming, result
 > tables, hazard chips) and the **admin web chat** (`server.py` + `static/admin.html`:

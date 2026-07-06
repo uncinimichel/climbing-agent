@@ -2,7 +2,7 @@
 
 The taxonomy and route corpus live in **Postgres (+ PostGIS)**, run locally via Docker
 (decision [#18](../roadmap/decisions.md)). DDL, seeds and smoke test are in
-[`db/`](../../db/README.md) at the repo root; this page records the design and its
+[`db/`](https://github.com/uncinimichel/climbing-agent/blob/main/db/README.md) at the repo root; this page records the design and its
 rationale. The trip dashboard's repo-as-JSON model (decision #2) is unchanged — Postgres
 is the store for the **Stage 3–5 corpus**, and will eventually be the only source of
 truth for venue/route knowledge (including what's hand-researched today in
@@ -80,7 +80,7 @@ cd db && docker-compose up -d   # first boot auto-applies sql/ (DDL + seeds)
 ./smoke.sh                      # end-to-end test, rolls back after itself
 ```
 
-See [`db/README.md`](../../db/README.md) for layout, connection string, and the
+See [`db/README.md`](https://github.com/uncinimichel/climbing-agent/blob/main/db/README.md) for layout, connection string, and the
 migration path (rebuild-from-scratch now; append-only migrations once the corpus is
 durable).
 
