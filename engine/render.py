@@ -850,6 +850,7 @@ PAGE_BODY = """<body>
   <nav class="top-links">
     <button class="tl" onclick="help(1)" title="How the ranking works" aria-label="How the ranking works">?</button>
     <a class="tl" href="knowledge/index.html">Knowledge</a>
+    <a class="tl" href="knowledge/operations/serpapi-quota.html" title="Live SerpApi/flight-search quota and API cost status">API Status</a>
     <a class="tl" id="mapBtn" target="_blank" rel="noopener">Map</a>
     <a class="tl" id="sheetBtn" target="_blank" rel="noopener">Spreadsheet</a>
     <a class="tl" id="ghBtn" target="_blank" rel="noopener" title="Project source on GitHub">GitHub</a>
@@ -1688,6 +1689,7 @@ footer{{margin-top:34px;color:var(--faint);font-size:12px;border-top:1px solid v
   <nav class="top-links">
     <a class="tl" href="../" title="How the ranking works — in the live planner">?</a>
     <a class="tl" href="../knowledge/index.html">Knowledge</a>
+    <a class="tl" href="../knowledge/operations/serpapi-quota.html" title="Live SerpApi/flight-search quota and API cost status">API Status</a>
     <a class="tl" href="{_esc(trip.get('mapUrl',''))}" target="_blank" rel="noopener">Map</a>
     <a class="tl" href="{_esc(trip.get('sheetUrl',''))}" target="_blank" rel="noopener">Spreadsheet</a>
     <a class="tl" href="{_esc(trip.get('repoUrl',''))}" target="_blank" rel="noopener">GitHub</a>
