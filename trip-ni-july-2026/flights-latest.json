@@ -1,6 +1,6 @@
 {
   "comment": "Latest flight prices per combo (round-trip, 1 pax, GBP). Updated on demand by Claude or by an API script. null = not yet checked.",
-  "checked_at": "2026-07-06 18:47 UTC (Google Flights/SerpApi)",
+  "checked_at": "2026-07-06 19:38 UTC (Google Flights/SerpApi)",
   "currency": "GBP",
   "rep_combo": {
     "id": "fri-tue",
@@ -15,12 +15,12 @@
         "to": "MAD",
         "options": [
           {
-            "price": 116,
-            "airline": "Wizz Air",
+            "price": 130,
+            "airline": "easyJet",
             "from": "LTN",
             "to": "MAD",
-            "dep": "08:00",
-            "arr": "11:40",
+            "dep": "12:30",
+            "arr": "16:00",
             "stops": 0
           },
           {
@@ -33,12 +33,12 @@
             "stops": 0
           },
           {
-            "price": 134,
-            "airline": "easyJet",
-            "from": "LTN",
+            "price": 135,
+            "airline": "Ryanair UK",
+            "from": "STN",
             "to": "MAD",
-            "dep": "12:30",
-            "arr": "16:00",
+            "dep": "18:25",
+            "arr": "21:55",
             "stops": 0
           }
         ],
@@ -122,12 +122,12 @@
         "to": "ASR",
         "options": [
           {
-            "price": 454,
+            "price": 439,
             "airline": "Turkish Airlines",
             "from": "DUB",
             "to": "ASR",
-            "dep": "10:40",
-            "arr": "20:00",
+            "dep": "17:05",
+            "arr": "03:15",
             "stops": 1
           },
           {
@@ -135,8 +135,8 @@
             "airline": "Turkish Airlines",
             "from": "DUB",
             "to": "ASR",
-            "dep": "17:05",
-            "arr": "03:15",
+            "dep": "10:40",
+            "arr": "20:00",
             "stops": 1
           },
           {
@@ -212,7 +212,7 @@
             "stops": 1
           },
           {
-            "price": 273,
+            "price": 247,
             "airline": "Aer Lingus",
             "from": "DUB",
             "to": "LYS",
@@ -249,7 +249,7 @@
             "stops": 0
           },
           {
-            "price": 218,
+            "price": 222,
             "airline": "easyJet",
             "from": "LTN",
             "to": "TFS",
@@ -275,7 +275,7 @@
             "stops": 0
           },
           {
-            "price": 387,
+            "price": 389,
             "airline": "Jet2",
             "from": "BFS",
             "to": "TFS",
