@@ -1,6 +1,6 @@
 {
   "comment": "Latest flight prices per combo (round-trip, 1 pax, GBP). Updated on demand by Claude or by an API script. null = not yet checked.",
-  "checked_at": "2026-07-06 16:52 UTC (Google Flights/SerpApi)",
+  "checked_at": "2026-07-06 18:37 UTC (Google Flights/SerpApi)",
   "currency": "GBP",
   "rep_combo": {
     "id": "fri-tue",
@@ -15,7 +15,7 @@
         "to": "MAD",
         "options": [
           {
-            "price": 125,
+            "price": 116,
             "airline": "Wizz Air",
             "from": "LTN",
             "to": "MAD",
@@ -50,7 +50,7 @@
         "to": "MAD",
         "options": [
           {
-            "price": 165,
+            "price": 173,
             "airline": "Iberia Express",
             "from": "DUB",
             "to": "MAD",
@@ -96,21 +96,21 @@
             "stops": 1
           },
           {
+            "price": 314,
+            "airline": "Pegasus",
+            "from": "STN",
+            "to": "ASR",
+            "dep": "23:10",
+            "arr": "17:20",
+            "stops": 1
+          },
+          {
             "price": 326,
             "airline": "Pegasus",
             "from": "STN",
             "to": "ASR",
             "dep": "19:00",
             "arr": "07:20",
-            "stops": 1
-          },
-          {
-            "price": 329,
-            "airline": "AJet",
-            "from": "STN",
-            "to": "ASR",
-            "dep": "15:40",
-            "arr": "02:25",
             "stops": 1
           }
         ],
@@ -240,7 +240,7 @@
             "stops": 0
           },
           {
-            "price": 208,
+            "price": 213,
             "airline": "Jet2",
             "from": "STN",
             "to": "TFS",
@@ -275,21 +275,21 @@
             "stops": 0
           },
           {
-            "price": 380,
-            "airline": "Aer Lingus",
-            "from": "DUB",
-            "to": "TFS",
-            "dep": "15:00",
-            "arr": "19:35",
-            "stops": 0
-          },
-          {
             "price": 387,
             "airline": "Jet2",
             "from": "BFS",
             "to": "TFS",
             "dep": "15:55",
             "arr": "20:30",
+            "stops": 0
+          },
+          {
+            "price": 397,
+            "airline": "Aer Lingus",
+            "from": "DUB",
+            "to": "TFS",
+            "dep": "15:00",
+            "arr": "19:35",
             "stops": 0
           }
         ],
