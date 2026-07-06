@@ -163,7 +163,8 @@ on 0% rain. Friction research (climbing.com *Science of Friction*, UKC condition
 threads) puts ideal sending temps at ~7–18°C, and multi-pitch means hours exposed on the
 wall. After the change the top of the table is high/cool venues (Gredos, Teide 2,200 m,
 Écrins, Aladağlar) and deserts sit last — matching climber intuition.
-**Status:** ✅ Live.
+**Status:** ⚠️ Superseded by #26 (curve tightened — the knees at 20/25/30°C were still too
+lenient; dry-but-warm venues like Gredos out-ranked cooler ones).
 
 ### #18 — Postgres (Docker) is the corpus database; supersedes the committed-SQLite plan (2026-07-04)
 **Decision:** store the climbing taxonomy + route corpus in **Postgres with PostGIS**, run
@@ -343,6 +344,30 @@ a new tag kind still needs a one-line `add()` in `venue_tags()` alongside its sp
 **Status:** ✅ Live — dashboard + all 42 static venue pages render from the venue's JSON
 payload (`v["tags"]`); the "?" opens `knowledge/data/tags.html`; generated CSS/tooltips/legend
 verified byte-identical to the prior hand-written versions.
+
+### #26 — Tighten the climbing heat curve: bite from the top of the ideal band (2026-07-05)
+**Decision:** move the `heat_penalty` knees down and steepen the slopes —
+`heat_penalty(tmax) = 1.5·(t−18)⁺ + 4·(t−24)⁺ + 6·(t−28)⁺` (was `1.2·(t−20)⁺ + 3·(t−25)⁺
++ 5·(t−30)⁺`, decision #16). Gentle from **18°C** (the top of the research ideal band, was
+20), steep from **24°C** (was 25), brutal from **28°C** (was 30). Constants
+`HEAT_WARM_C/HEAT_HOT_C/HEAT_BRUTAL_C` in `update_report.py`; shared with the chart colouring
+and header ring via `climateThresholds`, so the "?" ranking explainer, the felt-temp legend
+and the score all move together. No change to the cold penalty (below 8°C) or the aspect/sun
+felt-temperature adjustment.
+**Why:** even after #16, a dry-but-warm venue still out-ranked a cooler-but-showery one — the
+July table put **Gredos #1** on 0% rain despite a ~25°C felt-on-rock seasonal outlook, and
+Paklenica/Montserrat/Elbsandstein (28–32°C) sat mid-table. Root cause was an asymmetry: rain
+costs `−0.9/%` (a 50%-wet venue loses ~45) while the old heat curve took only ~6 points off a
+25°C venue and ~14 off 27°C. On multi-pitch — hours exposed on the wall with no shade retreat
+— heat is the bigger enemy, so the curve should be at least as harsh as the rain curve is
+generous. The new curve costs ~15 points at 25°C felt and ~66 at 31°C.
+**Effect (weather-only score, cached climatology + 45-day outlook):** cool-dry venues rise
+(**Aladağlar** 13°C → top on weather), baking venues drop hard (**Zádiel −14, Elbsandstein
+−13, Spitzkoppe/Paklenica −11, Freÿr/Gredos −6**). Gredos stays upper-mid — its *climatology*
+is genuinely cool at altitude (21°C, the 70% weight); it's the 25°C seasonal term that costs
+it. The live composite (weather 55% + travel + fit) reshuffles on the next `weather.yml` run.
+**Status:** ✅ Live — curve + "?" explainer + docstrings shipped in `update_report.py`; site
+ranking updates on the next scheduled build.
 
 ---
 
