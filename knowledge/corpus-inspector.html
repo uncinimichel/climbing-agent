@@ -300,7 +300,8 @@ function adapt(rt, areaById){
     trad_grade:rt.tradGrade,tech_grade:rt.techGrade,data_grade:rt.dataGrade,protection_code:rt.protection,
     protection_style:rt.protectionStyle,belays:rt.belays,approach_time_min:rt.approachTime,elevation_m:rt.elevation,
     sun_window_code:rt.sunWindow,best_season:rt.bestSeason,stars:rt.stars,lat:geo[0],lon:geo[1],
-    disciplines:rt.disciplines||[],features:rt.features||[],character:rt.character||[],hazards:rt.hazards||[],climatology:cl};
+    disciplines:rt.disciplines||[],features:rt.features||[],character:rt.character||[],hazards:rt.hazards||[],
+    description:rt.description||'',climatology:cl};
 }
 
 const MONTHS=['J','F','M','A','M','J','J','A','S','O','N','D'];
@@ -472,6 +473,7 @@ function cardBack(r){
     <div class="bsect"><h4>Hazards</h4>
       ${(r.hazards&&r.hazards.length)?`<div style="display:flex;gap:6px;flex-wrap:wrap">${r.hazards.map(h=>`<span class="badge haz">⚠ ${h}</span>`).join('')}</div>`:'<div style="color:var(--faint);font-size:13px">None recorded.</div>'}
     </div>
+    ${r.description?`<div class="bsect"><h4>Notes</h4><div style="font-size:12.5px;color:var(--muted);line-height:1.5">${esc(r.description.slice(0,300))}${r.description.length>300?'…':''}</div></div>`:''}
   </div></div>`;
 }
 
@@ -541,6 +543,8 @@ function inspectorDetail(r){
     <div class="sect"><h3>Hazards</h3>
       ${(r.hazards&&r.hazards.length)?`<div style="display:flex;gap:8px;flex-wrap:wrap">${r.hazards.map(h=>`<span class="badge haz">⚠ ${h}</span>`).join('')}</div>`:'<div style="color:var(--faint);font-size:13px">None recorded.</div>'}
     </div>
+
+    ${r.description?`<div class="sect"><h3>Notes</h3><div style="font-size:14px;line-height:1.6;color:var(--muted);max-width:70ch">${esc(r.description)}</div></div>`:''}
   </div>`;
 }
 

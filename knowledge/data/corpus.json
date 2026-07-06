@@ -4,11 +4,11 @@
   "note": "Single source of truth for climbs/venues (decision #27). Shaped as the Postgres seed. Curated = status:publish; seeded/unverified = status:draft.",
   "taxonomyRef": "knowledge/data/tag-spec.json",
   "counts": {
-    "areas": 132,
+    "areas": 151,
     "areasCurated": 40,
-    "routes": 60,
+    "routes": 58,
     "routesCurated": 8,
-    "routesSeeded": 52
+    "routesSeeded": 50
   },
   "areas": [
     {
@@ -166,20 +166,6 @@
       "source": "curated"
     },
     {
-      "id": "jodan",
-      "name": "Jodan",
-      "kind": "country",
-      "parent": null,
-      "country": null,
-      "region": null,
-      "geoLocation": null,
-      "rock": null,
-      "aspect": null,
-      "gradeContext": null,
-      "status": "draft",
-      "source": "multi-pitch.com"
-    },
-    {
       "id": "morocco",
       "name": "Morocco",
       "kind": "country",
@@ -306,11 +292,11 @@
       "source": "curated"
     },
     {
-      "id": "alberta",
-      "name": "Alberta",
+      "id": "alicante",
+      "name": " Alicante",
       "kind": "region",
-      "parent": "canada",
-      "country": "Canada",
+      "parent": "spain",
+      "country": "Spain",
       "region": null,
       "geoLocation": null,
       "rock": null,
@@ -320,11 +306,11 @@
       "source": "multi-pitch.com"
     },
     {
-      "id": "alicante",
-      "name": "Alicante",
+      "id": "alberta",
+      "name": "Alberta",
       "kind": "region",
-      "parent": "spain",
-      "country": "Spain",
+      "parent": "canada",
+      "country": "Canada",
       "region": null,
       "geoLocation": null,
       "rock": null,
@@ -480,9 +466,12 @@
       "parent": "spain",
       "country": "Spain",
       "region": null,
-      "geoLocation": null,
-      "rock": null,
-      "aspect": null,
+      "geoLocation": [
+        38.63,
+        0.07
+      ],
+      "rock": "limestone",
+      "aspect": "S",
       "gradeContext": null,
       "status": "draft",
       "source": "multi-pitch.com"
@@ -652,8 +641,8 @@
         51.1886,
         -4.6762
       ],
-      "rock": null,
-      "aspect": null,
+      "rock": "granite",
+      "aspect": "W",
       "gradeContext": null,
       "status": "draft",
       "source": "multi-pitch.com"
@@ -665,8 +654,11 @@
       "parent": "greece",
       "country": "Greece",
       "region": null,
-      "geoLocation": null,
-      "rock": null,
+      "geoLocation": [
+        39.72,
+        21.63
+      ],
+      "rock": "conglomerate",
       "aspect": null,
       "gradeContext": null,
       "status": "draft",
@@ -799,20 +791,6 @@
       "source": "multi-pitch.com"
     },
     {
-      "id": "sutherland",
-      "name": "Sutherland",
-      "kind": "region",
-      "parent": "scotland",
-      "country": "Scotland",
-      "region": null,
-      "geoLocation": null,
-      "rock": null,
-      "aspect": null,
-      "gradeContext": null,
-      "status": "draft",
-      "source": "multi-pitch.com"
-    },
-    {
       "id": "tafraout",
       "name": "Tafraout",
       "kind": "region",
@@ -865,22 +843,8 @@
         43.1948,
         23.5301
       ],
-      "rock": null,
-      "aspect": null,
-      "gradeContext": null,
-      "status": "draft",
-      "source": "multi-pitch.com"
-    },
-    {
-      "id": "wadi-rum",
-      "name": "Wadi Rum",
-      "kind": "region",
-      "parent": "jodan",
-      "country": "Jodan",
-      "region": null,
-      "geoLocation": null,
-      "rock": null,
-      "aspect": null,
+      "rock": "limestone",
+      "aspect": "S",
       "gradeContext": null,
       "status": "draft",
       "source": "multi-pitch.com"
@@ -945,6 +909,23 @@
       "source": "curated"
     },
     {
+      "id": "aladaglar",
+      "name": "Aladaglar",
+      "kind": "crag",
+      "parent": null,
+      "country": null,
+      "region": null,
+      "geoLocation": [
+        37.8,
+        35.15
+      ],
+      "rock": "limestone",
+      "aspect": null,
+      "gradeContext": null,
+      "status": "draft",
+      "source": "sheet-gazetteer"
+    },
+    {
       "id": "amzkhssan-wall",
       "name": "Amzkhssan Wall",
       "kind": "crag",
@@ -955,8 +936,8 @@
         29.8426,
         -9.0235
       ],
-      "rock": null,
-      "aspect": null,
+      "rock": "quartzite",
+      "aspect": "S",
       "gradeContext": null,
       "status": "draft",
       "source": "multi-pitch.com"
@@ -979,6 +960,23 @@
       "source": "curated"
     },
     {
+      "id": "anti-atlas",
+      "name": "Anti Atlas",
+      "kind": "crag",
+      "parent": null,
+      "country": null,
+      "region": null,
+      "geoLocation": [
+        29.72,
+        -8.98
+      ],
+      "rock": "quartzite",
+      "aspect": null,
+      "gradeContext": null,
+      "status": "draft",
+      "source": "sheet-gazetteer"
+    },
+    {
       "id": "avon-gorge",
       "name": "Avon Gorge",
       "kind": "crag",
@@ -989,7 +987,7 @@
         51.4685,
         -2.6332
       ],
-      "rock": null,
+      "rock": "limestone",
       "aspect": null,
       "gradeContext": null,
       "status": "draft",
@@ -1006,8 +1004,8 @@
         50.1758,
         -5.6204
       ],
-      "rock": null,
-      "aspect": null,
+      "rock": "granite",
+      "aspect": "W",
       "gradeContext": null,
       "status": "draft",
       "source": "multi-pitch.com"
@@ -1023,8 +1021,8 @@
         47.117,
         8.9851
       ],
-      "rock": null,
-      "aspect": null,
+      "rock": "limestone",
+      "aspect": "S",
       "gradeContext": null,
       "status": "draft",
       "source": "multi-pitch.com"
@@ -1040,11 +1038,62 @@
         54.1568,
         -5.9794
       ],
-      "rock": null,
-      "aspect": null,
+      "rock": "granite",
+      "aspect": "SE",
       "gradeContext": null,
       "status": "draft",
       "source": "multi-pitch.com"
+    },
+    {
+      "id": "calanques",
+      "name": "Calanques",
+      "kind": "crag",
+      "parent": null,
+      "country": null,
+      "region": null,
+      "geoLocation": [
+        43.21,
+        5.45
+      ],
+      "rock": "limestone",
+      "aspect": "S",
+      "gradeContext": null,
+      "status": "draft",
+      "source": "sheet-gazetteer"
+    },
+    {
+      "id": "campanile-basso",
+      "name": "Campanile Basso",
+      "kind": "crag",
+      "parent": null,
+      "country": null,
+      "region": null,
+      "geoLocation": [
+        46.16,
+        10.87
+      ],
+      "rock": "dolomite",
+      "aspect": null,
+      "gradeContext": null,
+      "status": "draft",
+      "source": "sheet-gazetteer"
+    },
+    {
+      "id": "carcassonne",
+      "name": "Carcassonne",
+      "kind": "crag",
+      "parent": null,
+      "country": null,
+      "region": null,
+      "geoLocation": [
+        43.21,
+        2.35
+      ],
+      "rock": "limestone",
+      "aspect": null,
+      "gradeContext": null,
+      "status": "draft",
+      "source": "sheet-gazetteer"
     },
     {
       "id": "cathedral-rock",
@@ -1057,8 +1106,8 @@
         28.2235,
         -16.6345
       ],
-      "rock": null,
-      "aspect": null,
+      "rock": "basalt",
+      "aspect": "E",
       "gradeContext": null,
       "status": "draft",
       "source": "multi-pitch.com"
@@ -1074,8 +1123,8 @@
         50.0369,
         -5.6819
       ],
-      "rock": null,
-      "aspect": null,
+      "rock": "granite",
+      "aspect": "SW",
       "gradeContext": null,
       "status": "draft",
       "source": "multi-pitch.com"
@@ -1091,8 +1140,8 @@
         55.6367,
         -5.2232
       ],
-      "rock": null,
-      "aspect": null,
+      "rock": "granite",
+      "aspect": "S",
       "gradeContext": null,
       "status": "draft",
       "source": "multi-pitch.com"
@@ -1108,8 +1157,8 @@
         53.0793,
         -4.093
       ],
-      "rock": null,
-      "aspect": null,
+      "rock": "rhyolite",
+      "aspect": "N",
       "gradeContext": null,
       "status": "draft",
       "source": "multi-pitch.com"
@@ -1125,8 +1174,8 @@
         50.9194,
         -4.5567
       ],
-      "rock": null,
-      "aspect": null,
+      "rock": "sandstone",
+      "aspect": "S",
       "gradeContext": null,
       "status": "draft",
       "source": "multi-pitch.com"
@@ -1142,8 +1191,8 @@
         53.1087,
         -4.0201
       ],
-      "rock": null,
-      "aspect": null,
+      "rock": "rhyolite",
+      "aspect": "SW",
       "gradeContext": null,
       "status": "draft",
       "source": "multi-pitch.com"
@@ -1159,11 +1208,28 @@
         53.1105,
         -4.026
       ],
-      "rock": null,
-      "aspect": null,
+      "rock": "rhyolite",
+      "aspect": "NW",
       "gradeContext": null,
       "status": "draft",
       "source": "multi-pitch.com"
+    },
+    {
+      "id": "devon",
+      "name": "Devon",
+      "kind": "crag",
+      "parent": null,
+      "country": null,
+      "region": null,
+      "geoLocation": [
+        50.92,
+        -4.56
+      ],
+      "rock": "culm sandstone",
+      "aspect": null,
+      "gradeContext": null,
+      "status": "draft",
+      "source": "sheet-gazetteer"
     },
     {
       "id": "dinorwic-quarry",
@@ -1176,25 +1242,8 @@
         53.1249,
         -4.0998
       ],
-      "rock": null,
-      "aspect": null,
-      "gradeContext": null,
-      "status": "draft",
-      "source": "multi-pitch.com"
-    },
-    {
-      "id": "djebel-rum",
-      "name": "Djebel Rum",
-      "kind": "crag",
-      "parent": "wadi-rum",
-      "country": "Jodan",
-      "region": "Wadi Rum",
-      "geoLocation": [
-        29.57,
-        35.4062
-      ],
-      "rock": null,
-      "aspect": null,
+      "rock": "slate",
+      "aspect": "SE",
       "gradeContext": null,
       "status": "draft",
       "source": "multi-pitch.com"
@@ -1244,8 +1293,8 @@
         54.1348,
         -6.0894
       ],
-      "rock": null,
-      "aspect": null,
+      "rock": "granite",
+      "aspect": "NE",
       "gradeContext": null,
       "status": "draft",
       "source": "multi-pitch.com"
@@ -1273,16 +1322,33 @@
       "kind": "crag",
       "parent": "alicante",
       "country": "Spain",
-      "region": "Alicante",
+      "region": " Alicante",
       "geoLocation": [
         38.6275,
         -0.1563
       ],
-      "rock": null,
-      "aspect": null,
+      "rock": "limestone",
+      "aspect": "S",
       "gradeContext": null,
       "status": "draft",
       "source": "multi-pitch.com"
+    },
+    {
+      "id": "elbsandstein",
+      "name": "Elbsandstein",
+      "kind": "crag",
+      "parent": null,
+      "country": null,
+      "region": null,
+      "geoLocation": [
+        50.91,
+        14.06
+      ],
+      "rock": "sandstone",
+      "aspect": null,
+      "gradeContext": null,
+      "status": "draft",
+      "source": "sheet-gazetteer"
     },
     {
       "id": "fair-head",
@@ -1329,8 +1395,8 @@
         50.2262,
         4.8913
       ],
-      "rock": null,
-      "aspect": null,
+      "rock": "limestone",
+      "aspect": "W",
       "gradeContext": null,
       "status": "draft",
       "source": "multi-pitch.com"
@@ -1363,8 +1429,8 @@
         46.6009,
         11.7547
       ],
-      "rock": null,
-      "aspect": null,
+      "rock": "dolomite",
+      "aspect": "S",
       "gradeContext": null,
       "status": "draft",
       "source": "multi-pitch.com"
@@ -1380,11 +1446,28 @@
         51.5684,
         -4.1226
       ],
-      "rock": null,
-      "aspect": null,
+      "rock": "limestone",
+      "aspect": "SE",
       "gradeContext": null,
       "status": "draft",
       "source": "multi-pitch.com"
+    },
+    {
+      "id": "gredos",
+      "name": "Gredos",
+      "kind": "crag",
+      "parent": null,
+      "country": null,
+      "region": null,
+      "geoLocation": [
+        40.27,
+        -5.17
+      ],
+      "rock": "granite",
+      "aspect": "W",
+      "gradeContext": null,
+      "status": "draft",
+      "source": "sheet-gazetteer"
     },
     {
       "id": "heiliger-geist",
@@ -1397,8 +1480,8 @@
         39.7201,
         21.6278
       ],
-      "rock": null,
-      "aspect": null,
+      "rock": "conglomerate",
+      "aspect": "E",
       "gradeContext": null,
       "status": "draft",
       "source": "multi-pitch.com"
@@ -1414,11 +1497,28 @@
         29.6968,
         -8.9759
       ],
-      "rock": null,
-      "aspect": null,
+      "rock": "granite",
+      "aspect": "S",
       "gradeContext": null,
       "status": "draft",
       "source": "multi-pitch.com"
+    },
+    {
+      "id": "hoy",
+      "name": "Hoy",
+      "kind": "crag",
+      "parent": null,
+      "country": null,
+      "region": null,
+      "geoLocation": [
+        58.88,
+        -3.43
+      ],
+      "rock": "sandstone",
+      "aspect": "W",
+      "gradeContext": null,
+      "status": "draft",
+      "source": "sheet-gazetteer"
     },
     {
       "id": "idwal-slabs",
@@ -1436,6 +1536,23 @@
       "gradeContext": "GB",
       "status": "publish",
       "source": "curated"
+    },
+    {
+      "id": "isle-of-white",
+      "name": "Isle Of White",
+      "kind": "crag",
+      "parent": null,
+      "country": null,
+      "region": null,
+      "geoLocation": [
+        50.66,
+        -1.3
+      ],
+      "rock": "chalk",
+      "aspect": null,
+      "gradeContext": null,
+      "status": "draft",
+      "source": "sheet-gazetteer"
     },
     {
       "id": "isle-of-arran",
@@ -1465,8 +1582,8 @@
         29.8127,
         -9.0668
       ],
-      "rock": null,
-      "aspect": null,
+      "rock": "quartzite",
+      "aspect": "SE",
       "gradeContext": null,
       "status": "draft",
       "source": "multi-pitch.com"
@@ -1499,8 +1616,8 @@
         22.3519,
         114.1852
       ],
-      "rock": null,
-      "aspect": null,
+      "rock": "granite",
+      "aspect": "W",
       "gradeContext": null,
       "status": "draft",
       "source": "multi-pitch.com"
@@ -1516,11 +1633,28 @@
         53.0602,
         -4.0539
       ],
-      "rock": null,
-      "aspect": null,
+      "rock": "rhyolite",
+      "aspect": "N",
       "gradeContext": null,
       "status": "draft",
       "source": "multi-pitch.com"
+    },
+    {
+      "id": "loften",
+      "name": "Loften",
+      "kind": "crag",
+      "parent": null,
+      "country": null,
+      "region": null,
+      "geoLocation": [
+        68.12,
+        13.6
+      ],
+      "rock": "granite",
+      "aspect": null,
+      "gradeContext": null,
+      "status": "draft",
+      "source": "sheet-gazetteer"
     },
     {
       "id": "los-galayos",
@@ -1550,11 +1684,28 @@
         29.8087,
         -9.0643
       ],
-      "rock": null,
-      "aspect": null,
+      "rock": "quartzite",
+      "aspect": "NE",
       "gradeContext": null,
       "status": "draft",
       "source": "multi-pitch.com"
+    },
+    {
+      "id": "mallorca",
+      "name": "Mallorca",
+      "kind": "crag",
+      "parent": null,
+      "country": null,
+      "region": null,
+      "geoLocation": [
+        39.72,
+        2.77
+      ],
+      "rock": "limestone",
+      "aspect": null,
+      "gradeContext": null,
+      "status": "draft",
+      "source": "sheet-gazetteer"
     },
     {
       "id": "meadinha",
@@ -1567,11 +1718,62 @@
         41.9765,
         -8.2244
       ],
-      "rock": null,
-      "aspect": null,
+      "rock": "granite",
+      "aspect": "SE",
       "gradeContext": null,
       "status": "draft",
       "source": "multi-pitch.com"
+    },
+    {
+      "id": "medina",
+      "name": "Medina",
+      "kind": "crag",
+      "parent": null,
+      "country": null,
+      "region": null,
+      "geoLocation": [
+        24.47,
+        39.61
+      ],
+      "rock": "granite",
+      "aspect": null,
+      "gradeContext": null,
+      "status": "draft",
+      "source": "sheet-gazetteer"
+    },
+    {
+      "id": "mont-blonc",
+      "name": "Mont Blonc",
+      "kind": "crag",
+      "parent": null,
+      "country": null,
+      "region": null,
+      "geoLocation": [
+        45.88,
+        6.89
+      ],
+      "rock": "granite",
+      "aspect": null,
+      "gradeContext": null,
+      "status": "draft",
+      "source": "sheet-gazetteer"
+    },
+    {
+      "id": "montserrat",
+      "name": "Montserrat",
+      "kind": "crag",
+      "parent": null,
+      "country": null,
+      "region": null,
+      "geoLocation": [
+        41.6,
+        1.81
+      ],
+      "rock": "conglomerate",
+      "aspect": null,
+      "gradeContext": null,
+      "status": "draft",
+      "source": "sheet-gazetteer"
     },
     {
       "id": "mount-indefatigable",
@@ -1584,7 +1786,7 @@
         50.6375,
         -115.1674
       ],
-      "rock": null,
+      "rock": "limestone",
       "aspect": null,
       "gradeContext": null,
       "status": "draft",
@@ -1618,8 +1820,8 @@
         58.8837,
         -3.4305
       ],
-      "rock": null,
-      "aspect": null,
+      "rock": "sandstone",
+      "aspect": "E",
       "gradeContext": null,
       "status": "draft",
       "source": "multi-pitch.com"
@@ -1669,8 +1871,8 @@
         38.635,
         -0.1822
       ],
-      "rock": null,
-      "aspect": null,
+      "rock": "limestone",
+      "aspect": "NE",
       "gradeContext": null,
       "status": "draft",
       "source": "multi-pitch.com"
@@ -1686,8 +1888,8 @@
         38.6339,
         0.0743
       ],
-      "rock": null,
-      "aspect": null,
+      "rock": "limestone",
+      "aspect": "S",
       "gradeContext": null,
       "status": "draft",
       "source": "multi-pitch.com"
@@ -1720,8 +1922,8 @@
         54.1447,
         -6.0628
       ],
-      "rock": null,
-      "aspect": null,
+      "rock": "granite",
+      "aspect": "E",
       "gradeContext": null,
       "status": "draft",
       "source": "multi-pitch.com"
@@ -1737,11 +1939,28 @@
         38.5891,
         -0.2065
       ],
-      "rock": null,
-      "aspect": null,
+      "rock": "limestone",
+      "aspect": "S",
       "gradeContext": null,
       "status": "draft",
       "source": "multi-pitch.com"
+    },
+    {
+      "id": "riglos",
+      "name": "Riglos",
+      "kind": "crag",
+      "parent": null,
+      "country": null,
+      "region": null,
+      "geoLocation": [
+        42.35,
+        -0.73
+      ],
+      "rock": "conglomerate",
+      "aspect": "S",
+      "gradeContext": null,
+      "status": "draft",
+      "source": "sheet-gazetteer"
     },
     {
       "id": "roca-gris",
@@ -1754,8 +1973,8 @@
         41.5888,
         1.815
       ],
-      "rock": null,
-      "aspect": null,
+      "rock": "conglomerate",
+      "aspect": "S",
       "gradeContext": null,
       "status": "draft",
       "source": "multi-pitch.com"
@@ -1771,7 +1990,7 @@
         54.6262,
         -8.6852
       ],
-      "rock": null,
+      "rock": "quartzite",
       "aspect": null,
       "gradeContext": null,
       "status": "draft",
@@ -1788,8 +2007,8 @@
         46.5033,
         11.8021
       ],
-      "rock": null,
-      "aspect": null,
+      "rock": "dolomite",
+      "aspect": "NW",
       "gradeContext": null,
       "status": "draft",
       "source": "multi-pitch.com"
@@ -1805,8 +2024,8 @@
         46.4991,
         11.808
       ],
-      "rock": null,
-      "aspect": null,
+      "rock": "dolomite",
+      "aspect": "S",
       "gradeContext": null,
       "status": "draft",
       "source": "multi-pitch.com"
@@ -1822,8 +2041,8 @@
         54.4507,
         -3.2203
       ],
-      "rock": null,
-      "aspect": null,
+      "rock": "rhyolite",
+      "aspect": "N",
       "gradeContext": null,
       "status": "draft",
       "source": "multi-pitch.com"
@@ -1839,11 +2058,45 @@
         46.5091,
         11.7738
       ],
-      "rock": null,
-      "aspect": null,
+      "rock": "dolomite",
+      "aspect": "SW",
       "gradeContext": null,
       "status": "draft",
       "source": "multi-pitch.com"
+    },
+    {
+      "id": "setesdal",
+      "name": "Setesdal",
+      "kind": "crag",
+      "parent": null,
+      "country": null,
+      "region": null,
+      "geoLocation": [
+        58.9,
+        7.4
+      ],
+      "rock": "granite",
+      "aspect": null,
+      "gradeContext": null,
+      "status": "draft",
+      "source": "sheet-gazetteer"
+    },
+    {
+      "id": "sicilly",
+      "name": "Sicilly",
+      "kind": "crag",
+      "parent": null,
+      "country": null,
+      "region": null,
+      "geoLocation": [
+        38.17,
+        12.74
+      ],
+      "rock": "limestone",
+      "aspect": null,
+      "gradeContext": null,
+      "status": "draft",
+      "source": "sheet-gazetteer"
     },
     {
       "id": "slieve-beg",
@@ -1856,8 +2109,8 @@
         54.1793,
         -5.9477
       ],
-      "rock": null,
-      "aspect": null,
+      "rock": "granite",
+      "aspect": "SW",
       "gradeContext": null,
       "status": "draft",
       "source": "multi-pitch.com"
@@ -1873,8 +2126,8 @@
         54.1606,
         -5.9614
       ],
-      "rock": null,
-      "aspect": null,
+      "rock": "granite",
+      "aspect": "SE",
       "gradeContext": null,
       "status": "draft",
       "source": "multi-pitch.com"
@@ -1897,6 +2150,23 @@
       "source": "curated"
     },
     {
+      "id": "spitzkoppe",
+      "name": "Spitzkoppe",
+      "kind": "crag",
+      "parent": null,
+      "country": null,
+      "region": null,
+      "geoLocation": [
+        -21.83,
+        15.19
+      ],
+      "rock": "granite",
+      "aspect": null,
+      "gradeContext": null,
+      "status": "draft",
+      "source": "sheet-gazetteer"
+    },
+    {
       "id": "stetind",
       "name": "Stetind",
       "kind": "crag",
@@ -1907,7 +2177,7 @@
         68.1625,
         16.5907
       ],
-      "rock": null,
+      "rock": "granite",
       "aspect": null,
       "gradeContext": null,
       "status": "draft",
@@ -1931,6 +2201,23 @@
       "source": "curated"
     },
     {
+      "id": "tenerife",
+      "name": "Tenerife",
+      "kind": "crag",
+      "parent": null,
+      "country": null,
+      "region": null,
+      "geoLocation": [
+        28.27,
+        -16.64
+      ],
+      "rock": "volcanic",
+      "aspect": null,
+      "gradeContext": null,
+      "status": "draft",
+      "source": "sheet-gazetteer"
+    },
+    {
       "id": "the-devils-tower",
       "name": "The Devils Tower",
       "kind": "crag",
@@ -1941,8 +2228,8 @@
         44.5897,
         -104.7153
       ],
-      "rock": null,
-      "aspect": null,
+      "rock": "volcanic",
+      "aspect": "S",
       "gradeContext": null,
       "status": "draft",
       "source": "multi-pitch.com"
@@ -1975,11 +2262,28 @@
         54.7612,
         -8.6916
       ],
-      "rock": null,
-      "aspect": null,
+      "rock": "quartzite",
+      "aspect": "E",
       "gradeContext": null,
       "status": "draft",
       "source": "multi-pitch.com"
+    },
+    {
+      "id": "triglav",
+      "name": "Triglav",
+      "kind": "crag",
+      "parent": null,
+      "country": null,
+      "region": null,
+      "geoLocation": [
+        46.38,
+        13.84
+      ],
+      "rock": "limestone",
+      "aspect": null,
+      "gradeContext": null,
+      "status": "draft",
+      "source": "sheet-gazetteer"
     },
     {
       "id": "tryfan",
@@ -1992,8 +2296,8 @@
         53.1156,
         -3.9947
       ],
-      "rock": null,
-      "aspect": null,
+      "rock": "rhyolite",
+      "aspect": "E",
       "gradeContext": null,
       "status": "draft",
       "source": "multi-pitch.com"
@@ -2009,11 +2313,28 @@
         46.4604,
         11.6245
       ],
-      "rock": null,
-      "aspect": null,
+      "rock": "dolomite",
+      "aspect": "SW",
       "gradeContext": null,
       "status": "draft",
       "source": "multi-pitch.com"
+    },
+    {
+      "id": "wadi-rum",
+      "name": "Wadi Rum",
+      "kind": "crag",
+      "parent": null,
+      "country": null,
+      "region": null,
+      "geoLocation": [
+        29.57,
+        35.42
+      ],
+      "rock": "sandstone",
+      "aspect": null,
+      "gradeContext": null,
+      "status": "draft",
+      "source": "sheet-gazetteer"
     },
     {
       "id": "west-cornwall-bosigran",
@@ -2043,11 +2364,28 @@
         51.6648,
         -2.6643
       ],
-      "rock": null,
+      "rock": "limestone",
       "aspect": null,
       "gradeContext": null,
       "status": "draft",
       "source": "multi-pitch.com"
+    },
+    {
+      "id": "zadiel",
+      "name": "Zadiel",
+      "kind": "crag",
+      "parent": null,
+      "country": null,
+      "region": null,
+      "geoLocation": [
+        48.62,
+        20.83
+      ],
+      "rock": "limestone",
+      "aspect": null,
+      "gradeContext": null,
+      "status": "draft",
+      "source": "sheet-gazetteer"
     },
     {
       "id": "ecrins-aiguille-dibona",
@@ -2069,7 +2407,7 @@
   ],
   "routes": [
     {
-      "id": 5,
+      "id": 3,
       "area": "old-man-of-stoer",
       "name": "Original Route",
       "status": "publish",
@@ -2134,7 +2472,7 @@
       ]
     },
     {
-      "id": 6,
+      "id": 4,
       "area": "idwal-slabs",
       "name": "Tennis Shoe",
       "status": "publish",
@@ -2181,7 +2519,7 @@
       ]
     },
     {
-      "id": 7,
+      "id": 5,
       "area": "three-cliffs-bay",
       "name": "Scavenger",
       "status": "publish",
@@ -2232,7 +2570,7 @@
       ]
     },
     {
-      "id": 8,
+      "id": 6,
       "area": "gimmer-crag",
       "name": "Ash Tree Slabs",
       "status": "publish",
@@ -2275,7 +2613,7 @@
       ]
     },
     {
-      "id": 9,
+      "id": 7,
       "area": "fair-head",
       "name": "Girona",
       "status": "publish",
@@ -2322,7 +2660,7 @@
       ]
     },
     {
-      "id": 10,
+      "id": 8,
       "area": "los-galayos",
       "name": "Sur Clásica (Punta Margarita)",
       "status": "publish",
@@ -2370,7 +2708,7 @@
       ]
     },
     {
-      "id": 11,
+      "id": 9,
       "area": "aiguille-dibona",
       "name": "Voie Boell",
       "status": "publish",
@@ -2431,7 +2769,7 @@
       ]
     },
     {
-      "id": 12,
+      "id": 10,
       "area": "anica-kuk",
       "name": "Mosoraški",
       "status": "publish",
@@ -2493,681 +2831,6 @@
       ]
     },
     {
-      "id": "mp-40",
-      "area": "great-tor",
-      "name": "East Ridge",
-      "status": "draft",
-      "source": "multi-pitch.com",
-      "dataGrade": 3,
-      "originalGrade": "S 3c",
-      "gradeSys": "BAS",
-      "tradGrade": "S",
-      "techGrade": "3c",
-      "length": 71,
-      "pitches": 4,
-      "approachTime": 25,
-      "approachDifficulty": 1,
-      "disciplines": [],
-      "features": [],
-      "character": [],
-      "hazards": [],
-      "climatology": [],
-      "geoLocation": [
-        51.5684,
-        -4.1226
-      ]
-    },
-    {
-      "id": "mp-34",
-      "area": "old-man-of-hoy",
-      "name": "Original Route",
-      "status": "draft",
-      "source": "multi-pitch.com",
-      "dataGrade": 7,
-      "originalGrade": "E1 5b",
-      "gradeSys": "BAS",
-      "tradGrade": "E1",
-      "techGrade": "5b",
-      "length": 137,
-      "pitches": 5,
-      "approachTime": 45,
-      "approachDifficulty": 2,
-      "disciplines": [],
-      "features": [],
-      "character": [],
-      "hazards": [],
-      "climatology": [],
-      "geoLocation": [
-        58.8837,
-        -3.4305
-      ]
-    },
-    {
-      "id": "mp-39",
-      "area": "lower-eagle-crag",
-      "name": "Donkey Serenades",
-      "status": "draft",
-      "source": "multi-pitch.com",
-      "dataGrade": 2,
-      "originalGrade": "VD 3c",
-      "gradeSys": "BAS",
-      "tradGrade": "VD",
-      "techGrade": "3c",
-      "length": 270,
-      "pitches": 8,
-      "approachTime": 15,
-      "approachDifficulty": 1,
-      "disciplines": [],
-      "features": [],
-      "character": [],
-      "hazards": [],
-      "climatology": [],
-      "geoLocation": [
-        29.8087,
-        -9.0643
-      ]
-    },
-    {
-      "id": "mp-38",
-      "area": "amzkhssan-wall",
-      "name": "Pinnacle Slab",
-      "status": "draft",
-      "source": "multi-pitch.com",
-      "dataGrade": 1,
-      "originalGrade": "D 3b",
-      "gradeSys": "BAS",
-      "tradGrade": "D",
-      "techGrade": "3b",
-      "length": 130,
-      "pitches": 3,
-      "approachTime": 5,
-      "approachDifficulty": 1,
-      "disciplines": [],
-      "features": [],
-      "character": [],
-      "hazards": [],
-      "climatology": [],
-      "geoLocation": [
-        29.8426,
-        -9.0235
-      ]
-    },
-    {
-      "id": "mp-37",
-      "area": "high-sierra-dome",
-      "name": "High Sierra",
-      "status": "draft",
-      "source": "multi-pitch.com",
-      "dataGrade": 5,
-      "originalGrade": "VS 5a",
-      "gradeSys": "BAS",
-      "tradGrade": "VS",
-      "techGrade": "5a",
-      "length": 120,
-      "pitches": 4,
-      "approachTime": 15,
-      "approachDifficulty": 1,
-      "disciplines": [],
-      "features": [],
-      "character": [],
-      "hazards": [],
-      "climatology": [],
-      "geoLocation": [
-        29.6968,
-        -8.9759
-      ]
-    },
-    {
-      "id": "mp-35",
-      "area": "ksar-rock",
-      "name": "East Buttress",
-      "status": "draft",
-      "source": "multi-pitch.com",
-      "dataGrade": 4,
-      "originalGrade": "HS 4b",
-      "gradeSys": "BAS",
-      "tradGrade": "HS",
-      "techGrade": "4b",
-      "length": 120,
-      "pitches": 6,
-      "approachTime": 10,
-      "approachDifficulty": 1,
-      "disciplines": [],
-      "features": [],
-      "character": [],
-      "hazards": [],
-      "climatology": [],
-      "geoLocation": [
-        29.8127,
-        -9.0668
-      ]
-    },
-    {
-      "id": "mp-26",
-      "area": "vajolet-towers",
-      "name": "Piaz Arete Delagokante",
-      "status": "draft",
-      "source": "multi-pitch.com",
-      "dataGrade": 4,
-      "originalGrade": "IV+",
-      "gradeSys": "UIAA",
-      "tradGrade": "HS",
-      "techGrade": "4a",
-      "length": 156,
-      "pitches": 5,
-      "approachTime": 160,
-      "approachDifficulty": 3,
-      "disciplines": [],
-      "features": [],
-      "character": [],
-      "hazards": [],
-      "climatology": [],
-      "geoLocation": [
-        46.4604,
-        11.6245
-      ]
-    },
-    {
-      "id": "mp-19",
-      "area": "mount-indefatigable",
-      "name": "Joy",
-      "status": "draft",
-      "source": "multi-pitch.com",
-      "dataGrade": 3,
-      "originalGrade": "5.7",
-      "gradeSys": "YDS",
-      "tradGrade": "S",
-      "techGrade": "4a",
-      "length": 300,
-      "pitches": 10,
-      "approachTime": 40,
-      "approachDifficulty": 1,
-      "disciplines": [],
-      "features": [],
-      "character": [],
-      "hazards": [],
-      "climatology": [],
-      "geoLocation": [
-        50.6375,
-        -115.1674
-      ]
-    },
-    {
-      "id": "mp-7",
-      "area": "cwm-idwal",
-      "name": "Ordinary Route",
-      "status": "draft",
-      "source": "multi-pitch.com",
-      "dataGrade": 1,
-      "originalGrade": "D 3a",
-      "gradeSys": "BAS",
-      "tradGrade": "D",
-      "techGrade": "3a",
-      "length": 140,
-      "pitches": 4,
-      "approachTime": 30,
-      "approachDifficulty": 1,
-      "disciplines": [],
-      "features": [],
-      "character": [],
-      "hazards": [],
-      "climatology": [],
-      "geoLocation": [
-        53.1105,
-        -4.026
-      ]
-    },
-    {
-      "id": "mp-8",
-      "area": "lundy",
-      "name": "The Devils Slide",
-      "status": "draft",
-      "source": "multi-pitch.com",
-      "dataGrade": 4,
-      "originalGrade": "HS 4a",
-      "gradeSys": "BAS",
-      "tradGrade": "HS",
-      "techGrade": "4a",
-      "length": 117,
-      "pitches": 5,
-      "approachTime": 120,
-      "approachDifficulty": 3,
-      "disciplines": [],
-      "features": [],
-      "character": [],
-      "hazards": [],
-      "climatology": [],
-      "geoLocation": [
-        51.1886,
-        -4.6762
-      ]
-    },
-    {
-      "id": "mp-33",
-      "area": "grande-fermeda",
-      "name": "Normal Route",
-      "status": "draft",
-      "source": "multi-pitch.com",
-      "dataGrade": 2,
-      "originalGrade": "IV-",
-      "gradeSys": "UIAA",
-      "tradGrade": "VD",
-      "techGrade": "3b",
-      "length": 720,
-      "pitches": 19,
-      "approachTime": 60,
-      "approachDifficulty": 1,
-      "disciplines": [],
-      "features": [],
-      "character": [],
-      "hazards": [],
-      "climatology": [],
-      "geoLocation": [
-        46.6009,
-        11.7547
-      ]
-    },
-    {
-      "id": "mp-20",
-      "area": "slieve-beg",
-      "name": "Poetic Justice",
-      "status": "draft",
-      "source": "multi-pitch.com",
-      "dataGrade": 5,
-      "originalGrade": "VS 4b",
-      "gradeSys": "BAS",
-      "tradGrade": "VS",
-      "techGrade": "4b",
-      "length": 80,
-      "pitches": 4,
-      "approachTime": 90,
-      "approachDifficulty": 1,
-      "disciplines": [],
-      "features": [],
-      "character": [],
-      "hazards": [],
-      "climatology": [],
-      "geoLocation": [
-        54.1793,
-        -5.9477
-      ]
-    },
-    {
-      "id": "mp-4",
-      "area": "vratsa",
-      "name": "Bulgaria 1300",
-      "status": "draft",
-      "source": "multi-pitch.com",
-      "dataGrade": 7,
-      "originalGrade": "VI+",
-      "gradeSys": "UIAA",
-      "tradGrade": "E1",
-      "techGrade": "5c",
-      "length": 400,
-      "pitches": 11,
-      "approachTime": 40,
-      "approachDifficulty": 2,
-      "disciplines": [],
-      "features": [],
-      "character": [],
-      "hazards": [],
-      "climatology": [],
-      "geoLocation": [
-        43.1948,
-        23.5301
-      ]
-    },
-    {
-      "id": "mp-32",
-      "area": "freyr",
-      "name": "Le Merinos",
-      "status": "draft",
-      "source": "multi-pitch.com",
-      "dataGrade": 3,
-      "originalGrade": "f4c",
-      "gradeSys": "FS",
-      "tradGrade": "S",
-      "techGrade": "4b",
-      "length": 100,
-      "pitches": 4,
-      "approachTime": 20,
-      "approachDifficulty": 1,
-      "disciplines": [],
-      "features": [],
-      "character": [],
-      "hazards": [],
-      "climatology": [],
-      "geoLocation": [
-        50.2262,
-        4.8913
-      ]
-    },
-    {
-      "id": "mp-2",
-      "area": "bosigran",
-      "name": "Doorpost",
-      "status": "draft",
-      "source": "multi-pitch.com",
-      "dataGrade": 4,
-      "originalGrade": "HS 4b",
-      "gradeSys": "BAS",
-      "tradGrade": "HS",
-      "techGrade": "4b",
-      "length": 67,
-      "pitches": 3,
-      "approachTime": 10,
-      "approachDifficulty": 1,
-      "disciplines": [],
-      "features": [],
-      "character": [],
-      "hazards": [],
-      "climatology": [],
-      "geoLocation": [
-        50.1758,
-        -5.6204
-      ]
-    },
-    {
-      "id": "mp-30",
-      "area": "avon-gorge",
-      "name": "Morpheus",
-      "status": "draft",
-      "source": "multi-pitch.com",
-      "dataGrade": 3,
-      "originalGrade": "S 4a",
-      "gradeSys": "BAS",
-      "tradGrade": "S",
-      "techGrade": "4a",
-      "length": 67,
-      "pitches": 4,
-      "approachTime": 1,
-      "approachDifficulty": 1,
-      "disciplines": [],
-      "features": [],
-      "character": [],
-      "hazards": [],
-      "climatology": [],
-      "geoLocation": [
-        51.4685,
-        -2.6332
-      ]
-    },
-    {
-      "id": "mp-1",
-      "area": "old-man-of-stoer",
-      "name": "Original Route",
-      "status": "draft",
-      "source": "multi-pitch.com",
-      "dataGrade": 5,
-      "originalGrade": "VS 5a",
-      "gradeSys": "BAS",
-      "tradGrade": "VS",
-      "techGrade": "5a",
-      "length": 67,
-      "pitches": 5,
-      "approachTime": 50,
-      "approachDifficulty": 3,
-      "disciplines": [],
-      "features": [],
-      "character": [],
-      "hazards": [],
-      "climatology": [],
-      "geoLocation": [
-        58.2609,
-        -5.3827
-      ]
-    },
-    {
-      "id": "mp-29",
-      "area": "wintours-leap",
-      "name": "Right Hand Route",
-      "status": "draft",
-      "source": "multi-pitch.com",
-      "dataGrade": 4,
-      "originalGrade": "HS 4b",
-      "gradeSys": "BAS",
-      "tradGrade": "HS",
-      "techGrade": "4b",
-      "length": 87,
-      "pitches": 4,
-      "approachTime": 20,
-      "approachDifficulty": 1,
-      "disciplines": [],
-      "features": [],
-      "character": [],
-      "hazards": [],
-      "climatology": [],
-      "geoLocation": [
-        51.6648,
-        -2.6643
-      ]
-    },
-    {
-      "id": "mp-16",
-      "area": "lliwedd",
-      "name": "Longlands Continuation",
-      "status": "draft",
-      "source": "multi-pitch.com",
-      "dataGrade": 3,
-      "originalGrade": "S 4b",
-      "gradeSys": "BAS",
-      "tradGrade": "S",
-      "techGrade": "4b",
-      "length": 280,
-      "pitches": 12,
-      "approachTime": 70,
-      "approachDifficulty": 2,
-      "disciplines": [],
-      "features": [],
-      "character": [],
-      "hazards": [],
-      "climatology": [],
-      "geoLocation": [
-        53.0602,
-        -4.0539
-      ]
-    },
-    {
-      "id": "mp-25",
-      "area": "bruggler",
-      "name": "Direkte Plattenwand",
-      "status": "draft",
-      "source": "multi-pitch.com",
-      "dataGrade": 5,
-      "originalGrade": "f5a",
-      "gradeSys": "FS",
-      "tradGrade": "VS",
-      "techGrade": "4c",
-      "length": 230,
-      "pitches": 8,
-      "approachTime": 70,
-      "approachDifficulty": 1,
-      "disciplines": [],
-      "features": [],
-      "character": [],
-      "hazards": [],
-      "climatology": [],
-      "geoLocation": [
-        47.117,
-        8.9851
-      ]
-    },
-    {
-      "id": "mp-24",
-      "area": "aiguille-dibona",
-      "name": "Visite Obligatoire",
-      "status": "draft",
-      "source": "multi-pitch.com",
-      "dataGrade": 7,
-      "originalGrade": "TD (f6a+)",
-      "gradeSys": "ALP",
-      "tradGrade": "E1",
-      "techGrade": "5c",
-      "length": 350,
-      "pitches": 13,
-      "approachTime": 190,
-      "approachDifficulty": 2,
-      "disciplines": [],
-      "features": [],
-      "character": [],
-      "hazards": [],
-      "climatology": [],
-      "geoLocation": [
-        44.9612,
-        6.2439
-      ]
-    },
-    {
-      "id": "mp-18",
-      "area": "scafell",
-      "name": "Keswick Brother's Climb",
-      "status": "draft",
-      "source": "multi-pitch.com",
-      "dataGrade": 2,
-      "originalGrade": "VD 3c",
-      "gradeSys": "BAS",
-      "tradGrade": "VD",
-      "techGrade": "3c",
-      "length": 74,
-      "pitches": 3,
-      "approachTime": 70,
-      "approachDifficulty": 2,
-      "disciplines": [],
-      "features": [],
-      "character": [],
-      "hazards": [],
-      "climatology": [],
-      "geoLocation": [
-        54.4507,
-        -3.2203
-      ]
-    },
-    {
-      "id": "mp-6",
-      "area": "sass-pordoi",
-      "name": "Fedele",
-      "status": "draft",
-      "source": "multi-pitch.com",
-      "dataGrade": 4,
-      "originalGrade": "IV+",
-      "gradeSys": "UIAA",
-      "tradGrade": "HS",
-      "techGrade": "4a",
-      "length": 555,
-      "pitches": 16,
-      "approachTime": 45,
-      "approachDifficulty": 2,
-      "disciplines": [],
-      "features": [],
-      "character": [],
-      "hazards": [],
-      "climatology": [],
-      "geoLocation": [
-        46.5033,
-        11.8021
-      ]
-    },
-    {
-      "id": "mp-14",
-      "area": "chair-ladder",
-      "name": "Pegasus",
-      "status": "draft",
-      "source": "multi-pitch.com",
-      "dataGrade": 4,
-      "originalGrade": "HS 4b",
-      "gradeSys": "BAS",
-      "tradGrade": "HS",
-      "techGrade": "4b",
-      "length": 70,
-      "pitches": 3,
-      "approachTime": 25,
-      "approachDifficulty": 1,
-      "disciplines": [],
-      "features": [],
-      "character": [],
-      "hazards": [],
-      "climatology": [],
-      "geoLocation": [
-        50.0369,
-        -5.6819
-      ]
-    },
-    {
-      "id": "mp-27",
-      "area": "djebel-rum",
-      "name": "Rum Doodle",
-      "status": "draft",
-      "source": "multi-pitch.com",
-      "dataGrade": 4,
-      "originalGrade": "Difficile",
-      "gradeSys": "ALP",
-      "tradGrade": "HS",
-      "techGrade": "4b",
-      "length": 250,
-      "pitches": 9,
-      "approachTime": 30,
-      "approachDifficulty": 1,
-      "disciplines": [],
-      "features": [],
-      "character": [],
-      "hazards": [],
-      "climatology": [],
-      "geoLocation": [
-        29.57,
-        35.4062
-      ]
-    },
-    {
-      "id": "mp-3",
-      "area": "clogwyn-dur-arddu",
-      "name": "Great Slab",
-      "status": "draft",
-      "source": "multi-pitch.com",
-      "dataGrade": 5,
-      "originalGrade": "VS 4c",
-      "gradeSys": "BAS",
-      "tradGrade": "VS",
-      "techGrade": "4c",
-      "length": 162,
-      "pitches": 5,
-      "approachTime": 120,
-      "approachDifficulty": 2,
-      "disciplines": [],
-      "features": [],
-      "character": [],
-      "hazards": [],
-      "climatology": [],
-      "geoLocation": [
-        53.0793,
-        -4.093
-      ]
-    },
-    {
-      "id": "mp-5",
-      "area": "tormore-group",
-      "name": "Cnoc Na Mara",
-      "status": "draft",
-      "source": "multi-pitch.com",
-      "dataGrade": 5,
-      "originalGrade": "VS 4b",
-      "gradeSys": "BAS",
-      "tradGrade": "VS",
-      "techGrade": "4b",
-      "length": 152,
-      "pitches": 4,
-      "approachTime": 90,
-      "approachDifficulty": 3,
-      "disciplines": [],
-      "features": [],
-      "character": [],
-      "hazards": [],
-      "climatology": [],
-      "geoLocation": [
-        54.7612,
-        -8.6916
-      ]
-    },
-    {
       "id": "mp-10",
       "area": "cornakey-cliff",
       "name": "Wreakers Slab",
@@ -3180,13 +2843,94 @@
       "techGrade": "4b",
       "length": 130,
       "pitches": 3,
+      "incline": "Slab",
       "approachTime": 50,
       "approachDifficulty": 2,
-      "disciplines": [],
+      "disciplines": [
+        "multi-pitch",
+        "trad"
+      ],
       "features": [],
       "character": [],
-      "hazards": [],
-      "climatology": [],
+      "hazards": [
+        "tidal",
+        "loose"
+      ],
+      "climatology": [
+        {
+          "month": 1,
+          "tempHigh": 8,
+          "tempLow": 6,
+          "rainyDays": 16
+        },
+        {
+          "month": 2,
+          "tempHigh": 8,
+          "tempLow": 6,
+          "rainyDays": 12
+        },
+        {
+          "month": 3,
+          "tempHigh": 10,
+          "tempLow": 7,
+          "rainyDays": 13
+        },
+        {
+          "month": 4,
+          "tempHigh": 11,
+          "tempLow": 8,
+          "rainyDays": 11
+        },
+        {
+          "month": 5,
+          "tempHigh": 15,
+          "tempLow": 11,
+          "rainyDays": 10
+        },
+        {
+          "month": 6,
+          "tempHigh": 16,
+          "tempLow": 13,
+          "rainyDays": 10
+        },
+        {
+          "month": 7,
+          "tempHigh": 19,
+          "tempLow": 15,
+          "rainyDays": 11
+        },
+        {
+          "month": 8,
+          "tempHigh": 19,
+          "tempLow": 16,
+          "rainyDays": 11
+        },
+        {
+          "month": 9,
+          "tempHigh": 17,
+          "tempLow": 14,
+          "rainyDays": 11
+        },
+        {
+          "month": 10,
+          "tempHigh": 14,
+          "tempLow": 11,
+          "rainyDays": 16
+        },
+        {
+          "month": 11,
+          "tempHigh": 11,
+          "tempLow": 8,
+          "rainyDays": 16
+        },
+        {
+          "month": 12,
+          "tempHigh": 8,
+          "tempLow": 6,
+          "rainyDays": 15
+        }
+      ],
+      "description": "Wreakers slab is a fantastic adventure and one of the longest vertical multi-pitch climbs in the South of the UK. With around 120m of cliff to scale, it makes for a great day out. The climbing is generally easy, but the rock is loose in places, especially on the first pitch, so make sure the leader is experienced. Protection on the first pitch can also be a challenge, but it gets better the higher you go.",
       "geoLocation": [
         50.9194,
         -4.5567
@@ -3205,13 +2949,91 @@
       "techGrade": "5a",
       "length": 330,
       "pitches": 11,
+      "incline": "Slab",
       "approachTime": 140,
       "approachDifficulty": 2,
-      "disciplines": [],
+      "disciplines": [
+        "multi-pitch",
+        "trad"
+      ],
       "features": [],
       "character": [],
       "hazards": [],
-      "climatology": [],
+      "climatology": [
+        {
+          "month": 1,
+          "tempHigh": 6,
+          "tempLow": 4,
+          "rainyDays": 19
+        },
+        {
+          "month": 2,
+          "tempHigh": 7,
+          "tempLow": 4,
+          "rainyDays": 15
+        },
+        {
+          "month": 3,
+          "tempHigh": 8,
+          "tempLow": 5,
+          "rainyDays": 18
+        },
+        {
+          "month": 4,
+          "tempHigh": 10,
+          "tempLow": 7,
+          "rainyDays": 13
+        },
+        {
+          "month": 5,
+          "tempHigh": 13,
+          "tempLow": 10,
+          "rainyDays": 12
+        },
+        {
+          "month": 6,
+          "tempHigh": 15,
+          "tempLow": 12,
+          "rainyDays": 13
+        },
+        {
+          "month": 7,
+          "tempHigh": 17,
+          "tempLow": 13,
+          "rainyDays": 14
+        },
+        {
+          "month": 8,
+          "tempHigh": 17,
+          "tempLow": 14,
+          "rainyDays": 15
+        },
+        {
+          "month": 9,
+          "tempHigh": 15,
+          "tempLow": 12,
+          "rainyDays": 16
+        },
+        {
+          "month": 10,
+          "tempHigh": 12,
+          "tempLow": 9,
+          "rainyDays": 19
+        },
+        {
+          "month": 11,
+          "tempHigh": 9,
+          "tempLow": 6,
+          "rainyDays": 19
+        },
+        {
+          "month": 12,
+          "tempHigh": 7,
+          "tempLow": 5,
+          "rainyDays": 18
+        }
+      ],
+      "description": "The South Ridge of Cir Mhor on the isle of Arran just off the coast of Scotland offers an interesting mix of climbing across a long route with a few challenging pitches which give it the VS 5a grade. The approach is long but this remains a reasonably popular route.",
       "geoLocation": [
         55.6367,
         -5.2232
@@ -3230,13 +3052,95 @@
       "techGrade": "5a",
       "length": 190,
       "pitches": 6,
+      "incline": null,
       "approachTime": 35,
       "approachDifficulty": 1,
-      "disciplines": [],
+      "disciplines": [
+        "multi-pitch",
+        "trad"
+      ],
       "features": [],
       "character": [],
-      "hazards": [],
-      "climatology": [],
+      "hazards": [
+        "abseil",
+        "traverse",
+        "loose"
+      ],
+      "climatology": [
+        {
+          "month": 1,
+          "tempHigh": 13,
+          "tempLow": 4,
+          "rainyDays": 4
+        },
+        {
+          "month": 2,
+          "tempHigh": 14,
+          "tempLow": 4,
+          "rainyDays": 4
+        },
+        {
+          "month": 3,
+          "tempHigh": 16,
+          "tempLow": 6,
+          "rainyDays": 5
+        },
+        {
+          "month": 4,
+          "tempHigh": 19,
+          "tempLow": 9,
+          "rainyDays": 6
+        },
+        {
+          "month": 5,
+          "tempHigh": 22,
+          "tempLow": 12,
+          "rainyDays": 5
+        },
+        {
+          "month": 6,
+          "tempHigh": 26,
+          "tempLow": 17,
+          "rainyDays": 3
+        },
+        {
+          "month": 7,
+          "tempHigh": 28,
+          "tempLow": 19,
+          "rainyDays": 2
+        },
+        {
+          "month": 8,
+          "tempHigh": 29,
+          "tempLow": 19,
+          "rainyDays": 4
+        },
+        {
+          "month": 9,
+          "tempHigh": 26,
+          "tempLow": 16,
+          "rainyDays": 5
+        },
+        {
+          "month": 10,
+          "tempHigh": 22,
+          "tempLow": 13,
+          "rainyDays": 5
+        },
+        {
+          "month": 11,
+          "tempHigh": 17,
+          "tempLow": 8,
+          "rainyDays": 4
+        },
+        {
+          "month": 12,
+          "tempHigh": 13,
+          "tempLow": 4,
+          "rainyDays": 4
+        }
+      ],
+      "description": "Esparraguera offers an exciting 190m VS (f5c) multi-pitch climb on the fantastic conglomerate rock of Montserrat in Spain. The route is sustained and consistent in grade. The hardest pitch is steep but has big holds and is well bolted, this may well feel like the easiest pitch if you are used to indoor climbing / bouldering. Whilst described as a clean trad route in many guidebooks, Esparraguera has a good amount bolts (17) and pitons (2) in sections in the middle pitches. Most of the harder moves are protected by old bolts. You will need a full trad rack of nuts and cams. Tri cams are particularly helpful for the pockets. The last pitch has no fixed protection. The route is given f5c in some guides or UIAA V+ in others, it is hard to convert to British grades but given the protection is good at the harder sections, the British grade of VS 5a (maybe HVS 5b) seems best. If anything feels hard, take some time and search for better holds, there will be some. The descent requires 3 abseils of 40m, 40m and just under 60m.",
       "geoLocation": [
         41.5888,
         1.815
@@ -3255,16 +3159,201 @@
       "techGrade": "4c",
       "length": 81,
       "pitches": 3,
+      "incline": "Slab & Vertical",
       "approachTime": 20,
       "approachDifficulty": 2,
-      "disciplines": [],
+      "disciplines": [
+        "multi-pitch",
+        "trad"
+      ],
       "features": [],
       "character": [],
-      "hazards": [],
-      "climatology": [],
+      "hazards": [
+        "abseil"
+      ],
+      "climatology": [
+        {
+          "month": 1,
+          "tempHigh": 8,
+          "tempLow": 2,
+          "rainyDays": 19
+        },
+        {
+          "month": 2,
+          "tempHigh": 8,
+          "tempLow": 2,
+          "rainyDays": 15
+        },
+        {
+          "month": 3,
+          "tempHigh": 10,
+          "tempLow": 3,
+          "rainyDays": 16
+        },
+        {
+          "month": 4,
+          "tempHigh": 12,
+          "tempLow": 5,
+          "rainyDays": 13
+        },
+        {
+          "month": 5,
+          "tempHigh": 15,
+          "tempLow": 7,
+          "rainyDays": 13
+        },
+        {
+          "month": 6,
+          "tempHigh": 17,
+          "tempLow": 10,
+          "rainyDays": 13
+        },
+        {
+          "month": 7,
+          "tempHigh": 18,
+          "tempLow": 12,
+          "rainyDays": 15
+        },
+        {
+          "month": 8,
+          "tempHigh": 18,
+          "tempLow": 12,
+          "rainyDays": 16
+        },
+        {
+          "month": 9,
+          "tempHigh": 16,
+          "tempLow": 10,
+          "rainyDays": 15
+        },
+        {
+          "month": 10,
+          "tempHigh": 13,
+          "tempLow": 8,
+          "rainyDays": 17
+        },
+        {
+          "month": 11,
+          "tempHigh": 10,
+          "tempLow": 5,
+          "rainyDays": 19
+        },
+        {
+          "month": 12,
+          "tempHigh": 9,
+          "tempLow": 3,
+          "rainyDays": 18
+        }
+      ],
+      "description": "The route takes a line up the lefthand side of the slab finishing in a steep but well protected final pitch.",
       "geoLocation": [
         54.6262,
         -8.6852
+      ]
+    },
+    {
+      "id": "mp-14",
+      "area": "chair-ladder",
+      "name": "Pegasus",
+      "status": "draft",
+      "source": "multi-pitch.com",
+      "dataGrade": 4,
+      "originalGrade": "HS 4b",
+      "gradeSys": "BAS",
+      "tradGrade": "HS",
+      "techGrade": "4b",
+      "length": 70,
+      "pitches": 3,
+      "incline": "Slab & Vertical",
+      "approachTime": 25,
+      "approachDifficulty": 1,
+      "disciplines": [
+        "multi-pitch",
+        "trad"
+      ],
+      "features": [],
+      "character": [],
+      "hazards": [
+        "tidal"
+      ],
+      "climatology": [
+        {
+          "month": 1,
+          "tempHigh": 9,
+          "tempLow": 5,
+          "rainyDays": 15
+        },
+        {
+          "month": 2,
+          "tempHigh": 9,
+          "tempLow": 5,
+          "rainyDays": 12
+        },
+        {
+          "month": 3,
+          "tempHigh": 9,
+          "tempLow": 6,
+          "rainyDays": 11
+        },
+        {
+          "month": 4,
+          "tempHigh": 13,
+          "tempLow": 9,
+          "rainyDays": 10
+        },
+        {
+          "month": 5,
+          "tempHigh": 16,
+          "tempLow": 11,
+          "rainyDays": 9
+        },
+        {
+          "month": 6,
+          "tempHigh": 16,
+          "tempLow": 11,
+          "rainyDays": 9
+        },
+        {
+          "month": 7,
+          "tempHigh": 18,
+          "tempLow": 13,
+          "rainyDays": 8
+        },
+        {
+          "month": 8,
+          "tempHigh": 18,
+          "tempLow": 14,
+          "rainyDays": 9
+        },
+        {
+          "month": 9,
+          "tempHigh": 16,
+          "tempLow": 12,
+          "rainyDays": 9
+        },
+        {
+          "month": 10,
+          "tempHigh": 14,
+          "tempLow": 10,
+          "rainyDays": 12
+        },
+        {
+          "month": 11,
+          "tempHigh": 11,
+          "tempLow": 8,
+          "rainyDays": 14
+        },
+        {
+          "month": 12,
+          "tempHigh": 10,
+          "tempLow": 7,
+          "rainyDays": 15
+        }
+      ],
+      "description": "Chair Ladder is an incredible sea cliff crag near the village of Porthgwarra in Cornwall. The local name in Cornish is Toll Pedn Pennwydh meaning the holed head of Penwith . The English name for the area is now Gwennap Head. The cliffs offer an exceptional range of climbing from the easier end of the scale, going up to E3 for those looking for more of a challenge. Pegasus is one of the longer lines and sits at the Bulging Wall end of the crag. The route uses the corner crack at the start to ascend to the first belay, then weaves right to a belay in the corner, before going back left to the top. However there are multiple options for variation. There are also a variety of other lines on the crag that are 50m+ and range from VDiff to E3. South Face Direct is highly recommended.",
+      "geoLocation": [
+        50.0369,
+        -5.6819
       ]
     },
     {
@@ -3274,147 +3363,207 @@
       "status": "draft",
       "source": "multi-pitch.com",
       "dataGrade": 5,
-      "originalGrade": "5.8",
+      "originalGrade": 5.8,
       "gradeSys": "YDS",
       "tradGrade": "VS",
       "techGrade": "4c",
       "length": 152,
       "pitches": 6,
+      "incline": "Vertical",
       "approachTime": 5,
       "approachDifficulty": 1,
-      "disciplines": [],
+      "disciplines": [
+        "multi-pitch",
+        "trad"
+      ],
       "features": [],
       "character": [],
-      "hazards": [],
-      "climatology": [],
+      "hazards": [
+        "abseil"
+      ],
+      "climatology": [
+        {
+          "month": 1,
+          "tempHigh": 4.2,
+          "tempLow": -7.8,
+          "rainyDays": 4
+        },
+        {
+          "month": 2,
+          "tempHigh": 4.7,
+          "tempLow": -7.4,
+          "rainyDays": 6
+        },
+        {
+          "month": 3,
+          "tempHigh": 8.6,
+          "tempLow": -4.2,
+          "rainyDays": 8
+        },
+        {
+          "month": 4,
+          "tempHigh": 12.7,
+          "tempLow": -0.7,
+          "rainyDays": 10
+        },
+        {
+          "month": 5,
+          "tempHigh": 18.2,
+          "tempLow": 4.6,
+          "rainyDays": 12
+        },
+        {
+          "month": 6,
+          "tempHigh": 24.1,
+          "tempLow": 9.4,
+          "rainyDays": 11
+        },
+        {
+          "month": 7,
+          "tempHigh": 28.6,
+          "tempLow": 13.1,
+          "rainyDays": 10
+        },
+        {
+          "month": 8,
+          "tempHigh": 27.3,
+          "tempLow": 12.3,
+          "rainyDays": 11
+        },
+        {
+          "month": 9,
+          "tempHigh": 22.1,
+          "tempLow": 7.1,
+          "rainyDays": 8
+        },
+        {
+          "month": 10,
+          "tempHigh": 14.9,
+          "tempLow": 1.1,
+          "rainyDays": 7
+        },
+        {
+          "month": 11,
+          "tempHigh": 8.1,
+          "tempLow": -4.3,
+          "rainyDays": 6
+        },
+        {
+          "month": 12,
+          "tempHigh": 3.4,
+          "tempLow": -8.2,
+          "rainyDays": 6
+        }
+      ],
+      "description": "Durance Route on the Devils Tower in Wyoming is listed as one of the 50 classic climbs in North America. It's a 4-6 pitch route in which the harder sections are mainly off-width and hand-cracks with a few spots of chimney. Don't forget to register at the Visitor's Center before the climb or you risk a fine. This is a crowded route so get on super early or be ready to follow others and possibly do the abseil descent in the dark with headtorches.",
       "geoLocation": [
         44.5897,
         -104.7153
       ]
     },
     {
-      "id": "mp-23",
-      "area": "heiliger-geist",
-      "name": "Traumpfeiler",
+      "id": "mp-16",
+      "area": "lliwedd",
+      "name": "Longlands Continuation",
       "status": "draft",
       "source": "multi-pitch.com",
-      "dataGrade": 5,
-      "originalGrade": "V+",
-      "gradeSys": "UIAA",
-      "tradGrade": "VS",
-      "techGrade": "5a",
-      "length": 250,
-      "pitches": 9,
-      "approachTime": 21,
-      "approachDifficulty": 1,
-      "disciplines": [],
-      "features": [],
-      "character": [],
-      "hazards": [],
-      "climatology": [],
-      "geoLocation": [
-        39.7201,
-        21.6278
-      ]
-    },
-    {
-      "id": "mp-28",
-      "area": "cathedral-rock",
-      "name": "Mendez and Guillermo",
-      "status": "draft",
-      "source": "multi-pitch.com",
-      "dataGrade": 5,
-      "originalGrade": "V+",
-      "gradeSys": "UIAA",
-      "tradGrade": "VS",
-      "techGrade": "4c",
-      "length": 115,
-      "pitches": 3,
-      "approachTime": 15,
-      "approachDifficulty": 1,
-      "disciplines": [],
-      "features": [],
-      "character": [],
-      "hazards": [],
-      "climatology": [],
-      "geoLocation": [
-        28.2235,
-        -16.6345
-      ]
-    },
-    {
-      "id": "mp-21",
-      "area": "lion-rock",
-      "name": "Gweilo via Topcat",
-      "status": "draft",
-      "source": "multi-pitch.com",
-      "dataGrade": 6,
-      "originalGrade": "HVS 5b",
+      "dataGrade": 3,
+      "originalGrade": "S 4b",
       "gradeSys": "BAS",
-      "tradGrade": "HVS",
-      "techGrade": "5b",
-      "length": 80,
-      "pitches": 4,
-      "approachTime": 40,
+      "tradGrade": "S",
+      "techGrade": "4b",
+      "length": 280,
+      "pitches": 12,
+      "incline": "Slab",
+      "approachTime": 70,
       "approachDifficulty": 2,
-      "disciplines": [],
+      "disciplines": [
+        "multi-pitch",
+        "trad"
+      ],
       "features": [],
       "character": [],
-      "hazards": [],
-      "climatology": [],
+      "hazards": [
+        "seepage"
+      ],
+      "climatology": [
+        {
+          "month": 1,
+          "tempHigh": 8,
+          "tempLow": 3,
+          "rainyDays": 13
+        },
+        {
+          "month": 2,
+          "tempHigh": 8,
+          "tempLow": 2,
+          "rainyDays": 10
+        },
+        {
+          "month": 3,
+          "tempHigh": 9,
+          "tempLow": 3,
+          "rainyDays": 11
+        },
+        {
+          "month": 4,
+          "tempHigh": 12,
+          "tempLow": 4,
+          "rainyDays": 9
+        },
+        {
+          "month": 5,
+          "tempHigh": 15,
+          "tempLow": 7,
+          "rainyDays": 8
+        },
+        {
+          "month": 6,
+          "tempHigh": 17,
+          "tempLow": 10,
+          "rainyDays": 8
+        },
+        {
+          "month": 7,
+          "tempHigh": 19,
+          "tempLow": 12,
+          "rainyDays": 8
+        },
+        {
+          "month": 8,
+          "tempHigh": 18,
+          "tempLow": 12,
+          "rainyDays": 9
+        },
+        {
+          "month": 9,
+          "tempHigh": 17,
+          "tempLow": 10,
+          "rainyDays": 10
+        },
+        {
+          "month": 10,
+          "tempHigh": 13,
+          "tempLow": 8,
+          "rainyDays": 14
+        },
+        {
+          "month": 11,
+          "tempHigh": 10,
+          "tempLow": 5,
+          "rainyDays": 14
+        },
+        {
+          "month": 12,
+          "tempHigh": 8,
+          "tempLow": 3,
+          "rainyDays": 14
+        }
+      ],
+      "description": "This is a huge climb set quite a long walk from civilisation. Technically it’s 3 climbs: Avalanche then Red Wall then Longlands Continuation. These routes flow into each other with a number of variants. For example you could swap out Avalanche and Red Wall for The Sword & Route 2. This would up the grade to Very Severe thanks to the first pitch of The Sword. With everything that’s going on on Y Lliwedd, the route finding can be a challenge but most sections up the Eastern Buttress of the crag are not too high in grade. Mount Y Lliwedd (colourless peak in English) was where British mountaineers trained before making some of the first attempts to summit Everest.",
       "geoLocation": [
-        22.3519,
-        114.1852
-      ]
-    },
-    {
-      "id": "mp-22",
-      "area": "penon-de-ifach",
-      "name": "Diedro UBSA",
-      "status": "draft",
-      "source": "multi-pitch.com",
-      "dataGrade": 6,
-      "originalGrade": "V+",
-      "gradeSys": "UIAA",
-      "tradGrade": "HVS",
-      "techGrade": "5a",
-      "length": 250,
-      "pitches": 9,
-      "approachTime": 20,
-      "approachDifficulty": 1,
-      "disciplines": [],
-      "features": [],
-      "character": [],
-      "hazards": [],
-      "climatology": [],
-      "geoLocation": [
-        38.6339,
-        0.0743
-      ]
-    },
-    {
-      "id": "mp-9",
-      "area": "meadinha",
-      "name": "Queles",
-      "status": "draft",
-      "source": "multi-pitch.com",
-      "dataGrade": 7,
-      "originalGrade": "VI+ (f6b)",
-      "gradeSys": "UIAA",
-      "tradGrade": "E1",
-      "techGrade": "5c",
-      "length": 60,
-      "pitches": 2,
-      "approachTime": 10,
-      "approachDifficulty": 1,
-      "disciplines": [],
-      "features": [],
-      "character": [],
-      "hazards": [],
-      "climatology": [],
-      "geoLocation": [
-        41.9765,
-        -8.2244
+        53.0602,
+        -4.0539
       ]
     },
     {
@@ -3430,16 +3579,2507 @@
       "techGrade": "5b",
       "length": 575,
       "pitches": 13,
+      "incline": "Slab & Vertical",
       "approachTime": 90,
       "approachDifficulty": 2,
-      "disciplines": [],
+      "disciplines": [
+        "multi-pitch",
+        "trad"
+      ],
       "features": [],
       "character": [],
-      "hazards": [],
-      "climatology": [],
+      "hazards": [
+        "abseil"
+      ],
+      "climatology": [
+        {
+          "month": 1,
+          "tempHigh": -8,
+          "tempLow": -15,
+          "rainyDays": 15
+        },
+        {
+          "month": 2,
+          "tempHigh": -8,
+          "tempLow": -14,
+          "rainyDays": 15
+        },
+        {
+          "month": 3,
+          "tempHigh": -6,
+          "tempLow": -13,
+          "rainyDays": 17
+        },
+        {
+          "month": 4,
+          "tempHigh": -2,
+          "tempLow": -9,
+          "rainyDays": 15
+        },
+        {
+          "month": 5,
+          "tempHigh": 3,
+          "tempLow": -4,
+          "rainyDays": 17
+        },
+        {
+          "month": 6,
+          "tempHigh": 6,
+          "tempLow": -1,
+          "rainyDays": 17
+        },
+        {
+          "month": 7,
+          "tempHigh": 9,
+          "tempLow": 2,
+          "rainyDays": 16
+        },
+        {
+          "month": 8,
+          "tempHigh": 8,
+          "tempLow": 1,
+          "rainyDays": 18
+        },
+        {
+          "month": 9,
+          "tempHigh": 5,
+          "tempLow": -2,
+          "rainyDays": 19
+        },
+        {
+          "month": 10,
+          "tempHigh": -1,
+          "tempLow": -6,
+          "rainyDays": 19
+        },
+        {
+          "month": 11,
+          "tempHigh": -5,
+          "tempLow": -10,
+          "rainyDays": 15
+        },
+        {
+          "month": 12,
+          "tempHigh": -7,
+          "tempLow": -13,
+          "rainyDays": 16
+        }
+      ],
+      "description": "Stetind is a huge granite pillar rising 1329 m out of Tysfjord. Voted Norways national Mountain it’s an iconic sight. The South Pilar route or Sydpillaren, offers some challenging climbing, especially towards the top with a couple of N6- graded pitches which roughly equate to HVS/E1. In total it’s a 14 pitch climb that is described as one of Norway’s finest climbs and it’s a classic alpine test piece. Getting down actually requires reversing the Original Route (graded n4), it will require ropework in sections.",
       "geoLocation": [
         68.1625,
         16.5907
+      ]
+    },
+    {
+      "id": "mp-18",
+      "area": "scafell",
+      "name": "Keswick Brother's Climb",
+      "status": "draft",
+      "source": "multi-pitch.com",
+      "dataGrade": 2,
+      "originalGrade": "VD 3c",
+      "gradeSys": "BAS",
+      "tradGrade": "VD",
+      "techGrade": "3c",
+      "length": 74,
+      "pitches": 3,
+      "incline": null,
+      "approachTime": 70,
+      "approachDifficulty": 2,
+      "disciplines": [
+        "multi-pitch",
+        "trad"
+      ],
+      "features": [],
+      "character": [],
+      "hazards": [
+        "seepage"
+      ],
+      "climatology": [
+        {
+          "month": 1,
+          "tempHigh": 7,
+          "tempLow": 2,
+          "rainyDays": 17
+        },
+        {
+          "month": 2,
+          "tempHigh": 7,
+          "tempLow": 2,
+          "rainyDays": 13
+        },
+        {
+          "month": 3,
+          "tempHigh": 9,
+          "tempLow": 3,
+          "rainyDays": 16
+        },
+        {
+          "month": 4,
+          "tempHigh": 12,
+          "tempLow": 4,
+          "rainyDays": 13
+        },
+        {
+          "month": 5,
+          "tempHigh": 15,
+          "tempLow": 7,
+          "rainyDays": 12
+        },
+        {
+          "month": 6,
+          "tempHigh": 18,
+          "tempLow": 9,
+          "rainyDays": 12
+        },
+        {
+          "month": 7,
+          "tempHigh": 19,
+          "tempLow": 11,
+          "rainyDays": 13
+        },
+        {
+          "month": 8,
+          "tempHigh": 19,
+          "tempLow": 11,
+          "rainyDays": 14
+        },
+        {
+          "month": 9,
+          "tempHigh": 17,
+          "tempLow": 9,
+          "rainyDays": 14
+        },
+        {
+          "month": 10,
+          "tempHigh": 13,
+          "tempLow": 7,
+          "rainyDays": 18
+        },
+        {
+          "month": 11,
+          "tempHigh": 10,
+          "tempLow": 4,
+          "rainyDays": 18
+        },
+        {
+          "month": 12,
+          "tempHigh": 8,
+          "tempLow": 2,
+          "rainyDays": 17
+        }
+      ],
+      "description": "The Keswick Brothers were some of the key early rock climbing pioneers. What is particularly important about them is fact they travelled with an camera making them some of the first people to capture rock climbing imagery. They set first accents up and down the UK including their first climb on Scafell Crag in 1897. Keswick Brother’s Climb takes a shorter line up the left side of the buttress over easy ground and up the grooved slab. If you have ever wondered why Very Difficult climbs are generally easy, you need to understand the adjectival grading system used in Britain comes from the 1800’s. Climbers in that period didn’t have cams or even nuts. They didn’t have Kernmantle dynamic ropes or dedicated sticky rubber climbing shoes. In fact this climb was graded over 20 years before the carabiner was invented!",
+      "geoLocation": [
+        54.4507,
+        -3.2203
+      ]
+    },
+    {
+      "id": "mp-19",
+      "area": "mount-indefatigable",
+      "name": "Joy",
+      "status": "draft",
+      "source": "multi-pitch.com",
+      "dataGrade": 3,
+      "originalGrade": 5.7,
+      "gradeSys": "YDS",
+      "tradGrade": "S",
+      "techGrade": "4a",
+      "length": 300,
+      "pitches": 10,
+      "incline": "Slab",
+      "approachTime": 40,
+      "approachDifficulty": 1,
+      "disciplines": [
+        "multi-pitch",
+        "trad"
+      ],
+      "features": [],
+      "character": [],
+      "hazards": [
+        "loose"
+      ],
+      "climatology": [
+        {
+          "month": 1,
+          "tempHigh": -10,
+          "tempLow": -15,
+          "rainyDays": 9
+        },
+        {
+          "month": 2,
+          "tempHigh": -6,
+          "tempLow": -11,
+          "rainyDays": 7
+        },
+        {
+          "month": 3,
+          "tempHigh": -3,
+          "tempLow": -8,
+          "rainyDays": 9
+        },
+        {
+          "month": 4,
+          "tempHigh": -2,
+          "tempLow": -8,
+          "rainyDays": 9
+        },
+        {
+          "month": 5,
+          "tempHigh": 2,
+          "tempLow": -3,
+          "rainyDays": 11
+        },
+        {
+          "month": 6,
+          "tempHigh": 12,
+          "tempLow": 5,
+          "rainyDays": 13
+        },
+        {
+          "month": 7,
+          "tempHigh": 15,
+          "tempLow": 7,
+          "rainyDays": 13
+        },
+        {
+          "month": 8,
+          "tempHigh": 14,
+          "tempLow": 7,
+          "rainyDays": 11
+        },
+        {
+          "month": 9,
+          "tempHigh": 9,
+          "tempLow": 3,
+          "rainyDays": 9
+        },
+        {
+          "month": 10,
+          "tempHigh": 5,
+          "tempLow": -1,
+          "rainyDays": 6
+        },
+        {
+          "month": 11,
+          "tempHigh": -4,
+          "tempLow": -8,
+          "rainyDays": 8
+        },
+        {
+          "month": 12,
+          "tempHigh": -10,
+          "tempLow": -14,
+          "rainyDays": 7
+        }
+      ],
+      "description": "Joy follows the striking right facing dihedral corner up the Mt. Indefatigable slab offering around 300m of climbing. There is little to no fixed protection but plenty of opportunity for placements all the way. Belays can be made at various positions allowing pitches to be the full length of the rope. Carrying extra gear and bringing longer ropes could speed up the climb but it’s certainly not essential. The rock is generally very solid with excellent friction but like all large mountain slabs there will be some loose rock in places. The new guidebook Canadian Rock: Select Climbs of the West, grades the route 5.8. but if needed it’s possible to avoid any challenging bits by traversing into the slab. This drops the grade a little. It’s often considered 5.6 on the YDS scale which is somewhere around Severe or Hard Severe.",
+      "geoLocation": [
+        50.6375,
+        -115.1674
+      ]
+    },
+    {
+      "id": "mp-2",
+      "area": "bosigran",
+      "name": "Doorpost",
+      "status": "draft",
+      "source": "multi-pitch.com",
+      "dataGrade": 4,
+      "originalGrade": "HS 4b",
+      "gradeSys": "BAS",
+      "tradGrade": "HS",
+      "techGrade": "4b",
+      "length": 67,
+      "pitches": 3,
+      "incline": "Vertical",
+      "approachTime": 10,
+      "approachDifficulty": 1,
+      "disciplines": [
+        "multi-pitch",
+        "trad"
+      ],
+      "features": [],
+      "character": [],
+      "hazards": [
+        "seepage"
+      ],
+      "climatology": [
+        {
+          "month": 1,
+          "tempHigh": 9,
+          "tempLow": 5,
+          "rainyDays": 15
+        },
+        {
+          "month": 2,
+          "tempHigh": 9,
+          "tempLow": 5,
+          "rainyDays": 12
+        },
+        {
+          "month": 3,
+          "tempHigh": 9,
+          "tempLow": 6,
+          "rainyDays": 11
+        },
+        {
+          "month": 4,
+          "tempHigh": 13,
+          "tempLow": 9,
+          "rainyDays": 10
+        },
+        {
+          "month": 5,
+          "tempHigh": 16,
+          "tempLow": 11,
+          "rainyDays": 9
+        },
+        {
+          "month": 6,
+          "tempHigh": 16,
+          "tempLow": 11,
+          "rainyDays": 9
+        },
+        {
+          "month": 7,
+          "tempHigh": 18,
+          "tempLow": 13,
+          "rainyDays": 8
+        },
+        {
+          "month": 8,
+          "tempHigh": 18,
+          "tempLow": 14,
+          "rainyDays": 9
+        },
+        {
+          "month": 9,
+          "tempHigh": 16,
+          "tempLow": 12,
+          "rainyDays": 9
+        },
+        {
+          "month": 10,
+          "tempHigh": 14,
+          "tempLow": 10,
+          "rainyDays": 12
+        },
+        {
+          "month": 11,
+          "tempHigh": 11,
+          "tempLow": 8,
+          "rainyDays": 14
+        },
+        {
+          "month": 12,
+          "tempHigh": 10,
+          "tempLow": 7,
+          "rainyDays": 15
+        }
+      ],
+      "description": "Doorpost is a classic climb on the justifiably popular Bow Wall area of Bosigran. It has an easy approach and accessible grade. The climbing is interesting and varied but easy to protect. The route is on a part of the cliff surrounded by both harder and easier climbs. Check out the incredible Ledge Climb if you want easier or Little Brown Jug if you want to go harder. That said the crux of Ledge climb is arguably as hard as the crux of Doorpost. The granite here is solid and happily takes cams throughout the route. The route dries quickly after rain but the first pitch suffers some minor seepage.",
+      "geoLocation": [
+        50.1758,
+        -5.6204
+      ]
+    },
+    {
+      "id": "mp-20",
+      "area": "slieve-beg",
+      "name": "Poetic Justice",
+      "status": "draft",
+      "source": "multi-pitch.com",
+      "dataGrade": 5,
+      "originalGrade": "VS 4b",
+      "gradeSys": "BAS",
+      "tradGrade": "VS",
+      "techGrade": "4b",
+      "length": 80,
+      "pitches": 4,
+      "incline": null,
+      "approachTime": 90,
+      "approachDifficulty": 1,
+      "disciplines": [
+        "multi-pitch",
+        "trad"
+      ],
+      "features": [],
+      "character": [],
+      "hazards": [
+        "seepage"
+      ],
+      "climatology": [
+        {
+          "month": 1,
+          "tempHigh": 5,
+          "tempLow": 0,
+          "rainyDays": 18
+        },
+        {
+          "month": 2,
+          "tempHigh": 5,
+          "tempLow": 0,
+          "rainyDays": 15
+        },
+        {
+          "month": 3,
+          "tempHigh": 7,
+          "tempLow": 1,
+          "rainyDays": 17
+        },
+        {
+          "month": 4,
+          "tempHigh": 9,
+          "tempLow": 2,
+          "rainyDays": 16
+        },
+        {
+          "month": 5,
+          "tempHigh": 12,
+          "tempLow": 4,
+          "rainyDays": 14
+        },
+        {
+          "month": 6,
+          "tempHigh": 15,
+          "tempLow": 7,
+          "rainyDays": 14
+        },
+        {
+          "month": 7,
+          "tempHigh": 16,
+          "tempLow": 9,
+          "rainyDays": 15
+        },
+        {
+          "month": 8,
+          "tempHigh": 16,
+          "tempLow": 9,
+          "rainyDays": 14
+        },
+        {
+          "month": 9,
+          "tempHigh": 14,
+          "tempLow": 7,
+          "rainyDays": 14
+        },
+        {
+          "month": 10,
+          "tempHigh": 10,
+          "tempLow": 5,
+          "rainyDays": 18
+        },
+        {
+          "month": 11,
+          "tempHigh": 7,
+          "tempLow": 2,
+          "rainyDays": 18
+        },
+        {
+          "month": 12,
+          "tempHigh": 5,
+          "tempLow": 0,
+          "rainyDays": 20
+        }
+      ],
+      "description": "Referred to as PJ, it is a classic Mourne Mountain “expedition” and a must climb, thanks to sustained interest, exposure and great belays assuming you reach the 1 st belay before the rope drag gets too much. It can be done in 3 or 4 pitches. Pitch one can and should be broken up unless you have a high tolerance for rope drag or you do a very good job extending runners. Whilst listed as 90m climb here there is a 10m scramble over, what is often a heavily vegetated ledge. If it wasn’t for the vegetation here you could make a case this was one of the best VS graded climbs in the British Isles. Start the route left of the gully on the right-hand end of the Main Face. The first pitch takes a crack line up the crest of the lower buttress (two pitches if you create a belay before the grass ledge). True crack climbing skills are not essential. However, any climber not able to do a layback might have a bad time on the last pitch.",
+      "geoLocation": [
+        54.1793,
+        -5.9477
+      ]
+    },
+    {
+      "id": "mp-21",
+      "area": "lion-rock",
+      "name": "Gweilo via Topcat",
+      "status": "draft",
+      "source": "multi-pitch.com",
+      "dataGrade": 6,
+      "originalGrade": "HVS 5b",
+      "gradeSys": "BAS",
+      "tradGrade": "HVS",
+      "techGrade": "5b",
+      "length": 80,
+      "pitches": 4,
+      "incline": "Slsb, Vertical & Overhanging",
+      "approachTime": 40,
+      "approachDifficulty": 2,
+      "disciplines": [
+        "multi-pitch",
+        "trad"
+      ],
+      "features": [],
+      "character": [],
+      "hazards": [],
+      "climatology": [
+        {
+          "month": 1,
+          "tempHigh": 18,
+          "tempLow": 14,
+          "rainyDays": 6
+        },
+        {
+          "month": 2,
+          "tempHigh": 18,
+          "tempLow": 14,
+          "rainyDays": 9
+        },
+        {
+          "month": 3,
+          "tempHigh": 21,
+          "tempLow": 17,
+          "rainyDays": 10
+        },
+        {
+          "month": 4,
+          "tempHigh": 25,
+          "tempLow": 20,
+          "rainyDays": 11
+        },
+        {
+          "month": 5,
+          "tempHigh": 28,
+          "tempLow": 24,
+          "rainyDays": 15
+        },
+        {
+          "month": 6,
+          "tempHigh": 30,
+          "tempLow": 26,
+          "rainyDays": 19
+        },
+        {
+          "month": 7,
+          "tempHigh": 31,
+          "tempLow": 27,
+          "rainyDays": 17
+        },
+        {
+          "month": 8,
+          "tempHigh": 31,
+          "tempLow": 26,
+          "rainyDays": 17
+        },
+        {
+          "month": 9,
+          "tempHigh": 30,
+          "tempLow": 25,
+          "rainyDays": 14
+        },
+        {
+          "month": 10,
+          "tempHigh": 28,
+          "tempLow": 23,
+          "rainyDays": 8
+        },
+        {
+          "month": 11,
+          "tempHigh": 24,
+          "tempLow": 19,
+          "rainyDays": 6
+        },
+        {
+          "month": 12,
+          "tempHigh": 20,
+          "tempLow": 15,
+          "rainyDays": 4
+        }
+      ],
+      "description": "Lion Rock sits on the Kowloon Peninsular in Hong Kong on the border with the new territories. Whilst not a huge mountain crag, it does offer in excess if 70m of climbing, especially on the winding routes. Gweilo is a classic 3 star multipitch sport route graded 5+. Topcat swaps out the middle of this for a harder but reasonably well protected trad line graded HVS 5b. The views on this route are stunning and utterly unique in the world of climbing. Fun fact, Gwáilóu means Ghostly Man in Cantonese and is used to refer to white westerners. Hong Kong can range from roasting hot with lots of mosquitos to typhoon season with howling winds so plan accordingly.",
+      "geoLocation": [
+        22.3519,
+        114.1852
+      ]
+    },
+    {
+      "id": "mp-22",
+      "area": "penon-de-ifach",
+      "name": "Diedro UBSA",
+      "status": "draft",
+      "source": "multi-pitch.com",
+      "dataGrade": 6,
+      "originalGrade": "V+",
+      "gradeSys": "UIAA",
+      "tradGrade": "HVS",
+      "techGrade": "5b",
+      "length": 250,
+      "pitches": 9,
+      "incline": "Slab & Vertical",
+      "approachTime": 20,
+      "approachDifficulty": 1,
+      "disciplines": [
+        "multi-pitch",
+        "trad"
+      ],
+      "features": [],
+      "character": [],
+      "hazards": [
+        "abseil",
+        "polished",
+        "loose"
+      ],
+      "climatology": [
+        {
+          "month": 1,
+          "tempHigh": 15,
+          "tempLow": 6,
+          "rainyDays": 4
+        },
+        {
+          "month": 2,
+          "tempHigh": 16,
+          "tempLow": 6,
+          "rainyDays": 3
+        },
+        {
+          "month": 3,
+          "tempHigh": 18,
+          "tempLow": 8,
+          "rainyDays": 4
+        },
+        {
+          "month": 4,
+          "tempHigh": 19,
+          "tempLow": 10,
+          "rainyDays": 4
+        },
+        {
+          "month": 5,
+          "tempHigh": 23,
+          "tempLow": 13,
+          "rainyDays": 4
+        },
+        {
+          "month": 6,
+          "tempHigh": 27,
+          "tempLow": 17,
+          "rainyDays": 2
+        },
+        {
+          "month": 7,
+          "tempHigh": 29,
+          "tempLow": 20,
+          "rainyDays": 1
+        },
+        {
+          "month": 8,
+          "tempHigh": 29,
+          "tempLow": 21,
+          "rainyDays": 1
+        },
+        {
+          "month": 9,
+          "tempHigh": 27,
+          "tempLow": 18,
+          "rainyDays": 3
+        },
+        {
+          "month": 10,
+          "tempHigh": 24,
+          "tempLow": 14,
+          "rainyDays": 4
+        },
+        {
+          "month": 11,
+          "tempHigh": 18,
+          "tempLow": 9,
+          "rainyDays": 4
+        },
+        {
+          "month": 12,
+          "tempHigh": 16,
+          "tempLow": 7,
+          "rainyDays": 4
+        }
+      ],
+      "description": "A true classic, Diedro U.B.S.A. is a sustained 250m grade V+ climb or roughly HVS 5b in British grades. As the name suggests the route climbs the corner (dihedral or Diedro in Spanish) all the way up to the big cave high in the cliff, before a short but awkward diagonal abseil to a ledge which is traversed back into another corner, all the way up to a dramatic move out of the higher notch, onto easier ground to the summit of Peñón de Ifach sometimes also spelled Penyal D’Ifac. The route has a bit of everything including overhangs with good holds, delicate slabs with edges, tiny and large pockets, an exposed traverse and of course lots of corner crack climbing with more than one chimney section. Although popular, polished and loose in places this is a classic and memorable climb. All stances are equipped with new bolts (often 4 or 5) and there are a number of bolts on most pitches. A small rack is needed to achieve a proper level of protection on all pitches. The route faces South with sun on it much of the day so don’t forget to bring water and sun cream.",
+      "geoLocation": [
+        38.6339,
+        0.0743
+      ]
+    },
+    {
+      "id": "mp-23",
+      "area": "heiliger-geist",
+      "name": "Traumpfeiler",
+      "status": "draft",
+      "source": "multi-pitch.com",
+      "dataGrade": 5,
+      "originalGrade": "V+",
+      "gradeSys": "UIAA",
+      "tradGrade": "VS",
+      "techGrade": "5a",
+      "length": 250,
+      "pitches": 9,
+      "incline": "Slab & Vertical",
+      "approachTime": 21,
+      "approachDifficulty": 1,
+      "disciplines": [
+        "multi-pitch",
+        "trad"
+      ],
+      "features": [],
+      "character": [],
+      "hazards": [
+        "abseil"
+      ],
+      "climatology": [
+        {
+          "month": 1,
+          "tempHigh": 12,
+          "tempLow": 4,
+          "rainyDays": 5
+        },
+        {
+          "month": 2,
+          "tempHigh": 13,
+          "tempLow": 4,
+          "rainyDays": 6
+        },
+        {
+          "month": 3,
+          "tempHigh": 15,
+          "tempLow": 6,
+          "rainyDays": 5
+        },
+        {
+          "month": 4,
+          "tempHigh": 19,
+          "tempLow": 9,
+          "rainyDays": 5
+        },
+        {
+          "month": 5,
+          "tempHigh": 25,
+          "tempLow": 14,
+          "rainyDays": 5
+        },
+        {
+          "month": 6,
+          "tempHigh": 29,
+          "tempLow": 19,
+          "rainyDays": 3
+        },
+        {
+          "month": 7,
+          "tempHigh": 32,
+          "tempLow": 22,
+          "rainyDays": 2
+        },
+        {
+          "month": 8,
+          "tempHigh": 32,
+          "tempLow": 22,
+          "rainyDays": 2
+        },
+        {
+          "month": 9,
+          "tempHigh": 27,
+          "tempLow": 18,
+          "rainyDays": 2
+        },
+        {
+          "month": 10,
+          "tempHigh": 22,
+          "tempLow": 14,
+          "rainyDays": 5
+        },
+        {
+          "month": 11,
+          "tempHigh": 17,
+          "tempLow": 9,
+          "rainyDays": 6
+        },
+        {
+          "month": 12,
+          "tempHigh": 13,
+          "tempLow": 6,
+          "rainyDays": 6
+        }
+      ],
+      "description": "The Traumpfeiler route, or Pillar of Dreams in English, is one of the best routes in the area and is justifiably very popular. It sits on the Heiliger Geist cliff, or Holy Ghost in English. The route is a mixed sport trad with plenty of bolts but still worth of a standard rack of wires and cams. Expect to have to follow other parties if you don’t start very early. With a 60m rope and some extended quickdraws the route can be reduced to 5 pitches if you are so inclined. Clearly a classic of the area the route also offers stunning views and reasonably serious climbing.",
+      "geoLocation": [
+        39.7201,
+        21.6278
+      ]
+    },
+    {
+      "id": "mp-24",
+      "area": "aiguille-dibona",
+      "name": "Visite Obligatoire",
+      "status": "draft",
+      "source": "multi-pitch.com",
+      "dataGrade": 7,
+      "originalGrade": "TD (f6a+)",
+      "gradeSys": "ALP",
+      "tradGrade": "E1",
+      "techGrade": "5c",
+      "length": 350,
+      "pitches": 13,
+      "incline": "Slab & Vertical",
+      "approachTime": 190,
+      "approachDifficulty": 2,
+      "disciplines": [
+        "multi-pitch",
+        "trad"
+      ],
+      "features": [],
+      "character": [],
+      "hazards": [
+        "abseil"
+      ],
+      "climatology": [
+        {
+          "month": 1,
+          "tempHigh": 1,
+          "tempLow": -9,
+          "rainyDays": 6
+        },
+        {
+          "month": 2,
+          "tempHigh": 2,
+          "tempLow": -8,
+          "rainyDays": 5
+        },
+        {
+          "month": 3,
+          "tempHigh": 7,
+          "tempLow": -5,
+          "rainyDays": 5
+        },
+        {
+          "month": 4,
+          "tempHigh": 9,
+          "tempLow": -3,
+          "rainyDays": 7
+        },
+        {
+          "month": 5,
+          "tempHigh": 14,
+          "tempLow": 1,
+          "rainyDays": 5
+        },
+        {
+          "month": 6,
+          "tempHigh": 18,
+          "tempLow": 4,
+          "rainyDays": 4
+        },
+        {
+          "month": 7,
+          "tempHigh": 21,
+          "tempLow": 7,
+          "rainyDays": 2
+        },
+        {
+          "month": 8,
+          "tempHigh": 21,
+          "tempLow": 7,
+          "rainyDays": 2
+        },
+        {
+          "month": 9,
+          "tempHigh": 16,
+          "tempLow": 3,
+          "rainyDays": 4
+        },
+        {
+          "month": 10,
+          "tempHigh": 11,
+          "tempLow": 0,
+          "rainyDays": 7
+        },
+        {
+          "month": 11,
+          "tempHigh": 5,
+          "tempLow": -5,
+          "rainyDays": 6
+        },
+        {
+          "month": 12,
+          "tempHigh": 1,
+          "tempLow": -8,
+          "rainyDays": 6
+        }
+      ],
+      "description": "The picturesque peak of Aiguille Dibona was re-named (formerly: Pain de Sucre du Soreiller) after Italian mountaineer Angelo Dibona after the first accent in 1913 with Guido Mayer. The route Visite Obligatoire or Obligatory Visit in English wasn’t climbed until 1988. This is a long, sustained route that is reasonably well bolted but will require a trad rack of nuts and cams to supplement. The peak finishes at an altitude just over 3,000m. Although the bottom half contains the technically hardest moves, the route doesn’t let up much. Its graded f6a+ with an alpine grade of TD (très difficile) . Escape is much harder after the 8th pitch so make sure you consider this before pressing on.",
+      "geoLocation": [
+        44.9612,
+        6.2439
+      ]
+    },
+    {
+      "id": "mp-25",
+      "area": "bruggler",
+      "name": "Direkte Plattenwand",
+      "status": "draft",
+      "source": "multi-pitch.com",
+      "dataGrade": 5,
+      "originalGrade": "f5a",
+      "gradeSys": "FS",
+      "tradGrade": "VS",
+      "techGrade": "4c",
+      "length": 230,
+      "pitches": 8,
+      "incline": "Slab",
+      "approachTime": 70,
+      "approachDifficulty": 1,
+      "disciplines": [
+        "multi-pitch",
+        "trad"
+      ],
+      "features": [],
+      "character": [],
+      "hazards": [
+        "loose"
+      ],
+      "climatology": [
+        {
+          "month": 1,
+          "tempHigh": -1,
+          "tempLow": -7,
+          "rainyDays": 10
+        },
+        {
+          "month": 2,
+          "tempHigh": -1,
+          "tempLow": -8,
+          "rainyDays": 10
+        },
+        {
+          "month": 3,
+          "tempHigh": 2,
+          "tempLow": -5,
+          "rainyDays": 12
+        },
+        {
+          "month": 4,
+          "tempHigh": 6,
+          "tempLow": -2,
+          "rainyDays": 14
+        },
+        {
+          "month": 5,
+          "tempHigh": 10,
+          "tempLow": 1,
+          "rainyDays": 16
+        },
+        {
+          "month": 6,
+          "tempHigh": 12,
+          "tempLow": 5,
+          "rainyDays": 17
+        },
+        {
+          "month": 7,
+          "tempHigh": 15,
+          "tempLow": 7,
+          "rainyDays": 17
+        },
+        {
+          "month": 8,
+          "tempHigh": 16,
+          "tempLow": 8,
+          "rainyDays": 16
+        },
+        {
+          "month": 9,
+          "tempHigh": 13,
+          "tempLow": 4,
+          "rainyDays": 13
+        },
+        {
+          "month": 10,
+          "tempHigh": 10,
+          "tempLow": 1,
+          "rainyDays": 10
+        },
+        {
+          "month": 11,
+          "tempHigh": 3,
+          "tempLow": -4,
+          "rainyDays": 11
+        },
+        {
+          "month": 12,
+          "tempHigh": -1,
+          "tempLow": -6,
+          "rainyDays": 12
+        }
+      ],
+      "description": "Direkte Plattenwand, is one of the easier, more popular routes up the middle of Bruggler crag. The route is bolted but requires a small trad rack to ease some of the run out sections. There are many routes on this face, some can be climbed clean. Although it’s a big face with lots of options, expect some crowds. Be wary of rockfall from other parties of climbers and be careful not to dislodge rocks from the pitted limestone route.",
+      "geoLocation": [
+        47.117,
+        8.9851
+      ]
+    },
+    {
+      "id": "mp-26",
+      "area": "vajolet-towers",
+      "name": "Piaz Arete Delagokante",
+      "status": "draft",
+      "source": "multi-pitch.com",
+      "dataGrade": 4,
+      "originalGrade": "IV+",
+      "gradeSys": "UIAA",
+      "tradGrade": "HS",
+      "techGrade": "4a",
+      "length": 156,
+      "pitches": 5,
+      "incline": "Slab & Vertical",
+      "approachTime": 160,
+      "approachDifficulty": 3,
+      "disciplines": [
+        "multi-pitch",
+        "trad"
+      ],
+      "features": [],
+      "character": [],
+      "hazards": [
+        "abseil",
+        "traverse",
+        "polished"
+      ],
+      "climatology": [
+        {
+          "month": 1,
+          "tempHigh": -7,
+          "tempLow": -18,
+          "rainyDays": 9
+        },
+        {
+          "month": 2,
+          "tempHigh": -4,
+          "tempLow": -15,
+          "rainyDays": 7
+        },
+        {
+          "month": 3,
+          "tempHigh": 2,
+          "tempLow": -11,
+          "rainyDays": 10
+        },
+        {
+          "month": 4,
+          "tempHigh": 5,
+          "tempLow": -7,
+          "rainyDays": 10
+        },
+        {
+          "month": 5,
+          "tempHigh": 10,
+          "tempLow": -3,
+          "rainyDays": 12
+        },
+        {
+          "month": 6,
+          "tempHigh": 14,
+          "tempLow": 0,
+          "rainyDays": 14
+        },
+        {
+          "month": 7,
+          "tempHigh": 16,
+          "tempLow": 2,
+          "rainyDays": 15
+        },
+        {
+          "month": 8,
+          "tempHigh": 15,
+          "tempLow": 2,
+          "rainyDays": 14
+        },
+        {
+          "month": 9,
+          "tempHigh": 10,
+          "tempLow": -2,
+          "rainyDays": 10
+        },
+        {
+          "month": 10,
+          "tempHigh": 4,
+          "tempLow": -7,
+          "rainyDays": 7
+        },
+        {
+          "month": 11,
+          "tempHigh": -3,
+          "tempLow": -13,
+          "rainyDays": 9
+        },
+        {
+          "month": 12,
+          "tempHigh": -7,
+          "tempLow": -17,
+          "rainyDays": 9
+        }
+      ],
+      "description": "The left hand edge or arête on the Delago Tower is a true classic, often said to be the best climb at its grade in the Dolomites. The route is consistent in grade and offers some incredible exposure, with huge drops both sides of the arête. Although steep in places the holds are typically good. The route is also well protected with bolted stances and pitons on many pitches. A light rack is still needed to fill gaps and protect the last pitch. The quality of the route makes it popular despite the lengthy and involved walk in. Its popularity has led to polish on most of the pitches. Descent requires between 2 and 5 abseils depending on rope length. It's common for climbers to stay at one of the local mountain lodges (Rifugios) as part of the trip due to the lengthy journey to and from the Vejolet Towers. Rifugio Re Alberto is the closest just 10mins walk from the towers. There are other rifugio options on the peak to the west and in the valley to the south.",
+      "geoLocation": [
+        46.4604,
+        11.6245
+      ]
+    },
+    {
+      "id": "mp-28",
+      "area": "cathedral-rock",
+      "name": "Mendez and Guillermo",
+      "status": "draft",
+      "source": "multi-pitch.com",
+      "dataGrade": 5,
+      "originalGrade": "V+",
+      "gradeSys": "UIAA",
+      "tradGrade": "VS",
+      "techGrade": "4c",
+      "length": 115,
+      "pitches": 3,
+      "incline": null,
+      "approachTime": 15,
+      "approachDifficulty": 1,
+      "disciplines": [
+        "multi-pitch",
+        "trad"
+      ],
+      "features": [],
+      "character": [],
+      "hazards": [
+        "abseil",
+        "traverse",
+        "loose"
+      ],
+      "climatology": [
+        {
+          "month": 1,
+          "tempHigh": 15,
+          "tempLow": 5,
+          "rainyDays": 4
+        },
+        {
+          "month": 2,
+          "tempHigh": 16,
+          "tempLow": 5,
+          "rainyDays": 4
+        },
+        {
+          "month": 3,
+          "tempHigh": 18,
+          "tempLow": 7,
+          "rainyDays": 4
+        },
+        {
+          "month": 4,
+          "tempHigh": 21,
+          "tempLow": 9,
+          "rainyDays": 4
+        },
+        {
+          "month": 5,
+          "tempHigh": 24,
+          "tempLow": 13,
+          "rainyDays": 4
+        },
+        {
+          "month": 6,
+          "tempHigh": 29,
+          "tempLow": 17,
+          "rainyDays": 2
+        },
+        {
+          "month": 7,
+          "tempHigh": 31,
+          "tempLow": 19,
+          "rainyDays": 0
+        },
+        {
+          "month": 8,
+          "tempHigh": 32,
+          "tempLow": 20,
+          "rainyDays": 1
+        },
+        {
+          "month": 9,
+          "tempHigh": 28,
+          "tempLow": 17,
+          "rainyDays": 2
+        },
+        {
+          "month": 10,
+          "tempHigh": 23,
+          "tempLow": 14,
+          "rainyDays": 4
+        },
+        {
+          "month": 11,
+          "tempHigh": 18,
+          "tempLow": 9,
+          "rainyDays": 5
+        },
+        {
+          "month": 12,
+          "tempHigh": 16,
+          "tempLow": 6,
+          "rainyDays": 4
+        }
+      ],
+      "description": "El Catedral, (the Cathedral in English) is a volcanic plug that stands in Teide National Park in the centre of Tenerife. It offers a variety of traditional multi-pitch climbs that tend to be around 3 or 4 pitches in length to reach that summit via just over 100 meters of climbing. Whilst Tenerife has a lot of incredible climbing the majority of it is single pitch sport routes. El Catedral offers some of the best traditional multi-pitch climbing on the island. The route Via Mendez & Guillermo is not the original route up the face but offers a high quality adventure at grade UIAA V+. Whilst a completely different grading system it sits around VS. There are easier and harder options to the summit if needed. The original route is graded UIAA IV or around Severe in British grades. The setting of this rock is near the middle of the the island in the national park across the road from where the cable car takes tourists to the summit of El Teide. El Teide is Spain's highest mountain. The area is popular with tourists who, understandably, visit to see the majestic scenery of the area. There are very occasionally access restrictions in the area for goat hunting. See references below to check the schedule.",
+      "geoLocation": [
+        28.2235,
+        -16.6345
+      ]
+    },
+    {
+      "id": "mp-29",
+      "area": "wintours-leap",
+      "name": "Right Hand Route",
+      "status": "draft",
+      "source": "multi-pitch.com",
+      "dataGrade": 4,
+      "originalGrade": "HS 4b",
+      "gradeSys": "BAS",
+      "tradGrade": "HS",
+      "techGrade": "4b",
+      "length": 87,
+      "pitches": 4,
+      "incline": "Slab & Vertical",
+      "approachTime": 20,
+      "approachDifficulty": 1,
+      "disciplines": [
+        "multi-pitch",
+        "trad"
+      ],
+      "features": [],
+      "character": [],
+      "hazards": [
+        "abseil"
+      ],
+      "climatology": [
+        {
+          "month": 1,
+          "tempHigh": 7,
+          "tempLow": 1.6,
+          "rainyDays": 13
+        },
+        {
+          "month": 2,
+          "tempHigh": 7.3,
+          "tempLow": 1.5,
+          "rainyDays": 9
+        },
+        {
+          "month": 3,
+          "tempHigh": 9.6,
+          "tempLow": 2.8,
+          "rainyDays": 11
+        },
+        {
+          "month": 4,
+          "tempHigh": 12.7,
+          "tempLow": 4.9,
+          "rainyDays": 9
+        },
+        {
+          "month": 5,
+          "tempHigh": 16,
+          "tempLow": 7.7,
+          "rainyDays": 8
+        },
+        {
+          "month": 6,
+          "tempHigh": 19.2,
+          "tempLow": 10.7,
+          "rainyDays": 8
+        },
+        {
+          "month": 7,
+          "tempHigh": 20.7,
+          "tempLow": 12.2,
+          "rainyDays": 7
+        },
+        {
+          "month": 8,
+          "tempHigh": 20.2,
+          "tempLow": 12,
+          "rainyDays": 8
+        },
+        {
+          "month": 9,
+          "tempHigh": 17.7,
+          "tempLow": 10,
+          "rainyDays": 9
+        },
+        {
+          "month": 10,
+          "tempHigh": 14.1,
+          "tempLow": 7.4,
+          "rainyDays": 11
+        },
+        {
+          "month": 11,
+          "tempHigh": 9.7,
+          "tempLow": 4,
+          "rainyDays": 10
+        },
+        {
+          "month": 12,
+          "tempHigh": 7.9,
+          "tempLow": 2.5,
+          "rainyDays": 11
+        }
+      ],
+      "description": "The right hand route is in many ways the opposite twin to the left hand route (also a Hard Severe climb). It has better pitches at the top where the left-hand route has better pitches at the bottom. While the right hand route looks heavily vegetated from the bottom it’s surprisingly clean. That’s not to say its perfect, just better than it looks. It has good variety and is more sustained in grade when compared to the left-hand route, which has a hard start and then eases off. It’s a classic limestone route with a small crack section, and exposed thin ledge system and a steeper juggy section at the end. Check the BMC RAD Database for route exit information (see references), but at the time of writing abseiling off is required (see descent info).",
+      "geoLocation": [
+        51.6648,
+        -2.6643
+      ]
+    },
+    {
+      "id": "mp-3",
+      "area": "clogwyn-dur-arddu",
+      "name": "Great Slab",
+      "status": "draft",
+      "source": "multi-pitch.com",
+      "dataGrade": 5,
+      "originalGrade": "VS 4c",
+      "gradeSys": "BAS",
+      "tradGrade": "VS",
+      "techGrade": "4c",
+      "length": 162,
+      "pitches": 5,
+      "incline": "Slab",
+      "approachTime": 120,
+      "approachDifficulty": 2,
+      "disciplines": [
+        "multi-pitch",
+        "trad"
+      ],
+      "features": [],
+      "character": [],
+      "hazards": [
+        "seepage"
+      ],
+      "climatology": [
+        {
+          "month": 1,
+          "tempHigh": 8,
+          "tempLow": 3,
+          "rainyDays": 13
+        },
+        {
+          "month": 2,
+          "tempHigh": 8,
+          "tempLow": 2,
+          "rainyDays": 10
+        },
+        {
+          "month": 3,
+          "tempHigh": 9,
+          "tempLow": 3,
+          "rainyDays": 11
+        },
+        {
+          "month": 4,
+          "tempHigh": 12,
+          "tempLow": 4,
+          "rainyDays": 9
+        },
+        {
+          "month": 5,
+          "tempHigh": 15,
+          "tempLow": 7,
+          "rainyDays": 8
+        },
+        {
+          "month": 6,
+          "tempHigh": 17,
+          "tempLow": 10,
+          "rainyDays": 8
+        },
+        {
+          "month": 7,
+          "tempHigh": 19,
+          "tempLow": 12,
+          "rainyDays": 8
+        },
+        {
+          "month": 8,
+          "tempHigh": 18,
+          "tempLow": 12,
+          "rainyDays": 9
+        },
+        {
+          "month": 9,
+          "tempHigh": 17,
+          "tempLow": 10,
+          "rainyDays": 10
+        },
+        {
+          "month": 10,
+          "tempHigh": 13,
+          "tempLow": 8,
+          "rainyDays": 14
+        },
+        {
+          "month": 11,
+          "tempHigh": 10,
+          "tempLow": 5,
+          "rainyDays": 14
+        },
+        {
+          "month": 12,
+          "tempHigh": 8,
+          "tempLow": 3,
+          "rainyDays": 14
+        }
+      ],
+      "description": "A great crag and a great route, aptly named the great slab. There is only one technically demanding section up an often-damp corner. The route is long with a lot of variation possible.",
+      "geoLocation": [
+        53.0793,
+        -4.093
+      ]
+    },
+    {
+      "id": "mp-30",
+      "area": "avon-gorge",
+      "name": "Morpheus",
+      "status": "draft",
+      "source": "multi-pitch.com",
+      "dataGrade": 3,
+      "originalGrade": "S 4a",
+      "gradeSys": "BAS",
+      "tradGrade": "S",
+      "techGrade": "4a",
+      "length": 67,
+      "pitches": 4,
+      "incline": "Slab",
+      "approachTime": 1,
+      "approachDifficulty": 1,
+      "disciplines": [
+        "multi-pitch",
+        "trad"
+      ],
+      "features": [],
+      "character": [],
+      "hazards": [
+        "polished"
+      ],
+      "climatology": [
+        {
+          "month": 1,
+          "tempHigh": 8,
+          "tempLow": 3,
+          "rainyDays": 13
+        },
+        {
+          "month": 2,
+          "tempHigh": 8,
+          "tempLow": 3,
+          "rainyDays": 9
+        },
+        {
+          "month": 3,
+          "tempHigh": 11,
+          "tempLow": 5,
+          "rainyDays": 11
+        },
+        {
+          "month": 4,
+          "tempHigh": 13,
+          "tempLow": 6,
+          "rainyDays": 9
+        },
+        {
+          "month": 5,
+          "tempHigh": 17,
+          "tempLow": 9,
+          "rainyDays": 8
+        },
+        {
+          "month": 6,
+          "tempHigh": 19,
+          "tempLow": 12,
+          "rainyDays": 8
+        },
+        {
+          "month": 7,
+          "tempHigh": 22,
+          "tempLow": 14,
+          "rainyDays": 7
+        },
+        {
+          "month": 8,
+          "tempHigh": 21,
+          "tempLow": 14,
+          "rainyDays": 8
+        },
+        {
+          "month": 9,
+          "tempHigh": 18,
+          "tempLow": 12,
+          "rainyDays": 9
+        },
+        {
+          "month": 10,
+          "tempHigh": 15,
+          "tempLow": 9,
+          "rainyDays": 11
+        },
+        {
+          "month": 11,
+          "tempHigh": 11,
+          "tempLow": 6,
+          "rainyDays": 10
+        },
+        {
+          "month": 12,
+          "tempHigh": 9,
+          "tempLow": 4,
+          "rainyDays": 11
+        }
+      ],
+      "description": "Morpheus is an enjoyable and varied multi-pitch climb originally graded Hard Very Difficult. The climb starts at the same point as Gronk on the left-hand part of the Sea Walls main area in Avon Gorge. Because it’s partially quarried limestone, the route offers and mix of climbing styles including moves on large crimps, laybacks on a flake, some delicate sloping moves and no doubt at least one mantle onto one of the many ledges. Protection is good and requires mostly wires, but some cams are also useful. Whilst the crux was originally the moves off the ground at the start, recent experience suggest the corner crack on the 3rd pitch is now much harder. This is because the limited footholds have been polished to a glass like texture by the feet of many thousand climbers. The rest of the route is mostly not too polished. The Sea Walls at Avon Gorge are a real city crag and some of the most accessible multi-pitch rock climbing in the UK because you can park right at the cliff. However the disadvantage is the main road that runs below the crag is very noisy and can make verbal communication difficult on this climb.",
+      "geoLocation": [
+        51.4685,
+        -2.6332
+      ]
+    },
+    {
+      "id": "mp-32",
+      "area": "freyr",
+      "name": "Le Merinos",
+      "status": "draft",
+      "source": "multi-pitch.com",
+      "dataGrade": 3,
+      "originalGrade": "f4c",
+      "gradeSys": "FS",
+      "tradGrade": "S",
+      "techGrade": "4b",
+      "length": 100,
+      "pitches": 4,
+      "incline": null,
+      "approachTime": 20,
+      "approachDifficulty": 1,
+      "disciplines": [
+        "multi-pitch",
+        "trad"
+      ],
+      "features": [],
+      "character": [],
+      "hazards": [
+        "polished"
+      ],
+      "climatology": [
+        {
+          "month": 1,
+          "tempHigh": 5,
+          "tempLow": 1,
+          "rainyDays": 13
+        },
+        {
+          "month": 2,
+          "tempHigh": 6,
+          "tempLow": 1,
+          "rainyDays": 11
+        },
+        {
+          "month": 3,
+          "tempHigh": 10,
+          "tempLow": 3,
+          "rainyDays": 10
+        },
+        {
+          "month": 4,
+          "tempHigh": 14,
+          "tempLow": 5,
+          "rainyDays": 8
+        },
+        {
+          "month": 5,
+          "tempHigh": 18,
+          "tempLow": 9,
+          "rainyDays": 15
+        },
+        {
+          "month": 6,
+          "tempHigh": 21,
+          "tempLow": 12,
+          "rainyDays": 12
+        },
+        {
+          "month": 7,
+          "tempHigh": 23,
+          "tempLow": 13,
+          "rainyDays": 11
+        },
+        {
+          "month": 8,
+          "tempHigh": 23,
+          "tempLow": 13,
+          "rainyDays": 12
+        },
+        {
+          "month": 9,
+          "tempHigh": 19,
+          "tempLow": 11,
+          "rainyDays": 12
+        },
+        {
+          "month": 10,
+          "tempHigh": 14,
+          "tempLow": 7,
+          "rainyDays": 10
+        },
+        {
+          "month": 11,
+          "tempHigh": 9,
+          "tempLow": 4,
+          "rainyDays": 12
+        },
+        {
+          "month": 12,
+          "tempHigh": 6,
+          "tempLow": 1,
+          "rainyDays": 13
+        }
+      ],
+      "description": "Le Merinos (graded at least British 3c) makes up the first 3 pitches with an optional addition of the harder La Savonnette (4b). The route takes the west facing arete up the most northern of the Limestone outcrops at Freÿr. Overlooking the Meuse river in Wallonia, this is a classic 70m route which, due to its popularity is highly polished in places, especially the start. Adding La Savonnette as a 4th pitch take the route over 100m. The area is mixed climbing with old bolts and pitons that are best supplemented with a rack of nuts at a minimum.",
+      "geoLocation": [
+        50.2262,
+        4.8913
+      ]
+    },
+    {
+      "id": "mp-33",
+      "area": "grande-fermeda",
+      "name": "Normal Route",
+      "status": "draft",
+      "source": "multi-pitch.com",
+      "dataGrade": 2,
+      "originalGrade": "IV-",
+      "gradeSys": "UIAA",
+      "tradGrade": "VD",
+      "techGrade": "3b",
+      "length": 720,
+      "pitches": 19,
+      "incline": null,
+      "approachTime": 60,
+      "approachDifficulty": 1,
+      "disciplines": [
+        "multi-pitch",
+        "trad"
+      ],
+      "features": [],
+      "character": [],
+      "hazards": [
+        "abseil"
+      ],
+      "climatology": [
+        {
+          "month": 1,
+          "tempHigh": 0,
+          "tempLow": -8,
+          "rainyDays": 9
+        },
+        {
+          "month": 2,
+          "tempHigh": 5,
+          "tempLow": -7,
+          "rainyDays": 8
+        },
+        {
+          "month": 3,
+          "tempHigh": 9,
+          "tempLow": -2,
+          "rainyDays": 9
+        },
+        {
+          "month": 4,
+          "tempHigh": 13,
+          "tempLow": 2,
+          "rainyDays": 10
+        },
+        {
+          "month": 5,
+          "tempHigh": 18,
+          "tempLow": 6,
+          "rainyDays": 13
+        },
+        {
+          "month": 6,
+          "tempHigh": 22,
+          "tempLow": 9,
+          "rainyDays": 16
+        },
+        {
+          "month": 7,
+          "tempHigh": 23,
+          "tempLow": 11,
+          "rainyDays": 15
+        },
+        {
+          "month": 8,
+          "tempHigh": 22,
+          "tempLow": 10,
+          "rainyDays": 15
+        },
+        {
+          "month": 9,
+          "tempHigh": 20,
+          "tempLow": 8,
+          "rainyDays": 11
+        },
+        {
+          "month": 10,
+          "tempHigh": 15,
+          "tempLow": 2,
+          "rainyDays": 10
+        },
+        {
+          "month": 11,
+          "tempHigh": 6,
+          "tempLow": -2,
+          "rainyDays": 11
+        },
+        {
+          "month": 12,
+          "tempHigh": 0,
+          "tempLow": -7,
+          "rainyDays": 10
+        }
+      ],
+      "description": "Grande Fermeda via the original route is a very long climb but at an amenable grade. There is only one pitch (pitch 15) that is graded UIAA IV-. This means around 700 meters of grade II and grade III climbing. As such it’s common for parties to scramble while roped together, pitching only the harder sections. Techniques like simul climbing or scrambling allow parties to move much faster, reducing the risk of benightment, but increasing the type and impact of potential falls. Plan according to the parties strengths & weaknesses. The route was first climbed in 1887 by a party of climbers Bettega, Compton, Martin, Schulz. Parts of the climb are delicate, exposed and in places quite steep.",
+      "geoLocation": [
+        46.6009,
+        11.7547
+      ]
+    },
+    {
+      "id": "mp-34",
+      "area": "old-man-of-hoy",
+      "name": "Original Route",
+      "status": "draft",
+      "source": "multi-pitch.com",
+      "dataGrade": 7,
+      "originalGrade": "E1 5b",
+      "gradeSys": "BAS",
+      "tradGrade": "E1",
+      "techGrade": "5b",
+      "length": 137,
+      "pitches": 5,
+      "incline": null,
+      "approachTime": 45,
+      "approachDifficulty": 2,
+      "disciplines": [
+        "multi-pitch",
+        "trad"
+      ],
+      "features": [],
+      "character": [],
+      "hazards": [
+        "abseil",
+        "traverse",
+        "tidal"
+      ],
+      "climatology": [
+        {
+          "month": 1,
+          "tempHigh": 5,
+          "tempLow": 2,
+          "rainyDays": 20
+        },
+        {
+          "month": 2,
+          "tempHigh": 5,
+          "tempLow": 2,
+          "rainyDays": 14
+        },
+        {
+          "month": 3,
+          "tempHigh": 5,
+          "tempLow": 2,
+          "rainyDays": 15
+        },
+        {
+          "month": 4,
+          "tempHigh": 7,
+          "tempLow": 4,
+          "rainyDays": 13
+        },
+        {
+          "month": 5,
+          "tempHigh": 10,
+          "tempLow": 6,
+          "rainyDays": 11
+        },
+        {
+          "month": 6,
+          "tempHigh": 12,
+          "tempLow": 8,
+          "rainyDays": 10
+        },
+        {
+          "month": 7,
+          "tempHigh": 14,
+          "tempLow": 10,
+          "rainyDays": 10
+        },
+        {
+          "month": 8,
+          "tempHigh": 14,
+          "tempLow": 10,
+          "rainyDays": 12
+        },
+        {
+          "month": 9,
+          "tempHigh": 11,
+          "tempLow": 8,
+          "rainyDays": 14
+        },
+        {
+          "month": 10,
+          "tempHigh": 9,
+          "tempLow": 7,
+          "rainyDays": 17
+        },
+        {
+          "month": 11,
+          "tempHigh": 7,
+          "tempLow": 4,
+          "rainyDays": 20
+        },
+        {
+          "month": 12,
+          "tempHigh": 5,
+          "tempLow": 3,
+          "rainyDays": 19
+        }
+      ],
+      "description": "The Original Route up The Old Man of Hoy is a classic climb amongst classic climbs. Originally climbed in 1966 by Rusty Baillie, Chris Bonington and Tom Patey, this iconic multi-pitch has been the centre of some of the most focused media attention around climbing in the late 1990’s. The route climbs the east landward face, of this northern Scottish sandstone stack. It’s technically not a sea stack (because it’s attached to the mainland), but is usually referred to as such. The route requires a mix of technical climbing, including a short down climb, a traverse, as well as crack climbing and bridging skills. The route is made harder by nesting Fulmars who don’t like climbers around their nests. Descent from the top requires abseiling back down the route. The Original Route is listed in Ken Wilsons Hard Rock book, sitting alongside other UK classics in the HVS to E1 range. The route has seen some incredible accents over the years, including being climbed by Red Szell as the first blind man to climb up The Old Man of Hoy. In more recent years Jesse Dufton, also blind, went one step further and climbed it on lead. Chris Bonington also made recent repeat of this stack while in his 80’s, over 50 years after his first accent, he climbed the stack with Leo Holding. The climb was originally graded HVS, but most recent guidebooks list it as E1. Although some pitches are straightforward, it would be easy to underestimate the complexity of getting up and back down safely. The exposure is incredible.",
+      "geoLocation": [
+        58.8837,
+        -3.4305
+      ]
+    },
+    {
+      "id": "mp-35",
+      "area": "ksar-rock",
+      "name": "East Buttress",
+      "status": "draft",
+      "source": "multi-pitch.com",
+      "dataGrade": 4,
+      "originalGrade": "HS 4b",
+      "gradeSys": "BAS",
+      "tradGrade": "HS",
+      "techGrade": "4b",
+      "length": 120,
+      "pitches": 6,
+      "incline": "Slab & Vertical",
+      "approachTime": 10,
+      "approachDifficulty": 1,
+      "disciplines": [
+        "multi-pitch",
+        "trad"
+      ],
+      "features": [],
+      "character": [],
+      "hazards": [],
+      "climatology": [
+        {
+          "month": 1,
+          "tempHigh": 16.2,
+          "tempLow": 2.4,
+          "rainyDays": 4
+        },
+        {
+          "month": 2,
+          "tempHigh": 17.7,
+          "tempLow": 3.7,
+          "rainyDays": 3
+        },
+        {
+          "month": 3,
+          "tempHigh": 19.8,
+          "tempLow": 6.7,
+          "rainyDays": 4
+        },
+        {
+          "month": 4,
+          "tempHigh": 22.5,
+          "tempLow": 9.1,
+          "rainyDays": 3
+        },
+        {
+          "month": 5,
+          "tempHigh": 24.3,
+          "tempLow": 11.5,
+          "rainyDays": 2
+        },
+        {
+          "month": 6,
+          "tempHigh": 27.3,
+          "tempLow": 13.9,
+          "rainyDays": 2
+        },
+        {
+          "month": 7,
+          "tempHigh": 31.3,
+          "tempLow": 17.4,
+          "rainyDays": 2
+        },
+        {
+          "month": 8,
+          "tempHigh": 31.1,
+          "tempLow": 18,
+          "rainyDays": 2
+        },
+        {
+          "month": 9,
+          "tempHigh": 28,
+          "tempLow": 15.3,
+          "rainyDays": 3
+        },
+        {
+          "month": 10,
+          "tempHigh": 24.2,
+          "tempLow": 11.5,
+          "rainyDays": 3
+        },
+        {
+          "month": 11,
+          "tempHigh": 19.9,
+          "tempLow": 7.5,
+          "rainyDays": 5
+        },
+        {
+          "month": 12,
+          "tempHigh": 16.4,
+          "tempLow": 3.7,
+          "rainyDays": 6
+        }
+      ],
+      "description": "Ksar rock offers great multi-pitch rock climbing up to around 150 meters with plenty of climbs in grades from Severe to E1. This is a popular destination for its quick approach, easy access and quality routes that get great winter sun on the south face. The East Buttress route is one of the easier climbs up Ksar Rock, graded as severe in some guides and hard severe in others, the route can be upgraded to very severe by taking some direct variations.",
+      "geoLocation": [
+        29.8127,
+        -9.0668
+      ]
+    },
+    {
+      "id": "mp-37",
+      "area": "high-sierra-dome",
+      "name": "High Sierra",
+      "status": "draft",
+      "source": "multi-pitch.com",
+      "dataGrade": 5,
+      "originalGrade": "VS 5a",
+      "gradeSys": "BAS",
+      "tradGrade": "VS",
+      "techGrade": "5a",
+      "length": 120,
+      "pitches": 4,
+      "incline": "Slab",
+      "approachTime": 15,
+      "approachDifficulty": 1,
+      "disciplines": [
+        "multi-pitch",
+        "trad"
+      ],
+      "features": [],
+      "character": [],
+      "hazards": [
+        "abseil"
+      ],
+      "climatology": [
+        {
+          "month": 1,
+          "tempHigh": 19,
+          "tempLow": 11,
+          "rainyDays": 4
+        },
+        {
+          "month": 2,
+          "tempHigh": 20,
+          "tempLow": 12,
+          "rainyDays": 3
+        },
+        {
+          "month": 3,
+          "tempHigh": 21,
+          "tempLow": 13,
+          "rainyDays": 4
+        },
+        {
+          "month": 4,
+          "tempHigh": 21,
+          "tempLow": 14,
+          "rainyDays": 3
+        },
+        {
+          "month": 5,
+          "tempHigh": 22,
+          "tempLow": 15,
+          "rainyDays": 1
+        },
+        {
+          "month": 6,
+          "tempHigh": 22,
+          "tempLow": 16,
+          "rainyDays": 1
+        },
+        {
+          "month": 7,
+          "tempHigh": 23,
+          "tempLow": 17,
+          "rainyDays": 1
+        },
+        {
+          "month": 8,
+          "tempHigh": 24,
+          "tempLow": 18,
+          "rainyDays": 1
+        },
+        {
+          "month": 9,
+          "tempHigh": 24,
+          "tempLow": 17,
+          "rainyDays": 2
+        },
+        {
+          "month": 10,
+          "tempHigh": 23,
+          "tempLow": 16,
+          "rainyDays": 2
+        },
+        {
+          "month": 11,
+          "tempHigh": 22,
+          "tempLow": 15,
+          "rainyDays": 4
+        },
+        {
+          "month": 12,
+          "tempHigh": 20,
+          "tempLow": 12,
+          "rainyDays": 4
+        }
+      ],
+      "description": "High Sierra is situated on one of Tafraout’s granite domes, not far from the locally famous Napoleons Hat rock. Tafraout granite was formed from slow cooling lava and as a result, it has a very coarse crystalline structure. The rock is also surprisingly brittle in places where it looks solid. This makes an interesting change from the nearby quartzite rock, which looks loose but is generally very solid. Although not a pure trad line thanks to a bolted start and bolted finish, the crack system in the middle two pitches offers exceptional traditional climbing. This popular route is a great option if there is bad weather on the Jebel el Kest mountains. As a south facing route, it’s possible to literally watch the granite dry over a 30miniute period after heavy rain. The start is disproportionately harder than the rest of the route.",
+      "geoLocation": [
+        29.6968,
+        -8.9759
+      ]
+    },
+    {
+      "id": "mp-38",
+      "area": "amzkhssan-wall",
+      "name": "Pinnacle Slab",
+      "status": "draft",
+      "source": "multi-pitch.com",
+      "dataGrade": 1,
+      "originalGrade": "D 3b",
+      "gradeSys": "BAS",
+      "tradGrade": "D",
+      "techGrade": "3b",
+      "length": 130,
+      "pitches": 3,
+      "incline": "Slab",
+      "approachTime": 5,
+      "approachDifficulty": 1,
+      "disciplines": [
+        "multi-pitch",
+        "trad"
+      ],
+      "features": [],
+      "character": [],
+      "hazards": [],
+      "climatology": [
+        {
+          "month": 1,
+          "tempHigh": 16.2,
+          "tempLow": 2.4,
+          "rainyDays": 4
+        },
+        {
+          "month": 2,
+          "tempHigh": 17.7,
+          "tempLow": 3.7,
+          "rainyDays": 3
+        },
+        {
+          "month": 3,
+          "tempHigh": 19.8,
+          "tempLow": 6.7,
+          "rainyDays": 4
+        },
+        {
+          "month": 4,
+          "tempHigh": 22.5,
+          "tempLow": 9.1,
+          "rainyDays": 3
+        },
+        {
+          "month": 5,
+          "tempHigh": 24.3,
+          "tempLow": 11.5,
+          "rainyDays": 2
+        },
+        {
+          "month": 6,
+          "tempHigh": 27.3,
+          "tempLow": 13.9,
+          "rainyDays": 2
+        },
+        {
+          "month": 7,
+          "tempHigh": 31.3,
+          "tempLow": 17.4,
+          "rainyDays": 2
+        },
+        {
+          "month": 8,
+          "tempHigh": 31.1,
+          "tempLow": 18,
+          "rainyDays": 2
+        },
+        {
+          "month": 9,
+          "tempHigh": 28,
+          "tempLow": 15.3,
+          "rainyDays": 3
+        },
+        {
+          "month": 10,
+          "tempHigh": 24.2,
+          "tempLow": 11.5,
+          "rainyDays": 3
+        },
+        {
+          "month": 11,
+          "tempHigh": 19.9,
+          "tempLow": 7.5,
+          "rainyDays": 5
+        },
+        {
+          "month": 12,
+          "tempHigh": 16.4,
+          "tempLow": 3.7,
+          "rainyDays": 6
+        }
+      ],
+      "description": "The Pinnacle Slab on the Amzkhssan Wall offers around 130m of enjoyable climbing with little technical difficulty. The Amzkhssan Wall could be climbed hundreds of times without ever using the same holds. Although this particular route is only graded Diff , it should not be underestimated. Finding gear in the quartzite rock can be difficult and the leader can easily be enticed off the route in pursuit of placements, leading to serious rope drag quite quickly. In addition, route finding is more or less impossible to follow once on the wall. That said the climbing doesn’t go above V. Diff / Severe anywhere on the right side of the rock face. A confident leader with a mixed rack, particularly smaller gear, will be rewarded with enjoyable and easy climbing, an ideal option for a short warm up climb, especially given its easy approach and nearby parking.",
+      "geoLocation": [
+        29.8426,
+        -9.0235
+      ]
+    },
+    {
+      "id": "mp-39",
+      "area": "lower-eagle-crag",
+      "name": "Donkey Serenades",
+      "status": "draft",
+      "source": "multi-pitch.com",
+      "dataGrade": 2,
+      "originalGrade": "VD 3c",
+      "gradeSys": "BAS",
+      "tradGrade": "VD",
+      "techGrade": "3c",
+      "length": 270,
+      "pitches": 8,
+      "incline": "Slab",
+      "approachTime": 15,
+      "approachDifficulty": 1,
+      "disciplines": [
+        "multi-pitch",
+        "trad"
+      ],
+      "features": [],
+      "character": [],
+      "hazards": [],
+      "climatology": [
+        {
+          "month": 1,
+          "tempHigh": 16.2,
+          "tempLow": 2.4,
+          "rainyDays": 4
+        },
+        {
+          "month": 2,
+          "tempHigh": 17.7,
+          "tempLow": 3.7,
+          "rainyDays": 3
+        },
+        {
+          "month": 3,
+          "tempHigh": 19.8,
+          "tempLow": 6.7,
+          "rainyDays": 4
+        },
+        {
+          "month": 4,
+          "tempHigh": 22.5,
+          "tempLow": 9.1,
+          "rainyDays": 3
+        },
+        {
+          "month": 5,
+          "tempHigh": 24.3,
+          "tempLow": 11.5,
+          "rainyDays": 2
+        },
+        {
+          "month": 6,
+          "tempHigh": 27.3,
+          "tempLow": 13.9,
+          "rainyDays": 2
+        },
+        {
+          "month": 7,
+          "tempHigh": 31.3,
+          "tempLow": 17.4,
+          "rainyDays": 2
+        },
+        {
+          "month": 8,
+          "tempHigh": 31.1,
+          "tempLow": 18,
+          "rainyDays": 2
+        },
+        {
+          "month": 9,
+          "tempHigh": 28,
+          "tempLow": 15.3,
+          "rainyDays": 3
+        },
+        {
+          "month": 10,
+          "tempHigh": 24.2,
+          "tempLow": 11.5,
+          "rainyDays": 3
+        },
+        {
+          "month": 11,
+          "tempHigh": 19.9,
+          "tempLow": 7.5,
+          "rainyDays": 5
+        },
+        {
+          "month": 12,
+          "tempHigh": 16.4,
+          "tempLow": 3.7,
+          "rainyDays": 6
+        }
+      ],
+      "description": "The Lower Eagle Crag in the Jebel El Kest mountain range offers some of the best rock climbing in the anti-atlas. The rock climbing is clean and the quartzite is generally very solid. Many routes ascend to around 300m with grades starting from V. Diff, like this classic route, Donkey Serenades. Pink Lady and Real Men wear Pink are nearby VS climbs. Sir Chris Bonington’s climb, Black Beauty offers an exceptional E1 climb further down the crag. Routes from the Lower Eagle Crag can also be linked up with routes on the shorter Upper Eagle Crag for extended adventures. The route Donkey Serenades covered here, weaves its way up the north facing slabs, making use of the natural breaks and slopes in the rock to reach the top. There is little technical difficulty (depending of which line you take), but it does require solid mountaineering experience because all anchors need to be built from trad gear. Many of the pitches will be in the shade until later in the afternoon, giving a shadier option if you want to avoid the worst of the Morocco sun.",
+      "geoLocation": [
+        29.8087,
+        -9.0643
+      ]
+    },
+    {
+      "id": "mp-4",
+      "area": "vratsa",
+      "name": "Bulgaria 1300",
+      "status": "draft",
+      "source": "multi-pitch.com",
+      "dataGrade": 7,
+      "originalGrade": "VI+",
+      "gradeSys": "UIAA",
+      "tradGrade": "E1",
+      "techGrade": "5c",
+      "length": 400,
+      "pitches": 11,
+      "incline": "Vertical",
+      "approachTime": 40,
+      "approachDifficulty": 2,
+      "disciplines": [
+        "multi-pitch",
+        "trad"
+      ],
+      "features": [],
+      "character": [],
+      "hazards": [],
+      "climatology": [
+        {
+          "month": 1,
+          "tempHigh": 6,
+          "tempLow": -1,
+          "rainyDays": 6
+        },
+        {
+          "month": 2,
+          "tempHigh": 9,
+          "tempLow": 1,
+          "rainyDays": 6
+        },
+        {
+          "month": 3,
+          "tempHigh": 14,
+          "tempLow": 5,
+          "rainyDays": 6
+        },
+        {
+          "month": 4,
+          "tempHigh": 19,
+          "tempLow": 10,
+          "rainyDays": 8
+        },
+        {
+          "month": 5,
+          "tempHigh": 24,
+          "tempLow": 14,
+          "rainyDays": 8
+        },
+        {
+          "month": 6,
+          "tempHigh": 28,
+          "tempLow": 18,
+          "rainyDays": 8
+        },
+        {
+          "month": 7,
+          "tempHigh": 31,
+          "tempLow": 20,
+          "rainyDays": 6
+        },
+        {
+          "month": 8,
+          "tempHigh": 30,
+          "tempLow": 19,
+          "rainyDays": 5
+        },
+        {
+          "month": 9,
+          "tempHigh": 25,
+          "tempLow": 15,
+          "rainyDays": 5
+        },
+        {
+          "month": 10,
+          "tempHigh": 19,
+          "tempLow": 10,
+          "rainyDays": 5
+        },
+        {
+          "month": 11,
+          "tempHigh": 12,
+          "tempLow": 5,
+          "rainyDays": 7
+        },
+        {
+          "month": 12,
+          "tempHigh": 8,
+          "tempLow": 1,
+          "rainyDays": 6
+        }
+      ],
+      "description": "The climb Bulgaria 1300 was named after Bulgaria's first artificial satellite, which in turn was named after the 1300th anniversary of the foundation of the Bulgarian state. The route takes one of the easier lines up the main face of Vratsa, however with around 400 meters of limestone the route is challenging in places with a number of pitches grade UIAA VI+ which is at least E1 5c in UK grades. The route also calls for some basic aid in sections. That said its one of the easier lines up the main face of Vratsa. The route has some pitons and bolts in sections but will require a full rack of nuts and cams.",
+      "geoLocation": [
+        43.1948,
+        23.5301
+      ]
+    },
+    {
+      "id": "mp-40",
+      "area": "great-tor",
+      "name": "East Ridge",
+      "status": "draft",
+      "source": "multi-pitch.com",
+      "dataGrade": 3,
+      "originalGrade": "S 3c",
+      "gradeSys": "BAS",
+      "tradGrade": "S",
+      "techGrade": "3c",
+      "length": 71,
+      "pitches": 4,
+      "incline": "Slab & Vertical",
+      "approachTime": 25,
+      "approachDifficulty": 1,
+      "disciplines": [
+        "multi-pitch",
+        "trad"
+      ],
+      "features": [],
+      "character": [],
+      "hazards": [],
+      "climatology": [
+        {
+          "month": 1,
+          "tempHigh": 8,
+          "tempLow": 4,
+          "rainyDays": 16
+        },
+        {
+          "month": 2,
+          "tempHigh": 8,
+          "tempLow": 4,
+          "rainyDays": 13
+        },
+        {
+          "month": 3,
+          "tempHigh": 9,
+          "tempLow": 5,
+          "rainyDays": 8
+        },
+        {
+          "month": 4,
+          "tempHigh": 12,
+          "tempLow": 6,
+          "rainyDays": 12
+        },
+        {
+          "month": 5,
+          "tempHigh": 15,
+          "tempLow": 9,
+          "rainyDays": 10
+        },
+        {
+          "month": 6,
+          "tempHigh": 18,
+          "tempLow": 12,
+          "rainyDays": 13
+        },
+        {
+          "month": 7,
+          "tempHigh": 19,
+          "tempLow": 14,
+          "rainyDays": 9
+        },
+        {
+          "month": 8,
+          "tempHigh": 19,
+          "tempLow": 14,
+          "rainyDays": 12
+        },
+        {
+          "month": 9,
+          "tempHigh": 17,
+          "tempLow": 12,
+          "rainyDays": 9
+        },
+        {
+          "month": 10,
+          "tempHigh": 14,
+          "tempLow": 10,
+          "rainyDays": 15
+        },
+        {
+          "month": 11,
+          "tempHigh": 11,
+          "tempLow": 7,
+          "rainyDays": 16
+        },
+        {
+          "month": 12,
+          "tempHigh": 9,
+          "tempLow": 5,
+          "rainyDays": 15
+        }
+      ],
+      "description": "The East Ridge of Great Tor offers easy climbing right above the beach of Three Cliffs Bay. The route is non-tidal, but approaching from the beach is only possible at low tide. A not so straightforward scramble down or abseil from a nearby block are alternative options for reaching the base of the climb. The route is broken up by 3 significant ledges. Although it’s set as 4 pitches, linking pitch 2 and 3 or even 3 and 4 makes the pitches a bit more significant. There are also some variations that up the difficulty to Very Severe, although the variations avoids the dramatic south east edge overlooking the beaches and sea. Although Great Tor is the most significant multi-pitch climb in the area, the nearby 3 cliffs bay has a multitude of shorter trad climbs.",
+      "geoLocation": [
+        51.5684,
+        -4.1226
       ]
     },
     {
@@ -3455,13 +6095,91 @@
       "techGrade": "3c",
       "length": 160,
       "pitches": 6,
+      "incline": "Slab",
       "approachTime": 70,
       "approachDifficulty": 1,
-      "disciplines": [],
+      "disciplines": [
+        "multi-pitch",
+        "trad"
+      ],
       "features": [],
       "character": [],
       "hazards": [],
-      "climatology": [],
+      "climatology": [
+        {
+          "month": 1,
+          "tempHigh": 5,
+          "tempLow": 0,
+          "rainyDays": 18
+        },
+        {
+          "month": 2,
+          "tempHigh": 5,
+          "tempLow": 0,
+          "rainyDays": 15
+        },
+        {
+          "month": 3,
+          "tempHigh": 7,
+          "tempLow": 1,
+          "rainyDays": 17
+        },
+        {
+          "month": 4,
+          "tempHigh": 9,
+          "tempLow": 2,
+          "rainyDays": 16
+        },
+        {
+          "month": 5,
+          "tempHigh": 12,
+          "tempLow": 4,
+          "rainyDays": 14
+        },
+        {
+          "month": 6,
+          "tempHigh": 15,
+          "tempLow": 7,
+          "rainyDays": 14
+        },
+        {
+          "month": 7,
+          "tempHigh": 16,
+          "tempLow": 9,
+          "rainyDays": 15
+        },
+        {
+          "month": 8,
+          "tempHigh": 16,
+          "tempLow": 9,
+          "rainyDays": 14
+        },
+        {
+          "month": 9,
+          "tempHigh": 14,
+          "tempLow": 7,
+          "rainyDays": 14
+        },
+        {
+          "month": 10,
+          "tempHigh": 10,
+          "tempLow": 5,
+          "rainyDays": 18
+        },
+        {
+          "month": 11,
+          "tempHigh": 7,
+          "tempLow": 2,
+          "rainyDays": 18
+        },
+        {
+          "month": 12,
+          "tempHigh": 5,
+          "tempLow": 0,
+          "rainyDays": 20
+        }
+      ],
+      "description": "Slieve Lamagan offers a great range of multi-pitch climbs that are typically lower difficulty. Route finding is not that easy once on the slab. Fortunately, there are many options for variation on or around the same grade, therefore getting lost isn’t a disaster. The Route FM takes a reasonably direct line up the slabs and exits the steeper n shaped headwall on the east side (right). The granite is mostly immaculate and solid, although run out in places, especially off route. It will dry quickly thanks to its exposure to sun and wind. Variations take a slightly harder exit out of the final steep headwall. The crux of the route is one hard move on the first steep section around half way up.",
       "geoLocation": [
         54.1606,
         -5.9614
@@ -3480,13 +6198,93 @@
       "techGrade": "4a",
       "length": 370,
       "pitches": 10,
+      "incline": "Vertical",
       "approachTime": 70,
       "approachDifficulty": 2,
-      "disciplines": [],
+      "disciplines": [
+        "multi-pitch",
+        "trad"
+      ],
       "features": [],
       "character": [],
-      "hazards": [],
-      "climatology": [],
+      "hazards": [
+        "traverse"
+      ],
+      "climatology": [
+        {
+          "month": 1,
+          "tempHigh": 5,
+          "tempLow": -6,
+          "rainyDays": 4
+        },
+        {
+          "month": 2,
+          "tempHigh": 8,
+          "tempLow": -3,
+          "rainyDays": 4
+        },
+        {
+          "month": 3,
+          "tempHigh": 14,
+          "tempLow": 1,
+          "rainyDays": 5
+        },
+        {
+          "month": 4,
+          "tempHigh": 18,
+          "tempLow": 4,
+          "rainyDays": 7
+        },
+        {
+          "month": 5,
+          "tempHigh": 22,
+          "tempLow": 8,
+          "rainyDays": 10
+        },
+        {
+          "month": 6,
+          "tempHigh": 26,
+          "tempLow": 12,
+          "rainyDays": 9
+        },
+        {
+          "month": 7,
+          "tempHigh": 28,
+          "tempLow": 14,
+          "rainyDays": 9
+        },
+        {
+          "month": 8,
+          "tempHigh": 26,
+          "tempLow": 14,
+          "rainyDays": 9
+        },
+        {
+          "month": 9,
+          "tempHigh": 18,
+          "tempLow": 10,
+          "rainyDays": 6
+        },
+        {
+          "month": 10,
+          "tempHigh": 18,
+          "tempLow": 5,
+          "rainyDays": 6
+        },
+        {
+          "month": 11,
+          "tempHigh": 10,
+          "tempLow": 0,
+          "rainyDays": 6
+        },
+        {
+          "month": 12,
+          "tempHigh": 6,
+          "tempLow": -5,
+          "rainyDays": 4
+        }
+      ],
+      "description": "The Route Via Maria offers an exceptional climb up a dramatic mountain face, finishing at an altitude of 2,950m. The climb is graded IV+ in UIAA grades which is roughly around Severe or Hard Severe in British grades. The route is consistent in difficulty until the last section near the summit. Many of the pitches are graded IV. The crux, whilst a little strenuous (IV+), is early in the route and more straightforward than some of the later sections. There are pitons in place thought-out the route and many of the belay points are bolted with a thick single cemented ring. However, taking a light rack with plenty of slings is essential. The route provides exceptional positions with glorious views out over the valleys with the Marmolada glacier visible to the south. The route has sustained interest with a mixture of climbing, mostly on good holds.",
       "geoLocation": [
         46.4991,
         11.808
@@ -3505,13 +6303,94 @@
       "techGrade": "4a",
       "length": 175,
       "pitches": 8,
+      "incline": "Vertical",
       "approachTime": 10,
       "approachDifficulty": 1,
-      "disciplines": [],
+      "disciplines": [
+        "multi-pitch",
+        "trad"
+      ],
       "features": [],
       "character": [],
-      "hazards": [],
-      "climatology": [],
+      "hazards": [
+        "abseil",
+        "polished"
+      ],
+      "climatology": [
+        {
+          "month": 1,
+          "tempHigh": 5,
+          "tempLow": -6,
+          "rainyDays": 4
+        },
+        {
+          "month": 2,
+          "tempHigh": 8,
+          "tempLow": -3,
+          "rainyDays": 4
+        },
+        {
+          "month": 3,
+          "tempHigh": 14,
+          "tempLow": 1,
+          "rainyDays": 5
+        },
+        {
+          "month": 4,
+          "tempHigh": 18,
+          "tempLow": 4,
+          "rainyDays": 7
+        },
+        {
+          "month": 5,
+          "tempHigh": 22,
+          "tempLow": 8,
+          "rainyDays": 10
+        },
+        {
+          "month": 6,
+          "tempHigh": 26,
+          "tempLow": 12,
+          "rainyDays": 9
+        },
+        {
+          "month": 7,
+          "tempHigh": 28,
+          "tempLow": 14,
+          "rainyDays": 9
+        },
+        {
+          "month": 8,
+          "tempHigh": 26,
+          "tempLow": 14,
+          "rainyDays": 9
+        },
+        {
+          "month": 9,
+          "tempHigh": 18,
+          "tempLow": 10,
+          "rainyDays": 6
+        },
+        {
+          "month": 10,
+          "tempHigh": 18,
+          "tempLow": 5,
+          "rainyDays": 6
+        },
+        {
+          "month": 11,
+          "tempHigh": 10,
+          "tempLow": 0,
+          "rainyDays": 6
+        },
+        {
+          "month": 12,
+          "tempHigh": 6,
+          "tempLow": -5,
+          "rainyDays": 4
+        }
+      ],
+      "description": "The Sella Towers are some of the most popular climbs in dolomites. The Towers offer great quality and variety of routes, as well as a short and simple approach. Via Steger is one the popular classic routes. Going at a grade of IV+ and around 175m of climbing with pleanty of extensions and variations possible, the climb won't disappoint. The crux is at the end of the route and is at least IV+, but well protected by pitons. Although the approach is short, the decent is considerably longer. The popularity has led to some polished rock in places, especially the top two pitches.",
       "geoLocation": [
         46.5091,
         11.7738
@@ -3530,13 +6409,91 @@
       "techGrade": "4c",
       "length": 400,
       "pitches": 10,
+      "incline": "Vertical",
       "approachTime": 60,
       "approachDifficulty": 2,
-      "disciplines": [],
+      "disciplines": [
+        "multi-pitch",
+        "trad"
+      ],
       "features": [],
       "character": [],
       "hazards": [],
-      "climatology": [],
+      "climatology": [
+        {
+          "month": 1,
+          "tempHigh": 14,
+          "tempLow": 9,
+          "rainyDays": 3
+        },
+        {
+          "month": 2,
+          "tempHigh": 14,
+          "tempLow": 9,
+          "rainyDays": 3
+        },
+        {
+          "month": 3,
+          "tempHigh": 16,
+          "tempLow": 11,
+          "rainyDays": 3
+        },
+        {
+          "month": 4,
+          "tempHigh": 17,
+          "tempLow": 13,
+          "rainyDays": 4
+        },
+        {
+          "month": 5,
+          "tempHigh": 20,
+          "tempLow": 16,
+          "rainyDays": 4
+        },
+        {
+          "month": 6,
+          "tempHigh": 24,
+          "tempLow": 20,
+          "rainyDays": 2
+        },
+        {
+          "month": 7,
+          "tempHigh": 27,
+          "tempLow": 23,
+          "rainyDays": 1
+        },
+        {
+          "month": 8,
+          "tempHigh": 27,
+          "tempLow": 23,
+          "rainyDays": 1
+        },
+        {
+          "month": 9,
+          "tempHigh": 25,
+          "tempLow": 21,
+          "rainyDays": 3
+        },
+        {
+          "month": 10,
+          "tempHigh": 22,
+          "tempLow": 18,
+          "rainyDays": 4
+        },
+        {
+          "month": 11,
+          "tempHigh": 18,
+          "tempLow": 13,
+          "rainyDays": 4
+        },
+        {
+          "month": 12,
+          "tempHigh": 15,
+          "tempLow": 11,
+          "rainyDays": 4
+        }
+      ],
+      "description": "The route Epsilon Central on the mountain Puig Campana is truly a world class climb. The rock is solid. The pitches have variety and are all quite consistent in grade. It takes a beautiful line up one of the most prominent features on the face. The views over Finestrat and out to the sea are panoramic, especially on the upper ridge. The weather can be exceptionally good in winter, with sun on most of the route most of the day. There is also very little polish despite being a very popular limestone route. The popularity of the climb is the routes only downside, even an early morning “alpine” head torch start can have the climber following one party while being tailed by another. This should be seen as an endorsement of the quality of the route as much as a downside. The descent is a bit involved requiring some steep scrambling helpfully protected by metal cables. The route described here is the more direct start which has better rock climbing for the first 100m.",
       "geoLocation": [
         38.5891,
         -0.2065
@@ -3555,13 +6512,94 @@
       "techGrade": "5b",
       "length": 113,
       "pitches": 6,
+      "incline": "Slab",
       "approachTime": 15,
       "approachDifficulty": 1,
-      "disciplines": [],
+      "disciplines": [
+        "multi-pitch",
+        "trad"
+      ],
       "features": [],
       "character": [],
-      "hazards": [],
-      "climatology": [],
+      "hazards": [
+        "traverse",
+        "grassLedges"
+      ],
+      "climatology": [
+        {
+          "month": 1,
+          "tempHigh": 8,
+          "tempLow": 3,
+          "rainyDays": 9
+        },
+        {
+          "month": 2,
+          "tempHigh": 8,
+          "tempLow": 2,
+          "rainyDays": 9
+        },
+        {
+          "month": 3,
+          "tempHigh": 9,
+          "tempLow": 3,
+          "rainyDays": 8
+        },
+        {
+          "month": 4,
+          "tempHigh": 12,
+          "tempLow": 4,
+          "rainyDays": 9
+        },
+        {
+          "month": 5,
+          "tempHigh": 15,
+          "tempLow": 7,
+          "rainyDays": 11
+        },
+        {
+          "month": 6,
+          "tempHigh": 17,
+          "tempLow": 10,
+          "rainyDays": 9
+        },
+        {
+          "month": 7,
+          "tempHigh": 19,
+          "tempLow": 12,
+          "rainyDays": 9
+        },
+        {
+          "month": 8,
+          "tempHigh": 18,
+          "tempLow": 12,
+          "rainyDays": 9
+        },
+        {
+          "month": 9,
+          "tempHigh": 17,
+          "tempLow": 10,
+          "rainyDays": 8
+        },
+        {
+          "month": 10,
+          "tempHigh": 13,
+          "tempLow": 8,
+          "rainyDays": 11
+        },
+        {
+          "month": 11,
+          "tempHigh": 10,
+          "tempLow": 5,
+          "rainyDays": 14
+        },
+        {
+          "month": 12,
+          "tempHigh": 8,
+          "tempLow": 3,
+          "rainyDays": 12
+        }
+      ],
+      "description": "The west face of the Garret Pit, in Dinorwic Quarry is more multiple pitches than true multi-pitch rock climbing. Nevertheless, it makes for an exceptional adventure offering over 100 meters of climbing on immaculate slate with a variety of grades to choose from. The trad climbs in the quarry are skewed towards the mid to higher end of the traditional climbing scale, with HVS & E1 needed to get the most out of the routes. The sequence described here links up a number of popular high-quality routes, starting with Looning the Tube and finishing with Act Naturally on the Skyline Buttress. The Garret area is commonly misnamed Australia by climbers. In terms of climbing style, there is some technical variety in the routes, but small edges, crimps and precise footwork are a regular theme on most of the terraces. There are two good sport routes included in the link up. The trad lines are all easy to protect with the exception of the M.I.L. Arete on pitch 4, which is short but very bold. Parking is good and offers easy and quick access making this a viable option to do in less than half a day.",
       "geoLocation": [
         53.1249,
         -4.0998
@@ -3573,20 +6611,100 @@
       "name": "Cneifion Arete",
       "status": "draft",
       "source": "multi-pitch.com",
-      "dataGrade": 1,
-      "originalGrade": "Diff",
+      "dataGrade": null,
+      "originalGrade": "Diff 3a",
       "gradeSys": "BAS",
       "tradGrade": "Diff",
-      "techGrade": "3",
+      "techGrade": "3a",
       "length": 120,
       "pitches": 4,
+      "incline": "Slab",
       "approachTime": 50,
       "approachDifficulty": 1,
-      "disciplines": [],
+      "disciplines": [
+        "multi-pitch",
+        "trad"
+      ],
       "features": [],
       "character": [],
-      "hazards": [],
-      "climatology": [],
+      "hazards": [
+        "polished"
+      ],
+      "climatology": [
+        {
+          "month": 1,
+          "tempHigh": 8,
+          "tempLow": 3,
+          "rainyDays": 13
+        },
+        {
+          "month": 2,
+          "tempHigh": 8,
+          "tempLow": 2,
+          "rainyDays": 10
+        },
+        {
+          "month": 3,
+          "tempHigh": 9,
+          "tempLow": 3,
+          "rainyDays": 11
+        },
+        {
+          "month": 4,
+          "tempHigh": 12,
+          "tempLow": 4,
+          "rainyDays": 9
+        },
+        {
+          "month": 5,
+          "tempHigh": 15,
+          "tempLow": 7,
+          "rainyDays": 8
+        },
+        {
+          "month": 6,
+          "tempHigh": 17,
+          "tempLow": 10,
+          "rainyDays": 8
+        },
+        {
+          "month": 7,
+          "tempHigh": 19,
+          "tempLow": 12,
+          "rainyDays": 8
+        },
+        {
+          "month": 8,
+          "tempHigh": 18,
+          "tempLow": 12,
+          "rainyDays": 9
+        },
+        {
+          "month": 9,
+          "tempHigh": 17,
+          "tempLow": 10,
+          "rainyDays": 10
+        },
+        {
+          "month": 10,
+          "tempHigh": 13,
+          "tempLow": 8,
+          "rainyDays": 14
+        },
+        {
+          "month": 11,
+          "tempHigh": 10,
+          "tempLow": 5,
+          "rainyDays": 14
+        },
+        {
+          "month": 12,
+          "tempHigh": 8,
+          "tempLow": 3,
+          "rainyDays": 14
+        }
+      ],
+      "description": "The Cneifion Arete is an imposing looking ridge sat high on mountainside of Cwm Cneifion, overlooking the lake of Lynn Idwal. Despite its looks, this route is actually at the intersection between scrambling and rock climbing, a sort of gateway into the world of multi-pitch mountaineering. With a few proper climbing moves to get off the ground, a long and easy climb / grade 3 scramble follows. The route takes the right side of the arete (edge) for around 120 meters to the top. From the ground it looks like challenging terrain, but once past the first 20 or so meters, the ridge itself offers big holds and a gentle angle with the ability to rest at more or less any point. That said the exposure is fantastic and the route offers enjoyable moves along the way. Protection is also plentiful and the route happily takes large slings and nuts throughout. The only downside is the routes popularity, which can leave climbing parties queuing and has led to significant polish in places.",
       "geoLocation": [
         53.1087,
         -4.0201
@@ -3600,18 +6718,101 @@
       "source": "multi-pitch.com",
       "dataGrade": 5,
       "originalGrade": "V",
-      "gradeSys": "UIAA",
+      "gradeSys": "BAS",
       "tradGrade": "VS",
       "techGrade": "5a",
       "length": 205,
       "pitches": 7,
+      "incline": "Slab & Vertical",
       "approachTime": 45,
       "approachDifficulty": 1,
-      "disciplines": [],
+      "disciplines": [
+        "multi-pitch",
+        "trad"
+      ],
       "features": [],
       "character": [],
-      "hazards": [],
-      "climatology": [],
+      "hazards": [
+        "abseil",
+        "traverse",
+        "loose",
+        "grassLedges"
+      ],
+      "climatology": [
+        {
+          "month": 1,
+          "tempHigh": 15,
+          "tempLow": 6,
+          "rainyDays": 4
+        },
+        {
+          "month": 2,
+          "tempHigh": 16,
+          "tempLow": 6,
+          "rainyDays": 3
+        },
+        {
+          "month": 3,
+          "tempHigh": 18,
+          "tempLow": 8,
+          "rainyDays": 4
+        },
+        {
+          "month": 4,
+          "tempHigh": 19,
+          "tempLow": 10,
+          "rainyDays": 4
+        },
+        {
+          "month": 5,
+          "tempHigh": 23,
+          "tempLow": 13,
+          "rainyDays": 4
+        },
+        {
+          "month": 6,
+          "tempHigh": 27,
+          "tempLow": 17,
+          "rainyDays": 2
+        },
+        {
+          "month": 7,
+          "tempHigh": 29,
+          "tempLow": 20,
+          "rainyDays": 1
+        },
+        {
+          "month": 8,
+          "tempHigh": 29,
+          "tempLow": 21,
+          "rainyDays": 1
+        },
+        {
+          "month": 9,
+          "tempHigh": 27,
+          "tempLow": 18,
+          "rainyDays": 3
+        },
+        {
+          "month": 10,
+          "tempHigh": 24,
+          "tempLow": 14,
+          "rainyDays": 4
+        },
+        {
+          "month": 11,
+          "tempHigh": 18,
+          "tempLow": 9,
+          "rainyDays": 4
+        },
+        {
+          "month": 12,
+          "tempHigh": 16,
+          "tempLow": 7,
+          "rainyDays": 4
+        }
+      ],
+      "description": "A unique mountain adventure that can be described as both incredible and, in places harrowing. Set deep in the mountains of Costa Blanca around the cliffs of Pen y Roc, the Two Brothers climb or Dos Hermanos offer solitude and isolation away from the busy classic routes on Penon Ifatch and Puig Campania. There are breathtaking views over stunning mountain scenery, looking out to the sea, with varied and interesting climbing. The route itself climbs two isolated towers, with the option of adding a wild tyrolean traverse and an additional 100m of scrambling up a ridge to the summit of la Capella. The full link up was first climbed by Roland Edwards in 2003. Edwards has put up numerous first accents in the area. The description states: 'This route must rate as one of the best, at its grade, in the area for mountain rock climbing.' It has all the hallmarks of an amazing adventure, but it's let down by the first tower being a bit overgrown (in 2025) and the second tower having considerable loose rock. Negatives aside the route offers some fantastic moves with many pitches at or close to VS in grade. There are slabs, aretes, cracks and even some steep climbing on good handholds. For an experienced party it offers an adventure in a wonderful isolated setting.",
       "geoLocation": [
         38.635,
         -0.1822
@@ -3630,13 +6831,95 @@
       "techGrade": "4c",
       "length": 220,
       "pitches": 7,
+      "incline": "Slab & Vertical",
       "approachTime": 20,
       "approachDifficulty": 1,
-      "disciplines": [],
+      "disciplines": [
+        "multi-pitch",
+        "trad"
+      ],
       "features": [],
       "character": [],
-      "hazards": [],
-      "climatology": [],
+      "hazards": [
+        "traverse",
+        "polished",
+        "grassLedges"
+      ],
+      "climatology": [
+        {
+          "month": 1,
+          "tempHigh": 15,
+          "tempLow": 6,
+          "rainyDays": 4
+        },
+        {
+          "month": 2,
+          "tempHigh": 16,
+          "tempLow": 6,
+          "rainyDays": 3
+        },
+        {
+          "month": 3,
+          "tempHigh": 18,
+          "tempLow": 8,
+          "rainyDays": 4
+        },
+        {
+          "month": 4,
+          "tempHigh": 19,
+          "tempLow": 10,
+          "rainyDays": 4
+        },
+        {
+          "month": 5,
+          "tempHigh": 23,
+          "tempLow": 13,
+          "rainyDays": 4
+        },
+        {
+          "month": 6,
+          "tempHigh": 27,
+          "tempLow": 17,
+          "rainyDays": 2
+        },
+        {
+          "month": 7,
+          "tempHigh": 29,
+          "tempLow": 20,
+          "rainyDays": 1
+        },
+        {
+          "month": 8,
+          "tempHigh": 29,
+          "tempLow": 21,
+          "rainyDays": 1
+        },
+        {
+          "month": 9,
+          "tempHigh": 27,
+          "tempLow": 18,
+          "rainyDays": 3
+        },
+        {
+          "month": 10,
+          "tempHigh": 24,
+          "tempLow": 14,
+          "rainyDays": 4
+        },
+        {
+          "month": 11,
+          "tempHigh": 18,
+          "tempLow": 9,
+          "rainyDays": 4
+        },
+        {
+          "month": 12,
+          "tempHigh": 16,
+          "tempLow": 7,
+          "rainyDays": 4
+        }
+      ],
+      "description": "Via Pany was the first climbing route established up Penon Ifach (in 1955) and is, to this day, the easiest climbing route to the summit. It sits on the North face so it is in shade until late in the day. The North face also has a climbing ban due to nesting birds in April, May and June. The route is around the UIAA grade IV+. Roughy hard serve but often graded very severe (VS) in UK guides. The route has some great pitches with a variety of different styles needed making it a very accessible and very enjoyable route. Whilst it’s still a serious climb it's much more forgiving than the south face routes like Diedro UBSA because Via Pany has less sun, less loose rock, less polish and less sustained climbing, it is nevertheless, very worthwhile with incredible views looking back over Calpe throughout the route.",
       "geoLocation": [
         38.6355,
         0.0746
@@ -3649,22 +6932,211 @@
       "status": "draft",
       "source": "multi-pitch.com",
       "dataGrade": 3,
-      "originalGrade": "Severe 3c",
+      "originalGrade": "Severe",
       "gradeSys": "BAS",
-      "tradGrade": "Severe",
+      "tradGrade": "S",
       "techGrade": "3c",
       "length": 71,
       "pitches": 3,
+      "incline": "Vertical",
       "approachTime": 75,
       "approachDifficulty": 1,
-      "disciplines": [],
+      "disciplines": [
+        "multi-pitch",
+        "trad"
+      ],
       "features": [],
       "character": [],
-      "hazards": [],
-      "climatology": [],
+      "hazards": [
+        "traverse",
+        "seepage"
+      ],
+      "climatology": [
+        {
+          "month": 1,
+          "tempHigh": 5,
+          "tempLow": 0,
+          "rainyDays": 18
+        },
+        {
+          "month": 2,
+          "tempHigh": 5,
+          "tempLow": 0,
+          "rainyDays": 15
+        },
+        {
+          "month": 3,
+          "tempHigh": 7,
+          "tempLow": 1,
+          "rainyDays": 17
+        },
+        {
+          "month": 4,
+          "tempHigh": 9,
+          "tempLow": 2,
+          "rainyDays": 16
+        },
+        {
+          "month": 5,
+          "tempHigh": 12,
+          "tempLow": 4,
+          "rainyDays": 14
+        },
+        {
+          "month": 6,
+          "tempHigh": 15,
+          "tempLow": 7,
+          "rainyDays": 14
+        },
+        {
+          "month": 7,
+          "tempHigh": 16,
+          "tempLow": 9,
+          "rainyDays": 15
+        },
+        {
+          "month": 8,
+          "tempHigh": 16,
+          "tempLow": 9,
+          "rainyDays": 14
+        },
+        {
+          "month": 9,
+          "tempHigh": 14,
+          "tempLow": 7,
+          "rainyDays": 14
+        },
+        {
+          "month": 10,
+          "tempHigh": 10,
+          "tempLow": 5,
+          "rainyDays": 18
+        },
+        {
+          "month": 11,
+          "tempHigh": 7,
+          "tempLow": 2,
+          "rainyDays": 18
+        },
+        {
+          "month": 12,
+          "tempHigh": 5,
+          "tempLow": 0,
+          "rainyDays": 20
+        }
+      ],
+      "description": "The Sheugh, pronounced shuck, is the only climb in the Mourne Mountains guidebook to be given 4 stars. The route has a fearsome reputation, described in the guidebook as being on the humorous side of character building. It was first climbed in 1954, and is full of old school climbing moves including quite a lot of whole body chimney jamming. It offers a unique adventure, with quality climbing almost all the way, with just a few caveats. Firstly it needs an extended dry period, no easy ask in the Mournes, or the route will be wet and considerably harder. Protection is mostly okay with a full rack, but you will need a head torch to help find placements. The rock is also mossy and slightly crumbly in places. It’s fair to assume the 4th star acts as a kind of Siren call, to draw in unsuspecting climbers, who may well end up stuck on the rocks. It is nevertheless a very worthwhile route when in condition, offering a truly unique adventure in an amazing atmosphere that would be hard to find anywhere else. The Sheugh is a memorable climb though the central chimney of Buzzards Roost. Sheugh means a furrow, but can be colloquially used (as it is here) to mean the space between the buttocks. Buzzards Roost is named after the shape of the rock formation as seen in the image below.",
       "geoLocation": [
         54.1568,
         -5.9794
+      ]
+    },
+    {
+      "id": "mp-5",
+      "area": "tormore-group",
+      "name": "Cnoc Na Mara",
+      "status": "draft",
+      "source": "multi-pitch.com",
+      "dataGrade": 5,
+      "originalGrade": "VS 4b",
+      "gradeSys": "BAS",
+      "tradGrade": "VS",
+      "techGrade": "4b",
+      "length": 152,
+      "pitches": 4,
+      "incline": "Slab",
+      "approachTime": 90,
+      "approachDifficulty": 3,
+      "disciplines": [
+        "multi-pitch",
+        "trad"
+      ],
+      "features": [],
+      "character": [],
+      "hazards": [
+        "abseil",
+        "boat",
+        "tidal",
+        "loose"
+      ],
+      "climatology": [
+        {
+          "month": 1,
+          "tempHigh": 8,
+          "tempLow": 2,
+          "rainyDays": 19
+        },
+        {
+          "month": 2,
+          "tempHigh": 8,
+          "tempLow": 2,
+          "rainyDays": 15
+        },
+        {
+          "month": 3,
+          "tempHigh": 10,
+          "tempLow": 3,
+          "rainyDays": 16
+        },
+        {
+          "month": 4,
+          "tempHigh": 12,
+          "tempLow": 5,
+          "rainyDays": 13
+        },
+        {
+          "month": 5,
+          "tempHigh": 15,
+          "tempLow": 7,
+          "rainyDays": 13
+        },
+        {
+          "month": 6,
+          "tempHigh": 17,
+          "tempLow": 10,
+          "rainyDays": 13
+        },
+        {
+          "month": 7,
+          "tempHigh": 18,
+          "tempLow": 12,
+          "rainyDays": 15
+        },
+        {
+          "month": 8,
+          "tempHigh": 18,
+          "tempLow": 12,
+          "rainyDays": 16
+        },
+        {
+          "month": 9,
+          "tempHigh": 16,
+          "tempLow": 10,
+          "rainyDays": 15
+        },
+        {
+          "month": 10,
+          "tempHigh": 13,
+          "tempLow": 8,
+          "rainyDays": 17
+        },
+        {
+          "month": 11,
+          "tempHigh": 10,
+          "tempLow": 5,
+          "rainyDays": 19
+        },
+        {
+          "month": 12,
+          "tempHigh": 9,
+          "tempLow": 3,
+          "rainyDays": 18
+        }
+      ],
+      "description": "Whilst it might seem like an amenable grade and reasonable length, this is a serious adventure on rock that is loose in places with limited reliable protection in places. Expect a long day our for this adventure! The route takes the landward facing ridge to the summit. You will need a small boat or canoe to get to the base and ideally a very calm sea in order to make a reasonably safe crossing. Expect a complicated descent requiring some down climbing and abseiling.",
+      "geoLocation": [
+        54.7612,
+        -8.6916
       ]
     },
     {
@@ -3680,13 +7152,95 @@
       "techGrade": "4c",
       "length": 90,
       "pitches": 4,
+      "incline": "Vertical",
       "approachTime": 15,
       "approachDifficulty": 1,
-      "disciplines": [],
+      "disciplines": [
+        "multi-pitch",
+        "trad"
+      ],
       "features": [],
       "character": [],
-      "hazards": [],
-      "climatology": [],
+      "hazards": [
+        "traverse",
+        "seepage",
+        "grassLedges"
+      ],
+      "climatology": [
+        {
+          "month": 1,
+          "tempHigh": 5,
+          "tempLow": 0,
+          "rainyDays": 18
+        },
+        {
+          "month": 2,
+          "tempHigh": 5,
+          "tempLow": 0,
+          "rainyDays": 15
+        },
+        {
+          "month": 3,
+          "tempHigh": 7,
+          "tempLow": 1,
+          "rainyDays": 17
+        },
+        {
+          "month": 4,
+          "tempHigh": 9,
+          "tempLow": 2,
+          "rainyDays": 16
+        },
+        {
+          "month": 5,
+          "tempHigh": 12,
+          "tempLow": 4,
+          "rainyDays": 14
+        },
+        {
+          "month": 6,
+          "tempHigh": 15,
+          "tempLow": 7,
+          "rainyDays": 14
+        },
+        {
+          "month": 7,
+          "tempHigh": 16,
+          "tempLow": 9,
+          "rainyDays": 15
+        },
+        {
+          "month": 8,
+          "tempHigh": 16,
+          "tempLow": 9,
+          "rainyDays": 14
+        },
+        {
+          "month": 9,
+          "tempHigh": 14,
+          "tempLow": 7,
+          "rainyDays": 14
+        },
+        {
+          "month": 10,
+          "tempHigh": 10,
+          "tempLow": 5,
+          "rainyDays": 18
+        },
+        {
+          "month": 11,
+          "tempHigh": 7,
+          "tempLow": 2,
+          "rainyDays": 18
+        },
+        {
+          "month": 12,
+          "tempHigh": 5,
+          "tempLow": 0,
+          "rainyDays": 20
+        }
+      ],
+      "description": "Virgo is a brilliant 3 star Mourne multi-pitch classic. It has a short walk in and offers varied but quite consistent climbing at around VS grade all the way. There are some technical moves early on and some steep climbing on the last pitch. It has decent belay ledges at all points. Protection is mostly very good, with a slightly runout rising traverse in the middle on Pitch 3 (as described below). Pigeon Rock is a popular destination by Moune standards, but the route doesn't get much traffic in absolute terms so can need cleaning. Descent is by crossing a fence and walking off steeply to the south / left side of the crag (when facing it from below). Overall a very worthwhile route.",
       "geoLocation": [
         54.1447,
         -6.0628
@@ -3705,13 +7259,94 @@
       "techGrade": "4c",
       "length": 120,
       "pitches": 4,
+      "incline": "Vertical",
       "approachTime": 10,
       "approachDifficulty": 1,
-      "disciplines": [],
+      "disciplines": [
+        "multi-pitch",
+        "trad"
+      ],
       "features": [],
       "character": [],
-      "hazards": [],
-      "climatology": [],
+      "hazards": [
+        "abseil",
+        "traverse"
+      ],
+      "climatology": [
+        {
+          "month": 1,
+          "tempHigh": 15,
+          "tempLow": 6,
+          "rainyDays": 4
+        },
+        {
+          "month": 2,
+          "tempHigh": 16,
+          "tempLow": 6,
+          "rainyDays": 3
+        },
+        {
+          "month": 3,
+          "tempHigh": 18,
+          "tempLow": 8,
+          "rainyDays": 4
+        },
+        {
+          "month": 4,
+          "tempHigh": 19,
+          "tempLow": 10,
+          "rainyDays": 4
+        },
+        {
+          "month": 5,
+          "tempHigh": 23,
+          "tempLow": 13,
+          "rainyDays": 4
+        },
+        {
+          "month": 6,
+          "tempHigh": 27,
+          "tempLow": 17,
+          "rainyDays": 2
+        },
+        {
+          "month": 7,
+          "tempHigh": 29,
+          "tempLow": 20,
+          "rainyDays": 1
+        },
+        {
+          "month": 8,
+          "tempHigh": 29,
+          "tempLow": 21,
+          "rainyDays": 1
+        },
+        {
+          "month": 9,
+          "tempHigh": 27,
+          "tempLow": 18,
+          "rainyDays": 3
+        },
+        {
+          "month": 10,
+          "tempHigh": 24,
+          "tempLow": 14,
+          "rainyDays": 4
+        },
+        {
+          "month": 11,
+          "tempHigh": 18,
+          "tempLow": 9,
+          "rainyDays": 4
+        },
+        {
+          "month": 12,
+          "tempHigh": 16,
+          "tempLow": 7,
+          "rainyDays": 4
+        }
+      ],
+      "description": "The Val de Guadar, often called echo valley by the British, offers a great range of climbing from easy to hard, with plenty of multi-pitch options up to just over 100m. The climbs described here on the el Castellet peak have a very short approach, typically 5 to 10mins, so the routes offer good half day options, or could be combined to make a great long day. Rincon de placa (plate corner) offers 4 pitches of solid grade V climbing or VS in British grades. The first pitch gets the highest technical grade in the new Spanish guide escaldes en Alacante, but all four pitches have engaging sections. The gear is also good, with the last pitch perhaps requiring a little more thought to keep it well protected. The route has been almost entirely de-bolted so a full rack is needed. Futher left the routes scorpion and wasp offer less balanced but still fun outings overall. As their names suggest, they have a sting in the tail with the last pitch having noticeably harder climbing.",
       "geoLocation": [
         38.6275,
         -0.1563
@@ -3730,13 +7365,93 @@
       "techGrade": "4a",
       "length": 240,
       "pitches": 9,
+      "incline": "Slab",
       "approachTime": 65,
-      "approachDifficulty": 2,
-      "disciplines": [],
+      "approachDifficulty": 1,
+      "disciplines": [
+        "multi-pitch",
+        "trad"
+      ],
       "features": [],
       "character": [],
-      "hazards": [],
-      "climatology": [],
+      "hazards": [
+        "polished"
+      ],
+      "climatology": [
+        {
+          "month": 1,
+          "tempHigh": 8,
+          "tempLow": 3,
+          "rainyDays": 13
+        },
+        {
+          "month": 2,
+          "tempHigh": 8,
+          "tempLow": 2,
+          "rainyDays": 10
+        },
+        {
+          "month": 3,
+          "tempHigh": 9,
+          "tempLow": 3,
+          "rainyDays": 11
+        },
+        {
+          "month": 4,
+          "tempHigh": 12,
+          "tempLow": 4,
+          "rainyDays": 9
+        },
+        {
+          "month": 5,
+          "tempHigh": 15,
+          "tempLow": 7,
+          "rainyDays": 8
+        },
+        {
+          "month": 6,
+          "tempHigh": 17,
+          "tempLow": 10,
+          "rainyDays": 8
+        },
+        {
+          "month": 7,
+          "tempHigh": 19,
+          "tempLow": 12,
+          "rainyDays": 8
+        },
+        {
+          "month": 8,
+          "tempHigh": 18,
+          "tempLow": 12,
+          "rainyDays": 9
+        },
+        {
+          "month": 9,
+          "tempHigh": 17,
+          "tempLow": 10,
+          "rainyDays": 10
+        },
+        {
+          "month": 10,
+          "tempHigh": 13,
+          "tempLow": 8,
+          "rainyDays": 14
+        },
+        {
+          "month": 11,
+          "tempHigh": 10,
+          "tempLow": 5,
+          "rainyDays": 14
+        },
+        {
+          "month": 12,
+          "tempHigh": 8,
+          "tempLow": 3,
+          "rainyDays": 14
+        }
+      ],
+      "description": "The Grooved Arete climb on Tryfan is one of the most popular multi-pitch climbs in the UK. Graded HVD or Hard Very Difficult, it’s got some serious british 4a moves, sometimes made harder by the increasingly polished rock. This site tends to avoid the grade HVD, opting to downgrade to VDiff or up to Severe. In this instance Severe is the better grade. Grooved Arete is a lovely outing and is described in The Long Routes book, as one of the best of Snowdonia's classic mountaineering rock climbs. Certainly it’s a quality route, but less popular locations like Lliwedd, offer routes just as good without the crowds. Polish aside, the Grooved Arete climb on Tryfan has an interesting mix of climbing, with enough gear options to feel comfortable. The hike in and hike / scramble out are reasonably lengthy and steep. Typically taking more than an hour. The Knights slab was the traditional crux when done in hobnailed boots, but with rock shoes pitches 1, 6 and 8 all offer comparably tricky moves.",
       "geoLocation": [
         53.1156,
         -3.9947
@@ -3755,13 +7470,94 @@
       "techGrade": "4b",
       "length": 340,
       "pitches": 9,
-      "approachTime": 45,
+      "incline": "Slab",
+      "approachTime": 40,
       "approachDifficulty": 1,
-      "disciplines": [],
+      "disciplines": [
+        "multi-pitch",
+        "trad"
+      ],
       "features": [],
       "character": [],
-      "hazards": [],
-      "climatology": [],
+      "hazards": [
+        "abseil",
+        "traverse"
+      ],
+      "climatology": [
+        {
+          "month": 1,
+          "tempHigh": 15,
+          "tempLow": 6,
+          "rainyDays": 4
+        },
+        {
+          "month": 2,
+          "tempHigh": 16,
+          "tempLow": 6,
+          "rainyDays": 3
+        },
+        {
+          "month": 3,
+          "tempHigh": 18,
+          "tempLow": 8,
+          "rainyDays": 4
+        },
+        {
+          "month": 4,
+          "tempHigh": 19,
+          "tempLow": 10,
+          "rainyDays": 4
+        },
+        {
+          "month": 5,
+          "tempHigh": 23,
+          "tempLow": 13,
+          "rainyDays": 4
+        },
+        {
+          "month": 6,
+          "tempHigh": 27,
+          "tempLow": 17,
+          "rainyDays": 2
+        },
+        {
+          "month": 7,
+          "tempHigh": 29,
+          "tempLow": 20,
+          "rainyDays": 1
+        },
+        {
+          "month": 8,
+          "tempHigh": 29,
+          "tempLow": 21,
+          "rainyDays": 1
+        },
+        {
+          "month": 9,
+          "tempHigh": 27,
+          "tempLow": 18,
+          "rainyDays": 3
+        },
+        {
+          "month": 10,
+          "tempHigh": 24,
+          "tempLow": 14,
+          "rainyDays": 4
+        },
+        {
+          "month": 11,
+          "tempHigh": 18,
+          "tempLow": 9,
+          "rainyDays": 4
+        },
+        {
+          "month": 12,
+          "tempHigh": 16,
+          "tempLow": 7,
+          "rainyDays": 4
+        }
+      ],
+      "description": "Overall Aristotles (spelled Arestotles locally) is a beautiful adventure on Puig Campana, arguably one of the best multi-pitch climbing locations in Europe for long, low to mid grade trad climbs. This route weaves a reasonably easy line up the impressive western arete to the top of the aguja encantada or enchanted needle. Referred to as Arista Aristóteles or Aristotle's edge, the route can be done in as few as 7 pitches or as many as 13 if staying in communication range is important to the party. Longer pitches will make it more enjoyable and faster. There is little fixed gear on the route, some bolted stances and some old pitons as well as a number of fixed threads. However a full rack is recommended as many of the threads and pitons are looking tired in 2026. Finger tape is also handy, because the sharp limestone will almost certainly draw blood at some point(s). The climbing only has two pitches graded V and the harder sections on these are short. The route ends with a short 10m then longer 60m abseil or the pepsi crest offers a 150m continuation to a different abseil finish from the mediterranean pillar. It’s hard not to compare the route to Espolon Central nearby. Aristotle's is much less consistent in grade and although some guides give it the Very Severe grade, it’s probably an easier undertaking overall, because many pitches have little difficulty. That said, routefinding is more complex on Aristotels.",
       "geoLocation": [
         38.5891,
         -0.2077
@@ -3774,22 +7570,518 @@
       "status": "draft",
       "source": "multi-pitch.com",
       "dataGrade": 5,
-      "originalGrade": "VS 4c",
+      "originalGrade": "VS 4C",
       "gradeSys": "BAS",
       "tradGrade": "VS",
       "techGrade": "4c",
       "length": 56,
       "pitches": 3,
+      "incline": "Slab",
       "approachTime": 70,
       "approachDifficulty": 2,
-      "disciplines": [],
+      "disciplines": [
+        "multi-pitch",
+        "trad"
+      ],
       "features": [],
       "character": [],
-      "hazards": [],
-      "climatology": [],
+      "hazards": [
+        "abseil",
+        "seepage",
+        "grassLedges"
+      ],
+      "climatology": [
+        {
+          "month": 1,
+          "tempHigh": 5,
+          "tempLow": 0,
+          "rainyDays": 18
+        },
+        {
+          "month": 2,
+          "tempHigh": 5,
+          "tempLow": 0,
+          "rainyDays": 15
+        },
+        {
+          "month": 3,
+          "tempHigh": 7,
+          "tempLow": 1,
+          "rainyDays": 17
+        },
+        {
+          "month": 4,
+          "tempHigh": 9,
+          "tempLow": 2,
+          "rainyDays": 16
+        },
+        {
+          "month": 5,
+          "tempHigh": 12,
+          "tempLow": 4,
+          "rainyDays": 14
+        },
+        {
+          "month": 6,
+          "tempHigh": 15,
+          "tempLow": 7,
+          "rainyDays": 14
+        },
+        {
+          "month": 7,
+          "tempHigh": 16,
+          "tempLow": 9,
+          "rainyDays": 15
+        },
+        {
+          "month": 8,
+          "tempHigh": 16,
+          "tempLow": 9,
+          "rainyDays": 14
+        },
+        {
+          "month": 9,
+          "tempHigh": 14,
+          "tempLow": 7,
+          "rainyDays": 14
+        },
+        {
+          "month": 10,
+          "tempHigh": 10,
+          "tempLow": 5,
+          "rainyDays": 18
+        },
+        {
+          "month": 11,
+          "tempHigh": 7,
+          "tempLow": 2,
+          "rainyDays": 18
+        },
+        {
+          "month": 12,
+          "tempHigh": 5,
+          "tempLow": 0,
+          "rainyDays": 20
+        }
+      ],
+      "description": "Some brilliant climbing over 3 pitches, set high on eagle mountain, this old 1964 route is undeservingly neglected. The route has delicate slabs, steep moves to pass bulges, incredible exposure, a great corner crack (off width in places), and mostly good protection (the second pitch needs a big cam early on). The route is graded VS, but from the 1960’s. It's probably more like HVS compared to other Mournes climbs. There are some caveats with the route which means it isn’t as accessible as other Mourne multi-pitch. The final part of the walk-in is very steep, and the terrain is tricky. The second and third pitches require a longer dry period (perhaps a week) or they will be wet (still climbable though).",
       "geoLocation": [
         54.1348,
         -6.0894
+      ]
+    },
+    {
+      "id": "mp-6",
+      "area": "sass-pordoi",
+      "name": "Fedele",
+      "status": "draft",
+      "source": "multi-pitch.com",
+      "dataGrade": 4,
+      "originalGrade": "IV+",
+      "gradeSys": "UIAA",
+      "tradGrade": "HS",
+      "techGrade": "4a",
+      "length": 555,
+      "pitches": 16,
+      "incline": "Vertical",
+      "approachTime": 45,
+      "approachDifficulty": 2,
+      "disciplines": [
+        "multi-pitch",
+        "trad"
+      ],
+      "features": [],
+      "character": [],
+      "hazards": [],
+      "climatology": [
+        {
+          "month": 1,
+          "tempHigh": 5,
+          "tempLow": -6,
+          "rainyDays": 4
+        },
+        {
+          "month": 2,
+          "tempHigh": 8,
+          "tempLow": -3,
+          "rainyDays": 4
+        },
+        {
+          "month": 3,
+          "tempHigh": 14,
+          "tempLow": 1,
+          "rainyDays": 5
+        },
+        {
+          "month": 4,
+          "tempHigh": 18,
+          "tempLow": 4,
+          "rainyDays": 7
+        },
+        {
+          "month": 5,
+          "tempHigh": 22,
+          "tempLow": 8,
+          "rainyDays": 10
+        },
+        {
+          "month": 6,
+          "tempHigh": 26,
+          "tempLow": 12,
+          "rainyDays": 9
+        },
+        {
+          "month": 7,
+          "tempHigh": 28,
+          "tempLow": 14,
+          "rainyDays": 9
+        },
+        {
+          "month": 8,
+          "tempHigh": 26,
+          "tempLow": 14,
+          "rainyDays": 9
+        },
+        {
+          "month": 9,
+          "tempHigh": 18,
+          "tempLow": 10,
+          "rainyDays": 6
+        },
+        {
+          "month": 10,
+          "tempHigh": 18,
+          "tempLow": 5,
+          "rainyDays": 6
+        },
+        {
+          "month": 11,
+          "tempHigh": 10,
+          "tempLow": 0,
+          "rainyDays": 6
+        },
+        {
+          "month": 12,
+          "tempHigh": 6,
+          "tempLow": -5,
+          "rainyDays": 4
+        }
+      ],
+      "description": "A superb and impressive route, often seen as the best climbs of its grade (UIAA IV+) in the Dolomites. The climb weaves its way along the edges of the large black water steak that dominates the face. This water that comes heavy in wetter months, has shaped the rock in to lots of clean jugs making the accent surprisingly easy for the steep face. Make sure you wait for a dry period to tackle this climb or you will have to deal with seepage or potentially a full on waterfall, especially on the higher pitches across the black streak. For those up to the challenge the Dibona Upper Wall provides the logical continuation. Combining the routes gives almost a kilometre of climbing up one of the most impressive faces of the Dolomites whilst never exceeding grade IV+.",
+      "geoLocation": [
+        46.5033,
+        11.8021
+      ]
+    },
+    {
+      "id": "mp-7",
+      "area": "cwm-idwal",
+      "name": "Ordinary Route",
+      "status": "draft",
+      "source": "multi-pitch.com",
+      "dataGrade": 1,
+      "originalGrade": "D 3a",
+      "gradeSys": "BAS",
+      "tradGrade": "D",
+      "techGrade": "3a",
+      "length": 140,
+      "pitches": 4,
+      "incline": "Slab",
+      "approachTime": 30,
+      "approachDifficulty": 1,
+      "disciplines": [
+        "multi-pitch",
+        "trad"
+      ],
+      "features": [],
+      "character": [],
+      "hazards": [],
+      "climatology": [
+        {
+          "month": 1,
+          "tempHigh": 8,
+          "tempLow": 3,
+          "rainyDays": 13
+        },
+        {
+          "month": 2,
+          "tempHigh": 8,
+          "tempLow": 2,
+          "rainyDays": 10
+        },
+        {
+          "month": 3,
+          "tempHigh": 9,
+          "tempLow": 3,
+          "rainyDays": 11
+        },
+        {
+          "month": 4,
+          "tempHigh": 12,
+          "tempLow": 4,
+          "rainyDays": 9
+        },
+        {
+          "month": 5,
+          "tempHigh": 15,
+          "tempLow": 7,
+          "rainyDays": 8
+        },
+        {
+          "month": 6,
+          "tempHigh": 17,
+          "tempLow": 10,
+          "rainyDays": 8
+        },
+        {
+          "month": 7,
+          "tempHigh": 19,
+          "tempLow": 12,
+          "rainyDays": 8
+        },
+        {
+          "month": 8,
+          "tempHigh": 18,
+          "tempLow": 12,
+          "rainyDays": 9
+        },
+        {
+          "month": 9,
+          "tempHigh": 17,
+          "tempLow": 10,
+          "rainyDays": 10
+        },
+        {
+          "month": 10,
+          "tempHigh": 13,
+          "tempLow": 8,
+          "rainyDays": 14
+        },
+        {
+          "month": 11,
+          "tempHigh": 10,
+          "tempLow": 5,
+          "rainyDays": 14
+        },
+        {
+          "month": 12,
+          "tempHigh": 8,
+          "tempLow": 3,
+          "rainyDays": 14
+        }
+      ],
+      "description": "The Ordinary Route is the easiest route on Idwal Slabs or Rhiwiau Caws as is the propper Welsh name. This climb represents an ideal introduction to trad multi-pitch climbing, as such it's common to see groups of 3 people climbing, led by a guide. The descent can prove tricky, especially in or after wet conditions.The down climbing part of the descent is on a shaded corner of the mountain so typically won't dry as quickly as the slabs. Expect some polish on the route as well. The views are stunning and get better as the route progresses. The route is typically climbed over 4 pitches with more scrambling after the 4th pitch. Route finding higher on the slabs can be a little tricky. It's fair to say stamina is more important than any great technical climbing skill to get up the Ordinary Route.",
+      "geoLocation": [
+        53.1105,
+        -4.026
+      ]
+    },
+    {
+      "id": "mp-8",
+      "area": "lundy",
+      "name": "The Devils Slide",
+      "status": "draft",
+      "source": "multi-pitch.com",
+      "dataGrade": 4,
+      "originalGrade": "HS 4a",
+      "gradeSys": "BAS",
+      "tradGrade": "HS",
+      "techGrade": "4a",
+      "length": 117,
+      "pitches": 5,
+      "incline": "Slab",
+      "approachTime": 120,
+      "approachDifficulty": 3,
+      "disciplines": [
+        "multi-pitch",
+        "trad"
+      ],
+      "features": [],
+      "character": [],
+      "hazards": [
+        "abseil"
+      ],
+      "climatology": [
+        {
+          "month": 1,
+          "tempHigh": 8,
+          "tempLow": 5,
+          "rainyDays": 15
+        },
+        {
+          "month": 2,
+          "tempHigh": 7,
+          "tempLow": 5,
+          "rainyDays": 11
+        },
+        {
+          "month": 3,
+          "tempHigh": 8,
+          "tempLow": 6,
+          "rainyDays": 13
+        },
+        {
+          "month": 4,
+          "tempHigh": 10,
+          "tempLow": 7,
+          "rainyDays": 11
+        },
+        {
+          "month": 5,
+          "tempHigh": 12,
+          "tempLow": 9,
+          "rainyDays": 10
+        },
+        {
+          "month": 6,
+          "tempHigh": 15,
+          "tempLow": 12,
+          "rainyDays": 9
+        },
+        {
+          "month": 7,
+          "tempHigh": 17,
+          "tempLow": 14,
+          "rainyDays": 10
+        },
+        {
+          "month": 8,
+          "tempHigh": 17,
+          "tempLow": 14,
+          "rainyDays": 11
+        },
+        {
+          "month": 9,
+          "tempHigh": 15,
+          "tempLow": 13,
+          "rainyDays": 11
+        },
+        {
+          "month": 10,
+          "tempHigh": 13,
+          "tempLow": 11,
+          "rainyDays": 16
+        },
+        {
+          "month": 11,
+          "tempHigh": 11,
+          "tempLow": 8,
+          "rainyDays": 16
+        },
+        {
+          "month": 12,
+          "tempHigh": 9,
+          "tempLow": 7,
+          "rainyDays": 15
+        }
+      ],
+      "description": "The Devils slide was first climbed in the early 1960's. The face has been claimed to be the tallest granite slab in Europe. Whilst untrue, it is never the less one of the tallest slab climbs in England and certainly a must climb classic. It makes for an exceptional climb at an amenable grade. This popular route was climbed, or perhaps more accurately \"walked\", feet only by Jonny Dawes in 2017. Although Lundy (meaning Puffin Island in Norse) has climbing restrictions some of the year, the devils slide and a number of other areas are exempt. The slide doesn't have nesting birds, likely because it's so exposed, bear that in mind when planning. To get to Lundy a ferry can be taken from Ilfracombe in Devon. The route climbs up the right-hand side of the slab following the groove. The last pitch takes an obvious traverse left under the headwall. Whilst originally 5 pitches of climbing, it can be done in as few as three with long ropes and careful runner placements. See references below for more info.",
+      "geoLocation": [
+        51.1886,
+        -4.6762
+      ]
+    },
+    {
+      "id": "mp-9",
+      "area": "meadinha",
+      "name": "Queles",
+      "status": "draft",
+      "source": "multi-pitch.com",
+      "dataGrade": 7,
+      "originalGrade": "VI+ (f6b)",
+      "gradeSys": "UIAA",
+      "tradGrade": "E1",
+      "techGrade": "5c",
+      "length": 60,
+      "pitches": 2,
+      "incline": "Vertical",
+      "approachTime": 10,
+      "approachDifficulty": 1,
+      "disciplines": [
+        "multi-pitch",
+        "trad"
+      ],
+      "features": [],
+      "character": [],
+      "hazards": [],
+      "climatology": [
+        {
+          "month": 1,
+          "tempHigh": 9,
+          "tempLow": 0,
+          "rainyDays": 15
+        },
+        {
+          "month": 2,
+          "tempHigh": 10,
+          "tempLow": 1,
+          "rainyDays": 12
+        },
+        {
+          "month": 3,
+          "tempHigh": 13,
+          "tempLow": 2,
+          "rainyDays": 15
+        },
+        {
+          "month": 4,
+          "tempHigh": 15,
+          "tempLow": 4,
+          "rainyDays": 10
+        },
+        {
+          "month": 5,
+          "tempHigh": 19,
+          "tempLow": 7,
+          "rainyDays": 11
+        },
+        {
+          "month": 6,
+          "tempHigh": 23,
+          "tempLow": 11,
+          "rainyDays": 7
+        },
+        {
+          "month": 7,
+          "tempHigh": 28,
+          "tempLow": 13,
+          "rainyDays": 3
+        },
+        {
+          "month": 8,
+          "tempHigh": 28,
+          "tempLow": 13,
+          "rainyDays": 5
+        },
+        {
+          "month": 9,
+          "tempHigh": 23,
+          "tempLow": 11,
+          "rainyDays": 7
+        },
+        {
+          "month": 10,
+          "tempHigh": 18,
+          "tempLow": 7,
+          "rainyDays": 12
+        },
+        {
+          "month": 11,
+          "tempHigh": 12,
+          "tempLow": 3,
+          "rainyDays": 14
+        },
+        {
+          "month": 12,
+          "tempHigh": 9,
+          "tempLow": 1,
+          "rainyDays": 17
+        }
+      ],
+      "description": "Meadinha is a dome of granite in North Portugal which makes for some brilliant pitches if you can handle the high technical grade! The route Queles is on the left side an is half trad climbing and half sport route. The line is only 60m long, but the crag has some routes up to 200m. The other routes are either pure sport line or have challenging sport or aid sections with a little easy trad in them. Check out meadinha.com for more information if you fancy your hand at some of the more challenging parts of the cliff.",
+      "geoLocation": [
+        41.9765,
+        -8.2244
       ]
     }
   ]

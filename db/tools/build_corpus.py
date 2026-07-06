@@ -94,10 +94,49 @@ class Areas:
                       key=lambda a: (order.get(a["kind"], 9), a["name"]))
 
 
-def fetch_mp():
-    req = urllib.request.Request(MP_URL, headers={"User-Agent": "climbing-agent corpus seed"})
-    with urllib.request.urlopen(req, timeout=30) as r:
-        return json.loads(r.read()).get("climbs", [])
+MP_SNAPSHOT = ROOT / "db" / "mp-climbs.json"
+ROCK_MAP = {"shale & sandstone": "sandstone", "qurtzite": "quartzite", "phonolite": "volcanic"}
+
+
+def norm_rock(r):
+    if not r:
+        return None
+    k = r.strip().lower()
+    return ROCK_MAP.get(k, k)
+
+
+def route_key(name, lat, lon):
+    """Identity for dedup: normalised name + ~11 km geo bucket."""
+    return (slug(name or ""), round(lat, 1) if lat is not None else None,
+            round(lon, 1) if lon is not None else None)
+
+
+def load_mp():
+    """Rich local snapshot (db/mp-climbs.json, from enrich_from_multipitch.py) — offline,
+    done once. Falls back to the shallow public feed only if the snapshot is absent."""
+    if MP_SNAPSHOT.exists():
+        return json.loads(MP_SNAPSHOT.read_text()).get("climbs", [])
+    try:
+        req = urllib.request.Request(MP_URL, headers={"User-Agent": "climbing-agent corpus seed"})
+        with urllib.request.urlopen(req, timeout=30) as r:
+            return json.loads(r.read()).get("climbs", [])
+    except Exception as e:
+        print(f"[warn] no MP snapshot and fetch failed: {e}", file=sys.stderr)
+        return []
+
+
+def load_gazetteer():
+    """The GAZETTEER venue coords, imported from sheet_venues.py so decision #27's
+    'coords live in the corpus, not in code' actually holds — these rows land in
+    corpus.json and the Python dict becomes a removable duplicate."""
+    try:
+        import importlib
+        if str(ROOT) not in sys.path:
+            sys.path.insert(0, str(ROOT))
+        return importlib.import_module("engine.sheet_venues").GAZETTEER
+    except Exception as e:
+        print(f"[warn] GAZETTEER import failed: {e}", file=sys.stderr)
+        return {}
 
 
 def curated_routes_from_db():
@@ -135,9 +174,13 @@ def curated_routes_from_db():
 def build():
     areas = Areas()
     routes = []
+    seen = set()  # curated (name+geo) keys → skip their raw multi-pitch twins
 
     # 1. curated DB routes → publish, and their country/region/crag areas
-    for r in curated_routes_from_db():
+    curated = curated_routes_from_db()
+    for r in curated:
+        seen.add(route_key(r.get("name"), r.get("lat"), r.get("lon")))
+    for r in curated:
         toks = r.get("path_tokens") or []
         country = toks[0] if len(toks) > 0 else None
         region = toks[1] if len(toks) > 1 else None
@@ -180,15 +223,14 @@ def build():
     except Exception as e:
         print(f"[warn] venues.json: {e}", file=sys.stderr)
 
-    # 3. multi-pitch.com → SEED routes + cliff areas as draft (uncurated)
-    try:
-        mp = fetch_mp()
-    except Exception as e:
-        print(f"[warn] multi-pitch seed skipped: {e}", file=sys.stderr)
-        mp = []
-    for c in mp:
+    # 3. multi-pitch.com → SEED routes + cliff areas as draft (uncurated), enriched
+    #    from the local site source: rock, incline, aspect, hazards, 12-month weather.
+    for c in load_mp():
         ll = latlon(c.get("geoLocation"))
+        if route_key(c.get("routeName"), ll[0] if ll else None, ll[1] if ll else None) in seen:
+            continue  # a curated (verified) version of this climb already exists
         country, county, cliff = c.get("country"), c.get("county"), c.get("cliff")
+        rock, aspect = norm_rock(c.get("rock")), c.get("face")
         if country:
             areas.add(country, "country", status="draft", source="multi-pitch.com")
         if county:
@@ -197,17 +239,33 @@ def build():
         area_id = areas.add(cliff, "crag", parent=slug(county or country or ""),
                             country=country, region=county,
                             lat=ll[0] if ll else None, lon=ll[1] if ll else None,
+                            rock=rock, aspect=aspect,
                             status="draft", source="multi-pitch.com") if cliff else None
+        disc = []
+        if (c.get("pitches") or 0) > 1:
+            disc.append("multi-pitch")
+        if c.get("tradGrade"):
+            disc.append("trad")
         routes.append({
             "id": f"mp-{c.get('id')}", "area": area_id, "name": c.get("routeName"),
             "status": "draft", "source": "multi-pitch.com", "dataGrade": c.get("dataGrade"),
             "originalGrade": c.get("originalGrade"), "gradeSys": c.get("gradeSys"),
             "tradGrade": c.get("tradGrade"), "techGrade": c.get("techGrade"),
             "length": c.get("length"), "pitches": c.get("pitches"),
-            "approachTime": c.get("approachTime"), "approachDifficulty": c.get("approachDifficulty"),
-            "disciplines": [], "features": [], "character": [], "hazards": [],
-            "climatology": [], "geoLocation": ll,
+            "incline": c.get("incline"), "approachTime": c.get("approachTime"),
+            "approachDifficulty": c.get("approachDifficulty"),
+            "disciplines": disc, "features": [], "character": [],
+            "hazards": c.get("hazards") or [],
+            "climatology": c.get("climatology") or [],
+            "description": c.get("description") or "",
+            "geoLocation": ll,
         })
+
+    # 4. GAZETTEER venue coords → draft areas (decision #27: coords live in the corpus)
+    for name, g in load_gazetteer().items():
+        areas.add(name.title(), "crag", lat=g.get("lat"), lon=g.get("lon"),
+                  rock=norm_rock(g.get("rock")), aspect=g.get("aspect"),
+                  status="draft", source="sheet-gazetteer")
 
     area_list = areas.list()
     pub_a = sum(a["status"] == "publish" for a in area_list)
