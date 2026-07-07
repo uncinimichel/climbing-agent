@@ -9,6 +9,10 @@ prototypes/
 # report degrades to live fetches when it's absent.
 trip-ni-july-2026/venue-env.json
 
+# Raw crawl captures (roadmap Stage 5) — the crawler's local raw store, never
+# committed to the public repo (theCrag/UKC raw data stays private per agreement).
+db/.raw_cache/
+
 # Secrets — NEVER commit (this repo is public). Keys go in GitHub Actions secrets.
 .env
 .env.*

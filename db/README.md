@@ -48,6 +48,14 @@ Until real ingestion lands (roadmap Stage 5 / M2), `apply.sh` rebuilds from scra
 there is no versioned-migration tooling yet on purpose. When the corpus becomes durable,
 switch to append-only numbered migrations and stop dropping the schema.
 
+**⚠️ `crawl_frontier` changes this the moment the crawler is running for real.**
+`sql/040_crawl.sql`'s `crawl_frontier` table (the crawler's durable work index —
+`db/tools/crawl_worker.py`) accumulates state across days of unattended runs. Once it
+holds real progress, **do not run `apply.sh`** — it drops the whole `climbing` schema,
+discarding hours/days of crawl state along with everything else. At that point, switch
+to additive migrations (new numbered `sql/0NN_*.sql` files applied individually, never
+via the drop-and-rebuild loop) as this section already anticipated.
+
 `trip-ni-july-2026/extra-climbing.json` (area-level curated links) maps to
 `area_reference` and will be imported once venues exist as `area` rows; the JSON then
 becomes a generated export until the DB is the only source of truth.
