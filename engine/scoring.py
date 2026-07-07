@@ -14,6 +14,7 @@ from datetime import date
 
 from . import weather
 from .climbs import nearby_climb_cards, nearby_climbs, venue_is_tidal
+from .geo import haversine_km
 from .http import redact
 from .render import WMO, wmo_icon
 from .stays import STAY_ADULTS, stay_options
@@ -41,6 +42,52 @@ def prio_num(v):
         if ch.isdigit():
             return int(ch)
     return 9
+
+
+def wmean(pairs):
+    """Weighted mean of (value, weight) pairs, skipping value None. With every
+    weight 1.0 this is a plain mean — so preferences default to no-op."""
+    ps = [(v, w) for v, w in pairs if v is not None and w]
+    if not ps:
+        return None
+    return round(sum(v * w for v, w in ps) / sum(w for _, w in ps))
+
+
+def traveller_distance_km(v, who, ctx):
+    """Great-circle km from a traveller's nearest home airport to the venue."""
+    origins = ctx.origin_coords.get(who) or []
+    if not origins:
+        return None
+    return min(haversine_km(la, lo, v["lat"], v["lon"]) for la, lo in origins)
+
+
+def home_distance_km(v, ctx):
+    """How far *both* travellers must go on average — a local (Dan at an NI crag)
+    contributes ~0, so home venues score near-full on distance."""
+    dists = []
+    for who in ctx.origin_coords:
+        mode = (v.get("travel", {}).get(who) or {}).get("mode")
+        if mode == "local":
+            dists.append(0.0)
+        else:
+            d = traveller_distance_km(v, who, ctx)
+            if d is not None:
+                dists.append(d)
+    return sum(dists) / len(dists) if dists else None
+
+
+def distance_fit_score(v, ctx):
+    """0–100 distance-from-home: near = full marks, ~4000 km = 0. Linear, clamped.
+    Lets far venues (Africa, US) rank lower on fit even before flights are priced."""
+    d = home_distance_km(v, ctx)
+    return None if d is None else max(0, min(100, round(100 - d * 0.025)))
+
+
+def distance_cost_estimate(v, who, ctx):
+    """Rough return-fare proxy (£) from a traveller's distance — the travel
+    fallback when no live flight price exists yet. ~£40 base + £0.08/km."""
+    d = traveller_distance_km(v, who, ctx)
+    return None if d is None else round(40 + d * 0.08)
 
 
 def evaluate(v, ctx, env_cache=None, climo_cache=None, stays_cache=None,
@@ -95,7 +142,8 @@ def evaluate(v, ctx, env_cache=None, climo_cache=None, stays_cache=None,
         if in_win:
             scores = [weather.day_score(daily["weathercode"][i], daily["precipitation_sum"][i],
                                          daily["precipitation_probability_max"][i],
-                                         weather.asp_m(v, met.get(days[i])))
+                                         weather.asp_m(v, met.get(days[i])),
+                                         rain_tol=ctx.prefs.rain_tol, heat_tol=ctx.prefs.heat_tol)
                       for i in in_win]
             codes = [daily["weathercode"][i] for i in in_win]
             dom = max(set(codes), key=codes.count)
@@ -126,12 +174,14 @@ def evaluate(v, ctx, env_cache=None, climo_cache=None, stays_cache=None,
     elif res["climo"]:
         c = res["climo"]
         sunny = max(0.35, 1 - c["rain_pct"] / 100)   # dry climate ≈ sunny climate
-        cs = weather.climo_score({**c, "tmax": weather.sun_adjusted_tmax(v, c["tmax"], sunny)})
+        cs = weather.climo_score({**c, "tmax": weather.sun_adjusted_tmax(v, c["tmax"], sunny)},
+                                 rain_tol=ctx.prefs.rain_tol, heat_tol=ctx.prefs.heat_tol)
         if sea:
             # gentle blend: climatology dominant, 45-day outlook nudges it
             ssun = max(0.35, 1 - sea["rain_pct"] / 100)
             ss = weather.climo_score({"tmax": weather.sun_adjusted_tmax(v, sea["tmax"], ssun),
-                                       "rain_pct": sea["rain_pct"]})
+                                       "rain_pct": sea["rain_pct"]},
+                                      rain_tol=ctx.prefs.rain_tol, heat_tol=ctx.prefs.heat_tol)
             res["score"] = round(0.7 * cs + 0.3 * ss)
             res["basis"] = f"typical {ctx.period_lbl} + long-range outlook"
         else:
@@ -170,7 +220,7 @@ def weather_signals(r, v):
     t = weather.sun_adjusted_tmax(v, tm, sunny)
     pend = "activates when the live forecast reaches your dates"
     return [
-        {"n": "Rain", "v": _sig(100 - rp * 0.9), "d": f"{rp}% typical wet days"},
+        {"n": "Rain", "v": _sig(100 - weather.rain_penalty(rp)), "d": f"{rp}% typical wet days"},
         {"n": "Heat", "v": _sig(100 - weather.heat_penalty(t) - max(0, 8 - t) * 2),
          "d": f"{round(t)}°C felt on the rock"},
         {"n": "Wind", "v": None, "d": pend},
@@ -187,6 +237,7 @@ def apply_composite(r, ctx, mp_climbs=None):
     if w < 0:
         r["score"], r["breakdown"] = -1, None
         return
+    p = ctx.prefs
     # travel: known flight prices (live or cached) per traveller; drive/local are cheap
     fl = r.get("flights") or {}
     costs, cost_bits = [], []
@@ -203,7 +254,10 @@ def apply_composite(r, ctx, mp_climbs=None):
             costs.append(opts[0]["price"])
             cost_bits.append(f"{label} £{opts[0]['price']} return")
         else:
-            costs.append(None)
+            est = distance_cost_estimate(v, who, ctx)   # no live price yet → distance proxy
+            costs.append(est)
+            if est is not None:
+                cost_bits.append(f"{label} ~£{est} est. (by distance)")
     known = [c for c in costs if c is not None]
     cost_s = round(max(0, min(100, 100 - (sum(known) / len(known)) / 4))) if known else None
     fl_d = "; ".join(cost_bits) if cost_bits else "no priced flights yet"
@@ -218,8 +272,7 @@ def apply_composite(r, ctx, mp_climbs=None):
         pp_total = st["est"] / STAY_ADULTS * ctx.rep_combo["nights"]
         stay_s = round(max(0, min(100, 100 - pp_total / 4)))
         cost_bits.append(f"stay from ~£{st['est']}/night for 2 ({st['type'].lower()}, est.)")
-    tparts = [s for s in (cost_s, time_s, stay_s) if s is not None]
-    travel = round(sum(tparts) / len(tparts))
+    travel = wmean([(cost_s, p.cost), (time_s, 1.0), (stay_s, 1.0)])
     travel_note = ("; ".join(cost_bits) if cost_bits else "no priced flights yet") \
         + (f" · {sh['travel_time']} from UK (sheet)" if sh.get("travel_time") else "")
     # venue fit from the sheet's judgment columns
@@ -229,7 +282,10 @@ def apply_composite(r, ctx, mp_climbs=None):
     trip_s = 100 if not mt else max(0, 100 - max(0, int(mt.group()) - ctx.trip_days) * 25)
     n_routes = len(nearby_climbs(v, mp_climbs, km=60))
     routes_s = 50 + min(50, n_routes * 10)   # multi-pitch.com coverage: neutral at 0, +10/route
-    fit = round((vol_s + diff_s + trip_s + routes_s) / 4)
+    dist_s = distance_fit_score(v, ctx)      # near home = full marks, ~4000 km = 0
+    hd = home_distance_km(v, ctx)
+    fit = wmean([(vol_s, p.volume), (diff_s, p.difficulty), (trip_s, p.trip_fit),
+                 (routes_s, p.coverage), (dist_s, p.fit_distance)])
     fit_bits = []
     if sh.get("volume"):
         fit_bits.append(f"{sh['volume'].lower()} multi-pitch volume")
@@ -239,8 +295,11 @@ def apply_composite(r, ctx, mp_climbs=None):
         fit_bits.append(f"min trip {sh['min_trip'].lower()} vs your {ctx.trip_days} days")
     fit_bits.append(f"{n_routes} multi-pitch.com route{'s' if n_routes != 1 else ''} nearby"
                     if n_routes else "no multi-pitch.com routes indexed yet")
+    if dist_s is not None:
+        fit_bits.append(f"~{round(hd)} km from home")
     fit_note = "; ".join(fit_bits)
-    r["score"] = round((W_WEATHER * w + W_TRAVEL * travel + W_FIT * fit) / 100)
+    ww, wt, wf = W_WEATHER * p.weather, W_TRAVEL * p.travel, W_FIT * p.fit
+    r["score"] = round((ww * w + wt * travel + wf * fit) / (ww + wt + wf))
     r["breakdown"] = {
         "weather": w, "travel": travel, "fit": fit,
         "weights": {"weather": W_WEATHER, "travel": W_TRAVEL, "fit": W_FIT},
@@ -274,6 +333,9 @@ def apply_composite(r, ctx, mp_climbs=None):
                 {"n": "Coverage", "v": routes_s,
                  "d": f"{n_routes} multi-pitch.com route{'s' if n_routes != 1 else ''} within 60 km"
                       if n_routes else "no multi-pitch.com routes indexed — neutral"},
+                {"n": "Distance", "v": dist_s,
+                 "d": f"~{round(hd)} km from home (London / Belfast)" if dist_s is not None
+                      else "no coordinates — neutral"},
             ],
         },
     }

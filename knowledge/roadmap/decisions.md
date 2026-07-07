@@ -398,6 +398,32 @@ multi-pitch + `venues.json` + the curated DB routes) and the docs/dependency-map
 rewiring `update_report.py`/`sheet_venues.py` to *read* corpus.json (and drop `GAZETTEER`) is
 the trip-planner pipeline's follow-up, then ingestion into Postgres (Stage 5 / M2).
 
+### #28 — Symmetric rain curve + distance-from-home + preference weights (2026-07-07)
+**Decision:** three ranking changes, tuned/validated on a new offline backtest harness
+(`trip-ni-july-2026/scripts/backtest_ranking.py`):
+1. **Rain penalty now mirrors the heat curve** (#26): `rain_penalty(wet%) = 1.25·(w−12)⁺ +
+   1.5·(w−40)⁺` (was flat `0.9·rain_pct`). A dry-climate comfort band under ~12% wet, then a
+   slope that **steepens past 40%** — so a cool-but-wet venue is punished as hard as a
+   dry-but-hot one. Shared by `climo_score`; `RAIN_IDEAL_PCT/RAIN_STEEP_PCT` in `weather.py`.
+2. **Distance-from-home** added as a 5th `venue_fit` sub-signal (100 near → 0 at ~4000 km,
+   mean of Michel-from-London and Dan-from-nearer-of-Belfast/Dublin) **and** as a travel-cost
+   fallback (`£40 + £0.08·km`) when a venue has no live flight price — fixing the top-N blind
+   spot where an un-priced far venue scored a neutral travel term. `top_n_flights` raised
+   **4 → 10** (SerpApi Starter plan).
+3. **Per-sub-signal preference weights** (`engine.models.Preferences`, all `1.0` = no-op)
+   scaffolded through the composite — the hook a future user-preferences UI writes into.
+**Why:** Michel's call — after #26, cool-but-drizzly venues (Snowdonia 58%, Dolomites 67%)
+still coasted on mild temperatures above hot-dry ones; *both* extremes should sit low, with
+cool-and-dry the sweet spot. And a far venue with no priced flight was hiding behind a neutral
+travel score. Distance belongs in the ranking even before flights are fetched.
+**Effect (live composite, cached climatology + outlook):** top reshuffles to cool-dry-and-near
+— **Écrins #1, Lundy #2, Picos #3**; **Aladağlar #1→#6** (Turkey, distance); wet venues sink
+(**Dolomites #36, Snowdonia #28**) and so do hot-dry ones (**Wadi Rum #41, Medina #42**).
+Historical backtest: wet venue-days (≥45%) avg weather score **47 → 22**, dry (≤20%) **51 → 49**.
+**Extends:** #26 (same symmetry argument, now applied to rain). **Status:** ✅ Live — shipped in
+`engine/weather.py`, `engine/scoring.py`, `engine/models.py`, the "?" explainer + donut widget
+(`render.py`), and this doc; site ranking rebuilt on deploy.
+
 ---
 
 *Template for new entries:*

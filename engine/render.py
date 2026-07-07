@@ -877,26 +877,33 @@ PAGE_BODY = """<body>
     <div class="hhd"><span class="eyebrow">How the ranking works</span><button class="tl" onclick="help(0)">✕ Close</button></div>
     <div class="hbody">
       <p>Every area gets a <b>trip score out of 100</b> — the donut in each header shows the split:</p>
-      <p><b style="color:var(--rain)">Weather · 55%</b> — rain first: wet days and rain
-      probability cost points, and a forecast rain day is hard-capped. Temperature is scored
-      <b>through a climbing lens</b>: friction research puts ideal sending temps around
+      <p><b style="color:var(--rain)">Weather · 55%</b> — rain and heat are now penalised
+      <b>symmetrically</b>, so the sweet spot is genuinely <b>cool and dry</b> and <i>neither</i>
+      a wet venue nor a baking-hot one can sit near the top. Wet days follow a curve that
+      mirrors the heat one: dry climates (under ~12% wet days) pay nothing, then it slopes up
+      and <b>steepens past 40% wet</b> — so a cool-but-drizzly area (Snowdonia, the Dolomites)
+      now drops out of the top tier instead of coasting on mild temperatures. Temperature is
+      scored <b>through a climbing lens</b>: friction research puts ideal sending temps around
       <b>7–18°C</b>, so points fall away gently above 18°C, steeply above 24°C, and brutally
       above 28°C (numb-fingers penalty below 8°C too — this is multi-pitch, hours exposed on
-      the wall, so heat is penalised harder than a chance of showers). <b>Sun exposure matters as much as air temperature</b>: a south-facing wall
+      the wall). <b>Sun exposure matters as much as air temperature</b>: a south-facing wall
       in full sun feels far hotter than the thermometer says, while a shaded north face
       climbs cooler — each crag's <b>aspect</b> shifts its felt temperature, weighted by how
       sunny it actually is (cloud/sunshine from the live forecast once in range; dryness as
       a proxy before that). Once the trip is inside the 16-day forecast, friction terms
       (dew point, drying sun, gusts) join in.</p>
       <p><b style="color:var(--temp)">Travel · 25%</b> — real return-flight prices for both
-      of you when priced (the top venues each day), otherwise the spreadsheet's travel-time
-      band from the UK. Local/drivable venues score near-perfect. The <b>cheapest realistic
-      bed near the crag</b> counts too (from OpenStreetMap): an area with a campsite stays
-      cheap, a hotel-only area costs points — using typical nightly prices per type of
+      of you when priced (now the <b>top 10</b> venues each day), and for anything not yet
+      priced a <b>distance-based fare estimate</b> stands in so a far-flung venue can't hide
+      behind a neutral score. Local/drivable venues score near-perfect. The <b>cheapest
+      realistic bed near the crag</b> counts too (from OpenStreetMap): an area with a campsite
+      stays cheap, a hotel-only area costs points — using typical nightly prices per type of
       stay, not live quotes.</p>
       <p><b style="color:var(--dry)">Venue fit · 20%</b> — from the spreadsheet's judgment
       columns: how much multi-pitch there is, its difficulty spread, and whether the
-      minimum sensible trip fits your dates.</p>
+      minimum sensible trip fits your dates — plus <b>distance from home</b> (London for
+      Michel, Belfast/Dublin for Dan), so nearby European crags edge out ones in Africa or
+      the US when all else is close.</p>
       <p>Ranking basis by date: <b>typical weather for your trip dates</b> (recent-year averages) blended with the
       <b>long-range outlook</b> now (a forecast model that can see up to ~45 days ahead — the ‘45-day’ is the model’s reach, not your trip length); the <b>live 16-day forecast takes over ~8 July</b>. The page
       rebuilds daily at 06:00 UTC. Full maths:
@@ -1245,7 +1252,7 @@ function renderBrk(v){
   var FACT=[
     {key:'weather',name:'WEATHER',val:num(b.weather),wt:W.weather,color:'#3987e5',fn:'100 −rain −heat −wind −grease'},
     {key:'travel',name:'TRAVEL',val:num(b.travel),wt:W.travel,color:'#d95926',fn:'(flights + time + stay) / 3'},
-    {key:'fit',name:'VENUE FIT',val:num(b.fit),wt:W.fit,color:'#57A664',fn:'(vol + diff + trip + routes) / 4'}
+    {key:'fit',name:'VENUE FIT',val:num(b.fit),wt:W.fit,color:'#57A664',fn:'(vol + diff + trip + routes + distance) / 5'}
   ];
   var notes={weather:b.weather_note,travel:b.travel_note,fit:b.fit_note};
   var CX=145,CY=128,R=76,SW=15,RO=97,SWO=5,GAP=2.5,SUBGAP=1.8;

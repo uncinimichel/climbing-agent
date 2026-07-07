@@ -33,12 +33,30 @@ July list on 0% rain alone). Friction research puts ideal sending temperatures a
 [`references.md`](references.md)). Both horizons now share one curve:
 
 ```
-heat_penalty(tmax) = 1.2·max(0, tmax − 20)     gentle from 20°C
-                   + 3.0·max(0, tmax − 25)     steep from 25°C
-                   + 5.0·max(0, tmax − 30)     brutal from 30°C
-   # a 31°C coastal venue loses ~36 points; a 35°C desert ~73 → bottom of the table
+heat_penalty(tmax) = 1.5·max(0, tmax − 18)     gentle from 18°C
+                   + 4.0·max(0, tmax − 24)     steep from 24°C
+                   + 6.0·max(0, tmax − 28)     brutal from 28°C
+   # a 30°C coastal venue loses ~54 points → bottom of the table
+```
 
-climo_score = 100 − 0.9·rain_pct
+### The rain curve — symmetric with heat (2026-07-07)
+
+The heat curve alone let **cool-but-wet** venues coast: a 58%-wet Snowdonia at 14°C
+out-ranked a dry-but-hot one, because rain was a flat `0.9·rain_pct` while heat had a
+steepening curve. The fix: give rain the **same shape as heat** — a dry-climate comfort
+band, a gentle slope, then a steep one — so **neither** a wet venue nor a baking-hot one
+can sit near the top; the sweet spot is genuinely cool *and* dry. Steepness picked on the
+historical backtest (`scripts/backtest_ranking.py`), which re-scored every recorded
+venue-day: wet venues (≥45%) fell from an avg weather score of 47 → 22, dry venues (≤20%)
+barely moved (51 → 49).
+
+```
+rain_penalty(wet_pct) = 1.25·max(0, wet_pct − 12)   gentle from 12% wet days
+                      + 1.50·max(0, wet_pct − 40)   steep from 40%
+   # 20% ≈ −10 · 46% ≈ −48 (drops out of the top tier) · 55% ≈ −76 · 67% bottoms out
+   # under ~12% wet ≈ free (a dry desert keeps its rain points)
+
+climo_score = 100 − rain_penalty(rain_pct)
             − 2·max(0, 8 − tmax)               (numb fingers below ~8°C)
             − heat_penalty(tmax)
 ```
@@ -92,22 +110,31 @@ columns and flight costs now count:
 trip_score = 0.55·weather + 0.25·travel + 0.20·venue_fit
 
 travel    = mean of: cost score (known flight prices per person, £0 → 100,
-            £400+ avg → 0; local=£0, drive≈£90), the sheet's
-            "Rough Travel Time from UK" band (<4h → 95 … 12-24h → 30),
-            and a stay score: the cheapest realistic bed near the crag
-            (OpenStreetMap lodging within 15 km), as typical-£/night for 2
-            × nights ÷ 2 people on the same £/4 slope — a campsite (~£20/n)
-            scores ~90, a hotel-only area (~£115/n) ~42. Estimates, not
-            live quotes; no OSM lodging found → this term drops out.
+            £400+ avg → 0; local=£0, drive≈£90; no live price yet → a
+            distance fare estimate £40 + £0.08·km stands in, so a far venue
+            can't hide behind a neutral score), the sheet's "Rough Travel
+            Time from UK" band (<4h → 95 … 12-24h → 30), and a stay score:
+            the cheapest realistic bed near the crag (OpenStreetMap lodging
+            within 15 km), typical-£/night for 2 × nights ÷ 2 on the £/4
+            slope — a campsite (~£20/n) ~90, a hotel-only area (~£115/n) ~42.
 venue_fit = mean of: volume band (Vast 100 / Large 85 / Moderate 65 / Smaller 45),
             difficulty band (Full Range 100 / Moderate 90 / Medium-Hard 75 / Hard 50),
-            min-trip fit (100 if sheet min-trip ≤ trip days, −25/extra day)
+            min-trip fit (100 if sheet min-trip ≤ trip days, −25/extra day),
+            multi-pitch.com coverage (50 + 10·routes within 60 km, capped 100),
+            and distance-from-home (100 near, ~4000 km → 0; mean of Michel from
+            London and Dan from the nearer of Belfast/Dublin, a local crag ≈ 0 km)
 ```
 
-Flight prices exist only for the top-N priced venues, so ranking runs twice: a
-provisional pass (time-band travel), price the top-N, then a final pass with real
-prices. The UI shows the split as the **donut** in the venue header (click a segment
-for the maths); the leaderboard states the formula in its subtitle.
+Every sub-signal carries a **user-preference weight** (`engine.models.Preferences`),
+all `1.0` today — a neutral no-op identical to the plain means above, and the hook a
+future per-user preferences UI writes into (heat/rain tolerance, cost vs distance, etc.).
+
+Flight prices are fetched for the **top 10** ranked venues (SerpApi Starter plan), so
+ranking runs twice: a provisional pass (distance-estimate travel), price the top 10, then
+a final pass with real prices. The UI shows the split as the **donut** in the venue header
+(hover a segment for the maths, including the distance sub-arc); the leaderboard states the
+formula in its subtitle. A/B and historical-replay harness for tuning the curves lives in
+`trip-ni-july-2026/scripts/backtest_ranking.py`.
 
 Ranking: **sort by `trip_score` desc, tie-break by `priority`** (NI preferred when tied).
 

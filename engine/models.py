@@ -43,7 +43,37 @@ def short_name(name):
 
 TRAVELLERS = ("michel", "dan")
 ORIGIN_CITY = {"michel": "London", "dan": "Belfast/Dublin"}
+# Home coordinates per traveller, for the distance-from-home signal. Each is a
+# list (Dan can start from Belfast or Dublin) — the nearest is used.
+ORIGIN_COORDS = {
+    "michel": [(51.5074, -0.1278)],                       # London
+    "dan": [(54.607, -5.926), (53.349, -6.260)],          # Belfast, Dublin
+}
 DEFAULT_CLIMO_YEARS = [2021, 2022, 2023, 2024]
+
+
+@dataclass
+class Preferences:
+    """Per-sub-signal ranking preferences. Every field is a neutral 1.0 today
+    (identical to the un-weighted mean) — this is the hook a future per-user
+    preferences UI writes into. tol fields soften a penalty (>1 = more
+    tolerant); the rest are relative weights within their component."""
+    # weather penalties (>1 = more tolerant of that condition)
+    heat_tol: float = 1.0
+    rain_tol: float = 1.0
+    # travel sub-signals
+    cost: float = 1.0
+    distance: float = 1.0
+    # fit sub-signals
+    volume: float = 1.0
+    difficulty: float = 1.0
+    trip_fit: float = 1.0
+    coverage: float = 1.0
+    fit_distance: float = 1.0
+    # top-level component emphasis
+    weather: float = 1.0
+    travel: float = 1.0
+    fit: float = 1.0
 
 
 @dataclass
@@ -56,6 +86,7 @@ class TripContext:
     serpapi_key: str | None = None
     top_n_flights: int = 4
     climo_years: list = field(default_factory=lambda: list(DEFAULT_CLIMO_YEARS))
+    prefs: Preferences = field(default_factory=Preferences)
 
     @property
     def graph_start(self):
@@ -109,6 +140,11 @@ class TripContext:
     @property
     def origin_city(self):
         return dict(ORIGIN_CITY)
+
+    @property
+    def origin_coords(self):
+        """Home coordinates per traveller for the distance-from-home signal."""
+        return {k: list(v) for k, v in ORIGIN_COORDS.items()}
 
     @classmethod
     def from_files(cls, venues_cfg, flights_cfg, serpapi_key=None, top_n_flights=4):

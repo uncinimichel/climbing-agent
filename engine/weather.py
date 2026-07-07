@@ -24,6 +24,8 @@ HEAT_WARM_C = 18       # heat_penalty: gentle slope starts (top of the ideal ban
 HEAT_HOT_C = 24        # heat_penalty: steep slope starts
 HEAT_BRUTAL_C = 28     # heat_penalty: brutal slope starts
 GUST_BAD_KMH = 30      # day_score: gust penalty starts
+RAIN_IDEAL_PCT = 12    # rain_penalty: dry-climate comfort band (no penalty below)
+RAIN_STEEP_PCT = 40    # rain_penalty: slope steepens for persistent-rain regimes
 
 # Felt temperature ON THE ROCK: direct sun on a wall reads far hotter than air
 # temp, and a shaded N face climbs cooler — crag aspect × actual sunniness.
@@ -226,11 +228,12 @@ def friction_label(dew):
     return "greasy"
 
 
-def day_score(code, mm, prob, m=None):
+def day_score(code, mm, prob, m=None, rain_tol=1.0, heat_tol=1.0):
     """0–100 for a single forecast day. Base = rain probability + amount + storm caps.
     `m` (optional) carries the richer signals — gusts, wet-hours, sunshine (drying) and
-    dewpoint (friction) — each a gentle, bounded nudge so ranking never swings wildly."""
-    s = 100.0 - (prob or 0) * 0.8 - (mm or 0) * 6
+    dewpoint (friction) — each a gentle, bounded nudge so ranking never swings wildly.
+    rain_tol/heat_tol are user-preference multipliers (>1 = more tolerant), 1.0 = neutral."""
+    s = 100.0 - (prob or 0) * 0.8 / (rain_tol or 1.0) - (mm or 0) * 6
     if code is not None and code >= 61:
         s = min(s, 25)
     if code in (95, 96, 99):
@@ -245,7 +248,7 @@ def day_score(code, mm, prob, m=None):
         if m.get("dew") is not None:              # friction / grease
             s -= max(0, m["dew"] - 12) * 1.2       # dew 20 ≈ −10
         if m.get("tmax") is not None:             # same climbing heat curve as climatology
-            s -= heat_penalty(m["tmax"])
+            s -= heat_penalty(m["tmax"]) / (heat_tol or 1.0)
     return max(0.0, min(100.0, s))
 
 
@@ -263,10 +266,24 @@ def heat_penalty(tmax):
             + max(0, tmax - HEAT_BRUTAL_C) * 6)
 
 
-def climo_score(c):
-    s = 100 - c["rain_pct"] * 0.9
+def rain_penalty(pct, tol=1.0):
+    """Wet-day % → points off, mirroring the heat curve's shape: a dry-climate
+    comfort band (no penalty below ~12% wet days), a gentle slope, then a steep
+    one for persistent-rain regimes. Deliberately symmetric with heat_penalty so
+    a cool-but-wet venue is punished as hard as a dry-but-hot one — neither
+    should out-rank a cool, dry venue. Tuned on the historical backtest
+    (trip-ni-july-2026/scripts/backtest_ranking.py): 40%+ wet days drops a venue
+    out of the top tier (Fair Head 46% ≈ −48), 55% ≈ −76, 67% bottoms out; a
+    <12%-wet desert stays untouched. tol = user rain-tolerance (>1 = softer)."""
+    pct = pct or 0
+    return (max(0, pct - RAIN_IDEAL_PCT) * 1.25
+            + max(0, pct - RAIN_STEEP_PCT) * 1.5) / (tol or 1.0)
+
+
+def climo_score(c, rain_tol=1.0, heat_tol=1.0):
+    s = 100 - rain_penalty(c["rain_pct"], rain_tol)
     s -= max(0, COLD_C - c["tmax"]) * 2      # too cold: numb fingers below ~8°C
-    s -= heat_penalty(c["tmax"])
+    s -= heat_penalty(c["tmax"]) / (heat_tol or 1.0)
     return max(0, min(100, round(s)))
 
 

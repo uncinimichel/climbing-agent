@@ -84,7 +84,7 @@ def build_context():
         venues=merged_venues,
         flights_cfg=flights_cfg,
         serpapi_key=SERPAPI_KEY,
-        top_n_flights=4,
+        top_n_flights=10,   # Starter plan (1000/mo): price the top 10, not just 4
     )
     sheet_rows = sheet_venues.load_sheet_rows(CLIMBING_CSV)
     guidebooks = _load_json(ROOT / "guidebooks.json", {})
