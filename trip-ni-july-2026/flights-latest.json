@@ -1,6 +1,6 @@
 {
   "comment": "Latest flight prices per combo (round-trip, 1 pax, GBP). Updated on demand by Claude or by an API script. null = not yet checked.",
-  "checked_at": "2026-07-07 19:52 UTC (Google Flights/SerpApi)",
+  "checked_at": "2026-07-07 21:21 UTC (Google Flights/SerpApi)",
   "currency": "GBP",
   "rep_combo": {
     "id": "fri-tue",
@@ -9,13 +9,53 @@
     "nights": 4
   },
   "venues": {
+    "Lundy": {
+      "michel": {
+        "mode": "drive"
+      },
+      "dan": {
+        "mode": "fly",
+        "to": "BRS",
+        "options": [
+          {
+            "price": 28,
+            "airline": "Ryanair",
+            "from": "DUB",
+            "to": "BRS",
+            "dep": "21:50",
+            "arr": "22:55",
+            "stops": 0
+          },
+          {
+            "price": 28,
+            "airline": "Ryanair",
+            "from": "DUB",
+            "to": "BRS",
+            "dep": "07:00",
+            "arr": "08:05",
+            "stops": 0
+          },
+          {
+            "price": 62,
+            "airline": "easyJet",
+            "from": "BFS",
+            "to": "BRS",
+            "dep": "21:45",
+            "arr": "22:55",
+            "stops": 0
+          }
+        ],
+        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQlJTGjASCjIwMjYtMDctMjhqBwgBEgNCUlNyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
+        "book_url": "https://www.skyscanner.net/transport/flights/dub/brs/260724/260728/"
+      }
+    },
     "Mournes, NI": {
       "michel": {
         "mode": "fly",
         "to": "BFS",
         "options": [
           {
-            "price": 109,
+            "price": 112,
             "airline": "Ryanair UK",
             "from": "STN",
             "to": "BFS",
@@ -24,7 +64,7 @@
             "stops": 0
           },
           {
-            "price": 132,
+            "price": 139,
             "airline": "easyJet",
             "from": "LTN",
             "to": "BFS",
@@ -55,21 +95,21 @@
         "to": "VCE",
         "options": [
           {
-            "price": 119,
-            "airline": "Ryanair",
-            "from": "STN",
-            "to": "VCE",
-            "dep": "18:25",
-            "arr": "21:30",
-            "stops": 0
-          },
-          {
-            "price": 147,
+            "price": 105,
             "airline": "Wizz Air",
             "from": "LTN",
             "to": "VCE",
             "dep": "20:50",
             "arr": "00:05",
+            "stops": 0
+          },
+          {
+            "price": 130,
+            "airline": "Ryanair",
+            "from": "STN",
+            "to": "VCE",
+            "dep": "18:25",
+            "arr": "21:30",
             "stops": 0
           },
           {
@@ -83,7 +123,7 @@
           }
         ],
         "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTA3LTI0agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDVkNFGkISCjIwMjYtMDctMjhqBwgBEgNWQ0VyBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ",
-        "book_url": "https://www.skyscanner.net/transport/flights/stn/vce/260724/260728/"
+        "book_url": "https://www.skyscanner.net/transport/flights/ltn/vce/260724/260728/"
       },
       "dan": {
         "mode": "fly",
@@ -99,15 +139,6 @@
             "stops": 0
           },
           {
-            "price": 200,
-            "airline": "Lufthansa",
-            "from": "DUB",
-            "to": "VCE",
-            "dep": "06:05",
-            "arr": "18:00",
-            "stops": 1
-          },
-          {
             "price": 252,
             "airline": "Ryanair",
             "from": "DUB",
@@ -115,50 +146,91 @@
             "dep": "17:15",
             "arr": "20:55",
             "stops": 0
+          },
+          {
+            "price": 212,
+            "airline": "Lufthansa",
+            "from": "DUB",
+            "to": "VCE",
+            "dep": "06:05",
+            "arr": "18:00",
+            "stops": 1
           }
         ],
         "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDVkNFGjASCjIwMjYtMDctMjhqBwgBEgNWQ0VyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
         "book_url": "https://www.skyscanner.net/transport/flights/dub/vce/260724/260728/"
       }
     },
-    "Lundy": {
+    "Picos de Europa": {
       "michel": {
-        "mode": "drive"
-      },
-      "dan": {
         "mode": "fly",
-        "to": "BRS",
+        "to": "BIO",
         "options": [
           {
-            "price": 28,
-            "airline": "Ryanair",
-            "from": "DUB",
-            "to": "BRS",
-            "dep": "07:00",
-            "arr": "08:05",
+            "price": 68,
+            "airline": "Wizz Air",
+            "from": "LTN",
+            "to": "BIO",
+            "dep": "18:00",
+            "arr": "21:00",
             "stops": 0
           },
           {
-            "price": 28,
-            "airline": "Ryanair",
-            "from": "DUB",
-            "to": "BRS",
-            "dep": "21:50",
-            "arr": "22:55",
+            "price": 92,
+            "airline": "Vueling",
+            "from": "LGW",
+            "to": "BIO",
+            "dep": "15:00",
+            "arr": "18:05",
             "stops": 0
           },
           {
-            "price": 62,
-            "airline": "easyJet",
-            "from": "BFS",
-            "to": "BRS",
-            "dep": "21:45",
-            "arr": "22:55",
+            "price": 99,
+            "airline": "Vueling",
+            "from": "LGW",
+            "to": "BIO",
+            "dep": "16:20",
+            "arr": "19:25",
             "stops": 0
           }
         ],
-        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQlJTGjASCjIwMjYtMDctMjhqBwgBEgNCUlNyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
-        "book_url": "https://www.skyscanner.net/transport/flights/dub/brs/260724/260728/"
+        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTA3LTI0agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDQklPGkISCjIwMjYtMDctMjhqBwgBEgNCSU9yBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ",
+        "book_url": "https://www.skyscanner.net/transport/flights/ltn/bio/260724/260728/"
+      },
+      "dan": {
+        "mode": "fly",
+        "to": "BIO",
+        "options": [
+          {
+            "price": 182,
+            "airline": "Vueling",
+            "from": "DUB",
+            "to": "BIO",
+            "dep": "22:05",
+            "arr": "08:15",
+            "stops": 1
+          },
+          {
+            "price": 225,
+            "airline": "Air France",
+            "from": "DUB",
+            "to": "BIO",
+            "dep": "05:55",
+            "arr": "22:00",
+            "stops": 1
+          },
+          {
+            "price": 232,
+            "airline": "Lufthansa",
+            "from": "DUB",
+            "to": "BIO",
+            "dep": "06:05",
+            "arr": "23:10",
+            "stops": 1
+          }
+        ],
+        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQklPGjASCjIwMjYtMDctMjhqBwgBEgNCSU9yBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
+        "book_url": "https://www.skyscanner.net/transport/flights/dub/bio/260724/260728/"
       }
     },
     "Aladaglar": {
@@ -176,7 +248,7 @@
             "stops": 1
           },
           {
-            "price": 306,
+            "price": 305,
             "airline": "AJet",
             "from": "STN",
             "to": "ASR",
@@ -231,6 +303,366 @@
         ],
         "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQVNSGjASCjIwMjYtMDctMjhqBwgBEgNBU1JyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
         "book_url": "https://www.skyscanner.net/transport/flights/dub/asr/260724/260728/"
+      }
+    },
+    "Gredos": {
+      "michel": {
+        "mode": "fly",
+        "to": "MAD",
+        "options": [
+          {
+            "price": 116,
+            "airline": "Wizz Air",
+            "from": "LTN",
+            "to": "MAD",
+            "dep": "08:00",
+            "arr": "11:40",
+            "stops": 0
+          },
+          {
+            "price": 123,
+            "airline": "Ryanair UK",
+            "from": "STN",
+            "to": "MAD",
+            "dep": "18:25",
+            "arr": "21:55",
+            "stops": 0
+          },
+          {
+            "price": 128,
+            "airline": "Ryanair",
+            "from": "STN",
+            "to": "MAD",
+            "dep": "15:25",
+            "arr": "18:55",
+            "stops": 0
+          }
+        ],
+        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTA3LTI0agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDTUFEGkISCjIwMjYtMDctMjhqBwgBEgNNQURyBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ",
+        "book_url": "https://www.skyscanner.net/transport/flights/ltn/mad/260724/260728/"
+      },
+      "dan": {
+        "mode": "fly",
+        "to": "MAD",
+        "options": [
+          {
+            "price": 165,
+            "airline": "Iberia Express",
+            "from": "DUB",
+            "to": "MAD",
+            "dep": "21:25",
+            "arr": "01:00",
+            "stops": 0
+          },
+          {
+            "price": 177,
+            "airline": "Iberia",
+            "from": "DUB",
+            "to": "MAD",
+            "dep": "21:25",
+            "arr": "01:00",
+            "stops": 0
+          },
+          {
+            "price": 183,
+            "airline": "Air France",
+            "from": "DUB",
+            "to": "MAD",
+            "dep": "05:55",
+            "arr": "15:35",
+            "stops": 1
+          }
+        ],
+        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDTUFEGjASCjIwMjYtMDctMjhqBwgBEgNNQURyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
+        "book_url": "https://www.skyscanner.net/transport/flights/dub/mad/260724/260728/"
+      }
+    },
+    "Hoy": {
+      "michel": {
+        "mode": "fly",
+        "to": "KOI",
+        "options": [
+          {
+            "price": 387,
+            "airline": "British Airways",
+            "from": "LHR",
+            "to": "KOI",
+            "dep": "06:35",
+            "arr": "09:45",
+            "stops": 1
+          },
+          {
+            "price": 423,
+            "airline": "British Airways",
+            "from": "LHR",
+            "to": "KOI",
+            "dep": "07:15",
+            "arr": "14:00",
+            "stops": 1
+          },
+          {
+            "price": 425,
+            "airline": "British Airways",
+            "from": "LHR",
+            "to": "KOI",
+            "dep": "11:55",
+            "arr": "19:35",
+            "stops": 1
+          }
+        ],
+        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTA3LTI0agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDS09JGkISCjIwMjYtMDctMjhqBwgBEgNLT0lyBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ",
+        "book_url": "https://www.skyscanner.net/transport/flights/lhr/koi/260724/260728/"
+      },
+      "dan": {
+        "mode": "fly",
+        "to": "KOI",
+        "options": [
+          {
+            "price": 492,
+            "airline": "British Airways",
+            "from": "DUB",
+            "to": "KOI",
+            "dep": "18:55",
+            "arr": "11:00",
+            "stops": 2
+          },
+          {
+            "price": 509,
+            "airline": "British Airways",
+            "from": "DUB",
+            "to": "KOI",
+            "dep": "15:20",
+            "arr": "08:20",
+            "stops": 2
+          },
+          {
+            "price": 585,
+            "airline": "British Airways",
+            "from": "DUB",
+            "to": "KOI",
+            "dep": "08:35",
+            "arr": "16:45",
+            "stops": 2
+          }
+        ],
+        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDS09JGjASCjIwMjYtMDctMjhqBwgBEgNLT0lyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
+        "book_url": "https://www.skyscanner.net/transport/flights/dub/koi/260724/260728/"
+      }
+    },
+    "Montserrat": {
+      "michel": {
+        "mode": "fly",
+        "to": "BCN",
+        "options": [
+          {
+            "price": 85,
+            "airline": "Ryanair",
+            "from": "STN",
+            "to": "BCN",
+            "dep": "21:25",
+            "arr": "00:40",
+            "stops": 0
+          },
+          {
+            "price": 89,
+            "airline": "Ryanair",
+            "from": "STN",
+            "to": "BCN",
+            "dep": "12:20",
+            "arr": "15:35",
+            "stops": 0
+          },
+          {
+            "price": 90,
+            "airline": "Ryanair",
+            "from": "STN",
+            "to": "BCN",
+            "dep": "18:45",
+            "arr": "22:00",
+            "stops": 0
+          }
+        ],
+        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTA3LTI0agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDQkNOGkISCjIwMjYtMDctMjhqBwgBEgNCQ05yBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ",
+        "book_url": "https://www.skyscanner.net/transport/flights/stn/bcn/260724/260728/"
+      },
+      "dan": {
+        "mode": "fly",
+        "to": "BCN",
+        "options": [
+          {
+            "price": 174,
+            "airline": "Vueling",
+            "from": "DUB",
+            "to": "BCN",
+            "dep": "22:05",
+            "arr": "01:45",
+            "stops": 0
+          },
+          {
+            "price": 238,
+            "airline": "Ryanair",
+            "from": "DUB",
+            "to": "BCN",
+            "dep": "21:45",
+            "arr": "01:15",
+            "stops": 0
+          },
+          {
+            "price": 209,
+            "airline": "Lufthansa",
+            "from": "DUB",
+            "to": "BCN",
+            "dep": "06:05",
+            "arr": "16:30",
+            "stops": 1
+          }
+        ],
+        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQkNOGjASCjIwMjYtMDctMjhqBwgBEgNCQ05yBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
+        "book_url": "https://www.skyscanner.net/transport/flights/dub/bcn/260724/260728/"
+      }
+    },
+    "East Tyrol (Lienz)": {
+      "michel": {
+        "mode": "fly",
+        "to": "INN",
+        "options": [
+          {
+            "price": 233,
+            "airline": "Lufthansa",
+            "from": "LHR",
+            "to": "INN",
+            "dep": "06:55",
+            "arr": "17:45",
+            "stops": 1
+          },
+          {
+            "price": 234,
+            "airline": "Lufthansa",
+            "from": "LHR",
+            "to": "INN",
+            "dep": "07:25",
+            "arr": "17:45",
+            "stops": 1
+          },
+          {
+            "price": 243,
+            "airline": "Lufthansa",
+            "from": "LHR",
+            "to": "INN",
+            "dep": "09:00",
+            "arr": "17:45",
+            "stops": 1
+          }
+        ],
+        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTA3LTI0agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDSU5OGkISCjIwMjYtMDctMjhqBwgBEgNJTk5yBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ",
+        "book_url": "https://www.skyscanner.net/transport/flights/lhr/inn/260724/260728/"
+      },
+      "dan": {
+        "mode": "fly",
+        "to": "INN",
+        "options": [
+          {
+            "price": 196,
+            "airline": "Lufthansa",
+            "from": "DUB",
+            "to": "INN",
+            "dep": "10:40",
+            "arr": "17:45",
+            "stops": 1
+          },
+          {
+            "price": 276,
+            "airline": "Lufthansa",
+            "from": "DUB",
+            "to": "INN",
+            "dep": "12:25",
+            "arr": "00:10",
+            "stops": 2
+          },
+          {
+            "price": 375,
+            "airline": "Lufthansa",
+            "from": "DUB",
+            "to": "INN",
+            "dep": "08:45",
+            "arr": "18:10",
+            "stops": 2
+          }
+        ],
+        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDSU5OGjASCjIwMjYtMDctMjhqBwgBEgNJTk5yBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
+        "book_url": "https://www.skyscanner.net/transport/flights/dub/inn/260724/260728/"
+      }
+    },
+    "Tenerife": {
+      "michel": {
+        "mode": "fly",
+        "to": "TFS",
+        "options": [
+          {
+            "price": 163,
+            "airline": "TUI Airways",
+            "from": "LGW",
+            "to": "TFS",
+            "dep": "15:25",
+            "arr": "19:50",
+            "stops": 0
+          },
+          {
+            "price": 190,
+            "airline": "easyJet",
+            "from": "LGW",
+            "to": "TFS",
+            "dep": "17:10",
+            "arr": "21:40",
+            "stops": 0
+          },
+          {
+            "price": 213,
+            "airline": "Jet2",
+            "from": "STN",
+            "to": "TFS",
+            "dep": "17:15",
+            "arr": "21:45",
+            "stops": 0
+          }
+        ],
+        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTA3LTI0agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDVEZTGkISCjIwMjYtMDctMjhqBwgBEgNURlNyBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ",
+        "book_url": "https://www.skyscanner.net/transport/flights/lgw/tfs/260724/260728/"
+      },
+      "dan": {
+        "mode": "fly",
+        "to": "TFS",
+        "options": [
+          {
+            "price": 389,
+            "airline": "Jet2",
+            "from": "BFS",
+            "to": "TFS",
+            "dep": "15:55",
+            "arr": "20:30",
+            "stops": 0
+          },
+          {
+            "price": 404,
+            "airline": "Aer Lingus",
+            "from": "DUB",
+            "to": "TFS",
+            "dep": "07:15",
+            "arr": "11:55",
+            "stops": 0
+          },
+          {
+            "price": 446,
+            "airline": "Ryanair",
+            "from": "DUB",
+            "to": "TFS",
+            "dep": "05:45",
+            "arr": "10:10",
+            "stops": 0
+          }
+        ],
+        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDVEZTGjASCjIwMjYtMDctMjhqBwgBEgNURlNyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
+        "book_url": "https://www.skyscanner.net/transport/flights/bfs/tfs/260724/260728/"
       }
     }
   }
