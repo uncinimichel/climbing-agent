@@ -449,6 +449,54 @@ three-horizon model. **Status:** ✅ Live — `engine/weather.py`, `engine/scori
 
 ---
 
+### #30 — ECMWF ensemble as the horizon-edge confidence layer (2026-07-08)
+**Decision:** Add Open-Meteo's free, keyless **ECMWF-ENS** (`ecmwf_ifs025`, 51 members) as a
+per-date confidence signal over the ~7–16-day band, rather than switching weather providers
+or buying a longer (unskillful) deterministic forecast. `weather.ensemble_raw` +
+`ensemble_metrics` reduce the members to `ens_prob` (% of members with ≥1 mm) and the `tmax`
+spread; `effective_rain_prob` now prefers, in order, the real `precipitation_probability_max`
+→ `ens_prob` → the weathercode guess. `scoring.evaluate` fetches the ensemble **only for
+in-window venues** and merges `ens_prob` into the per-date metrics, feeding both `day_score`
+and the displayed max-rain-probability. Cached per venue by `fetch_env.py`.
+**Why:** research (see [`../data/weather-models.md`](../data/weather-models.md)) confirmed
+the 16-day cap isn't the limit worth chasing — past ~15 days there's no deterministic skill,
+so no "30-day API" helps. The real gap was *confidence* on the 7–16-day edge, where a single
+run is noise: on 2026-07-08 the top models split Fair Head's 20 July at **0.0 / 2.2 / 5.6 mm**,
+while the 51-member ensemble read a coherent **75% wet, 14–24°C**. This directly hardens the
+exact horizon-edge days the #29 coverage blend leans on, replacing the weathercode *guess*
+there with a member-based probability. Kept `best_match` for the deterministic layer (it
+carries 15/16 days at Fair Head vs ECMWF-only's 14; UKMO/ICON die at ~6–7 d). Live-fallback
+path is rate-limited (HTTP 429) → the `fetch_env.py` cache is the intended source; the
+in-window gate keeps live fetches to a handful. **Extends** #29 / the three-horizon model.
+**Status:** ✅ Live — `engine/weather.py`, `engine/scoring.py`, `fetch_env.py`,
+condition-algorithm.md, weather-models.md; tests green (17), driver runs clean.
+
+---
+
+### #31 — Daily weather widget: a provenance-labelled table (2026-07-08)
+**Decision:** Rebuild the per-day weather strip from an unlabelled tile row into a **labelled
+table** — columns = days, rows = one measurement each, named once down a sticky left gutter
+(Sky·UV / Temp / Rain / Wind / Sun / Tide). Every column now carries a **provenance chip**
+stating how reliable that day is — **Forecast** (≤7 d, high skill) · **Low conf** (7–16 d,
+ensemble-backed) · **Outlook** (45-day seasonal) · **Typical** (climate average) — reinforced
+by opacity (fades with certainty) and a dashed amber **"forecast horizon" line** in the strip
+where the live forecast gives way. Rain leads with a member-based **chance-of-%** and a single
+bar (typical shown as a dashed tick, not a competing fill); low-confidence temperature carries
+an **ensemble min–max whisker**; UV rings are solid when measured, dashed when estimated. The
+tap/hover panel is rewritten as a plain-language, one-line-per-measurement breakdown led by
+what to trust. New per-day fields `prov` + forecast `prob`/`pop`/`tlo`/`thi` plumb the
+ensemble (#30) through `scoring.fc_days` → `render.venue_payload`.
+**Why:** the old strip rendered a 3-day forecast and a 30-day climate average with identical
+pixels, and never named what any bar/ring meant (its one legend was `display:none` on mobile).
+Users couldn't tell real weather from a guess — the exact honest-uncertainty gap #29/#30 were
+closing in the *ranking*, now closed in the *display*. Design reviewed with Michel via an HTML
+teardown before build; "label the rows once" (Approach A) chosen over per-tile labels
+(cluttered ×N days) or a detached legend. Verified with headless-Chrome renders on desktop +
+mobile. **Extends** #30. **Status:** ✅ Live — `engine/render.py`, `engine/scoring.py`,
+condition-algorithm.md; tests green (17).
+
+---
+
 *Template for new entries:*
 ```
 ### #N — Title (date)

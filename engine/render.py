@@ -15,7 +15,7 @@ import re
 import unicodedata
 import urllib.parse
 from dataclasses import dataclass
-from datetime import date
+from datetime import date, timedelta
 
 from .climbs import SITE_URL, grade_range, nearby_climb_cards, nearby_climbs, venue_is_tidal
 from .flights import skyscanner_url
@@ -443,6 +443,16 @@ def venue_payload(n, r, ctx, mp_climbs, guidebooks, extra_climbing_data, tag_spe
     fcd = r.get("fc_days") or {}
     sead = (sea or {}).get("daily") or {}
     utc_off = _venue_utc_off(v)
+    # provenance per day: the live forecast is high-skill for ~7 days, then a
+    # lower-confidence lean out to day 16 (shown with the ensemble spread), then
+    # the 45-day outlook, then climatology. today ≈ forecast horizon − 15 days.
+    horizon_iso = (fc or {}).get("horizon")
+    today_ref = None
+    if horizon_iso and horizon_iso != "?":
+        try:
+            today_ref = date.fromisoformat(horizon_iso) - timedelta(days=15)
+        except Exception:
+            today_ref = None
     series = []
     for s in (c.get("series") or []):
         m = s.get("month", ctx.target_start.month)
@@ -461,6 +471,13 @@ def venue_payload(n, r, ctx, mp_climbs, guidebooks, extra_climbing_data, tag_spe
             entry["fc"] = fcd[md_key]
         elif md_key in sead:
             entry["out"] = sead[md_key]
+        if entry.get("fc"):
+            lead = (dt - today_ref).days if (dt and today_ref) else 0
+            entry["prov"] = "forecast" if lead <= 7 else "lowconf"
+        elif entry.get("out"):
+            entry["prov"] = "outlook"
+        else:
+            entry["prov"] = "typical"
         # estimated UV until the live forecast (which carries the real value)
         # reaches this day; attenuated by the best cloud signal we have
         if dt and v.get("lat") is not None and (entry.get("fc") or {}).get("uv") is None:
@@ -596,30 +613,50 @@ svg.topo .dseg{pointer-events:stroke}
 .bp-fn{font-size:9.5px;color:var(--faint);margin-top:4px;line-height:1.75}
 .bp-fn b{font-weight:600}
 .bp-pend{opacity:.7;font-style:italic}
-.wx-key{font-family:var(--mono);font-size:10.5px;color:var(--faint);margin:0 0 10px;max-width:920px}
-.wxtiles{display:flex;overflow-x:auto;max-width:920px;background:var(--card);border:1px solid var(--line);border-radius:12px;scrollbar-width:thin;scrollbar-color:var(--line2) transparent}
-.wxtile{flex:1 1 0;min-width:72px;display:flex;flex-direction:column;align-items:center;gap:7px;padding:12px 4px;border-left:1px solid var(--line);cursor:default}
-.wxtile:first-child{border-left:none}
-.wxtile:hover{background:#252A32}
-.wxtile.trip{background:var(--dry-bg);box-shadow:inset 0 2px 0 var(--dry)}
-.wxtile.trip:hover{background:rgba(87,166,100,.16)}
-.wxtile .wd{font-family:var(--mono);font-size:11px;color:var(--muted);white-space:nowrap}
-.wxtile.trip .wd{color:var(--dry)}
-.wxtile .ti svg{display:block}
-.wxtile .t-out{font-family:var(--mono);font-weight:600;font-size:19px;line-height:1}
-.wxtile .t-typ{font-family:var(--mono);font-size:10.5px;color:var(--faint);white-space:nowrap}
-.wxrain{width:22px;height:44px;border-radius:4px;background:var(--panel);border:1px solid var(--line);position:relative;overflow:hidden;flex-shrink:0}
-.wxrain .rt{position:absolute;left:0;right:0;bottom:0;background:repeating-linear-gradient(45deg,rgba(160,161,154,.28) 0 3px,transparent 3px 6px)}
-.wxrain .ro{position:absolute;left:4px;right:4px;bottom:0;border-radius:2px 2px 0 0}
-.wxtile .mm{font-family:var(--mono);font-size:10px;color:var(--faint)}
-.wxdial{width:34px;height:34px;border-radius:50%;border:1.5px solid;display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0}
+/* Daily weather = a labelled table: each COLUMN is a day, each ROW one metric,
+   named once down the left gutter so tiles stay clean. Provenance (forecast /
+   low-confidence / outlook / typical) is a chip per column + opacity, with a
+   dashed amber "forecast horizon" line where the live forecast gives way. */
+.wx-key{font-family:var(--mono);font-size:10.5px;color:var(--faint);margin:0 0 10px;max-width:960px;line-height:1.6}
+.wx-key b{color:var(--muted);font-weight:600}
+.wxgrid{display:grid;overflow-x:auto;max-width:960px;background:var(--card);border:1px solid var(--line);border-radius:12px;scrollbar-width:thin;scrollbar-color:var(--line2) transparent}
+.wxgrid>div{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:8px 5px;border-left:1px solid var(--line);border-top:1px solid var(--line)}
+.wxrh{border-left:none!important;align-items:flex-end!important;justify-content:center;text-align:right;font-family:var(--mono);font-size:9.5px;letter-spacing:.03em;text-transform:uppercase;color:var(--faint);padding-right:10px!important;line-height:1.25;white-space:nowrap;position:sticky;left:0;background:var(--card);z-index:2}
+.wxgrid .corner,.wxgrid .wxhd{border-top:none}
+.wxc{cursor:default}
+.wxc:hover{background:#252A32}
+.wxc.trip{background:var(--dry-bg)}
+.wxhd.trip{box-shadow:inset 0 2px 0 var(--dry)}
+.wxc.trip .wd{color:var(--dry)}
+.wxc.hz{border-left:2px dashed var(--mixed)}
+.p-outlook{opacity:.72}
+.p-typical{opacity:.55}
+.wxchip{font-family:var(--mono);font-size:8px;letter-spacing:.03em;text-transform:uppercase;padding:1px 5px;border-radius:4px;white-space:nowrap;line-height:1.4}
+.wxchip.forecast{background:rgba(87,166,100,.16);color:#8ED09A;border:1px solid rgba(87,166,100,.4)}
+.wxchip.lowconf{background:rgba(185,138,46,.15);color:#DDB150;border:1px solid rgba(185,138,46,.45)}
+.wxchip.outlook{color:var(--muted);border:1px dashed var(--line2)}
+.wxchip.typical{color:var(--faint);border:1px solid var(--line);background:repeating-linear-gradient(45deg,rgba(110,112,105,.14) 0 3px,transparent 3px 6px)}
+.wd{font-family:var(--mono);font-size:11px;color:var(--muted);white-space:nowrap}
+.irow{display:flex;align-items:center;gap:4px}
+.irow svg{display:block}
+.tcell{position:relative;display:flex;align-items:center;justify-content:center;min-height:26px}
+.tcell .wsk{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:0}
+.t-big{font-family:var(--mono);font-weight:600;font-size:18px;line-height:1;position:relative;z-index:1}
+.t-typ{font-family:var(--mono);font-size:10px;color:var(--faint);white-space:nowrap}
+.pop{font-family:var(--mono);font-size:12px;font-weight:600;line-height:1}
+.wxrain{width:24px;height:34px;border-radius:4px;background:var(--panel);border:1px solid var(--line);position:relative;overflow:hidden}
+.wxrain .rf{position:absolute;left:0;right:0;bottom:0;border-radius:0 0 3px 3px}
+.wxrain .rk{position:absolute;left:-2px;right:-2px;height:0;border-top:1.5px dashed var(--faint)}
+.wxrain.hatch .rf{background:repeating-linear-gradient(45deg,rgba(160,161,154,.32) 0 3px,transparent 3px 6px)!important}
+.mm{font-family:var(--mono);font-size:9.5px;color:var(--faint)}
+.wxdial{width:34px;height:34px;border-radius:50%;border:1.5px solid;display:flex;align-items:center;justify-content:center;position:relative}
 .wxdial .wn{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--ink)}
-.wxdial svg{position:absolute;inset:-8px;width:50px;height:50px}
-.wxtile .suns{display:flex;flex-direction:column;align-items:center;gap:1px;font-family:var(--mono);font-size:9.5px;color:var(--faint);line-height:1.25;white-space:nowrap}
-.wxtile .tds{font-family:var(--mono);font-size:9.5px;color:#6FC7D9;line-height:1.25;white-space:nowrap}
-.wxtile .suns .dl{color:var(--muted)}
-.wxtile .irow{display:flex;align-items:center;gap:4px}
-.uvr{width:20px;height:20px;border-radius:50%;border:1.5px solid;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9.5px;font-weight:600;color:var(--ink);flex-shrink:0}
+.wxdial svg{position:absolute;inset:-5px;width:44px;height:44px;overflow:visible}
+.suns{display:flex;flex-direction:column;align-items:center;gap:1px;font-family:var(--mono);font-size:9.5px;color:var(--faint);line-height:1.25;white-space:nowrap}
+.tds{font-family:var(--mono);font-size:9.5px;color:#6FC7D9;line-height:1.25;white-space:nowrap}
+.suns .dl{color:var(--muted)}
+.uvr{width:20px;height:20px;border-radius:50%;border:1.5px solid;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9.5px;font-weight:600;color:var(--ink)}
+.uvr.est{border-style:dashed}
 #wxtip{position:fixed;z-index:70;pointer-events:none;background:var(--card);border:1px solid var(--line2);color:var(--ink);font-family:var(--mono);font-size:11.5px;line-height:1.6;border-radius:7px;padding:8px 11px;max-width:260px;box-shadow:0 8px 24px rgba(0,0,0,.5);opacity:0;transition:opacity .12s}
 #wxtip .dim{color:var(--muted)}
 @media(prefers-reduced-motion:reduce){#wxtip{transition:none}}
@@ -828,17 +865,18 @@ a.xlink:hover{border-color:var(--muted)}
   /* no room beside the ring on a phone — the maths card floats over it instead */
   .brkpanel{right:auto;left:50%;transform:translate(-50%,-50%);max-width:86vw}
   @keyframes bpfade{from{opacity:0;transform:translate(-50%,-50%)}to{opacity:1;transform:translate(-50%,-50%)}}
-  /* phones: drop the key line (the same info lives in the tap-tooltips),
-     shrink the tiles — the strip scrolls sideways inside its own card */
-  .wx-key{display:none}
-  .wxtile{min-width:60px;gap:6px;padding:10px 3px}
-  .wxtile .t-out{font-size:17px}
-  .wxrain{width:18px;height:38px}
+  /* phones: keep the row labels (they name every metric) — the strip scrolls
+     sideways under the sticky gutter; shrink cells + gutter to fit */
+  .wx-key{font-size:9.5px}
+  .wxgrid>div{padding:7px 3px;gap:5px}
+  .wxrh{font-size:8px;padding-right:6px!important}
+  .t-big{font-size:16px}
+  .wxrain{width:20px;height:30px}
   .wxdial{width:30px;height:30px}
-  .wxdial svg{inset:-7px;width:44px;height:44px}
-  .wxtile .suns{font-size:8.5px}
+  .wxdial svg{inset:-4px;width:38px;height:38px}
+  .suns{font-size:8.5px}
   .uvr{width:18px;height:18px;font-size:8.5px}
-  .wxtile .irow{gap:3px}
+  .irow{gap:3px}
 }
 </style></head>"""
 
@@ -1132,27 +1170,55 @@ function wxIcon(d){
     +'<g fill="#3987e5"><path d="M12 25l-1.6 3.2a1.8 1.8 0 1 0 3.2 0Z"/><path d="M19 25l-1.6 3.2a1.8 1.8 0 1 0 3.2 0Z"/></g>';label='rain';}
   return '<span class="ti"><svg width="30" height="30" viewBox="0 0 30 30" role="img" aria-label="'+label+'">'+inner+'</svg></span>';
 }
+function provShort(p){return p==='forecast'?'Forecast':p==='lowconf'?'Low conf':p==='outlook'?'Outlook':'Typical';}
+function provWhy(p){return p==='forecast'?'A real forecast, ≤7 days out — trust it.'
+  :p==='lowconf'?'A live forecast, but 7–16 days out — read it as a lean, not a promise.'
+  :p==='outlook'?'A 45-day outlook — direction of travel, not a daily detail.'
+  :'The typical average for this date (2021–24), not a forecast.';}
+// The tap/hover panel: a plain-language breakdown of the day, one labelled line
+// per measurement, led by how much to trust it (its provenance).
 function wxTipHtml(d){
   var o=d.fc||d.out;
   var ARR=['↓','↙','←','↖','↑','↗','→','↘'];
   function warr(x){return x==null?'':ARR[Math.round((((num(x)%360)+360)%360)/45)%8];}
-  var h='<b>'+esc(d.lbl)+' '+num(d.day)+(d.trip?' · TRIP DAY':'')+'</b><br><span class="dim">typical:</span> '+num(d.tmax)+'°C · '+num(d.precip)+' mm · wind '+num(d.wind)+' km/h';
-  if(o)h+='<br><b>'+(d.fc?'forecast':'outlook')+': '+num(o.tmax)+'°C · '+num(o.precip)+' mm</b>';
-  if(d.sun)h+='<br><span class="dim">daylight:</span> '+(d.sun[0]
+  var p=d.prov||'typical';
+  var h='<b>'+esc(d.lbl)+' '+num(d.day)+(d.trip?' · TRIP DAY':'')+'</b> '
+    +'<span class="wxchip '+p+'">'+provShort(p)+'</span>'
+    +'<br><span class="dim">'+provWhy(p)+'</span>';
+  // temperature, sourced honestly
+  if(o){
+    h+='<br><b>'+(d.fc?'Forecast high':'Outlook high')+':</b> '+num(o.tmax)+'°C';
+    if(p==='lowconf'&&d.fc&&d.fc.tlo!=null&&d.fc.thi!=null)
+      h+=' <span class="dim">(could land '+num(d.fc.tlo)+'–'+num(d.fc.thi)+'°C — ensemble range)</span>';
+    h+='<br><span class="dim">Typical for the date:</span> '+num(d.tmax)+'°C';
+  } else h+='<br><b>Typical high:</b> '+num(d.tmax)+'°C';
+  // rain — chance first (the honest number), then amount
+  if(d.fc){
+    var pr=(d.fc.prob!=null)?num(d.fc.prob):null;
+    h+='<br><b>Chance of rain:</b> '+(pr!=null?pr+'%':'—')
+      +(p==='lowconf'&&d.fc.pop!=null?' <span class="dim">('+num(d.fc.pop)+'% of ensemble members wet)</span>':'')
+      +' · <span class="dim">'+num(d.fc.precip)+' mm expected</span>';
+  } else if(d.out) h+='<br><b>Rain:</b> '+num(d.out.precip)+' mm <span class="dim">(outlook)</span>';
+  else h+='<br><b>Rain:</b> '+num(d.precip)+' mm <span class="dim">on a typical day</span>';
+  // wind
+  var wv=(d.fc&&d.fc.wind!=null)?num(d.fc.wind):num(d.wind);
+  var wd=(d.fc&&d.fc.dir!=null)?d.fc.dir:d.dir;
+  h+='<br><b>Wind:</b> '+wv+' km/h'+(wd!=null?' from '+compass(wd)+' '+warr(wd):'')
+    +(d.fc&&d.fc.gust!=null?' · gusts '+num(d.fc.gust)+' km/h':'');
+  // UV
+  var tuv=(d.fc&&d.fc.uv!=null)?num(d.fc.uv):(d.uv!=null?num(d.uv):null);
+  if(tuv!=null)h+='<br><b>UV index:</b> '+tuv+((d.fc&&d.fc.uv!=null)?'':' <span class="dim">(estimated)</span>');
+  var tcc=wxCloud(d);
+  if(tcc!=null)h+='<br><span class="dim">Cloud cover:</span> '+tcc+'%';
+  // rock quality (live only)
+  if(d.fc&&d.fc.friction)h+='<br><b>Rock friction:</b> '+esc(d.fc.friction)
+    +(d.fc.dew!=null?' <span class="dim">(dewpoint '+num(d.fc.dew)+'°C)</span>':'')
+    +(d.fc.sunFrac!=null?' · '+Math.round(num(d.fc.sunFrac)*100)+'% sun':'');
+  if(d.sun)h+='<br><span class="dim">Daylight:</span> '+(d.sun[0]
     ?esc(d.sun[0])+' → '+esc(d.sun[1])+' · '+num(d.sun[2])+' h'
     :(d.sun[2]>=24?'sun never sets (24 h)':'sun never rises'));
-  var tcc=wxCloud(d),tuv=(d.fc&&d.fc.uv!=null)?num(d.fc.uv):(d.uv!=null?num(d.uv):null);
-  if(tcc!=null||tuv!=null)h+='<br><span class="dim">'
-    +(tcc!=null?'cloud '+tcc+'%':'')
-    +(tcc!=null&&tuv!=null?' · ':'')
-    +(tuv!=null?'UV '+tuv+((d.fc&&d.fc.uv!=null)?'':' est.'):'')+'</span>';
-  if(d.fc){
-    if(d.fc.wind!=null)h+='<br>wind '+num(d.fc.wind)+' km/h'+(d.fc.dir!=null?' from '+compass(d.fc.dir)+' '+warr(d.fc.dir):'')+(d.fc.gust!=null?' · gusts '+num(d.fc.gust):'');
-    if(d.fc.friction)h+='<br>friction: '+esc(d.fc.friction)+(d.fc.dew!=null?' (dew '+num(d.fc.dew)+'°C)':'');
-    if(d.fc.sunFrac!=null)h+=' · sun '+Math.round(num(d.fc.sunFrac)*100)+'%';
-  }
-  if(d.tide&&d.tide.length)h+='<br><span class="dim">tide (vs mean sea level):</span> '
-    +d.tide.map(function(x){return (x.k==='L'?'▼':'▲')+esc(x.t)+' '+num(x.h)+'m';}).join(' · ');
+  if(d.tide&&d.tide.length)h+='<br><span class="dim">Tide (vs mean sea level):</span> '
+    +d.tide.map(function(x){return (x.k==='L'?'▼ low ':'▲ high ')+esc(x.t)+' '+num(x.h)+'m';}).join(' · ');
   return h;
 }
 var _wxTipEl=null;
@@ -1175,7 +1241,7 @@ function wireWxTips(root,s2){
     var y=r.top-tip.offsetHeight-10;if(y<8)y=r.bottom+10;
     tip.style.left=x+'px';tip.style.top=y+'px';
   }
-  var els=root.querySelectorAll('.wxtile');
+  var els=root.querySelectorAll('.wxc');
   for(var k=0;k<els.length;k++)(function(el){
     el.addEventListener('mouseenter',function(){show(el);});
     el.addEventListener('mouseleave',function(){tip.style.opacity=0;});
@@ -1184,52 +1250,108 @@ function wireWxTips(root,s2){
     el.addEventListener('click',function(e){show(el);e.stopPropagation();});
   })(els[k]);
 }
+function popColor(p){p=num(p);return p>=60?'#D06A57':(p>=30?'#B98A2E':'#57A664');}
+// The daily weather as a LABELLED TABLE: columns = days, rows = one metric each,
+// named once down a sticky left gutter so the day cells stay clean. Each column
+// carries a provenance chip (how reliable) + opacity, and a dashed amber line
+// marks the "forecast horizon" where the live forecast gives way to the outlook.
 function renderWx(v){
   var el=document.getElementById('wxChart');
   if(!el)return;
   var s2=v.series||[];if(!s2.length)return;
-  var anyFc=s2.some(function(d){return d.fc;}),ov=anyFc?'forecast':'outlook';
-  // one rain scale for the whole strip; floor of 2 mm so trace amounts don't
-  // fill the bar on a dry week (thresholds match rainColor's amber cutoff)
+  var N=s2.length;
+  var anyTide=s2.some(function(d){return d.tide&&d.tide.length;});
+  var anySun=s2.some(function(d){return d.sun;});
+  // one rain scale across the row; floor 2 mm so a dry week doesn't fill bars
   var mx=2;
   s2.forEach(function(d){var o=d.fc||d.out;mx=Math.max(mx,num(d.precip),o?num(o.precip):0);});
   mx=Math.ceil(mx);
-  function pc(mm){mm=num(mm);return mm<=0?0:Math.max(4,Math.round(mm/mx*100));}
-  var h=s2.map(function(d,i){
-    var o=d.fc||d.out;
-    var w=(d.fc&&d.fc.wind!=null)?num(d.fc.wind):num(d.wind);
-    var dd=(d.fc&&d.fc.dir!=null)?d.fc.dir:d.dir;
-    var wc=windColor(w),big=o?o.tmax:d.tmax;
-    var mm=o?num(o.precip):num(d.precip);
-    var uv=(d.fc&&d.fc.uv!=null)?num(d.fc.uv):(d.uv!=null?num(d.uv):null);
-    var uvEst=!(d.fc&&d.fc.uv!=null);
-    return '<div class="wxtile'+(d.trip?' trip':'')+'" data-i="'+i+'" tabindex="0" role="listitem">'
-      +'<span class="wd">'+esc(d.lbl)+' '+num(d.day)+'</span>'
-      +'<span class="irow">'+wxIcon(d)
-      +(uv!=null?'<span class="uvr" style="border-color:'+uvColor(uv)+'" title="UV index '+uv+(uvEst?' (estimated)':'')+'">'+uv+'</span>':'')+'</span>'
-      +'<span class="t-out" style="color:'+tempColor(big)+'">'+num(big)+'°</span>'
-      +'<span class="t-typ">'+(o?'typ '+num(d.tmax)+'°':'typical')+'</span>'
-      +'<span class="wxrain"><span class="rt" style="height:'+pc(d.precip)+'%"></span>'
-      +(o?'<span class="ro" style="height:'+pc(o.precip)+'%;background:'+rainColor(o.precip)+'"></span>':'')
-      +'</span>'
-      +'<span class="mm">'+(mm>0?mm+'mm':'·')+'</span>'
-      +'<span class="wxdial" style="border-color:'+wc+'">'
-      +'<svg viewBox="0 0 50 50" aria-hidden="true"><g transform="rotate('+((num(dd)+180)%360)+' 25 25)"><path d="M25 2l4 7h-8Z" fill="'+wc+'"/></g></svg>'
-      +'<span class="wn">'+w+'</span></span>'
-      +(d.sun?'<span class="suns">'+(d.sun[0]
-        ?'<span title="sunrise">↑'+esc(d.sun[0])+'</span><span title="sunset">↓'+esc(d.sun[1])+'</span><span class="dl" title="daylight">'+num(d.sun[2])+' h</span>'
-        :'<span>'+(d.sun[2]>=24?'☀ 24 h':'no sun')+'</span>')+'</span>':'')
-      +(function(){
-        if(!d.tide)return '';
-        var lows=d.tide.filter(function(x){return x.k==='L';});
-        return lows.length?'<span class="tds" title="low water, local time">'+lows.map(function(x){return '▼'+esc(x.t);}).join(' ')+'</span>':'';
-      })()
-      +'</div>';
+  function pc(mm){mm=num(mm);return mm<=0?0:Math.max(6,Math.round(mm/mx*100));}
+  // forecast horizon: first day dropping from forecast/lowconf to outlook/typical
+  var hz=-1;
+  for(var j=1;j<N;j++){var a=s2[j-1].prov,b=s2[j].prov;
+    if((a==='forecast'||a==='lowconf')&&(b==='outlook'||b==='typical')){hz=j;break;}}
+  function cls(d,i,ex){return 'wxc p-'+(d.prov||'typical')+(d.trip?' trip':'')+(i===hz?' hz':'')+(ex?' '+ex:'');}
+  function cell(d,i,ex,inner){return '<div class="'+cls(d,i,ex)+'" data-i="'+i+'" tabindex="0">'+inner+'</div>';}
+  function row(rh,fn){var s='<div class="wxrh">'+rh+'</div>';for(var i=0;i<N;i++)s+=fn(s2[i],i);return s;}
+
+  var rHead='<div class="wxrh corner"></div>'+s2.map(function(d,i){
+    return cell(d,i,'wxhd','<span class="wxchip '+(d.prov||'typical')+'">'+provShort(d.prov)
+      +'</span><span class="wd">'+esc(d.lbl)+' '+num(d.day)+'</span>');
   }).join('');
-  var anyTide=s2.some(function(d){return d.tide&&d.tide.length;});
-  el.innerHTML='<div class="wx-key">big °C = '+ov+' · small = typical '+esc(D.trip.periodLbl)+' · icon = cloud cover · ring by icon = UV index'+(anyFc?'':' (est.)')+' · bar = rain mm, 0–'+mx+' scale (hatch = typical, solid = '+ov+') · dial = wind km/h, arrow = where it blows · ↑↓ = sunrise/sunset, local + daylight h'+(anyTide?' · ▼ = low water, local':'')+' · green/amber/red = fine/caution/rough</div>'
-    +'<div class="wxtiles" role="list" aria-label="Daily weather, one tile per day">'+h+'</div>'
-    +(v.tidal&&!anyTide?'<div class="wx-key">🌊 tide-dependent access — low-water times appear on these tiles once the 10-day tide forecast reaches the trip dates.</div>':'');
+
+  var rSky=row('Sky ·<br>UV',function(d,i){
+    var uv=(d.fc&&d.fc.uv!=null)?num(d.fc.uv):(d.uv!=null?num(d.uv):null);
+    var est=!(d.fc&&d.fc.uv!=null);
+    var u=uv!=null?'<span class="uvr'+(est?' est':'')+'" style="border-color:'+uvColor(uv)+'">'+uv+'</span>':'';
+    return cell(d,i,'','<span class="irow">'+wxIcon(d)+u+'</span>');
+  });
+
+  var rTemp=row('Temp<br>°C',function(d,i){
+    var o=d.fc||d.out,big=o?o.tmax:d.tmax;
+    var pre=(d.prov==='outlook')?'~':'',col=(d.prov==='typical')?'var(--muted)':tempColor(big);
+    var wsk='';
+    if(d.prov==='lowconf'&&d.fc&&d.fc.tlo!=null&&d.fc.thi!=null){
+      var sp=num(d.fc.thi)-num(d.fc.tlo),H=Math.max(12,Math.min(34,Math.round(sp*2)));
+      wsk='<svg class="wsk" width="14" height="'+H+'" viewBox="0 0 14 '+H+'" aria-hidden="true">'
+        +'<line x1="7" y1="2" x2="7" y2="'+(H-2)+'" stroke="var(--line2)" stroke-width="2" stroke-linecap="round"/>'
+        +'<line x1="3.5" y1="2" x2="10.5" y2="2" stroke="#3987e5" stroke-width="1.6"/>'
+        +'<line x1="3.5" y1="'+(H-2)+'" x2="10.5" y2="'+(H-2)+'" stroke="#D06A57" stroke-width="1.6"/></svg>';
+    }
+    return cell(d,i,'','<span class="tcell">'+wsk+'<span class="t-big" style="color:'+col+'">'+pre+num(big)+'°</span></span>');
+  });
+
+  var rRain=row('Rain',function(d,i){
+    var o=d.fc||d.out,mm=o?num(o.precip):num(d.precip),top,bar,bot;
+    if(d.fc){
+      var pr=(d.fc.prob!=null)?num(d.fc.prob):null;
+      top=pr!=null?'<span class="pop" style="color:'+popColor(pr)+'">'+pr+'%</span>':'<span class="mm">·</span>';
+      bar='<span class="wxrain"><span class="rf" style="height:'+pc(mm)+'%;background:'+rainColor(mm)+'"></span>'
+        +(d.precip!=null&&d.precip!==o.precip?'<span class="rk" style="bottom:'+pc(d.precip)+'%"></span>':'')+'</span>';
+      bot='<span class="mm">'+(mm>0?mm+'mm':'dry')+'</span>';
+    } else if(d.out){
+      top='<span class="pop" style="color:var(--muted)">~</span>';
+      bar='<span class="wxrain"><span class="rf" style="height:'+pc(mm)+'%;background:var(--faint)"></span></span>';
+      bot='<span class="mm">outlook</span>';
+    } else {
+      top='<span class="mm">avg</span>';
+      bar='<span class="wxrain hatch"><span class="rf" style="height:'+pc(mm)+'%"></span></span>';
+      bot='<span class="mm">'+(mm>0?mm+'mm':'dry')+'</span>';
+    }
+    return cell(d,i,'',top+bar+bot);
+  });
+
+  var rWind=row('Wind<br>km/h',function(d,i){
+    var w=(d.fc&&d.fc.wind!=null)?num(d.fc.wind):num(d.wind);
+    var dd=(d.fc&&d.fc.dir!=null)?d.fc.dir:d.dir,wc=windColor(w);
+    var arrow=(dd!=null)?'<svg viewBox="0 0 50 50" aria-hidden="true"><g transform="rotate('+((num(dd)+180)%360)+' 25 25)"><path d="M25 1 L31 14 L25 10 L19 14 Z" fill="'+wc+'"/></g></svg>':'';
+    return cell(d,i,'','<span class="wxdial" style="border-color:'+wc+'">'+arrow+'<span class="wn">'+w+'</span></span>');
+  });
+
+  var rSun=anySun?row('Sun',function(d,i){
+    var s=d.sun?('<span class="suns">'+(d.sun[0]
+      ?'<span>↑'+esc(d.sun[0])+'</span><span>↓'+esc(d.sun[1])+'</span><span class="dl">'+num(d.sun[2])+'h</span>'
+      :'<span>'+(d.sun[2]>=24?'☀24h':'no sun')+'</span>')+'</span>'):'';
+    return cell(d,i,'',s);
+  }):'';
+
+  var rTide=anyTide?row('Low<br>tide',function(d,i){
+    var t='';
+    if(d.tide){var lows=d.tide.filter(function(x){return x.k==='L';});
+      if(lows.length)t='<span class="tds">'+lows.map(function(x){return '▼'+esc(x.t);}).join('<br>')+'</span>';}
+    return cell(d,i,'',t||'<span class="mm">·</span>');
+  }):'';
+
+  var cols='minmax(56px,auto) repeat('+N+',minmax(72px,1fr))';
+  el.innerHTML='<div class="wx-key"><b>How to read this:</b> each column is a day, each row one measurement (labelled on the left). The chip says how reliable that day is — '
+    +'<span class="wxchip forecast">Forecast</span> trust it (≤7 days) · '
+    +'<span class="wxchip lowconf">Low conf</span> a lean (7–16 days) · '
+    +'<span class="wxchip outlook">Outlook</span> 45-day guide · '
+    +'<span class="wxchip typical">Typical</span> average. Colours green/amber/red = fine/caution/rough. Tap any day for the full breakdown.</div>'
+    +'<div class="wxgrid" role="group" aria-label="Daily weather by day" style="grid-template-columns:'+cols+'">'
+    +rHead+rSky+rTemp+rRain+rWind+rSun+rTide
+    +'</div>'
+    +(v.tidal&&!anyTide?'<div class="wx-key">🌊 tide-dependent access — low-water times appear here once the 10-day tide forecast reaches the trip dates.</div>':'');
   wireWxTips(el,s2);
 }
 

@@ -26,6 +26,7 @@ HEAT_BRUTAL_C = 28     # heat_penalty: brutal slope starts
 GUST_BAD_KMH = 30      # day_score: gust penalty starts
 RAIN_IDEAL_PCT = 12    # rain_penalty: dry-climate comfort band (no penalty below)
 RAIN_STEEP_PCT = 40    # rain_penalty: slope steepens for persistent-rain regimes
+ENS_WET_MM = 1.0       # ensemble: a member counts as "wet" at ≥ this daily precip (mm)
 
 # Felt temperature ON THE ROCK: direct sun on a wall reads far hotter than air
 # temp, and a shaded N face climbs cooler — crag aspect × actual sunniness.
@@ -214,6 +215,51 @@ def seasonal(lat, lon, ctx, env_cache=None):
             "daily": daily}
 
 
+def ensemble_raw(lat, lon, env_cache=None):
+    """Raw Open-Meteo ECMWF-ENS response (51 members) — served from the venue-env cache
+    when present (fetch_env.py), else fetched live. This is the honest signal for the
+    ~day-7-to-16 tail: a single deterministic run is noise there (the top models split
+    from bone-dry to soaking on the *same* day), but the member spread gives a real,
+    frequency-based P(rain) and a temperature range. Free, keyless — one request."""
+    cached = env_cache.raw(lat, lon, "ensemble") if env_cache else None
+    if cached is not None:
+        return cached
+    return get_json(
+        "https://ensemble-api.open-meteo.com/v1/ensemble"
+        f"?latitude={lat}&longitude={lon}"
+        "&daily=temperature_2m_max,precipitation_sum&models=ecmwf_ifs025"
+        "&forecast_days=16&timezone=auto"
+    )
+
+
+def ensemble_metrics(d, wet_mm=ENS_WET_MM):
+    """Per-ISO-date confidence signals from an ECMWF-ENS response, keyed by date:
+      p_rain   — % of members with daily precip ≥ wet_mm (a member-based rain
+                 probability — strictly better than guessing from the weathercode
+                 where the deterministic precipitation_probability_max drops out).
+      tmax_lo/hi/mean/sd — the member temperature spread = forecast confidence.
+    Best-effort: any date without members is skipped; a missing/failed ensemble
+    (d is None or has no member columns) just yields {}."""
+    daily = (d or {}).get("daily") or {}
+    times = daily.get("time") or []
+    tkeys = [k for k in daily if k.startswith("temperature_2m_max")]
+    pkeys = [k for k in daily if k.startswith("precipitation_sum")]
+    out = {}
+    for i, ds in enumerate(times):
+        tv = [daily[k][i] for k in tkeys if i < len(daily[k]) and daily[k][i] is not None]
+        pv = [daily[k][i] for k in pkeys if i < len(daily[k]) and daily[k][i] is not None]
+        if not tv:
+            continue
+        mean = sum(tv) / len(tv)
+        sd = (sum((x - mean) ** 2 for x in tv) / len(tv)) ** 0.5
+        rec = {"tmax_lo": round(min(tv)), "tmax_hi": round(max(tv)),
+               "tmax_mean": round(mean), "tmax_sd": round(sd, 1), "members": len(tv)}
+        if pv:
+            rec["p_rain"] = round(100 * sum(1 for x in pv if x >= wet_mm) / len(pv))
+        out[ds] = rec
+    return out
+
+
 def friction_label(dew):
     """Rock friction from daytime dewpoint (°C). Low dewpoint = crisp, grippy rock;
     high dewpoint = humid, greasy. The single best rock-quality signal we have."""
@@ -253,11 +299,16 @@ def code_rain_prob(code):
     return 5            # clear sky
 
 
-def effective_rain_prob(prob, code):
-    """Use the real forecast probability when present, else infer it from the
-    weathercode (horizon edge). Shared by day_score and the rain sub-signal so
-    the score and the widget agree."""
-    return prob if prob is not None else code_rain_prob(code)
+def effective_rain_prob(prob, code, ens_prob=None):
+    """Rain probability, best source first: the model's own probability when present
+    (near term), else the ECMWF-ensemble member fraction (`ens_prob`, the honest
+    horizon-edge signal), else inferred from the weathercode. Shared by day_score
+    and the rain sub-signal so the score and the widget agree."""
+    if prob is not None:
+        return prob
+    if ens_prob is not None:
+        return ens_prob
+    return code_rain_prob(code)
 
 
 def day_rain_penalty(prob, tol=1.0):
@@ -275,8 +326,11 @@ def day_score(code, mm, prob, m=None, rain_tol=1.0, heat_tol=1.0):
     """0–100 for a single forecast day. Base = rain probability + amount + storm caps.
     `m` (optional) carries the richer signals — gusts, wet-hours, sunshine (drying) and
     dewpoint (friction) — each a gentle, bounded nudge so ranking never swings wildly.
-    rain_tol/heat_tol are user-preference multipliers (>1 = more tolerant), 1.0 = neutral."""
-    s = 100.0 - day_rain_penalty(effective_rain_prob(prob, code), rain_tol) - (mm or 0) * 6
+    rain_tol/heat_tol are user-preference multipliers (>1 = more tolerant), 1.0 = neutral.
+    When `m` carries an ensemble `ens_prob` (ECMWF member fraction), it supersedes the
+    weathercode guess for the rain base — the confidence signal for the horizon edge."""
+    ens_prob = m.get("ens_prob") if m else None
+    s = 100.0 - day_rain_penalty(effective_rain_prob(prob, code, ens_prob), rain_tol) - (mm or 0) * 6
     if code is not None and code >= 61:
         s = min(s, 25)
     if code in (95, 96, 99):

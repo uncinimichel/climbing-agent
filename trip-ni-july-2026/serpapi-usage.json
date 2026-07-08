@@ -649,6 +649,16 @@
       "month_usage": 180,
       "hour": 0,
       "hour_limit": 200
+    },
+    {
+      "at": "2026-07-08 11:21 UTC",
+      "ok": false,
+      "plan": null,
+      "per_month": null,
+      "left": null,
+      "total_left": null,
+      "month_usage": null,
+      "hour": null
     }
   ]
 }

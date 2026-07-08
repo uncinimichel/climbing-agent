@@ -16,11 +16,15 @@ day_score = 100 − day_rain_penalty(effective_rain_prob) − 6·(precip_mm)
           # day_rain_penalty = 0.8·prob + 0.7·(prob − 50)⁺  — gentle for uncertain
           # days, steepens past 50% to mirror the climatology rain curve (2026-07-08);
           # only adds penalty above 50%, so a dry forecast is never pushed down
-          # effective_rain_prob (2026-07-08): use the real precipitation_probability_max
-          #   when present, else INFER it from the weathercode — Open-Meteo drops the
-          #   probability past ~14 days, and treating that None as 0% rain was scoring
-          #   drizzly horizon-edge days ~perfect (the Dolomites bug). Fallback by code:
-          #   clear 5% · cloud 20% · fog 40% · drizzle 60% · rain/snow 80% · storm 90%
+          # effective_rain_prob (2026-07-08): rain probability, best source first —
+          #   1. the real precipitation_probability_max when present (near term);
+          #   2. the ECMWF-ENSEMBLE member fraction (`ens_prob`) — Open-Meteo drops the
+          #      deterministic probability past ~14 days, and treating that None as 0% rain
+          #      was scoring drizzly horizon-edge days ~perfect (the Dolomites bug). The
+          #      51-member ensemble gives a real % of members ≥1 mm at that exact horizon
+          #      (see "Forecast confidence" below), far better than a single-run guess;
+          #   3. else INFER from the weathercode: clear 5% · cloud 20% · fog 40% ·
+          #      drizzle 60% · rain/snow 80% · storm 90%.
           capped at 25  if weather_code ≥ 61   (rain)
           capped at 15  if thunderstorm
    # live-forecast horizon only — gentle, bounded climbing-quality nudges:
@@ -157,13 +161,33 @@ formula in its subtitle. A/B and historical-replay harness for tuning the curves
 
 Ranking: **sort by `trip_score` desc, tie-break by `priority`** (NI preferred when tied).
 
-### Three weather horizons (all free, no key)
+### The forecast horizons — by confidence, not just by length (all free, no key)
 
-| Horizon | Source | Role |
+The atmosphere has a hard predictability limit near **~15 days**; past that a single
+deterministic day-by-day value has no skill over climatology. So the engine treats the
+lead time in three confidence bands, not one flat "16-day forecast":
+
+| Lead time | Source | Confidence & role |
 |---|---|---|
-| **Live forecast** | Open-Meteo 16-day | Ranks the trip once in range (~8 July); **supersedes** the others. |
-| **Climatology** | Open-Meteo Archive (ERA5 July averages) | Deterministic base ranking + the per-venue rain/temp/wind mini-graph. |
-| **Sub-seasonal** | Open-Meteo Seasonal (CFS, ~45 d) | Weak signal; **blended 70/30** (climatology dominant) while beyond live range. |
+| **~0–7 days** (short range) | Open-Meteo 16-day (`best_match`) | High skill — the single deterministic number is trustworthy. day_score uses the model's own `precipitation_probability_max`. |
+| **~7–16 days** (medium range) | 16-day forecast **+ ECMWF 51-member ensemble** | A single run degrades here (top models split dry↔soaking on the *same* day). The ensemble supplies a real member-based **P(rain)** + a temperature spread as a **confidence layer**; past ~14 d, where the deterministic probability drops out, that member fraction (`ens_prob`) supersedes the weathercode guess in `effective_rain_prob`. |
+| **> 16 days** (beyond live range) | Climatology (ERA5) **+ sub-seasonal** (CFS ~45 d) | No deterministic forecast exists — rank on `0.7·climatology + 0.3·seasonal`, labelled "typical + long-range outlook". Climatology also drives the per-venue rain/temp/wind mini-graph. |
+
+The **coverage-weighted blend** (`k/N`, above) governs the *transition*: as the 16-day
+forecast reaches into the trip window day by day, it takes over only for the days it
+covers, blending the rest with climatology until it spans the whole trip.
+
+**Forecast confidence — the ECMWF ensemble (2026-07-08).** `weather.ensemble_raw` pulls
+Open-Meteo's free, keyless ECMWF-ENS (`ecmwf_ifs025`, 51 members, ~14-day member depth);
+`ensemble_metrics` reduces it per date to `p_rain` (% of members ≥ `ENS_WET_MM` = 1 mm) and
+the member `tmax` spread (lo/hi/mean/sd = a confidence width). `scoring.evaluate` fetches it
+**only for in-window venues** (the extra call is wasted elsewhere, and the live-fallback path
+is rate-limited) and merges `ens_prob` into the per-date metrics, so it flows into both
+`day_score` and the displayed max-rain-probability. Cached per venue by `fetch_env.py`
+alongside `forecast`/`seasonal`. Why it matters: on 2026-07-08 the top deterministic models
+put Fair Head's 20 July at 0.0 / 2.2 / 5.6 mm — noise — while the ensemble read a coherent
+*75% of members wet, 14–24°C spread*. The honest signal for exactly the horizon-edge days
+the coverage blend leans on.
 
 **Basis selection:** while the trip is beyond the 16-day window, rank on
 `0.7·climatology + 0.3·seasonal`, labelled "typical July + 45-day outlook". As the live

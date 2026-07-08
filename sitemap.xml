@@ -51,7 +51,7 @@
   <url><loc>https://uncinimichel.github.io/climbing-agent/knowledge/architecture/phases.html</loc><lastmod>2026-07-08</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url>
   <url><loc>https://uncinimichel.github.io/climbing-agent/knowledge/architecture/retrieval-agent.html</loc><lastmod>2026-07-08</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url>
   <url><loc>https://uncinimichel.github.io/climbing-agent/knowledge/architecture/venue-env-cache.html</loc><lastmod>2026-07-08</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url>
-  <url><loc>https://uncinimichel.github.io/climbing-agent/knowledge/corpus-inspector.html</loc><lastmod>2026-07-08</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://uncinimichel.github.io/climbing-agent/knowledge/corpus-inspector.html</loc><lastmod>2026-07-06</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url>
   <url><loc>https://uncinimichel.github.io/climbing-agent/knowledge/data/condition-algorithm.html</loc><lastmod>2026-07-08</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url>
   <url><loc>https://uncinimichel.github.io/climbing-agent/knowledge/data/database.html</loc><lastmod>2026-07-08</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url>
   <url><loc>https://uncinimichel.github.io/climbing-agent/knowledge/data/external-models.html</loc><lastmod>2026-07-08</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url>
@@ -62,10 +62,12 @@
   <url><loc>https://uncinimichel.github.io/climbing-agent/knowledge/data/source-of-truth.html</loc><lastmod>2026-07-08</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url>
   <url><loc>https://uncinimichel.github.io/climbing-agent/knowledge/data/tags.html</loc><lastmod>2026-07-08</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url>
   <url><loc>https://uncinimichel.github.io/climbing-agent/knowledge/data/taxonomy.html</loc><lastmod>2026-07-08</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url>
-  <url><loc>https://uncinimichel.github.io/climbing-agent/knowledge/data-dependencies.html</loc><lastmod>2026-07-08</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://uncinimichel.github.io/climbing-agent/knowledge/data/weather-models.html</loc><lastmod>2026-07-08</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://uncinimichel.github.io/climbing-agent/knowledge/data-dependencies.html</loc><lastmod>2026-07-06</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url>
   <url><loc>https://uncinimichel.github.io/climbing-agent/knowledge/index.html</loc><lastmod>2026-07-08</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url>
   <url><loc>https://uncinimichel.github.io/climbing-agent/knowledge/operations/deployment.html</loc><lastmod>2026-07-08</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url>
   <url><loc>https://uncinimichel.github.io/climbing-agent/knowledge/operations/external-apis.html</loc><lastmod>2026-07-08</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url>
+  <url><loc>https://uncinimichel.github.io/climbing-agent/knowledge/operations/notifications.html</loc><lastmod>2026-07-08</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url>
   <url><loc>https://uncinimichel.github.io/climbing-agent/knowledge/operations/runbook.html</loc><lastmod>2026-07-08</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url>
   <url><loc>https://uncinimichel.github.io/climbing-agent/knowledge/operations/serpapi-quota.html</loc><lastmod>2026-07-08</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url>
   <url><loc>https://uncinimichel.github.io/climbing-agent/knowledge/operations/testing-plan.html</loc><lastmod>2026-07-08</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url>

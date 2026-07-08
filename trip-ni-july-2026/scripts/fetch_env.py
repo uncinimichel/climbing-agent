@@ -128,7 +128,7 @@ def build_env():
             tidal = climbs.venue_is_tidal(v, mp_climbs)
         except Exception as e:
             print(f"[warn] tidal check failed for {v['name']}: {redact(e)}", file=sys.stderr)
-        fc_raw = sea_raw = tide_ex = None
+        fc_raw = sea_raw = ens_raw = tide_ex = None
         # env_cache=None here forces a LIVE fetch of every venue — this script's whole
         # job is to populate that cache fresh, never to read a prior run's copy back.
         try:
@@ -139,6 +139,10 @@ def build_env():
             sea_raw = weather.seasonal_raw(lat, lon, env_cache=None)
         except Exception as e:
             print(f"[warn] seasonal failed for {v['name']}: {redact(e)}", file=sys.stderr)
+        try:
+            ens_raw = weather.ensemble_raw(lat, lon, env_cache=None)
+        except Exception as e:
+            print(f"[warn] ensemble failed for {v['name']}: {redact(e)}", file=sys.stderr)
         if tidal:
             try:
                 tide_ex = weather.tide_extremes(lat, lon, env_cache=None)
@@ -147,7 +151,7 @@ def build_env():
         out["venues"][_slug(v["name"])] = {
             "name": v["name"], "lat": lat, "lon": lon, "tidal": tidal,
             "fetched_at": now.isoformat(),
-            "raw": {"forecast": fc_raw, "seasonal": sea_raw, "tides": tide_ex},
+            "raw": {"forecast": fc_raw, "seasonal": sea_raw, "ensemble": ens_raw, "tides": tide_ex},
             "days": _norm_days(fc_raw, sea_raw, tide_ex),
         }
         print(f"env: {v['name']} — {len(out['venues'][_slug(v['name'])]['days'])} days"

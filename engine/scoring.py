@@ -117,6 +117,18 @@ def evaluate(v, ctx, env_cache=None, climo_cache=None, stays_cache=None,
         met = weather.forecast_metrics(d)                     # per-ISO-date derived signals
         valid = [i for i in range(len(days)) if daily["temperature_2m_max"][i] is not None]
         in_win = [i for i in valid if ctx.target_start <= date.fromisoformat(days[i]) <= ctx.target_end]
+        if in_win:                                            # ECMWF-ensemble confidence layer —
+            try:                                              # only in-window venues use ens_prob,
+                ens = weather.ensemble_metrics(               # so skip the extra call for the rest
+                    weather.ensemble_raw(v["lat"], v["lon"], env_cache))
+                for ds, rec in ens.items():                   # merge member P(rain) + tmax spread
+                    if ds in met and rec.get("p_rain") is not None:
+                        met[ds]["ens_prob"] = rec["p_rain"]
+                        met[ds]["tmax_sd"] = rec.get("tmax_sd")
+                        met[ds]["tmax_lo"] = rec.get("tmax_lo")
+                        met[ds]["tmax_hi"] = rec.get("tmax_hi")
+            except Exception as e:
+                print(f"[warn] ensemble failed for {v['name']}: {redact(e)}", file=sys.stderr)
         winds = daily.get("windspeed_10m_max") or [None] * len(days)
         dirs = daily.get("winddirection_10m_dominant") or [None] * len(days)
         # per-day live forecast for graph-window days (overlaid on the typical chart)
@@ -138,6 +150,12 @@ def evaluate(v, ctx, env_cache=None, climo_cache=None, stays_cache=None,
                     "cloud": round(ccs[i]) if ccs[i] is not None else None,
                     "gust": mi.get("gust"), "dew": mi.get("dew"),
                     "friction": mi.get("friction"), "sunFrac": mi.get("sun_frac"),
+                    # rain probability (real → ensemble → weathercode) + ensemble temp range,
+                    # for the widget's chance-of-rain % and the low-confidence temp whisker
+                    "prob": round(weather.effective_rain_prob(
+                        daily["precipitation_probability_max"][i], daily["weathercode"][i],
+                        mi.get("ens_prob"))),
+                    "pop": mi.get("ens_prob"), "tlo": mi.get("tmax_lo"), "thi": mi.get("tmax_hi"),
                 }
         if in_win:
             scores = [weather.day_score(daily["weathercode"][i], daily["precipitation_sum"][i],
@@ -156,7 +174,8 @@ def evaluate(v, ctx, env_cache=None, climo_cache=None, stays_cache=None,
                 "score": round(sum(scores) / len(scores)),
                 "tmax": round(sum(daily["temperature_2m_max"][i] for i in in_win) / len(in_win)),
                 "rain_prob": max(weather.effective_rain_prob(daily["precipitation_probability_max"][i],
-                                                             daily["weathercode"][i]) for i in in_win),
+                                                             daily["weathercode"][i],
+                                                             met.get(days[i], {}).get("ens_prob")) for i in in_win),
                 "sky": WMO.get(dom, "?"), "sky_icon": wmo_icon(dom),
                 "gust_max": max(gusts_w) if gusts_w else None,
                 "friction": weather.friction_label(mean_dew), "dew": mean_dew,
