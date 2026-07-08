@@ -228,12 +228,23 @@ def friction_label(dew):
     return "greasy"
 
 
+def day_rain_penalty(prob, tol=1.0):
+    """Forecast rain-probability → points off. Keeps the gentle 0.8/pt base for
+    uncertain days but steepens past 50%, in the same spirit as the climatology
+    rain curve (rain_penalty) — so a high-chance-of-rain trip day is penalised
+    consistently across horizons, while the weather-code caps below still handle
+    'it will definitely rain'. Only ADDS penalty above 50%, so a dry forecast is
+    never pushed down. tol = user rain-tolerance (>1 = softer)."""
+    prob = prob or 0
+    return (prob * 0.8 + max(0, prob - 50) * 0.7) / (tol or 1.0)
+
+
 def day_score(code, mm, prob, m=None, rain_tol=1.0, heat_tol=1.0):
     """0–100 for a single forecast day. Base = rain probability + amount + storm caps.
     `m` (optional) carries the richer signals — gusts, wet-hours, sunshine (drying) and
     dewpoint (friction) — each a gentle, bounded nudge so ranking never swings wildly.
     rain_tol/heat_tol are user-preference multipliers (>1 = more tolerant), 1.0 = neutral."""
-    s = 100.0 - (prob or 0) * 0.8 / (rain_tol or 1.0) - (mm or 0) * 6
+    s = 100.0 - day_rain_penalty(prob, rain_tol) - (mm or 0) * 6
     if code is not None and code >= 61:
         s = min(s, 25)
     if code in (95, 96, 99):
