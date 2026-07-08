@@ -23,7 +23,7 @@ Enhancements to what already runs. None are required for daily operation. Priori
 1. **Return-leg flight times** — 2nd SerpApi call per option (≈2× searches) to show
    inbound dep→arr, not just outbound.
 2. **Price-drop alerting** — compare today's `flights-latest.json` to yesterday's history;
-   below a threshold → open a GitHub issue / email / push.
+   below a threshold → **push a notification** (channel TBD, see below).
 3. **Lock the date once chosen** — pin the combo in `flights.json`; track that single
    combo's price trend over time.
 4. **Overlay live/seasonal forecast on the mini-graph** once in range (currently
@@ -70,12 +70,22 @@ Enhancements to what already runs. None are required for daily operation. Priori
    and becomes an export, with the DB as the only source of truth (`verified_at` then
    drives the periodic health-check noted above).
 7. **"Confidence"** — show climatology spread + seasonal ensemble agreement, not just means.
-8. **Email/Slack digest** — daily top pick + cheapest fares to a channel.
+8. **Digest / daily check** — opt-in daily top pick + cheapest fares pushed to a channel
+   (channel TBD, see below).
 9. **Bump GitHub Action versions** to Node24 to clear the deprecation warning.
 10. **Tests** — golden-master snapshot of the generated HTML/MD plus stdlib-`unittest`
     coverage of `day_score`, `climo_score`, seasonal aggregation, flight ranking, and
     banner logic; run in CI before deploy. Full plan:
     [`operations/testing-plan.md`](../operations/testing-plan.md).
+
+> **Cross-cutting: a push-notification mechanism.** Several items above and in Stage 2
+> (#2 price-drop, #8 daily check, the contingency-engine weather/seepage alert) all need the
+> same missing piece — a way to reach Michel **off the page**: flight changes, the trip
+> daily check, a bad-weather alert. GitHub Pages is static and can't send; the **daily Action
+> is the sender** (a final `curl`/Python step). The channel is not chosen yet — options,
+> trade-offs and a recommendation (Telegram / ntfy now; web push or OneSignal for the
+> productised surface) live in [`../operations/notifications.md`](../operations/notifications.md).
+> Decide the channel when the first alerting item actually ships.
 
 ## Stage 1 — Real condition intelligence (deepen Phase 2)
 
@@ -92,7 +102,8 @@ rating:
 
 - Watch the chosen venue's forecast; on a bad-weather/seepage alert, surface the **top-3
   dry alternatives** within a distance bound, with a plain-language why.
-- Wire alerting (issue / email / push) into the daily job.
+- Wire alerting into the daily job — the shared push mechanism noted under Stage 0
+  ([`../operations/notifications.md`](../operations/notifications.md)).
 
 ## Stage 3 — Scale curation (industrialise Phase 3)
 

@@ -1,0 +1,85 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Weather Models · multi-pitch Live</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"><style>
+:root{--ink:#0C0D10;--ink2:#12141B;--ink3:#191C27;--ink4:#20243A;--seam:#252840;
+--chalk:#EAE6DD;--chalk2:#9B9890;--chalk3:#5A5860;--go:#6CB268;--amb:#C8A44A;
+--wet:#B94438;--spike:#C4FF5C;--r:6px;--r-lg:12px}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--ink);color:var(--chalk)}
+body{font-family:'Inter',system-ui,sans-serif;font-size:15px;line-height:1.65;
+-webkit-font-smoothing:antialiased}
+.top{position:sticky;top:0;z-index:10;height:48px;background:var(--ink2);
+border-bottom:1px solid var(--seam);display:flex;align-items:center;gap:12px;padding:0 18px}
+.logo{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--chalk);
+letter-spacing:-.2px;text-decoration:none}
+.top a.btn{margin-left:auto;font-size:12px;color:var(--chalk2);text-decoration:none;
+border:1px solid var(--seam);border-radius:var(--r);padding:5px 12px}
+.top a.btn:hover{color:var(--chalk);border-color:var(--chalk3)}
+.wrap{max-width:860px;margin:0 auto;padding:32px 22px 96px}
+.crumb{font-size:12px;color:var(--chalk3);margin-bottom:22px;font-family:'DM Mono',monospace}
+.crumb a{color:var(--chalk2);text-decoration:none}
+.crumb a:hover{color:var(--spike)}
+h1,h2,h3,h4{font-family:'Syne',sans-serif;letter-spacing:-.3px;line-height:1.25;
+scroll-margin-top:64px}
+h1{font-size:30px;font-weight:800;margin:.2em 0 .6em}
+h2{font-size:21px;font-weight:700;margin:1.8em 0 .5em;padding-top:.4em;
+border-top:1px solid var(--seam)}
+h3{font-size:16.5px;font-weight:700;margin:1.4em 0 .4em;color:var(--chalk)}
+h4{font-size:14px;font-weight:700;margin:1.2em 0 .3em;color:var(--chalk2)}
+p{margin:.7em 0}
+a{color:var(--amb);text-decoration:none;border-bottom:1px solid rgba(200,164,74,.28)}
+a:hover{color:var(--spike);border-bottom-color:var(--spike)}
+strong{color:#fff;font-weight:600}
+code{font-family:'DM Mono',ui-monospace,monospace;font-size:.86em;background:var(--ink3);
+border:1px solid var(--seam);border-radius:4px;padding:1px 5px;color:var(--amb)}
+pre{background:var(--ink2);border:1px solid var(--seam);border-radius:var(--r-lg);
+padding:16px 18px;overflow-x:auto;margin:1em 0}
+pre code{background:none;border:none;padding:0;color:var(--chalk2);font-size:12.5px;
+line-height:1.5;white-space:pre}
+blockquote{margin:1.1em 0;padding:.4em 16px;border-left:3px solid var(--amb);
+background:var(--amb-d,rgba(200,164,74,.07));border-radius:0 var(--r) var(--r) 0;
+color:var(--chalk2)}
+blockquote p{margin:.4em 0}
+hr{border:none;border-top:1px solid var(--seam);margin:2em 0}
+ul,ol{margin:.6em 0;padding-left:1.4em}
+li{margin:.28em 0}
+li>ul,li>ol{margin:.25em 0}
+.tw{overflow-x:auto;margin:1.1em 0;border:1px solid var(--seam);border-radius:var(--r-lg)}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--seam);
+vertical-align:top}
+th{background:var(--ink3);font-family:'Syne',sans-serif;font-weight:700;font-size:12px;
+color:var(--chalk);white-space:nowrap}
+tr:last-child td{border-bottom:none}
+td code{white-space:nowrap}
+.idx-group{margin:1.4em 0}
+.idx-group h3{border-bottom:1px solid var(--seam);padding-bottom:.3em}
+.idx-card{display:block;padding:12px 14px;margin:8px 0;background:var(--ink2);
+border:1px solid var(--seam);border-radius:var(--r-lg);color:var(--chalk);
+border-bottom:1px solid var(--seam)}
+.idx-card:hover{border-color:var(--chalk3);color:var(--chalk)}
+.idx-card b{font-family:'Syne',sans-serif}
+.idx-card span{display:block;color:var(--chalk2);font-size:13px;margin-top:2px}
+@media(max-width:600px){.wrap{padding:22px 15px 80px}h1{font-size:24px}body{font-size:14px}}
+</style></head><body><div class=top><a class=logo href="../../index.html">🧗 multi-pitch <span style="color:var(--spike)">Live</span></a><a class=btn href="../../knowledge/index.html">📚 Knowledge</a><a class=btn href="../../knowledge/corpus-inspector.html">🧗 Inspector</a><a class=btn href="../../knowledge/data-dependencies.html">🗺 Data map</a><a class=btn href="../../index.html">▶ Dashboard</a></div><div class=wrap><div class=crumb><a href="../index.html">📚 knowledge</a> / data / <b style='color:var(--chalk2)'>weather-models</b></div><h1 id="weather-models-why-open-meteo-and-the-forecast-horizon-strategy">Weather models — why Open-Meteo, and the forecast-horizon strategy</h1>
+<p>Why the engine uses <a href="https://open-meteo.com/">Open-Meteo</a> (free, keyless) rather than a "longer" forecast API, and how the three forecast horizons are chosen. Companion to <a href="condition-algorithm.html"><code>condition-algorithm.md</code></a> (the scoring maths) and decision <a href="../roadmap/decisions.html">#30</a>.</p>
+<blockquote><p><strong>Method:</strong> live-tested every candidate against <strong>Fair Head (55.222, −6.156)</strong>, the NI trip's primary venue, on 2026-07-08 (16 days before the ~24 July window). Numbers below are from those calls, not vendor claims.</p></blockquote>
+<h2 id="the-question-is-there-a-better-api-with-a-longer-forecast">The question: is there a better API with a longer forecast?</h2>
+<p>Short answer — <strong>no, and length is the wrong axis.</strong> The atmosphere has a hard predictability limit near <strong>~15 days</strong>; beyond it a deterministic day-by-day forecast has essentially <strong>no skill over climatology</strong> (<a href="https://rmets.onlinelibrary.wiley.com/doi/10.1002/qj.2559">RMetS, <em>skill of weather prediction 1–14 days</em></a>). The 30-day products on the market (<a href="https://openweathermap.org/api/forecast30">OpenWeather 30-day</a>, Meteosource) are climatology/ensemble blends dressed as daily numbers — more confident-looking noise, not more signal.</p>
+<p><strong>Proof from our own venue</strong> — the top deterministic models on 20 July (12 days out):</p>
+<div class="tw"><table><thead><tr><th>Date</th><th>best_match</th><th>ECMWF</th><th>GFS</th></tr></thead><tbody><tr><td>20 Jul</td><td>16.3° / <strong>2.2 mm</strong></td><td>13.9° / <strong>5.6 mm</strong></td><td>15.0° / <strong>0.0 mm</strong></td></tr><tr><td>21 Jul</td><td>15.3° / 3.0 mm</td><td>14.4° / 6.4 mm</td><td>14.0° / 0.0 mm</td></tr></tbody></table></div>
+<p>Three leading models split from bone-dry to soaking on the same day. A single "16.3°/2.2 mm" is noise; buying a 30-day API just buys more of it.</p>
+<h2 id="why-open-meteo-and-why-best-match">Why Open-Meteo, and why <code>best_match</code></h2>
+<p>Open-Meteo is free, keyless (10k calls/day), and exposes <strong>model choice</strong>. Model depth over the 16-day window at Fair Head (non-null days returned):</p>
+<div class="tw"><table><thead><tr><th>Model</th><th>Non-null days / 16</th></tr></thead><tbody><tr><td><strong>best_match (default — what we use)</strong></td><td><strong>15</strong></td></tr><tr><td>gfs_seamless</td><td>16</td></tr><tr><td>ecmwf_ifs025</td><td>14</td></tr><tr><td>ukmo_seamless</td><td>6</td></tr><tr><td>icon_seamless</td><td>7</td></tr></tbody></table></div>
+<p>Takeaway: <strong>don't force a single model.</strong> <code>best_match</code> auto-stitches the best model per horizon (high-res local models short-range, ECMWF medium-range) and carries the most usable days; ECMWF-only would cost a day at the edge, and UKMO/ICON high-res die at ~6–7 days.</p>
+<h2 id="the-real-lever-the-ecmwf-ensemble-days-7-16">The real lever: the ECMWF ensemble (days ~7–16)</h2>
+<p><code>ensemble-api.open-meteo.com</code> returns <strong>51 ECMWF members</strong> — a probability spread instead of one fragile number, the honest signal exactly where a single run fails. Same venue, live:</p>
+<div class="tw"><table><thead><tr><th>Date</th><th>tmax spread</th><th>P(rain ≥1 mm)</th><th>members</th></tr></thead><tbody><tr><td>19 Jul</td><td>13–24 °C (σ 2.4)</td><td><strong>53 %</strong></td><td>51</td></tr><tr><td>20 Jul</td><td>14–24 °C (σ 2.7)</td><td><strong>75 %</strong></td><td>51</td></tr><tr><td>21 Jul</td><td>14–24 °C (σ 2.7)</td><td><strong>80 %</strong></td><td>51</td></tr></tbody></table></div>
+<p>"80 % of members wet, 10 °C temp spread" is a far more honest input to <code>day_score</code> than "14.4°/6.4 mm". Measured member depth: <strong>ECMWF-ENS full to ~day 14</strong>; the GFS ensemble (<code>gfs025</code>, 31 members) reaches <strong>35 days</strong> but is coarser — a future candidate to enrich the 17–35 d tail now filled by CFS <code>seasonal</code>.</p>
+<p>This is adopted in <a href="../roadmap/decisions.html">decision #30</a>: <code>weather.ensemble_raw</code> / <code>ensemble_metrics</code>, merged as <code>ens_prob</code> for in-window venues, feeding <code>effective_rain_prob</code>.</p>
+<h2 id="the-candidates-for-the-record">The candidates, for the record</h2>
+<div class="tw"><table><thead><tr><th>API</th><th>Max range</th><th>Free tier</th><th>Verdict</th></tr></thead><tbody><tr><td><strong>Open-Meteo</strong> (in use)</td><td>16 d + 51-member ENS + ~45 d seasonal</td><td>keyless, 10k/day</td><td>Best free option; model choice + ensemble</td></tr><tr><td><a href="https://openweathermap.org/api/forecast30">OpenWeather 30-day</a></td><td>30 d</td><td>paid add-on</td><td>Climatology past ~2 wks; not "better"</td></tr><tr><td><a href="https://www.meteosource.com/">Meteosource</a></td><td>30 d</td><td>freemium</td><td>Same caveat</td></tr><tr><td><a href="https://www.weatherbit.io/api/weather-forecast-16-day">Weatherbit 16-day</a></td><td>16 d</td><td>50 calls/day</td><td>No range gain over Open-Meteo</td></tr><tr><td><a href="https://www.visualcrossing.com/weather-api/">Visual Crossing</a></td><td>15 d + climatology</td><td>1k records/day</td><td>Comparable, less generous</td></tr></tbody></table></div>
+<h2 id="operational-note">Operational note</h2>
+<p>The ensemble adds ~1 call per in-window venue. Run live across all venues it triggers Open-Meteo's rate limit (HTTP 429) — so the intended source is the per-venue cache built by <code>fetch_env.py</code> (<code>raw.ensemble</code>), and <code>scoring.evaluate</code> fetches it <strong>only for in-window venues</strong>. Failure degrades gracefully to the weathercode fallback, never a crash.</p>
+<h2 id="sources">Sources</h2>
+<ul><li><a href="https://open-meteo.com/">Open-Meteo</a> · <a href="https://open-meteo.com/en/docs/ensemble-api">ensemble API</a> · <a href="https://open-meteo.com/en/docs/seasonal-forecast-api">seasonal API</a></li><li><a href="https://rmets.onlinelibrary.wiley.com/doi/10.1002/qj.2559">RMetS — skill of weather prediction at 1–14 days</a></li><li><a href="https://www.worldclimateservice.com/2021/10/12/difference-between-deterministic-and-ensemble-forecasts/">World Climate Service — deterministic vs ensemble forecasts</a></li><li><a href="https://www.nature.com/articles/s43247-025-02502-y">Nature — extending deterministic range beyond 10 days</a></li></ul>
+<p><em>Retrieved 2026-07-08. Live-tested against Fair Head. See also <a href="references.html"><code>references.md</code></a>.</em></p></div></body></html>

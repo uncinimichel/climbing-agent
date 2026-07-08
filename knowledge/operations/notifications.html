@@ -1,0 +1,87 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Notifications &amp; Push · multi-pitch Live</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"><style>
+:root{--ink:#0C0D10;--ink2:#12141B;--ink3:#191C27;--ink4:#20243A;--seam:#252840;
+--chalk:#EAE6DD;--chalk2:#9B9890;--chalk3:#5A5860;--go:#6CB268;--amb:#C8A44A;
+--wet:#B94438;--spike:#C4FF5C;--r:6px;--r-lg:12px}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--ink);color:var(--chalk)}
+body{font-family:'Inter',system-ui,sans-serif;font-size:15px;line-height:1.65;
+-webkit-font-smoothing:antialiased}
+.top{position:sticky;top:0;z-index:10;height:48px;background:var(--ink2);
+border-bottom:1px solid var(--seam);display:flex;align-items:center;gap:12px;padding:0 18px}
+.logo{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--chalk);
+letter-spacing:-.2px;text-decoration:none}
+.top a.btn{margin-left:auto;font-size:12px;color:var(--chalk2);text-decoration:none;
+border:1px solid var(--seam);border-radius:var(--r);padding:5px 12px}
+.top a.btn:hover{color:var(--chalk);border-color:var(--chalk3)}
+.wrap{max-width:860px;margin:0 auto;padding:32px 22px 96px}
+.crumb{font-size:12px;color:var(--chalk3);margin-bottom:22px;font-family:'DM Mono',monospace}
+.crumb a{color:var(--chalk2);text-decoration:none}
+.crumb a:hover{color:var(--spike)}
+h1,h2,h3,h4{font-family:'Syne',sans-serif;letter-spacing:-.3px;line-height:1.25;
+scroll-margin-top:64px}
+h1{font-size:30px;font-weight:800;margin:.2em 0 .6em}
+h2{font-size:21px;font-weight:700;margin:1.8em 0 .5em;padding-top:.4em;
+border-top:1px solid var(--seam)}
+h3{font-size:16.5px;font-weight:700;margin:1.4em 0 .4em;color:var(--chalk)}
+h4{font-size:14px;font-weight:700;margin:1.2em 0 .3em;color:var(--chalk2)}
+p{margin:.7em 0}
+a{color:var(--amb);text-decoration:none;border-bottom:1px solid rgba(200,164,74,.28)}
+a:hover{color:var(--spike);border-bottom-color:var(--spike)}
+strong{color:#fff;font-weight:600}
+code{font-family:'DM Mono',ui-monospace,monospace;font-size:.86em;background:var(--ink3);
+border:1px solid var(--seam);border-radius:4px;padding:1px 5px;color:var(--amb)}
+pre{background:var(--ink2);border:1px solid var(--seam);border-radius:var(--r-lg);
+padding:16px 18px;overflow-x:auto;margin:1em 0}
+pre code{background:none;border:none;padding:0;color:var(--chalk2);font-size:12.5px;
+line-height:1.5;white-space:pre}
+blockquote{margin:1.1em 0;padding:.4em 16px;border-left:3px solid var(--amb);
+background:var(--amb-d,rgba(200,164,74,.07));border-radius:0 var(--r) var(--r) 0;
+color:var(--chalk2)}
+blockquote p{margin:.4em 0}
+hr{border:none;border-top:1px solid var(--seam);margin:2em 0}
+ul,ol{margin:.6em 0;padding-left:1.4em}
+li{margin:.28em 0}
+li>ul,li>ol{margin:.25em 0}
+.tw{overflow-x:auto;margin:1.1em 0;border:1px solid var(--seam);border-radius:var(--r-lg)}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--seam);
+vertical-align:top}
+th{background:var(--ink3);font-family:'Syne',sans-serif;font-weight:700;font-size:12px;
+color:var(--chalk);white-space:nowrap}
+tr:last-child td{border-bottom:none}
+td code{white-space:nowrap}
+.idx-group{margin:1.4em 0}
+.idx-group h3{border-bottom:1px solid var(--seam);padding-bottom:.3em}
+.idx-card{display:block;padding:12px 14px;margin:8px 0;background:var(--ink2);
+border:1px solid var(--seam);border-radius:var(--r-lg);color:var(--chalk);
+border-bottom:1px solid var(--seam)}
+.idx-card:hover{border-color:var(--chalk3);color:var(--chalk)}
+.idx-card b{font-family:'Syne',sans-serif}
+.idx-card span{display:block;color:var(--chalk2);font-size:13px;margin-top:2px}
+@media(max-width:600px){.wrap{padding:22px 15px 80px}h1{font-size:24px}body{font-size:14px}}
+</style></head><body><div class=top><a class=logo href="../../index.html">🧗 multi-pitch <span style="color:var(--spike)">Live</span></a><a class=btn href="../../knowledge/index.html">📚 Knowledge</a><a class=btn href="../../knowledge/corpus-inspector.html">🧗 Inspector</a><a class=btn href="../../knowledge/data-dependencies.html">🗺 Data map</a><a class=btn href="../../index.html">▶ Dashboard</a></div><div class=wrap><div class=crumb><a href="../index.html">📚 knowledge</a> / operations / <b style='color:var(--chalk2)'>notifications</b></div><h1 id="notifications-push">Notifications &amp; Push</h1>
+<p><strong>Status: not built (research only).</strong> This doc captures the options for a <strong>push/alert delivery mechanism</strong> so the daily job can reach Michel <em>off the page</em> — no polling the dashboard. It's the delivery side of several roadmap items: <a href="../roadmap/roadmap.html">Stage 0 #2 price-drop alerting</a>, Stage 0 #8 digest, and <a href="../roadmap/roadmap.html">Stage 2 contingency alerting</a>. Pick a channel when the first of those actually ships.</p>
+<h2 id="what-we-d-notify-about">What we'd notify about</h2>
+<p>Ordered by likely value — each is a <em>change worth interrupting the day for</em>, not a daily "still fine" ping (constrain alerts to when Michel can act, per <a href="../roadmap/multi-pitch-site-plan.html">multi-pitch-site-plan §1.4</a>):</p>
+<ol><li><strong>Flight change</strong> — <code>flights-latest.json</code> price drop below a threshold, or a schedule</li></ol>
+<p>   change on the locked combo (Stage 0 #2 / #3).</p>
+<ol><li><strong>Weather / seepage alert</strong> — the chosen venue's forecast turns bad, with the top-3 dry</li></ol>
+<p>   alternatives (Stage 2 contingency engine).</p>
+<ol><li><strong>Trip daily check</strong> — an opt-in digest: today's top pick + cheapest fare (Stage 0 #8).</li><li><strong>Build health</strong> — the daily Action failed / a page didn't deploy (ops hygiene).</li></ol>
+<h2 id="the-one-hard-constraint">The one hard constraint</h2>
+<p><strong>GitHub Pages is static — it cannot send anything.</strong> But the <strong>daily GitHub Action is a server-side environment</strong> that already runs at 06:00 UTC and after every push. So <em>the Action is the sender</em>: any channel below is a step at the end of the workflow (a <code>curl</code> or a small Python call), gated on <code>if: success()</code>/<code>failure()</code> and given secrets from the repo. No extra always-on server, no cost. See <a href="deployment.html">deployment.md</a> for the job shape.</p>
+<blockquote><p>Ownership note: the send step lives in <code>.github/workflows/weather.yml</code>, which is the concurrent process's lane — this doc specifies <em>what</em> to wire, not a change to that file.</p></blockquote>
+<h2 id="channel-options-all-have-a-free-tier">Channel options (all have a free tier)</h2>
+<div class="tw"><table><thead><tr><th>Channel</th><th>Setup</th><th>Reaches phone closed?</th><th>Notes</th></tr></thead><tbody><tr><td><strong>GitHub native email</strong></td><td>Zero — toggle in Settings → Notifications → Actions</td><td>Email only</td><td>Free, no code. Good for <em>build failure</em> only; can't customise body; noisy on daily success.</td></tr><tr><td><strong>SMTP email</strong> (<code>dawidd6/action-send-mail</code>)</td><td>Gmail <strong>app password</strong> as a repo secret</td><td>Email only</td><td>Full control of subject/body (e.g. link to live page). The standard free custom-email path.</td></tr><tr><td><strong>Telegram bot</strong></td><td><code>@BotFather</code> → bot token + chat id (2 secrets)</td><td>✅ push</td><td>Official free API, one <code>curl</code> to <code>api.telegram.org</code>, no relay, very reliable. <strong>Lowest-friction real push.</strong></td></tr><tr><td><strong>ntfy.sh</strong></td><td>Install ntfy app, pick a topic</td><td>✅ push (native app)</td><td>One <code>curl -d &quot;msg&quot; ntfy.sh/&lt;topic&gt;</code>. No keys, no accounts. Sidesteps the iOS web-push limitation via its own app. Topic is a shared secret — don't send sensitive data.</td></tr><tr><td><strong>CallMeBot (WhatsApp)</strong></td><td>Message their number once → personal API key</td><td>✅ push (WhatsApp)</td><td>Free <code>curl</code>. Third-party relay — fine for "build done" pings, not for secrets.</td></tr><tr><td><strong>WhatsApp Cloud API</strong></td><td>Meta Business account + app</td><td>✅ push (WhatsApp)</td><td>Official, free low-volume tier, but heavy setup — overkill for a personal ping.</td></tr><tr><td><strong>Web push (own PWA)</strong></td><td>Service worker + VAPID keys + subscription store + <code>pywebpush</code> send step</td><td>✅ push (from our own page)</td><td>Most moving parts; only choose if it must come from <em>our</em> page with no third party. See below.</td></tr><tr><td><strong>OneSignal</strong></td><td>Drop-in web-push SDK + dashboard</td><td>✅ push</td><td>Middle ground: branded web push without rolling your own; free tier.</td></tr></tbody></table></div>
+<h2 id="web-push-specifically-the-notification-from-our-own-page-route">Web push, specifically (the "notification from our own page" route)</h2>
+<p>A true browser push (fires even when the page is closed) needs three parts:</p>
+<ol><li>The page registers a <strong>service worker</strong>; the user allows notifications → the browser</li></ol>
+<p>   returns a <strong>subscription</strong> (endpoint + encryption keys).</p>
+<ol><li>That subscription is <strong>stored</strong> where the build can read it (a committed JSON / gist).</li><li>The Action <strong>signs and sends</strong> the push with a <strong>VAPID</strong> key pair (<code>pywebpush</code> fits our</li></ol>
+<p>   Python stack) to the browser's push service.</p>
+<p>Caveats: <strong>on iPhone</strong> it only works if the site is <strong>Added to Home Screen</strong> (iOS 16.4+) — no install, no push. This is why ntfy (its own app) or Telegram is the pragmatic pick for a personal alert, and self-hosted web push is reserved for the productised multi-user surface (Stage 6), where "from our own brand, no third party" actually matters.</p>
+<h2 id="recommendation">Recommendation</h2>
+<ul><li><strong>Now / personal alerts:</strong> <strong>Telegram</strong> (no app-store friction on any device, no relay) or</li></ul>
+<p>  <strong>ntfy</strong> (if a native app icon is preferred, esp. on iPhone). Either is ~5 minutes and one   <code>curl</code>.</p>
+<ul><li><strong>Build-failure only:</strong> GitHub native email — zero code.</li><li><strong>Later / product surface:</strong> web push via <code>pywebpush</code>, or OneSignal, once notifications go</li></ul>
+<p>  multi-user and need to come from multi-pitch.com itself.</p></div></body></html>
