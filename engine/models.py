@@ -143,8 +143,13 @@ class TripContext:
 
     @property
     def origin_coords(self):
-        """Home coordinates per traveller for the distance-from-home signal."""
-        return {k: list(v) for k, v in ORIGIN_COORDS.items()}
+        """Home [lat, lon] per traveller for the distance-from-home signal, read
+        from flights.json's route.traveller_coords (falls back to ORIGIN_COORDS).
+        Keys starting with '_' (e.g. a JSON _comment) are skipped."""
+        tc = (self.flights_cfg.get("route") or {}).get("traveller_coords")
+        src = tc if tc else ORIGIN_COORDS
+        return {k: [tuple(p) for p in v]
+                for k, v in src.items() if not k.startswith("_")}
 
     @classmethod
     def from_files(cls, venues_cfg, flights_cfg, serpapi_key=None, top_n_flights=4):

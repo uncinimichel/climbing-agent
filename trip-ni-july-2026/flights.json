@@ -9,6 +9,11 @@
       "michel": ["LGW", "LHR", "LTN", "STN", "LCY"],
       "dan": ["BFS", "BHD", "DUB"]
     },
+    "traveller_coords": {
+      "_comment": "Home [lat, lon] per traveller for the distance-from-home ranking signal. Nearest point is used. Michel: London; Dan: Belfast + Dublin.",
+      "michel": [[51.5074, -0.1278]],
+      "dan": [[54.607, -5.926], [53.349, -6.260]]
+    },
     "passengers": 1,
     "note": "Michel flies from London; Dan from Belfast OR Dublin (DUB — bigger hub, often cheaper to Europe, ~2h from Belfast). Dan is local for NI venues. BFS=Intl, BHD=City."
   },
