@@ -64,7 +64,10 @@ border-bottom:1px solid var(--seam)}
 <p>Source of truth for the maths: <code>trip-ni-july-2026/scripts/update_report.py</code>. Keep this file in sync when the formula changes, and log formula changes in <a href="../roadmap/decisions.html"><code>roadmap/decisions.md</code></a>.</p>
 <h2 id="today-deterministic-rain-proxy-scoring">Today: deterministic rain-proxy scoring ✅</h2>
 <h3 id="per-day-score">Per-day score</h3>
-<pre><code>day_score = 100 − 0.8·(rain_prob_%) − 6·(precip_mm)
+<pre><code>day_score = 100 − day_rain_penalty(rain_prob_%) − 6·(precip_mm)
+          # day_rain_penalty = 0.8·prob + 0.7·(prob − 50)⁺  — gentle for uncertain
+          # days, steepens past 50% to mirror the climatology rain curve (2026-07-08);
+          # only adds penalty above 50%, so a dry forecast is never pushed down
           capped at 25  if weather_code ≥ 61   (rain)
           capped at 15  if thunderstorm
    # live-forecast horizon only — gentle, bounded climbing-quality nudges:

@@ -12,7 +12,10 @@ file in sync when the formula changes, and log formula changes in
 ### Per-day score
 
 ```
-day_score = 100 − 0.8·(rain_prob_%) − 6·(precip_mm)
+day_score = 100 − day_rain_penalty(rain_prob_%) − 6·(precip_mm)
+          # day_rain_penalty = 0.8·prob + 0.7·(prob − 50)⁺  — gentle for uncertain
+          # days, steepens past 50% to mirror the climatology rain curve (2026-07-08);
+          # only adds penalty above 50%, so a dry forecast is never pushed down
           capped at 25  if weather_code ≥ 61   (rain)
           capped at 15  if thunderstorm
    # live-forecast horizon only — gentle, bounded climbing-quality nudges:
