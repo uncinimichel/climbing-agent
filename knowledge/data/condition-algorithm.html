@@ -64,10 +64,15 @@ border-bottom:1px solid var(--seam)}
 <p>Source of truth for the maths: <code>trip-ni-july-2026/scripts/update_report.py</code>. Keep this file in sync when the formula changes, and log formula changes in <a href="../roadmap/decisions.html"><code>roadmap/decisions.md</code></a>.</p>
 <h2 id="today-deterministic-rain-proxy-scoring">Today: deterministic rain-proxy scoring ✅</h2>
 <h3 id="per-day-score">Per-day score</h3>
-<pre><code>day_score = 100 − day_rain_penalty(rain_prob_%) − 6·(precip_mm)
+<pre><code>day_score = 100 − day_rain_penalty(effective_rain_prob) − 6·(precip_mm)
           # day_rain_penalty = 0.8·prob + 0.7·(prob − 50)⁺  — gentle for uncertain
           # days, steepens past 50% to mirror the climatology rain curve (2026-07-08);
           # only adds penalty above 50%, so a dry forecast is never pushed down
+          # effective_rain_prob (2026-07-08): use the real precipitation_probability_max
+          #   when present, else INFER it from the weathercode — Open-Meteo drops the
+          #   probability past ~14 days, and treating that None as 0% rain was scoring
+          #   drizzly horizon-edge days ~perfect (the Dolomites bug). Fallback by code:
+          #   clear 5% · cloud 20% · fog 40% · drizzle 60% · rain/snow 80% · storm 90%
           capped at 25  if weather_code ≥ 61   (rain)
           capped at 15  if thunderstorm
    # live-forecast horizon only — gentle, bounded climbing-quality nudges:
@@ -105,8 +110,10 @@ sunniness:  live sunshine fraction when the 16-day forecast is in range;
 <ul><li>The four extra terms apply <strong>only when the live 16-day forecast is in range</strong> (they need</li></ul>
 <p>  fields climatology/seasonal don't carry). Each is small and clamped so ranking never   swings wildly — they refine ties, they don't overturn a rain verdict. <code>daytime_dewpoint</code>   is the mean of hourly dew point 09–18 local; <code>sunshine_frac = sunshine ÷ daylight</code>.   Surfaced on the dashboard as a friction/gusts/dry-mornings chip strip + hover tooltips.</p>
 <h3 id="venue-weather-score">Venue weather score</h3>
-<pre><code>weather_score = mean(day_score over the trip days used)     (live horizon)
-              | 0.7·climo_score + 0.3·seasonal_score        (beyond live range)</code></pre>
+<pre><code>weather_score = mean(day_score over the in-window forecast days)     (forecast covers whole window)
+              | (k/N)·forecast_mean + (1 − k/N)·climo_component       (forecast covers k of N trip days)
+              | 0.7·climo_score + 0.3·seasonal_score                  (beyond live range, k = 0)</code></pre>
+<p><strong>Coverage-weighted blend (2026-07-08).</strong> The 16-day forecast reaches the <em>start</em> of the trip window ~15 days out but doesn't span the whole trip for another few days. Until it does, the forecast only <strong>partly</strong> covers the window (<code>k</code> of <code>N</code> trip days), so it is <strong>weighted by coverage</strong> and the out-of-range days fall back to climatology — rather than the old behaviour where 2 in-range days <em>superseded</em> the whole typical-week verdict. This was letting a soaking-wet alpine venue (Dolomites: raining through the 21st, 67%-wet climatology → climo 0) score <strong>87</strong> off its only two in-range days — which also happened to be the horizon-edge days with no rain-probability data. Blend + <code>effective_rain_prob</code> together drop it to <strong>~17</strong>. The forecast fully supersedes once <code>k = N</code>.</p>
 <h3 id="composite-trip-score-2026-07-03">Composite trip score (2026-07-03)</h3>
 <p>Weather is dominant but no longer the whole ranking — the spreadsheet's judgment columns and flight costs now count:</p>
 <pre><code>trip_score = 0.55·weather + 0.25·travel + 0.20·venue_fit
@@ -130,7 +137,7 @@ venue_fit = mean of: volume band (Vast 100 / Large 85 / Moderate 65 / Smaller 45
 <p>Ranking: <strong>sort by <code>trip_score</code> desc, tie-break by <code>priority</code></strong> (NI preferred when tied).</p>
 <h3 id="three-weather-horizons-all-free-no-key">Three weather horizons (all free, no key)</h3>
 <div class="tw"><table><thead><tr><th>Horizon</th><th>Source</th><th>Role</th></tr></thead><tbody><tr><td><strong>Live forecast</strong></td><td>Open-Meteo 16-day</td><td>Ranks the trip once in range (~8 July); <strong>supersedes</strong> the others.</td></tr><tr><td><strong>Climatology</strong></td><td>Open-Meteo Archive (ERA5 July averages)</td><td>Deterministic base ranking + the per-venue rain/temp/wind mini-graph.</td></tr><tr><td><strong>Sub-seasonal</strong></td><td>Open-Meteo Seasonal (CFS, ~45 d)</td><td>Weak signal; <strong>blended 70/30</strong> (climatology dominant) while beyond live range.</td></tr></tbody></table></div>
-<p><strong>Basis selection:</strong> while the trip is beyond the 16-day window, rank on <code>0.7·climatology + 0.3·seasonal</code>, labelled "typical July + 45-day outlook". Once the live forecast reaches the trip window, it supersedes both. The active basis is always stated in the dashboard banner (honest-uncertainty principle).</p>
+<p><strong>Basis selection:</strong> while the trip is beyond the 16-day window, rank on <code>0.7·climatology + 0.3·seasonal</code>, labelled "typical July + 45-day outlook". As the live forecast reaches into the window it takes over <strong>only for the days it covers</strong> (coverage-weighted blend above), fully superseding once it spans the whole trip. The active basis — including the <code>k/N</code> coverage — is always stated per venue and in the dashboard banner (honest-uncertainty principle).</p>
 <h3 id="properties-that-matter">Properties that matter</h3>
 <ul><li><strong>Reproducible.</strong> Climatology scoring is deterministic — two runs give identical rain%</li></ul>
 <p>  and ordering. This is a verification checkpoint (see <code>operations/runbook.md</code>).</p>

@@ -424,6 +424,29 @@ Historical backtest: wet venue-days (≥45%) avg weather score **47 → 22**, dr
 `engine/weather.py`, `engine/scoring.py`, `engine/models.py`, the "?" explainer + donut widget
 (`render.py`), and this doc; site ranking rebuilt on deploy.
 
+### #29 — Coverage-weighted forecast blend + weathercode rain fallback (2026-07-08)
+**Decision:** two fixes to how the live forecast supersedes climatology, after Michel spotted
+a soaking-wet Dolomites ranked #2:
+1. **Coverage-weighted blend.** The 16-day forecast reaches the *start* of the window ~15
+   days out but doesn't span the trip for days. While it covers only `k` of `N` trip days,
+   weather = `(k/N)·forecast_mean + (1−k/N)·climo_component` — it no longer *supersedes* the
+   whole typical-week verdict on a 2-day sliver. Fully takes over at `k = N`. Basis label +
+   banner now state the `k/N` coverage. (`scoring.evaluate`, `update_report.build_banner`.)
+2. **`effective_rain_prob`.** Open-Meteo drops `precipitation_probability_max` past ~14 days;
+   `day_score`'s `(prob or 0)` read that None as **0% rain**, scoring drizzly horizon-edge
+   days ~perfect. Now infer probability from the weathercode when it's missing (clear 5% …
+   drizzle 60% … rain 80% … storm 90%). (`weather.code_rain_prob`/`effective_rain_prob`.)
+**Why:** the window (22–27 Jul) had just entered the forecast edge (reaches 23 Jul), so all
+27 forecast-basis venues were ranked on **only 22–23 Jul**, and the 9 alpine ones had **no
+rain-probability on both days** — the two bugs compounded to launch a 67%-wet venue
+(climo weather 0) to weather **87**, #2 overall. Pre-existing latent bugs, surfaced by the
+window reaching the horizon; unrelated to the #28 rain curve (that only touches climatology).
+**Effect (today's board):** Dolomites weather **87 → 17** (#2 → #31), East Tyrol **78 → 16**;
+Écrins stays strong (**83**, good on both bases — correctly *not* penalised). New top:
+Lundy · Picos · Tenerife · Gredos · Aladağlar · Mournes · Écrins. **Extends** #28 / the
+three-horizon model. **Status:** ✅ Live — `engine/weather.py`, `engine/scoring.py`,
+`update_report.py`, the "?" explainer (`render.py`), condition-algorithm.md; deployed.
+
 ---
 
 *Template for new entries:*

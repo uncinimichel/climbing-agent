@@ -155,12 +155,14 @@ def evaluate(v, ctx, env_cache=None, climo_cache=None, stays_cache=None,
             res["fc"] = {
                 "score": round(sum(scores) / len(scores)),
                 "tmax": round(sum(daily["temperature_2m_max"][i] for i in in_win) / len(in_win)),
-                "rain_prob": max((daily["precipitation_probability_max"][i] or 0) for i in in_win),
+                "rain_prob": max(weather.effective_rain_prob(daily["precipitation_probability_max"][i],
+                                                             daily["weathercode"][i]) for i in in_win),
                 "sky": WMO.get(dom, "?"), "sky_icon": wmo_icon(dom),
                 "gust_max": max(gusts_w) if gusts_w else None,
                 "friction": weather.friction_label(mean_dew), "dew": mean_dew,
                 "am_dry_days": (sum(1 for a in am_flags if a), len(am_flags)) if am_flags else None,
                 "in_window": True, "horizon": days[-1],
+                "cover_days": len(in_win), "trip_days": ctx.trip_days,
             }
         else:
             res["fc"] = {"in_window": False, "horizon": days[-1] if days else "?"}
@@ -169,9 +171,11 @@ def evaluate(v, ctx, env_cache=None, climo_cache=None, stays_cache=None,
         res["fc"] = None
 
     fc, sea = res["fc"], res["seasonal"]
-    if fc and fc.get("in_window"):
-        res["score"], res["basis"] = fc["score"], "live forecast (trip window)"
-    elif res["climo"]:
+    # Climatology (+seasonal) component — computed whenever we have climo, so a
+    # PARTIAL-window forecast can blend with it instead of superseding it on a
+    # sliver of days (see below).
+    climo_component = None
+    if res["climo"]:
         c = res["climo"]
         sunny = max(0.35, 1 - c["rain_pct"] / 100)   # dry climate ≈ sunny climate
         cs = weather.climo_score({**c, "tmax": weather.sun_adjusted_tmax(v, c["tmax"], sunny)},
@@ -182,10 +186,25 @@ def evaluate(v, ctx, env_cache=None, climo_cache=None, stays_cache=None,
             ss = weather.climo_score({"tmax": weather.sun_adjusted_tmax(v, sea["tmax"], ssun),
                                        "rain_pct": sea["rain_pct"]},
                                       rain_tol=ctx.prefs.rain_tol, heat_tol=ctx.prefs.heat_tol)
-            res["score"] = round(0.7 * cs + 0.3 * ss)
-            res["basis"] = f"typical {ctx.period_lbl} + long-range outlook"
+            climo_component = (round(0.7 * cs + 0.3 * ss), f"typical {ctx.period_lbl} + long-range outlook")
         else:
-            res["score"], res["basis"] = cs, f"typical {ctx.period_lbl} (climatology)"
+            climo_component = (cs, f"typical {ctx.period_lbl} (climatology)")
+
+    if fc and fc.get("in_window"):
+        k, n = fc.get("cover_days", 0), fc.get("trip_days") or ctx.trip_days
+        if k >= n or climo_component is None:
+            # forecast covers the whole trip window (or we have no climatology) —
+            # it fully supersedes, as designed
+            res["score"], res["basis"] = fc["score"], "live forecast (trip window)"
+        else:
+            # forecast reaches only part of the window — weight it by coverage and
+            # fill the out-of-range days with climatology, so 2 dry edge days can't
+            # out-rank a whole typical-July verdict (the Dolomites artifact)
+            wt = k / n
+            res["score"] = round(wt * fc["score"] + (1 - wt) * climo_component[0])
+            res["basis"] = f"live forecast ({k}/{n} trip days) blended with {climo_component[1]}"
+    elif climo_component is not None:
+        res["score"], res["basis"] = climo_component
     else:
         res["score"], res["basis"] = -1, "no data"
     res["wscore"] = res["score"]   # weather-only score; composite overwrites score

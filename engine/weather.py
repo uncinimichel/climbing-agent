@@ -228,6 +228,38 @@ def friction_label(dew):
     return "greasy"
 
 
+def code_rain_prob(code):
+    """Fallback rain probability (%) inferred from the WMO weathercode, for the
+    16-day horizon edge where Open-Meteo drops precipitation_probability_max
+    (returns None). Without this, a None probability reads as 0% rain and a
+    drizzly edge day scores ~perfect — the Dolomites bug. The code still carries
+    the sky state, so a drizzle/rain code keeps its penalty even with no prob."""
+    if code is None:
+        return 0
+    if code >= 95:      # thunderstorm
+        return 90
+    if code >= 80:      # rain showers
+        return 75
+    if code >= 71:      # snow
+        return 80
+    if code >= 61:      # rain
+        return 80
+    if code >= 51:      # drizzle
+        return 60
+    if code >= 45:      # fog
+        return 40
+    if code >= 1:       # partly → overcast
+        return 20
+    return 5            # clear sky
+
+
+def effective_rain_prob(prob, code):
+    """Use the real forecast probability when present, else infer it from the
+    weathercode (horizon edge). Shared by day_score and the rain sub-signal so
+    the score and the widget agree."""
+    return prob if prob is not None else code_rain_prob(code)
+
+
 def day_rain_penalty(prob, tol=1.0):
     """Forecast rain-probability → points off. Keeps the gentle 0.8/pt base for
     uncertain days but steepens past 50%, in the same spirit as the climatology
@@ -244,7 +276,7 @@ def day_score(code, mm, prob, m=None, rain_tol=1.0, heat_tol=1.0):
     `m` (optional) carries the richer signals — gusts, wet-hours, sunshine (drying) and
     dewpoint (friction) — each a gentle, bounded nudge so ranking never swings wildly.
     rain_tol/heat_tol are user-preference multipliers (>1 = more tolerant), 1.0 = neutral."""
-    s = 100.0 - day_rain_penalty(prob, rain_tol) - (mm or 0) * 6
+    s = 100.0 - day_rain_penalty(effective_rain_prob(prob, code), rain_tol) - (mm or 0) * 6
     if code is not None and code >= 61:
         s = min(s, 25)
     if code in (95, 96, 99):

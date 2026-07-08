@@ -12,10 +12,15 @@ file in sync when the formula changes, and log formula changes in
 ### Per-day score
 
 ```
-day_score = 100 − day_rain_penalty(rain_prob_%) − 6·(precip_mm)
+day_score = 100 − day_rain_penalty(effective_rain_prob) − 6·(precip_mm)
           # day_rain_penalty = 0.8·prob + 0.7·(prob − 50)⁺  — gentle for uncertain
           # days, steepens past 50% to mirror the climatology rain curve (2026-07-08);
           # only adds penalty above 50%, so a dry forecast is never pushed down
+          # effective_rain_prob (2026-07-08): use the real precipitation_probability_max
+          #   when present, else INFER it from the weathercode — Open-Meteo drops the
+          #   probability past ~14 days, and treating that None as 0% rain was scoring
+          #   drizzly horizon-edge days ~perfect (the Dolomites bug). Fallback by code:
+          #   clear 5% · cloud 20% · fog 40% · drizzle 60% · rain/snow 80% · storm 90%
           capped at 25  if weather_code ≥ 61   (rain)
           capped at 15  if thunderstorm
    # live-forecast horizon only — gentle, bounded climbing-quality nudges:
@@ -100,9 +105,20 @@ automatically.
 ### Venue weather score
 
 ```
-weather_score = mean(day_score over the trip days used)     (live horizon)
-              | 0.7·climo_score + 0.3·seasonal_score        (beyond live range)
+weather_score = mean(day_score over the in-window forecast days)     (forecast covers whole window)
+              | (k/N)·forecast_mean + (1 − k/N)·climo_component       (forecast covers k of N trip days)
+              | 0.7·climo_score + 0.3·seasonal_score                  (beyond live range, k = 0)
 ```
+
+**Coverage-weighted blend (2026-07-08).** The 16-day forecast reaches the *start* of the
+trip window ~15 days out but doesn't span the whole trip for another few days. Until it
+does, the forecast only **partly** covers the window (`k` of `N` trip days), so it is
+**weighted by coverage** and the out-of-range days fall back to climatology — rather than
+the old behaviour where 2 in-range days *superseded* the whole typical-week verdict. This
+was letting a soaking-wet alpine venue (Dolomites: raining through the 21st, 67%-wet
+climatology → climo 0) score **87** off its only two in-range days — which also happened to
+be the horizon-edge days with no rain-probability data. Blend + `effective_rain_prob`
+together drop it to **~17**. The forecast fully supersedes once `k = N`.
 
 ### Composite trip score (2026-07-03)
 
@@ -150,9 +166,11 @@ Ranking: **sort by `trip_score` desc, tie-break by `priority`** (NI preferred wh
 | **Sub-seasonal** | Open-Meteo Seasonal (CFS, ~45 d) | Weak signal; **blended 70/30** (climatology dominant) while beyond live range. |
 
 **Basis selection:** while the trip is beyond the 16-day window, rank on
-`0.7·climatology + 0.3·seasonal`, labelled "typical July + 45-day outlook". Once the live
-forecast reaches the trip window, it supersedes both. The active basis is always stated
-in the dashboard banner (honest-uncertainty principle).
+`0.7·climatology + 0.3·seasonal`, labelled "typical July + 45-day outlook". As the live
+forecast reaches into the window it takes over **only for the days it covers**
+(coverage-weighted blend above), fully superseding once it spans the whole trip. The active
+basis — including the `k/N` coverage — is always stated per venue and in the dashboard
+banner (honest-uncertainty principle).
 
 ### Properties that matter
 

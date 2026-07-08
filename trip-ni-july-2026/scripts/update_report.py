@@ -96,11 +96,20 @@ def build_context():
 
 
 def build_banner(ctx, ranked):
-    in_window = any(r.get("fc") and r["fc"].get("in_window") for r in ranked)
+    fcs = [r["fc"] for r in ranked if r.get("fc") and r["fc"].get("in_window")]
+    kmax = max((f.get("cover_days", 0) for f in fcs), default=0)
+    n = ctx.trip_days
     horizon = next((r["fc"]["horizon"] for r in ranked if r.get("fc")), "?")
     now = datetime.now(timezone.utc)
-    if in_window:
+    if fcs and kmax >= n:
         return ("ok", "✅ Trip dates are within the 16-day forecast — venues ranked on the <b>actual trip-window forecast</b>.")
+    if kmax > 0:
+        # forecast reaches only the first part of the window — be honest that most
+        # venues are a coverage-weighted blend, not a full-window forecast
+        return ("", f"🛰️ The 16-day forecast now reaches the <b>first {kmax} of your {n} trip days</b> — "
+                    f"those venues blend the live forecast with typical {ctx.period_lbl} weather for the "
+                    f"days still beyond range; the rest rank on typical weather. "
+                    f"Full-window forecast fills in over the next few days.")
     days_out = (ctx.target_start - now.date()).days
     has_sea = any(r.get("seasonal") for r in ranked)
     sea_txt = (" blended with a <b>long-range outlook</b> (model reach ~45 days; shown per venue)" if has_sea else "")

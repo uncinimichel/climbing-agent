@@ -905,7 +905,7 @@ PAGE_BODY = """<body>
       Michel, Belfast/Dublin for Dan), so nearby European crags edge out ones in Africa or
       the US when all else is close.</p>
       <p>Ranking basis by date: <b>typical weather for your trip dates</b> (recent-year averages) blended with the
-      <b>long-range outlook</b> now (a forecast model that can see up to ~45 days ahead — the ‘45-day’ is the model’s reach, not your trip length); the <b>live 16-day forecast takes over ~8 July</b>. The page
+      <b>long-range outlook</b> now (a forecast model that can see up to ~45 days ahead — the ‘45-day’ is the model’s reach, not your trip length). As the <b>live 16-day forecast</b> reaches into your window it takes over <b>only for the days it actually covers</b> — a venue whose forecast reaches 2 of your 6 trip days is scored ⅓ on those live days and ⅔ on typical weather for the rest, so a couple of dry days at the edge of the forecast can’t out-rank a whole typical-week verdict. It fully supersedes once it spans the trip. The page
       rebuilds daily at 06:00 UTC. Full maths:
       <a class="lk" href="knowledge/data/condition-algorithm.html">condition algorithm</a>.</p>
     </div>
