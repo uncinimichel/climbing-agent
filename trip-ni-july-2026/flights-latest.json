@@ -1,6 +1,6 @@
 {
   "comment": "Latest flight prices per combo (round-trip, 1 pax, GBP). Updated on demand by Claude or by an API script. null = not yet checked.",
-  "checked_at": "2026-07-08 07:39 UTC (Google Flights/SerpApi)",
+  "checked_at": "2026-07-08 08:16 UTC (Google Flights/SerpApi)",
   "currency": "GBP",
   "rep_combo": {
     "id": "fri-tue",
@@ -234,8 +234,8 @@
         "to": "MAD",
         "options": [
           {
-            "price": 189,
-            "airline": "Iberia Express",
+            "price": 186,
+            "airline": "Iberia",
             "from": "DUB",
             "to": "MAD",
             "dep": "21:25",
@@ -243,8 +243,8 @@
             "stops": 0
           },
           {
-            "price": 204,
-            "airline": "Iberia",
+            "price": 189,
+            "airline": "Iberia Express",
             "from": "DUB",
             "to": "MAD",
             "dep": "21:25",
