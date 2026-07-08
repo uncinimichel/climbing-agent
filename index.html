@@ -125,9 +125,17 @@ svg.topo .dseg{pointer-events:stroke}
 .suns .dl{color:var(--muted)}
 .uvr{width:20px;height:20px;border-radius:50%;border:1.5px solid;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9.5px;font-weight:600;color:var(--ink)}
 .uvr.est{border-style:dashed}
-#wxtip{position:fixed;z-index:70;pointer-events:none;background:var(--card);border:1px solid var(--line2);color:var(--ink);font-family:var(--mono);font-size:11.5px;line-height:1.6;border-radius:7px;padding:8px 11px;max-width:260px;box-shadow:0 8px 24px rgba(0,0,0,.5);opacity:0;transition:opacity .12s}
-#wxtip .dim{color:var(--muted)}
-@media(prefers-reduced-motion:reduce){#wxtip{transition:none}}
+/* Day detail: docked UNDER the grid (not a floating overlay that covered the
+   rows beneath), laid out wide-and-short so it never obscures anything. Fills
+   on hover/focus/tap of a day; defaults to the first trip day. */
+.wx-detail{margin-top:10px;background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:11px 14px;max-width:960px;min-height:62px;font-size:12.5px;line-height:1.5}
+.wx-detail .wxd-head{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:8px}
+.wx-detail .wxd-head b{font-size:13.5px}
+.wx-detail .wxd-why{color:var(--muted);font-size:12px}
+.wx-detail .wxd-facts{display:flex;flex-wrap:wrap;gap:7px 18px}
+.wx-detail .wxd-facts>span{white-space:nowrap}
+.wx-detail .wxd-facts i{font-style:normal;font-family:var(--mono);font-size:9px;letter-spacing:.05em;text-transform:uppercase;color:var(--faint);margin-right:5px}
+.wx-detail .dim{color:var(--muted)}
 .board-sub .lk{font-size:11px}
 .hovl{display:none;position:fixed;inset:0;background:rgba(10,11,14,.72);z-index:60;align-items:center;justify-content:center;padding:18px}
 .hbox{background:var(--panel);border:1px solid var(--line2);border-radius:14px;max-width:660px;max-height:86vh;overflow-y:auto;padding:18px 22px 20px;box-shadow:0 18px 60px rgba(0,0,0,.5)}
@@ -643,77 +651,58 @@ function provWhy(p){return p==='forecast'?'A real forecast, ≤7 days out — tr
   :'The typical average for this date (2021–24), not a forecast.';}
 // The tap/hover panel: a plain-language breakdown of the day, one labelled line
 // per measurement, led by how much to trust it (its provenance).
-function wxTipHtml(d){
+// One day's full breakdown, laid out wide-and-short (header line + a wrapping
+// row of labelled facts) for the docked panel under the grid.
+function wxDetailHtml(d){
   var o=d.fc||d.out;
   var ARR=['↓','↙','←','↖','↑','↗','→','↘'];
   function warr(x){return x==null?'':ARR[Math.round((((num(x)%360)+360)%360)/45)%8];}
   var p=d.prov||'typical';
-  var h='<b>'+esc(d.lbl)+' '+num(d.day)+(d.trip?' · TRIP DAY':'')+'</b> '
+  var head='<div class="wxd-head"><b>'+esc(d.lbl)+' '+num(d.day)+'</b>'
+    +(d.trip?'<span class="wxchip" style="background:var(--dry-bg);color:var(--dry);border:1px solid transparent">trip day</span>':'')
     +'<span class="wxchip '+p+'">'+provShort(p)+'</span>'
-    +'<br><span class="dim">'+provWhy(p)+'</span>';
-  // temperature, sourced honestly
+    +'<span class="wxd-why">'+provWhy(p)+'</span></div>';
+  var f=[];
   if(o){
-    h+='<br><b>'+(d.fc?'Forecast high':'Outlook high')+':</b> '+num(o.tmax)+'°C';
-    if(p==='lowconf'&&d.fc&&d.fc.tlo!=null&&d.fc.thi!=null)
-      h+=' <span class="dim">(could land '+num(d.fc.tlo)+'–'+num(d.fc.thi)+'°C — ensemble range)</span>';
-    h+='<br><span class="dim">Typical for the date:</span> '+num(d.tmax)+'°C';
-  } else h+='<br><b>Typical high:</b> '+num(d.tmax)+'°C';
-  // rain — chance first (the honest number), then amount
+    var t=(p==='outlook'?'~':'')+num(o.tmax)+'°C';
+    if(p==='lowconf'&&d.fc&&d.fc.tlo!=null&&d.fc.thi!=null)t+=' <span class="dim">('+num(d.fc.tlo)+'–'+num(d.fc.thi)+'° range)</span>';
+    f.push('<span><i>Temp</i>'+t+' <span class="dim">· typ '+num(d.tmax)+'°</span></span>');
+  } else f.push('<span><i>Temp</i>typical '+num(d.tmax)+'°C</span>');
   if(d.fc){
     var pr=(d.fc.prob!=null)?num(d.fc.prob):null;
-    h+='<br><b>Chance of rain:</b> '+(pr!=null?pr+'%':'—')
-      +(p==='lowconf'&&d.fc.pop!=null?' <span class="dim">('+num(d.fc.pop)+'% of ensemble members wet)</span>':'')
-      +' · <span class="dim">'+num(d.fc.precip)+' mm expected</span>';
-  } else if(d.out) h+='<br><b>Rain:</b> '+num(d.out.precip)+' mm <span class="dim">(outlook)</span>';
-  else h+='<br><b>Rain:</b> '+num(d.precip)+' mm <span class="dim">on a typical day</span>';
-  // wind
+    f.push('<span><i>Rain</i>'+(pr!=null?pr+'% chance':'—')
+      +(p==='lowconf'&&d.fc.pop!=null?' <span class="dim">('+num(d.fc.pop)+'% members wet)</span>':'')
+      +' <span class="dim">· '+num(d.fc.precip)+' mm</span></span>');
+  } else if(d.out) f.push('<span><i>Rain</i>'+num(d.out.precip)+' mm <span class="dim">outlook</span></span>');
+  else f.push('<span><i>Rain</i>'+num(d.precip)+' mm <span class="dim">typical</span></span>');
   var wv=(d.fc&&d.fc.wind!=null)?num(d.fc.wind):num(d.wind);
   var wd=(d.fc&&d.fc.dir!=null)?d.fc.dir:d.dir;
-  h+='<br><b>Wind:</b> '+wv+' km/h'+(wd!=null?' from '+compass(wd)+' '+warr(wd):'')
-    +(d.fc&&d.fc.gust!=null?' · gusts '+num(d.fc.gust)+' km/h':'');
-  // UV
+  f.push('<span><i>Wind</i>'+wv+' km/h'+(wd!=null?' '+compass(wd)+' '+warr(wd):'')
+    +(d.fc&&d.fc.gust!=null?' <span class="dim">· gusts '+num(d.fc.gust)+'</span>':'')+'</span>');
   var tuv=(d.fc&&d.fc.uv!=null)?num(d.fc.uv):(d.uv!=null?num(d.uv):null);
-  if(tuv!=null)h+='<br><b>UV index:</b> '+tuv+((d.fc&&d.fc.uv!=null)?'':' <span class="dim">(estimated)</span>');
+  if(tuv!=null)f.push('<span><i>UV</i>'+tuv+((d.fc&&d.fc.uv!=null)?'':' <span class="dim">est</span>')+'</span>');
   var tcc=wxCloud(d);
-  if(tcc!=null)h+='<br><span class="dim">Cloud cover:</span> '+tcc+'%';
-  // rock quality (live only)
-  if(d.fc&&d.fc.friction)h+='<br><b>Rock friction:</b> '+esc(d.fc.friction)
-    +(d.fc.dew!=null?' <span class="dim">(dewpoint '+num(d.fc.dew)+'°C)</span>':'')
-    +(d.fc.sunFrac!=null?' · '+Math.round(num(d.fc.sunFrac)*100)+'% sun':'');
-  if(d.sun)h+='<br><span class="dim">Daylight:</span> '+(d.sun[0]
-    ?esc(d.sun[0])+' → '+esc(d.sun[1])+' · '+num(d.sun[2])+' h'
-    :(d.sun[2]>=24?'sun never sets (24 h)':'sun never rises'));
-  if(d.tide&&d.tide.length)h+='<br><span class="dim">Tide (vs mean sea level):</span> '
-    +d.tide.map(function(x){return (x.k==='L'?'▼ low ':'▲ high ')+esc(x.t)+' '+num(x.h)+'m';}).join(' · ');
-  return h;
+  if(tcc!=null)f.push('<span><i>Cloud</i>'+tcc+'%</span>');
+  if(d.fc&&d.fc.friction)f.push('<span><i>Friction</i>'+esc(d.fc.friction)
+    +(d.fc.dew!=null?' <span class="dim">dew '+num(d.fc.dew)+'°</span>':'')
+    +(d.fc.sunFrac!=null?' <span class="dim">· '+Math.round(num(d.fc.sunFrac)*100)+'% sun</span>':'')+'</span>');
+  if(d.sun)f.push('<span><i>Daylight</i>'+(d.sun[0]?esc(d.sun[0])+'→'+esc(d.sun[1])+' <span class="dim">· '+num(d.sun[2])+'h</span>':(d.sun[2]>=24?'24h sun':'no sun'))+'</span>');
+  if(d.tide&&d.tide.length)f.push('<span><i>Tide</i>'+d.tide.map(function(x){return (x.k==='L'?'▼':'▲')+esc(x.t)+' '+num(x.h)+'m';}).join(' · ')+'</span>');
+  return head+'<div class="wxd-facts">'+f.join('')+'</div>';
 }
-var _wxTipEl=null;
-function wxTip(){
-  if(!_wxTipEl){
-    _wxTipEl=document.createElement('div');_wxTipEl.id='wxtip';document.body.appendChild(_wxTipEl);
-    var off=function(){_wxTipEl.style.opacity=0;};
-    document.addEventListener('click',off);
-    window.addEventListener('scroll',off,{passive:true});
-  }
-  return _wxTipEl;
-}
-function wireWxTips(root,s2){
-  var tip=wxTip();
-  function show(el){
-    var d=s2[+el.getAttribute('data-i')];if(!d)return;
-    tip.innerHTML=wxTipHtml(d);tip.style.opacity=1;
-    var r=el.getBoundingClientRect(),tw=tip.offsetWidth||220;
-    var x=Math.min(Math.max(8,r.left+r.width/2-tw/2),window.innerWidth-tw-8);
-    var y=r.top-tip.offsetHeight-10;if(y<8)y=r.bottom+10;
-    tip.style.left=x+'px';tip.style.top=y+'px';
-  }
+// Fill the docked #wxDetail on hover/focus/tap; default to the first trip day so
+// it's never empty, and never revert on mouseout (keeps the panel steady).
+function wireWxDetail(root,s2){
+  var panel=root.querySelector('#wxDetail');if(!panel)return;
+  function fill(i){var d=s2[i];if(d)panel.innerHTML=wxDetailHtml(d);}
+  var def=0;for(var m=0;m<s2.length;m++){if(s2[m].trip){def=m;break;}}
+  fill(def);
   var els=root.querySelectorAll('.wxc');
   for(var k=0;k<els.length;k++)(function(el){
-    el.addEventListener('mouseenter',function(){show(el);});
-    el.addEventListener('mouseleave',function(){tip.style.opacity=0;});
-    el.addEventListener('focus',function(){show(el);});
-    el.addEventListener('blur',function(){tip.style.opacity=0;});
-    el.addEventListener('click',function(e){show(el);e.stopPropagation();});
+    var i=+el.getAttribute('data-i');
+    el.addEventListener('mouseenter',function(){fill(i);});
+    el.addEventListener('focus',function(){fill(i);});
+    el.addEventListener('click',function(e){fill(i);e.stopPropagation();});
   })(els[k]);
 }
 function popColor(p){p=num(p);return p>=60?'#D06A57':(p>=30?'#B98A2E':'#57A664');}
@@ -813,12 +802,13 @@ function renderWx(v){
     +'<span class="wxchip forecast">Forecast</span> trust it (≤7 days) · '
     +'<span class="wxchip lowconf">Low conf</span> a lean (7–16 days) · '
     +'<span class="wxchip outlook">Outlook</span> 45-day guide · '
-    +'<span class="wxchip typical">Typical</span> average. Colours green/amber/red = fine/caution/rough. Tap any day for the full breakdown.</div>'
+    +'<span class="wxchip typical">Typical</span> average. Colours green/amber/red = fine/caution/rough. Hover or tap a day for the full breakdown below.</div>'
     +'<div class="wxgrid" role="group" aria-label="Daily weather by day" style="grid-template-columns:'+cols+'">'
     +rHead+rSky+rTemp+rRain+rWind+rSun+rTide
     +'</div>'
+    +'<div id="wxDetail" class="wx-detail" aria-live="polite"></div>'
     +(v.tidal&&!anyTide?'<div class="wx-key">🌊 tide-dependent access — low-water times appear here once the 10-day tide forecast reaches the trip dates.</div>':'');
-  wireWxTips(el,s2);
+  wireWxDetail(el,s2);
 }
 
 // The weighted ring: the ranking function drawn honestly, two levels deep.
