@@ -122,7 +122,7 @@
     <b>Decided — <a href="roadmap/decisions.html" style="color:inherit">#27</a>:</b> one authored <a class="nlink" href="data/corpus.json" target="_blank" rel="noopener"><b>db/corpus.json</b> ↗</a> is now the single source of truth (curated <code style="font-family:var(--mono)">status:publish</code> + seeded <code style="font-family:var(--mono)">status:draft</code>). The diagram below is <b>today's wiring</b> — the trip pipeline still reads the old files until it's switched to <code style="font-family:var(--mono)">corpus.json</code>. Full design: <a href="data/source-of-truth.html" style="color:inherit">source-of-truth</a>. <b>Tip:</b> click any file below to open it.
   </div>
   <div style="margin:10px 0 4px;border:1.5px solid var(--amber);background:var(--amber-soft);border-radius:12px;padding:14px 18px;font-size:14px">
-    <b style="color:var(--amber)">Governance — <a href="roadmap/decisions.html" style="color:inherit">#32</a>:</b> every corpus row is stamped <code style="font-family:var(--mono)">status</code> · <code style="font-family:var(--mono)">source</code> · <code style="font-family:var(--mono)">taggedBy: human|llm|source</code>, so curated vs not is a <b>filter, not a guess</b> — today <b>40/151 areas and 8/58 routes are curated</b>. Suggestions &amp; ranking may only read <code style="font-family:var(--mono)">status:publish + taggedBy:human</code>; the agent search already enforces this, the dashboard ranking doesn't yet (its <i>Coverage</i> sub-score counts raw multi-pitch.com routes). Policy, tiers &amp; scoreboard: <a href="data/governance.html" style="color:inherit"><b>data governance</b></a> · confused by a term? <a href="vision/glossary.html#data-governance-vocabulary" style="color:inherit"><b>plain-English glossary</b></a>.
+    <b style="color:var(--amber)">Governance — <a href="roadmap/decisions.html" style="color:inherit">#32/#34</a>:</b> every corpus row is stamped <code style="font-family:var(--mono)">status</code> · <code style="font-family:var(--mono)">source</code> · <code style="font-family:var(--mono)">taggedBy: human|llm|source</code>, so curated vs not is a <b>filter, not a guess</b> — today <b>23/182 areas and 8/226 routes are curated</b>. Suggestions &amp; ranking may only read <code style="font-family:var(--mono)">status:publish + taggedBy:human</code> — now a <b>Postgres CHECK constraint</b>, and enforced by the agent search; the dashboard ranking doesn't comply yet (its <i>Coverage</i> sub-score counts raw multi-pitch.com routes). Curate drafts with the <b>Curation Studio</b> (<code style="font-family:var(--mono)">db/tools/curate.py</code> → localhost:8890). Policy: <a href="data/governance.html" style="color:inherit"><b>data governance</b></a> · terms: <a href="vision/glossary.html#data-governance-vocabulary" style="color:inherit"><b>glossary</b></a>.
   </div>
 
   <div class="legend">
@@ -144,13 +144,16 @@
         <div class="lanehead">World A · Corpus DB<small>Individual routes · read by the agent · my inspector reads this</small></div>
 
         <div class="tier">
-          <div class="node ext" id="mpSeed"><div class="ntag">scraped seed</div><div class="npath"><a class="nlink" href="https://github.com/uncinimichel/climbing-agent/blob/main/db/mp-climbs.json" target="_blank" rel="noopener">db/mp-climbs.json ↗</a></div><div class="ndesc">multi-pitch.com scrape, committed. Seeds <b>draft</b> rows only.</div></div>
+          <div class="node ext" id="mpSeed"><div class="ntag">scraped seed</div><div class="npath"><a class="nlink" href="https://github.com/uncinimichel/climbing-agent/blob/main/db/mp-climbs.json" target="_blank" rel="noopener">db/mp-climbs.json + site prose ↗</a></div><div class="ndesc">multi-pitch.com snapshot + local site source (intro, approach, pitchInfo). Seeds <b>draft</b> rows only.</div></div>
           <div class="node ai" id="aiTags"><div class="ntag">ai-inferred tags</div><div class="npath"><a class="nlink" href="https://github.com/uncinimichel/climbing-agent/blob/main/db/tools/ai_tag.py" target="_blank" rel="noopener">ai_tag.py → enrichment-cache.json ↗</a></div><div class="ndesc">Claude-extracted features/character/protection. Lands as <code style="font-family:var(--mono)">taggedBy:llm</code> + tagProv — review before publish.</div></div>
         </div>
 
-        <div class="tier"><div class="node gen" id="buildCorpus"><div class="ntag">transform · corpus builder</div><div class="npath"><a class="nlink" href="https://github.com/uncinimichel/climbing-agent/blob/main/db/tools/build_corpus.py" target="_blank" rel="noopener">db/tools/build_corpus.py ↗</a></div><div class="ndesc">Merges Postgres publish rows + venues.json (curated) + MP seed + AI tags. Never overwrites human tags.</div></div></div>
+        <div class="tier">
+          <div class="node gen" id="ingest"><div class="ntag">restore / seed</div><div class="npath"><a class="nlink" href="https://github.com/uncinimichel/climbing-agent/blob/main/db/tools/ingest_corpus.py" target="_blank" rel="noopener">db/tools/ingest_corpus.py ↗</a></div><div class="ndesc">corpus.json + seeds → Postgres. Never overwrites <code style="font-family:var(--mono)">taggedBy:human</code> rows.</div></div>
+          <div class="node hand" id="curateStudio"><div class="ntag">write surface · curation studio (#34)</div><div class="npath"><a class="nlink" href="https://github.com/uncinimichel/climbing-agent/blob/main/db/tools/curate.py" target="_blank" rel="noopener">db/tools/curate.py · :8890 ↗</a></div><div class="ndesc">The localhost admin that edits the DB: facts, tags, intro/approach/pitch prose. Publish flips <code style="font-family:var(--mono)">taggedBy→human</code>.</div></div>
+        </div>
 
-        <div class="tier"><div class="node hand" id="corpusJson"><div class="ntag">source of truth · the corpus (#27)</div><div class="npath"><a class="nlink" href="data/corpus.json" target="_blank" rel="noopener">db/corpus.json ↗</a></div><div class="ndesc"><b>40/151 areas · 8/58 routes curated.</b> Every row: status · source · taggedBy. Curated = <code style="font-family:var(--mono)">status:publish + taggedBy:human</code>.</div></div></div>
+        <div class="tier"><div class="node hand" id="corpusJson"><div class="ntag">committed export · the corpus (#27/#34)</div><div class="npath"><a class="nlink" href="data/corpus.json" target="_blank" rel="noopener">db/corpus.json ↗</a></div><div class="ndesc"><b>23/182 areas · 8/226 routes curated.</b> Git-diffable backup of the DB (build_corpus.py exports; ingest restores). Curated = <code style="font-family:var(--mono)">status:publish + taggedBy:human</code>.</div></div></div>
 
         <div class="tier"><div class="node hand" id="taxonomyMd"><div class="ntag">source of truth · vocabulary</div><div class="npath"><a class="nlink" href="data/taxonomy.html" target="_blank" rel="noopener">knowledge/data/taxonomy.md ↗</a></div><div class="ndesc">Grades, rock, features, hazards. Edit vocab here first.</div></div></div>
 
@@ -202,14 +205,14 @@
 
   <div class="recipes">
     <div class="recipe">
-      <div class="world">The source of truth — db/corpus.json (#27)</div>
-      <h3>Add a climb or crag</h3>
+      <div class="world">Postgres-first — the Curation Studio (#34)</div>
+      <h3>Add / curate a climb or crag</h3>
       <ol class="steps">
-        <li>Add an <code>areas[]</code> entry (crag with <code>lat/lon</code>, rock, aspect) and/or a <code>routes[]</code> entry to <a class="nlink" href="data/corpus.json" target="_blank" rel="noopener"><code>db/corpus.json</code> ↗</a>. Coordinates live here now — no GAZETTEER.</li>
-        <li>Set <code>status: "publish"</code> for verified data, <code>status: "draft"</code> for unverified. Tags (<code>disciplines</code>, <code>features</code>, <code>hazards</code>) are values from <code>tag-spec.json</code>.</li>
-        <li>Or bulk-seed from multi-pitch.com: re-run <code>python3 db/tools/build_corpus.py</code> (adds <code>draft</code> rows to review).</li>
+        <li>Get it into the DB as a <b>draft</b>: the crawler (UKC/theCrag), <code>ingest_corpus.py</code> (multi-pitch seed), or soon the Studio's "new route" form.</li>
+        <li>Open the <b>Curation Studio</b> — <code>agent/.venv/bin/python db/tools/curate.py</code> → localhost:8890. Verify facts, fix tags, write intro / approach / pitch-by-pitch, then <b>Publish</b> (flips <code>taggedBy→human</code>).</li>
+        <li>Hit <b>⇩ Export</b> and commit the <code>corpus.json</code> diff — that's the backup and the audit trail.</li>
       </ol>
-      <div class="out">→ One file. Loads into Postgres later unchanged. Curated list = filter <code>status=publish</code>.</div>
+      <div class="out">→ Postgres is the working store; corpus.json the committed export. Curated list = <code>status=publish + taggedBy=human</code>.</div>
     </div>
 
     <div class="recipe">
@@ -231,9 +234,10 @@
 
 <script>
 const EDGES=[
-  ['mpSeed','buildCorpus','api'],['aiTags','buildCorpus','solid'],
-  ['venuesJson','buildCorpus','solid'],
-  ['buildCorpus','corpusJson','solid'],
+  ['mpSeed','ingest','api'],['aiTags','ingest','solid'],
+  ['ingest','pg','solid'],['curateStudio','pg','solid'],
+  ['pg','corpusJson','solid'],
+  ['corpusJson','ingest','manual'],
   ['taxonomyMd','dbsql','manual'],
   ['dbsql','pg','solid'],['samplesql','pg','solid'],
   ['pg','views','solid'],
@@ -242,7 +246,7 @@ const EDGES=[
   ['weatherApi','driver','api'],['mpData','driver','api'],
   ['driver','caches','solid'],
   ['driver','indexHtml','solid'],['driver','venuePages','solid'],
-  ['corpusJson','pg','ghost'],['corpusJson','driver','ghost'],
+  ['corpusJson','driver','ghost'],
 ];
 const COL={solid:'var(--accent)',api:'var(--weather)',manual:'var(--amber)',ghost:'var(--ghost)'};
 const svg=document.getElementById('edges');

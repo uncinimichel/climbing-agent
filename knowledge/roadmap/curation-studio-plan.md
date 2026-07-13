@@ -5,9 +5,11 @@
 > throughput** the bottleneck: 50 draft routes today, 176 crawled Fair Head routes already
 > in Postgres behind them, hundreds more as the crawler scales. The Corpus Inspector is
 > read-only; this is the plan for the tool that *writes*.
-> **Status:** 🔜 Mockup built — `prototypes/curation-studio.html` (local-only, like all
-> prototypes — open it in a browser; it's keyboard-clickable). Requirements confirmed with
-> Michel 2026-07-13.
+> **Status:** ✅ **Built** (2026-07-13, decision [#34](decisions.md)) — **Postgres-first**,
+> per Michel ("no merge, let's do Postgres-first"). Run it:
+> `agent/.venv/bin/python db/tools/curate.py` → **http://localhost:8890** (needs
+> `colima start` + the climbing-db container). The mockup that seeded the design stays at
+> `prototypes/curation-studio.html` (local-only).
 
 ## Requirements (Michel, 2026-07-13)
 
@@ -42,20 +44,50 @@ From diffing the 8 curated vs 50 draft rows:
 
 Target: **~15–30 s per route** when the sources agree; the queue defers anything slow.
 
-## Build plan
+## Build plan — as shipped (Postgres-first, #34)
 
-| # | Piece | Detail |
+| # | Piece | Status |
 |---|---|---|
-| M1 | `db/tools/curate.py` | FastAPI, localhost only. `GET /queue` (drafts, filterable by crag/country), `PATCH /route/{id}` (field edits, autosaved), `POST /route/{id}/publish\|quarantine\|fieldcheck`. Writes `db/corpus.json` + the served `knowledge/data/corpus.json` atomically; git diff is the audit trail. |
-| M2 | Queue UI | The mockup's left card + evidence rail, served by M1. Keyboard: `⏎` publish · `e` edit · `f` field check · `x` quarantine · `s`/`j`/`k` navigate. |
-| M3 | Grid UI | Same API, table view; multi-select + bulk PATCH of one column (never bulk-publish — status flips stay per-route). |
-| M4 | Receipts (ai_tag v2) | `ai_tag.py` additionally stores, per tag, the prose sentence that justified it (`evidence`). Re-tagging the existing 50 is one cached re-run. Until then the receipt shows tag + model + date only. |
-| M5 | Schema additions | `status: quarantined` (already designed in #27), `curation: {notes, needsFieldCheck, curatedAt}` on routes. `build_corpus.py` preserves these fields across rebuilds (like it already protects human tags). |
-| M6 | Postgres sync | Out of scope here — publishing writes corpus.json; the corpus→Postgres seed is the existing #27 pending step. |
+| M1 | `db/tools/curate.py` — FastAPI on **Postgres** (localhost:8890): `GET /api/queue`, `PATCH /api/route/{id}` (autosave), `PUT …/pitches`, `POST …/publish` / `status/quarantined` / `fieldcheck`, `POST /api/export` (regenerates corpus.json) | ✅ |
+| M2 | Queue UI (`curate_ui.html`): facts grid (missing = amber), tag chips per family (click to drop, dropdown to add), stars/season/sunWindow/belays widgets, **intro + approach + structured pitch-by-pitch editors**, curator note, evidence rail (source links, AI receipt, OSM map pin, climatology). Keyboard: `⌘⏎` publish · `⌘F` field check · `⌘→/←` navigate | ✅ |
+| M3 | Grid view: full table, multi-select, bulk-set one column (never bulk-publish) | ✅ |
+| M4 | Receipts (ai_tag v2): per-tag justifying sentence stored as `evidence`; until re-run, the receipt shows the cached tag set + model + date | 🔜 |
+| M5 | Schema: `db/sql/025_curation.sql` — `tagged_by`/`tag_prov`/`curation_notes`/`needs_field_check`/`curated_at` + **DB CHECK: publish ⇒ human-tagged** (#32 at the database) | ✅ |
+| M6 | Postgres-first plumbing: `ingest_corpus.py` (corpus.json → PG restore/seed, human rows never overwritten; prose joined from the local multi-pitch site source, pitchInfo parsed to `pitch` rows) + `build_corpus.py` rewritten as pure PG → corpus.json exporter. Round-trip verified idempotent | ✅ |
+
+**⚠ Operational note:** `db/apply.sh` drops the whole schema. The restore path is
+`./apply.sh && agent/.venv/bin/python db/tools/ingest_corpus.py` — corpus.json IS the
+backup, so **export (the ⇩ button) after every curation session and commit the diff**.
 
 **Not building:** auth (single editor, localhost), photo hosting (link out to source
 pages; local snapshots live in the gitignored `db/.raw_cache/`), mobile (the sheet/grid
 answer for away-from-desk is "flag it 🥾 and note it").
+
+## What a curated multi-pitch trad entry contains — cross-platform survey (2026-07-13)
+
+Surveyed live: multi-pitch.com (Sammy Higgins, Aristotles — the reference standard),
+UKC logbook (Cemetery Gates), Mountain Project (High Exposure), theCrag (Centurion),
+and Rockfax's "How to Write a MiniGUIDE". Convergent findings:
+
+- **The pitch atom is universal:** number + per-pitch grade + per-pitch length + prose
+  ending with **belay location/quality** (Rockfax canonical: `1) 6a+, 20m. Climb the
+  slabby wall…`). The Studio's structured pitch editor matches this exactly.
+- **"Curated" visibly means accountable editorship:** named authors/moderators (UKC's
+  "checked by volunteers X and Y"), verification states, a correction channel — not just
+  good prose. Our equivalents: `taggedBy:human`, `curatedAt`, `curationNotes`, git diffs.
+- **Crag-level facts should be inherited, not repeated** (access, tides, drying, sector
+  layout) — UKC/Rockfax do this; multi-pitch.com currently flattens it into each route.
+  Our area tree + `route_resolved` inheritance already models the right shape.
+
+**The superset checklist** (ordered; ✅ = multi-pitch.com already has it): identity+stats ✅ ·
+**stars ❌** · intro/character prose ✅ · pitch-by-pitch ✅ (best-in-class topo) · descent ✅
+**+ escapes ❌** · approach w/ parking GPS ✅ · protection notes ✅ (**structured rack ❌,
+G/PG13/R/X seriousness ❌**) · conditions/seasonality ⚠ (charts yes, editorial "seeps after
+rain, sun from 2pm" statement ❌) · **access notes + verified date ❌** · **FA/history ❌** ·
+community/verification signals ❌ · character tags ❌. The bold gaps are what curation in
+the Studio should add beyond copying the site — stars, rack, seriousness, character tags
+and descent/escape notes all have DB columns already; FA has a `first_ascent` table;
+access has `area.access_notes`.
 
 ## Open questions
 
@@ -65,4 +97,4 @@ answer for away-from-desk is "flag it 🥾 and note it").
   cheapest guard against the gazetteer-coords failure mode?
 
 See also: [data governance](../data/governance.md) · [source of truth](../data/source-of-truth.md) ·
-[Data map](../data-dependencies.md) · decisions [#27/#32/#33](decisions.md).
+[Data map](../data-dependencies.md) · decisions [#27/#32/#33/#34](decisions.md).

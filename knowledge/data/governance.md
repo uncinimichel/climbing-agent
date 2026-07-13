@@ -30,24 +30,39 @@ That makes the tiers a **query, not a judgment call**:
 | **AI-tagged** | `taggedBy:llm` (+ `tagProv: {model, date}`) | Tags inferred from prose by Claude (`db/tools/ai_tag.py`) | ❌ Never counts as curated, even on a publish row |
 | **External live** | Open-Meteo · OSM · flight APIs | Environmental conditions, refetched daily | ⚠️ As *conditions* only, provenance-labelled |
 
-Current corpus counts (`counts` block in `corpus.json`): **40/151 areas** and **8/58
-routes** are curated; all 50 seeded routes are `taggedBy: llm`.
+Current corpus counts (`counts` block in `corpus.json`, 2026-07-13): **23/182 areas** and
+**8/226 routes** are curated; 50 seeded routes are `taggedBy: llm`, the 168 crawled Fair
+Head routes are `taggedBy: source`. Since decision [#34](../roadmap/decisions.md) the rule
+is also a **database constraint**: `route_publish_needs_human_tags` — Postgres physically
+refuses a publish row that isn't human-tagged.
 
 ## Promotion: how draft becomes curated
 
-1. Open the row in the [Corpus Inspector](../corpus-inspector.html) (drafts render dimmed).
-2. Verify the facts (grade, pitches, coords) against a guidebook / logbook source, and accept or fix each AI tag — the `tagProv` chip tells you which tags were inferred.
-3. Flip `status → publish` and `taggedBy: llm` **→ `human`**, set `dataGrade` honestly. A publish row with `taggedBy: llm` is a **governance bug** — the build should flag it.
+Use the **Curation Studio** (`agent/.venv/bin/python db/tools/curate.py` →
+localhost:8890 — see the [plan/manual](../roadmap/curation-studio-plan.md)):
 
-`build_corpus.py` protects the other direction automatically: LLM tags **never overwrite**
-a `taggedBy: human` row on rebuild.
+1. The queue serves drafts one at a time with the evidence alongside (sources, AI
+   receipt, map pin, prose).
+2. Verify the facts, accept/fix the tags, fill the gaps (stars, season, sun window,
+   protection style, belays), and write/polish the **intro, approach and pitch-by-pitch**
+   prose — the curated product is the prose, not just the fields.
+3. **Publish** — the Studio flips `status → publish` and `taggedBy → human` atomically
+   (Postgres constraint `route_publish_needs_human_tags` makes any other combination
+   impossible). Not verifiable from the desk? Flag 🥾 **needs field check** with a note.
+4. **⇩ Export** writes `db/corpus.json` from Postgres — commit the diff; that's the audit
+   trail and the backup.
+
+`ingest_corpus.py` protects the other direction automatically: a re-ingest **never
+overwrites** a `taggedBy: human` row.
 
 ## Enforcement scoreboard (today)
 
 | Consumer | Reads | Curated-only? |
 |---|---|---|
 | Agent search (`agent/search.py`) | Postgres | ✅ Hard-wired `WHERE r.status = 'publish'` |
-| `corpus.json` builder (`db/tools/build_corpus.py`) | DB + venues.json + MP seed | ✅ Stamps `status`/`source`/`taggedBy`/`tagProv` on every row |
+| **Postgres itself** | — | ✅ CHECK constraint: a publish row must be `tagged_by = 'human'` (#34) |
+| Curation Studio (`db/tools/curate.py`) | Postgres (writes) | ✅ The promotion tool — publish flips `taggedBy → human` atomically |
+| corpus.json exporter (`db/tools/build_corpus.py`) | Postgres | ✅ Carries `status`/`source`/`taggedBy`/`tagProv`/`curationNotes` on every row |
 | Corpus Inspector | corpus.json snapshot | ⚠️ Shows publish/draft; should also badge `taggedBy: llm` tags |
 | **Dashboard ranking** (`engine/scoring.py`) | sheet + venues.json + **raw multi-pitch.com** | ❌ **Violation** — the *Coverage* sub-score counts uncurated multi-pitch.com routes (`scoring.py`, `routes_s`), and the tidal flag comes from the same feed |
 | Trip pipeline (`update_report.py`) | old five sources, not corpus.json | ❌ Pre-#27 wiring — the pending refactor |

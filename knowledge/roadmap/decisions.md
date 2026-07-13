@@ -542,6 +542,33 @@ M3 (multi-trip behind flag) next; M4 root swap gated on trip end.
 
 ---
 
+### #34 — Postgres-first curation: the Curation Studio writes the DB, corpus.json becomes the export (2026-07-13)
+**Decision:** Michel chose **Postgres-first** over merge-on-rebuild: the climbing schema is
+the working store; `db/corpus.json` is a committed, git-diffable **export/backup**
+(`build_corpus.py`, rewritten as a pure exporter — its seed-merging role moved to the new
+**`db/tools/ingest_corpus.py`** restore path, so `apply.sh && ingest_corpus.py` rebuilds
+the DB losslessly). Shipped in the same session: **`db/sql/025_curation.sql`**
+(`tagged_by`/`tag_prov`/`curation_notes`/`needs_field_check`/`curated_at` + a DB CHECK
+that a publish row must be human-tagged — #32 enforced at the database, not just in code)
+and the **Curation Studio** (`db/tools/curate.py` + `curate_ui.html`, localhost:8890):
+queue + grid views, autosaving facts/tag-chips/gap-widgets, **route intro / approach /
+pitch-by-pitch editors** (per Michel: the prose is the product — modelled on his
+multi-pitch.com curated pages, e.g. Sammy Higgins / Aristotles), AI receipts, OSM pin,
+🥾 field-check flag, publish/quarantine, one-click export. Prose now lives in the DB:
+ingest joins `intro`/`approach`/`pitchInfo` from the local multi-pitch site source and
+parses pitchInfo markup into structured `pitch` rows (128 rows / 26 routes).
+**Why:** merge-on-rebuild kept two writable stores; Postgres-first gives one. And the
+crawler's Fair Head routes were stranded in PG, invisible to the corpus — the export
+now carries all 226 routes (8 curated, 218 draft) so the Inspector/pipeline see the whole
+picture. A cross-platform survey (UKC/MP/theCrag/Rockfax) defined the curated-entry
+superset — captured in `curation-studio-plan.md`.
+**Status:** ✅ Live — migration applied to the running DB (apply.sh NOT run; it would have
+destroyed the crawl), round-trip ingest→export→ingest verified idempotent, studio API +
+UI smoke-tested end-to-end. Pending: ai_tag v2 per-tag receipts; corpus-inspector
+`taggedBy` badges; the #27 pipeline switch (trip-planner process).
+
+---
+
 *Template for new entries:*
 ```
 ### #N — Title (date)

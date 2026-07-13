@@ -16,6 +16,24 @@ MIN_PITCHES_FOR_MULTIPITCH = 2
 MIN_LENGTH_M_FOR_MULTIPITCH = 60
 MULTIPITCH_DISCIPLINES = {"trad", "alpine", "big-wall"}
 
+# Free-text rock names → canonical rock_type codes (strict FK). Composites keep
+# the primary (first-named) rock; unknowns become NULL — never invented.
+ROCK_CANON = {
+    "culm sandstone": "sandstone", "volcanic rock": "volcanic",
+    "limestone/dolomite": "limestone", "rhyolite/dolerite": "rhyolite",
+    "shale & sandstone": "sandstone", "qurtzite": "quartzite", "phonolite": "volcanic",
+}
+KNOWN_ROCK = {"andesite", "basalt", "chalk", "conglomerate", "dolerite", "dolomite",
+              "gabbro", "gneiss", "granite", "gritstone", "limestone", "quartzite",
+              "rhyolite", "sandstone", "schist", "slate", "volcanic"}
+
+
+def canon_rock(r: str | None) -> str | None:
+    if not r:
+        return None
+    k = ROCK_CANON.get(r.strip().lower(), r.strip().lower())
+    return k if k in KNOWN_ROCK else None
+
 _corpus_areas_by_id: dict[str, dict] | None = None
 
 
@@ -69,11 +87,12 @@ def ensure_area(conn, corpus_area_id: str) -> int:
                 """
                 INSERT INTO area (parent_id, name, kind, grade_context, rock_code, aspect, geom)
                 VALUES (%s, %s, %s, %s, %s, %s,
-                        CASE WHEN %s IS NOT NULL THEN ST_SetSRID(ST_MakePoint(%s, %s), 4326) END)
+                        CASE WHEN %s::float8 IS NOT NULL
+                             THEN ST_SetSRID(ST_MakePoint(%s::float8, %s::float8), 4326) END)
                 RETURNING id
                 """,
                 (parent_pg_id, node["name"], node["kind"], node.get("gradeContext"),
-                 node.get("rock"), node.get("aspect"), lat, lng, lng, lat),
+                 canon_rock(node.get("rock")), node.get("aspect"), lat, lng, lat),
             )
             parent_pg_id = cur.fetchone()["id"]
     conn.commit()

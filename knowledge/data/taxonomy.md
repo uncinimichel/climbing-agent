@@ -61,6 +61,7 @@ then in the seed, so the two never drift.
 | `basalt` | Columnar jointing → parallel crack systems; moderate drying. |
 | `conglomerate` | Cobbles in matrix (Montserrat, Meteora, Riglos) — pockety climbing; protection often spaced between cobbles. |
 | `andesite` | Volcanic; blocky, variable quality. |
+| `chalk` | Soft marine limestone (Dover, Beachy Head sea cliffs) — friable, specialist/serious trad; **never climb wet**; protection unreliable. Added 2026-07-13 (corpus ingest). |
 
 Extend deliberately — a new rock type is a curation decision, not a free-text field.
 Rock-friction/seepage figures are sourced in [`references.md`](references.md) (friction

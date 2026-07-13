@@ -41,7 +41,8 @@ INSERT INTO rock_type (code, friction_dry, seeps, fragile_when_wet, notes) VALUE
     ('schist',       NULL, false, false, 'Layered; can be friable and ledgy; holds moisture in breaks.'),
     ('basalt',       NULL, false, false, 'Columnar jointing gives parallel crack systems; moderate drying.'),
     ('conglomerate', NULL, false, false, 'Cobbles in matrix (Montserrat, Meteora, Riglos); pockety; protection often spaced.'),
-    ('andesite',     NULL, false, false, 'Volcanic; blocky, variable quality.');
+    ('andesite',     NULL, false, false, 'Volcanic; blocky, variable quality.'),
+    ('chalk',        NULL, true,  true,  'Soft marine limestone (Dover, Beachy Head) — friable, specialist trad; never climb wet; protection unreliable.');
 
 INSERT INTO protection_grade (code, meaning, sort_order) VALUES
     ('G',           'Solid, plentiful protection.',                                   0),

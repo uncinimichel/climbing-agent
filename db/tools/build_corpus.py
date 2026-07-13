@@ -1,26 +1,22 @@
 #!/usr/bin/env python3
-"""Build db/corpus.json — the single authored source of truth (decision #27).
+"""Export db/corpus.json from Postgres — the committed backup of the corpus DB.
 
-Consolidates the previously-scattered climb/venue sources into ONE file shaped 1:1
-with the route/area schema (knowledge/data/route-schema.md), so it is a drop-in
-Postgres seed, not a rival store:
+Postgres-first (decision #34, supersedes this file's original seed-merging role):
+the climbing schema is the WORKING STORE — the Curation Studio (curate.py) edits it,
+the crawler inserts into it, ingest_corpus.py restores into it. This script is the
+other direction: a faithful, git-diffable EXPORT of every area and route (draft,
+publish and quarantined alike), so
 
-  areas[]  — crag / region / country tree (coords, rock, aspect, gradeContext)
-  routes[] — climbs; taxonomy VALUES inline; each hangs off an area
+  - corpus.json stays the committed backup (repo-as-database ethos, #2) —
+    `apply.sh && ingest_corpus.py` rebuilds the DB from it losslessly,
+  - the Corpus Inspector and the trip pipeline (#27 pending switch) read one file,
+  - every curation session shows up as a reviewable git diff.
 
-Curated vs uncurated is a FIELD, not a file:
-  status = publish (curated) | draft (seeded, unverified) | quarantined
-  dataGrade = 1..7 confidence
+Governance fields (#32) ride along: status · source · taggedBy · tagProv ·
+curationNotes · needsFieldCheck. Prose rides along too: intro / approach /
+pitchInfo + structured pitches[].
 
-Seeds, in precedence order (publish wins over draft on a slug clash):
-  1. Curated DB routes   → status: publish   (the human-verified corpus, via psql)
-  2. venues.json crags   → status: publish   (curated area coords/rock/aspect)
-  3. multi-pitch.com     → status: draft     (a SEED, not a live source — #27)
-
-Taxonomy DEFINITIONS are NOT copied here — they live in tag-spec.json / taxonomy.md
-(#25); entities carry taxonomy VALUES only.
-
-Dependency-free (stdlib). Re-run to refresh:
+Dependency-free (stdlib; talks to Postgres via psql / docker exec):
     python3 db/tools/build_corpus.py
 """
 import json
@@ -28,7 +24,6 @@ import re
 import subprocess
 import sys
 import unicodedata
-import urllib.request
 from datetime import date
 from pathlib import Path
 
@@ -37,8 +32,6 @@ OUT = ROOT / "db" / "corpus.json"
 # A deployed copy under knowledge/ (the only tree GitHub Pages serves), so the
 # corpus is fetchable by the Corpus Inspector and clickable from the data map.
 DEPLOY_OUT = ROOT / "knowledge" / "data" / "corpus.json"
-VENUES_JSON = ROOT / "trip-ni-july-2026" / "venues.json"
-MP_URL = "https://multi-pitch.com/data/data.json"
 DB_DSN = "postgresql://climbing:climbing@localhost:5432/climbing"
 DB_CONTAINER = "climbing-db"          # docker exec fallback if no local psql
 TAXONOMY_REF = "knowledge/data/tag-spec.json"
@@ -49,275 +42,165 @@ def slug(s: str) -> str:
     return re.sub(r"[^a-z0-9]+", "-", s).strip("-")
 
 
-def latlon(geo: str):
-    try:
-        a, b = (float(x) for x in str(geo).split(","))
-        return [round(a, 4), round(b, 4)]
-    except Exception:
-        return None
+AREAS_Q = r"""
+SELECT json_agg(a ORDER BY a.path_tokens) FROM (
+  SELECT ar.id AS pg_id, ar.name, ar.kind, ar.path_tokens,
+         ar.eff_grade_context, a.grade_context, a.rock_code, a.aspect,
+         ST_Y(a.geom::geometry) AS lat, ST_X(a.geom::geometry) AS lon,
+         p.name AS parent_name
+  FROM area_resolved ar
+  JOIN area a ON a.id = ar.id
+  LEFT JOIN area p ON p.id = ar.parent_id
+) a;"""
+
+ROUTES_Q = r"""
+SELECT json_agg(r ORDER BY r.path_tokens, r.name) FROM (
+  SELECT rr.id AS pg_id, rr.name, rr.status, rr.tagged_by, rr.tag_prov,
+    rr.curation_notes, rr.needs_field_check, rr.curated_at, rr.path_tokens,
+    rr.length_m, rr.pitches_count, rr.incline_code, rr.data_grade,
+    rr.grade_system_code, rr.original_grade, rr.trad_grade, rr.tech_grade,
+    rr.protection_code, rr.protection_style, rr.belays, rr.rack, rr.rope,
+    rr.approach_time_min, rr.approach_difficulty,
+    rr.descent_method, rr.descent_abseils, rr.descent_notes,
+    rr.elevation_m, rr.sun_window_code, rr.wind_exposed, rr.best_season, rr.stars,
+    rr.intro_html, rr.approach_html, rr.pitch_info_html,
+    (SELECT name FROM area WHERE id = rr.area_id) AS area_name,
+    ST_Y(rr.geom::geometry) AS lat, ST_X(rr.geom::geometry) AS lon,
+    (SELECT array_agg(discipline_code ORDER BY discipline_code) FROM route_discipline d WHERE d.route_id = rr.id) AS disciplines,
+    (SELECT array_agg(feature_code ORDER BY feature_code) FROM route_feature f WHERE f.route_id = rr.id) AS features,
+    (SELECT array_agg(character_code ORDER BY character_code) FROM route_character c WHERE c.route_id = rr.id) AS "character",
+    (SELECT array_agg(hazard_code ORDER BY hazard_code) FROM route_hazard h WHERE h.route_id = rr.id) AS hazards,
+    (SELECT json_agg(json_build_object('number', number, 'length', length_m,
+        'gradeSys', grade_system_code, 'grade', original_grade,
+        'description', description) ORDER BY number)
+        FROM pitch p WHERE p.route_id = rr.id) AS pitch_rows,
+    (SELECT json_agg(json_build_object('month', month, 'rainyDays', rainy_days,
+        'tempHigh', temp_high, 'tempLow', temp_low) ORDER BY month)
+        FROM route_climatology w WHERE w.route_id = rr.id) AS climatology,
+    (SELECT json_agg(json_build_object('source', source_id, 'id', external_id, 'url', url))
+        FROM external_ref e WHERE e.entity_type = 'route' AND e.entity_id = rr.id) AS refs
+  FROM route_resolved rr
+) r;"""
 
 
-# ── area registry (publish beats draft on a slug clash) ─────────────────────
-class Areas:
-    def __init__(self):
-        self.by_slug = {}
-
-    def add(self, name, kind, *, parent=None, country=None, region=None,
-            lat=None, lon=None, rock=None, aspect=None, grade_context=None,
-            status="draft", source="derived"):
-        if not name:
-            return None
-        sid = slug(name)
-        cur = self.by_slug.get(sid)
-        cand = {"id": sid, "name": name, "kind": kind, "parent": parent,
-                "country": country, "region": region,
-                "geoLocation": [lat, lon] if lat is not None and lon is not None else None,
-                "rock": rock, "aspect": aspect, "gradeContext": grade_context,
-                "status": status, "source": source}
-        if cur is None:
-            self.by_slug[sid] = cand
-        else:
-            # merge: prefer publish; fill any blanks from the newcomer
-            if status == "publish" and cur["status"] != "publish":
-                cand_fill = {k: (cur.get(k) or cand.get(k)) for k in cand}
-                cand_fill.update({"status": "publish", "source": source})
-                self.by_slug[sid] = cand_fill
-            else:
-                for k, v in cand.items():
-                    if not cur.get(k) and v:
-                        cur[k] = v
-        return sid
-
-    def list(self):
-        order = {"country": 0, "region": 1, "crag": 2, "sector": 3}
-        return sorted(self.by_slug.values(),
-                      key=lambda a: (order.get(a["kind"], 9), a["name"]))
-
-
-MP_SNAPSHOT = ROOT / "db" / "mp-climbs.json"
-ENRICH_CACHE = ROOT / "db" / "enrichment-cache.json"   # Phase-2 AI tags (ai_tag.py), cached once
-ROCK_MAP = {"shale & sandstone": "sandstone", "qurtzite": "quartzite", "phonolite": "volcanic"}
-
-
-def norm_rock(r):
-    if not r:
-        return None
-    k = r.strip().lower()
-    return ROCK_MAP.get(k, k)
-
-
-def route_key(name, lat, lon):
-    """Identity for dedup: normalised name + ~11 km geo bucket."""
-    return (slug(name or ""), round(lat, 1) if lat is not None else None,
-            round(lon, 1) if lon is not None else None)
-
-
-def load_mp():
-    """Rich local snapshot (db/mp-climbs.json, from enrich_from_multipitch.py) — offline,
-    done once. Falls back to the shallow public feed only if the snapshot is absent."""
-    if MP_SNAPSHOT.exists():
-        return json.loads(MP_SNAPSHOT.read_text()).get("climbs", [])
-    try:
-        req = urllib.request.Request(MP_URL, headers={"User-Agent": "climbing-agent corpus seed"})
-        with urllib.request.urlopen(req, timeout=30) as r:
-            return json.loads(r.read()).get("climbs", [])
-    except Exception as e:
-        print(f"[warn] no MP snapshot and fetch failed: {e}", file=sys.stderr)
-        return []
-
-
-def load_gazetteer():
-    """The GAZETTEER venue coords, imported from sheet_venues.py so decision #27's
-    'coords live in the corpus, not in code' actually holds — these rows land in
-    corpus.json and the Python dict becomes a removable duplicate."""
-    try:
-        import importlib
-        if str(ROOT) not in sys.path:
-            sys.path.insert(0, str(ROOT))
-        return importlib.import_module("engine.sheet_venues").GAZETTEER
-    except Exception as e:
-        print(f"[warn] GAZETTEER import failed: {e}", file=sys.stderr)
-        return {}
-
-
-def curated_routes_from_db():
-    """The human-verified corpus, read live from Postgres (best effort)."""
-    q = r"""
-    SELECT json_agg(r) FROM (
-      SELECT rr.id, rr.name, rr.path_tokens, rr.eff_grade_context, rr.length_m,
-        rr.pitches_count, rr.incline_code, rr.eff_rock_code, rr.eff_aspect,
-        rr.grade_system_code, rr.original_grade, rr.trad_grade, rr.tech_grade,
-        rr.data_grade, rr.protection_code, rr.protection_style, rr.belays,
-        rr.approach_time_min, rr.elevation_m, rr.sun_window_code, rr.best_season, rr.stars,
-        ST_Y(rr.geom::geometry) lat, ST_X(rr.geom::geometry) lon,
-        (SELECT array_agg(discipline_code) FROM climbing.route_discipline d WHERE d.route_id=rr.id) disciplines,
-        (SELECT array_agg(feature_code)    FROM climbing.route_feature   f WHERE f.route_id=rr.id) features,
-        (SELECT array_agg(character_code)  FROM climbing.route_character  c WHERE c.route_id=rr.id) AS "character",
-        (SELECT array_agg(hazard_code)     FROM climbing.route_hazard     h WHERE h.route_id=rr.id) hazards,
-        (SELECT json_agg(json_build_object('month',month,'rainyDays',rainy_days,
-           'tempHigh',temp_high,'tempLow',temp_low) ORDER BY month)
-           FROM climbing.route_climatology w WHERE w.route_id=rr.id) climatology
-      FROM climbing.route_resolved rr WHERE rr.status='publish' ORDER BY rr.id
-    ) r;"""
-    for cmd in (["psql", DB_DSN, "-tAc", q],
-                ["docker", "exec", DB_CONTAINER, "psql", "-U", "climbing", "-d", "climbing", "-tAc", q]):
+def pg_json(query: str):
+    for cmd in (["psql", DB_DSN, "-tAc", query],
+                ["docker", "exec", DB_CONTAINER, "psql", "-U", "climbing",
+                 "-d", "climbing", "-tAc", query]):
         try:
-            out = subprocess.run(cmd, capture_output=True, text=True, timeout=25)
+            out = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
             if out.returncode == 0 and out.stdout.strip():
                 return json.loads(out.stdout.strip())
         except Exception:
             continue
-    print("[warn] could not read curated routes from the DB — seeding without them",
-          file=sys.stderr)
-    return []
+    return None
+
+
+def export_area(a: dict) -> dict:
+    toks = a["path_tokens"] or [a["name"]]
+    return {
+        "id": slug(a["name"]), "name": a["name"], "kind": a["kind"],
+        "parent": slug(a["parent_name"]) if a.get("parent_name") else None,
+        "country": toks[0] if len(toks) > 1 else None,
+        "region": toks[1] if len(toks) > 2 else None,
+        "geoLocation": [round(a["lat"], 4), round(a["lon"], 4)] if a.get("lat") is not None else None,
+        "rock": a.get("rock_code"), "aspect": a.get("aspect"),
+        "gradeContext": a.get("grade_context"),
+        "status": "draft", "source": "postgres",
+    }
+
+
+def export_route(r: dict) -> dict:
+    mp_ref = next((x for x in (r.get("refs") or []) if x["source"] == "multipitch"), None)
+    rid = f"mp-{mp_ref['id']}" if mp_ref else r["pg_id"]
+    out = {
+        "id": rid, "pgId": r["pg_id"], "area": slug(r["area_name"]), "name": r["name"],
+        "status": r["status"], "taggedBy": r["tagged_by"],
+        "source": "curated" if r["tagged_by"] == "human" else
+                  ("multi-pitch.com" if mp_ref else "crawler"),
+        "dataGrade": r.get("data_grade"),
+        "originalGrade": r.get("original_grade"), "gradeSys": r.get("grade_system_code"),
+        "tradGrade": r.get("trad_grade"), "techGrade": r.get("tech_grade"),
+        "length": r.get("length_m"), "pitches": r.get("pitches_count"),
+        "incline": r.get("incline_code"),
+        "protection": r.get("protection_code"), "protectionStyle": r.get("protection_style"),
+        "belays": r.get("belays"), "rack": r.get("rack"), "rope": r.get("rope"),
+        "approachTime": r.get("approach_time_min"),
+        "approachDifficulty": r.get("approach_difficulty"),
+        "descentMethod": r.get("descent_method"), "descentNotes": r.get("descent_notes"),
+        "elevation": r.get("elevation_m"), "sunWindow": r.get("sun_window_code"),
+        "bestSeason": r.get("best_season"), "stars": r.get("stars"),
+        "disciplines": r.get("disciplines") or [], "features": r.get("features") or [],
+        "character": r.get("character") or [], "hazards": r.get("hazards") or [],
+        "climatology": r.get("climatology") or [],
+        "description": r.get("intro_html"), "approach": r.get("approach_html"),
+        "pitchInfo": r.get("pitch_info_html"), "pitchRows": r.get("pitch_rows") or [],
+        "geoLocation": [round(r["lat"], 4), round(r["lon"], 4)] if r.get("lat") is not None else None,
+        "refs": r.get("refs") or [],
+    }
+    if r.get("tag_prov"):
+        out["tagProv"] = r["tag_prov"]
+    if r.get("curation_notes"):
+        out["curationNotes"] = r["curation_notes"]
+    if r.get("needs_field_check"):
+        out["needsFieldCheck"] = True
+    if r.get("curated_at"):
+        out["curatedAt"] = str(r["curated_at"])[:10]
+    return out
 
 
 def build():
-    areas = Areas()
-    routes = []
-    seen = set()  # curated (name+geo) keys → skip their raw multi-pitch twins
+    areas_raw = pg_json(AREAS_Q)
+    routes_raw = pg_json(ROUTES_Q)
+    if not areas_raw or not routes_raw:
+        sys.exit("[error] Postgres unreachable (colima start && cd db && docker-compose up -d) "
+                 "— corpus.json left untouched (it IS the backup)")
 
-    # 1. curated DB routes → publish, and their country/region/crag areas
-    curated = curated_routes_from_db()
-    for r in curated:
-        seen.add(route_key(r.get("name"), r.get("lat"), r.get("lon")))
-    for r in curated:
-        toks = r.get("path_tokens") or []
-        country = toks[0] if len(toks) > 0 else None
-        region = toks[1] if len(toks) > 1 else None
-        crag = toks[2] if len(toks) > 2 else (region or country)
-        if country:
-            areas.add(country, "country", status="publish", source="curated")
-        if region:
-            areas.add(region, "region", parent=slug(country), country=country,
-                      status="publish", source="curated")
-        crag_id = areas.add(crag, "crag", parent=slug(region or country), country=country,
-                            region=region, lat=r.get("lat"), lon=r.get("lon"),
-                            rock=r.get("eff_rock_code"), aspect=r.get("eff_aspect"),
-                            grade_context=r.get("eff_grade_context"),
-                            status="publish", source="curated")
-        routes.append({
-            "id": r["id"], "area": crag_id, "name": r["name"],
-            "status": "publish", "source": "curated", "dataGrade": r.get("data_grade"),
-            "originalGrade": r.get("original_grade"), "gradeSys": r.get("grade_system_code"),
-            "tradGrade": r.get("trad_grade"), "techGrade": r.get("tech_grade"),
-            "length": r.get("length_m"), "pitches": r.get("pitches_count"),
-            "incline": r.get("incline_code"), "protection": r.get("protection_code"),
-            "protectionStyle": r.get("protection_style"), "belays": r.get("belays"),
-            "approachTime": r.get("approach_time_min"), "elevation": r.get("elevation_m"),
-            "sunWindow": r.get("sun_window_code"), "bestSeason": r.get("best_season"),
-            "stars": r.get("stars"),
-            "disciplines": r.get("disciplines") or [], "features": r.get("features") or [],
-            "character": r.get("character") or [], "hazards": r.get("hazards") or [],
-            "climatology": r.get("climatology") or [],
-            "geoLocation": [r.get("lat"), r.get("lon")],
-            "taggedBy": "human",
-        })
+    areas = [export_area(a) for a in areas_raw]
+    routes = [export_route(r) for r in routes_raw]
 
-    # 2. venues.json curated crags → publish areas (coords / rock / aspect)
-    try:
-        for v in json.loads(VENUES_JSON.read_text()).get("venues", []):
-            areas.add(v.get("country"), "country", status="publish", source="curated")
-            areas.add(v["name"], "crag", parent=slug(v.get("country", "")),
-                      country=v.get("country"), lat=v.get("lat"), lon=v.get("lon"),
-                      rock=v.get("rock"), aspect=v.get("aspect"),
-                      status="publish", source="curated")
-    except Exception as e:
-        print(f"[warn] venues.json: {e}", file=sys.stderr)
+    # area status: publish if a human-published route hangs under it — mirrors
+    # the old curated-area semantics
+    pub_chains = set()
+    for r, raw in zip(routes, routes_raw):
+        if r["status"] == "publish":
+            for tok in raw["path_tokens"] or []:
+                pub_chains.add(slug(tok))
+    for a in areas:
+        if a["id"] in pub_chains:
+            a["status"], a["source"] = "publish", "curated"
 
-    # 3. multi-pitch.com → SEED routes + cliff areas as draft (uncurated), enriched
-    #    from the local site source: rock, incline, aspect, hazards, 12-month weather.
-    for c in load_mp():
-        ll = latlon(c.get("geoLocation"))
-        if route_key(c.get("routeName"), ll[0] if ll else None, ll[1] if ll else None) in seen:
-            continue  # a curated (verified) version of this climb already exists
-        country, county, cliff = c.get("country"), c.get("county"), c.get("cliff")
-        rock, aspect = norm_rock(c.get("rock")), c.get("face")
-        if country:
-            areas.add(country, "country", status="draft", source="multi-pitch.com")
-        if county:
-            areas.add(county, "region", parent=slug(country or ""), country=country,
-                      status="draft", source="multi-pitch.com")
-        area_id = areas.add(cliff, "crag", parent=slug(county or country or ""),
-                            country=country, region=county,
-                            lat=ll[0] if ll else None, lon=ll[1] if ll else None,
-                            rock=rock, aspect=aspect,
-                            status="draft", source="multi-pitch.com") if cliff else None
-        disc = []
-        if (c.get("pitches") or 0) > 1:
-            disc.append("multi-pitch")
-        if c.get("tradGrade"):
-            disc.append("trad")
-        routes.append({
-            "id": f"mp-{c.get('id')}", "area": area_id, "name": c.get("routeName"),
-            "status": "draft", "source": "multi-pitch.com", "dataGrade": c.get("dataGrade"),
-            "originalGrade": c.get("originalGrade"), "gradeSys": c.get("gradeSys"),
-            "tradGrade": c.get("tradGrade"), "techGrade": c.get("techGrade"),
-            "length": c.get("length"), "pitches": c.get("pitches"),
-            "incline": c.get("incline"), "approachTime": c.get("approachTime"),
-            "approachDifficulty": c.get("approachDifficulty"),
-            "disciplines": disc, "features": [], "character": [],
-            "hazards": c.get("hazards") or [],
-            "climatology": c.get("climatology") or [],
-            "description": c.get("description") or "",
-            "geoLocation": ll,
-            "taggedBy": "source",
-        })
+    pub_a = sum(a["status"] == "publish" for a in areas)
+    by_status = {}
+    for r in routes:
+        by_status[r["status"]] = by_status.get(r["status"], 0) + 1
+    llm_r = sum(r["taggedBy"] == "llm" for r in routes)
+    fc = sum(1 for r in routes if r.get("needsFieldCheck"))
 
-    # 4. GAZETTEER venue coords → draft areas (decision #27: coords live in the corpus)
-    for name, g in load_gazetteer().items():
-        areas.add(name.title(), "crag", lat=g.get("lat"), lon=g.get("lon"),
-                  rock=norm_rock(g.get("rock")), aspect=g.get("aspect"),
-                  status="draft", source="sheet-gazetteer")
-
-    # 5. merge Phase-2 AI tags (feature/character/protection/discipline), tagged once by
-    #    ai_tag.py. Governance (decision #32): LLM tags never silently pass as curated —
-    #    the route is stamped taggedBy:llm + tagProv so consumers can tell them apart,
-    #    and only a human review flips it to taggedBy:human.
-    if ENRICH_CACHE.exists():
-        enrich = json.loads(ENRICH_CACHE.read_text())
-        for r in routes:
-            e = enrich.get(str(r["id"]))
-            if not e:
-                continue
-            if r.get("taggedBy") == "human":
-                continue  # curated tags win — never overwrite human work with LLM output
-            if e.get("features"):
-                r["features"] = e["features"]
-            if e.get("character"):
-                r["character"] = e["character"]
-            if e.get("protection"):
-                r["protection"] = e["protection"]
-            if e.get("discipline"):
-                r["disciplines"] = sorted(set((r.get("disciplines") or []) + e["discipline"]))
-            r["taggedBy"] = "llm"
-            prov = e.get("_prov") or {}
-            r["tagProv"] = {"model": prov.get("model"), "date": prov.get("date")}
-
-    area_list = areas.list()
-    pub_a = sum(a["status"] == "publish" for a in area_list)
-    pub_r = sum(r["status"] == "publish" for r in routes)
-    llm_r = sum(r.get("taggedBy") == "llm" for r in routes)
     corpus = {
-        "schemaVersion": "1.1",
+        "schemaVersion": "2.0",
         "generated": date.today().isoformat(),
-        "note": "Single source of truth for climbs/venues (decision #27). Shaped as the "
-                "Postgres seed. Curated = status:publish; seeded/unverified = status:draft. "
+        "note": "EXPORT of the Postgres corpus DB (decision #34: Postgres-first — edit via "
+                "the Curation Studio, not this file; restore via db/tools/ingest_corpus.py). "
                 "Governance (#32): suggestions/ranking may only use status:publish + "
-                "taggedBy:human rows; taggedBy:llm marks machine-inferred tags.",
+                "taggedBy:human rows.",
         "taxonomyRef": TAXONOMY_REF,
-        "counts": {"areas": len(area_list), "areasCurated": pub_a,
-                   "routes": len(routes), "routesCurated": pub_r,
-                   "routesSeeded": len(routes) - pub_r, "routesLlmTagged": llm_r},
-        "areas": area_list,
+        "counts": {"areas": len(areas), "areasCurated": pub_a,
+                   "routes": len(routes),
+                   "routesCurated": by_status.get("publish", 0),
+                   "routesSeeded": by_status.get("draft", 0),
+                   "routesQuarantined": by_status.get("quarantined", 0),
+                   "routesLlmTagged": llm_r, "routesFieldCheck": fc},
+        "areas": areas,
         "routes": routes,
     }
-    payload = json.dumps(corpus, ensure_ascii=False, indent=2) + "\n"
+    payload = json.dumps(corpus, ensure_ascii=False, indent=2, default=str) + "\n"
     OUT.write_text(payload)
     DEPLOY_OUT.write_text(payload)          # served copy for the site
-    print(f"wrote {OUT.relative_to(ROOT)} + {DEPLOY_OUT.relative_to(ROOT)} — "
-          f"{len(area_list)} areas ({pub_a} curated), {len(routes)} routes "
-          f"({pub_r} curated, {len(routes)-pub_r} seeded from multi-pitch)")
+    print(f"exported {OUT.relative_to(ROOT)} + {DEPLOY_OUT.relative_to(ROOT)} — "
+          f"{len(areas)} areas ({pub_a} curated), {len(routes)} routes "
+          f"({by_status.get('publish', 0)} curated, {by_status.get('draft', 0)} draft, "
+          f"{by_status.get('quarantined', 0)} quarantined, {llm_r} llm-tagged, {fc} field-check)")
 
 
 if __name__ == "__main__":
