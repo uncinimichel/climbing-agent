@@ -538,6 +538,8 @@ trip count.
 generalisation: no hardcoded traveller keys left in engine/; pills/flight cards/markdown
 all data-driven) live 13 Jul 2026. Trip window corrected to 24–28 Jul; `flex_days: 2`
 in schema (±day flight/stay alternatives — planned, see plan §Date flexibility).
+M5 admin forms stage 1 live 13 Jul (`admin/` FastAPI localhost, Playwright-verified);
+flex ±days live same day (`flights.flex_alternatives`, links free / pricing quota-capped).
 M3 (multi-trip behind flag) next; M4 root swap gated on trip end.
 
 ---

@@ -161,9 +161,17 @@ new root forwards legacy `/#venue-slug` deep links to the primary trip's page;
 **M5 — local admin server (the approved forms).** Localhost FastAPI app (pattern:
 `agent/server.py`) serving the three mockup screens wired to `trips.json`: list,
 create (city → Open-Meteo geocode → coords + suggested airports, editable), manage
-(edit fields, pause = `status: draft`, delete with confirm). Validates via
-`engine/trips.py` before writing; optional auto-commit. Local page can load the real
-Bricolage Grotesque / IBM Plex webfonts. Only depends on M1 — can land early.
+(edit fields, status live/draft/ended, delete with confirm). Validates via
+`engine/trips.py` before writing. Only depends on M1 — can land early.
+*✅ Stage 1 shipped 13 Jul 2026 (`eb66319`, `3f9203d`): `admin/server.py` +
+`admin/static/index.html`. Run `cd admin && ../agent/.venv/bin/uvicorn server:app
+--port 8764`. Create scaffolds `trips/<slug>/{venues,flights}.json` from the
+sheet-merged catalogue; date edits rewrite the trip's rep flight combo; delete
+keeps the trip dir; slug/dir immutable via the API; nothing auto-commits. 8 API
+tests (temp-registry, skip without fastapi) + Playwright-verified create/edit/
+delete round-trips. Deliberately not done yet: per-trip venue editing on the
+manage screen (edit `<dir>/venues.json` by hand until M3 wires multi-trip
+rendering), airport auto-derivation beyond the curated city list.*
 
 **M6 — DB + API (deferred, deliberately).** Not in scope now. Path: `TripStore`
 protocol → SQLite/Postgres implementation → the admin server's endpoints become the
