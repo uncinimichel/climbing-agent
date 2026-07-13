@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "trips": [
+    {
+      "slug": "ni-july-2026",
+      "name": "Northern Ireland",
+      "title": "Climbing trip ~24 July 2026 — Michel & Dan",
+      "status": "live",
+      "start": "2026-07-22",
+      "end": "2026-07-27",
+      "dir": "trip-ni-july-2026",
+      "travellers": [
+        {
+          "key": "michel",
+          "name": "Michel",
+          "homes": [{"city": "London", "lat": 51.5074, "lon": -0.1278}],
+          "airports": ["LGW", "LHR", "LTN", "STN", "LCY"]
+        },
+        {
+          "key": "dan",
+          "name": "Dan",
+          "homes": [{"city": "Belfast", "lat": 54.607, "lon": -5.926},
+                    {"city": "Dublin", "lat": 53.349, "lon": -6.26}],
+          "airports": ["BFS", "BHD", "DUB"]
+        }
+      ]
+    }
+  ]
+}

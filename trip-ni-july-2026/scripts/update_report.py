@@ -36,9 +36,8 @@ from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
-from engine import climbs, flights, quota, rank_history, render, scoring, sheet_venues, weather  # noqa: E402
+from engine import climbs, flights, quota, rank_history, render, scoring, sheet_venues, trips, weather  # noqa: E402
 from engine.cache import DiskCache, EnvCache  # noqa: E402
-from engine.models import TripContext  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 REPO_ROOT = ROOT.parent
@@ -73,16 +72,15 @@ def build_context():
     """Load venues.json/flights.json, merge the Google-Sheet venue list, and
     return the TripContext + reference data (guidebooks, extra-climbing links,
     tag taxonomy, sheet rows for match_sheet_row, mp_climbs) the rest of the
-    pipeline needs."""
+    pipeline needs. The trip's name and climbing window come from the repo-root
+    trips.json registry (decision #33 M1) — venues.json's `target_window` is
+    legacy and no longer read."""
+    trip = trips.trip_for_dir(REPO_ROOT, ROOT)
     venues_cfg = json.loads((ROOT / "venues.json").read_text())
     flights_cfg = json.loads((ROOT / "flights.json").read_text())
     merged_venues = sheet_venues.build_venues(venues_cfg["venues"], CLIMBING_CSV)
-    ctx = TripContext(
-        trip_name=venues_cfg["trip"],
-        target_start=date.fromisoformat(venues_cfg["target_window"]["start"]),
-        target_end=date.fromisoformat(venues_cfg["target_window"]["end"]),
-        venues=merged_venues,
-        flights_cfg=flights_cfg,
+    ctx = trips.context_for(
+        trip, merged_venues, flights_cfg,
         serpapi_key=SERPAPI_KEY,
         top_n_flights=10,   # Starter plan (1000/mo): price the top 10, not just 4
     )

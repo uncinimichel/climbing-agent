@@ -327,6 +327,7 @@ TITLES = {
     "roadmap/ingestion-plan": ("Ingestion Plan", "The free, staged build of Phase 1→3 — sources, scraping, tagging, curation."),
     "roadmap/multi-pitch-site-plan": ("multi-pitch.com Site Plan", "The same vision as a multi-pitch.com product roadmap."),
     "roadmap/curation-studio-plan": ("Curation Studio Plan", "The fast localhost UI for reviewing drafts into curated rows (#32 follow-up)."),
+    "roadmap/trip-editing-plan": ("Trip Editing Plan", "Multi-trip, file-backed: trips.json registry, shared fetch layer, local admin forms (#33)."),
     "roadmap/decisions": ("Decision Log", "Lightweight ADRs — why we chose X."),
 }
 GROUPS = [
@@ -341,7 +342,7 @@ GROUPS = [
     ("Operations", ["operations/deployment", "operations/external-apis", "operations/runbook",
                      "operations/notifications", "operations/testing-plan"]),
     ("Roadmap", ["roadmap/roadmap", "roadmap/ingestion-plan", "roadmap/multi-pitch-site-plan",
-                  "roadmap/curation-studio-plan", "roadmap/decisions"]),
+                  "roadmap/curation-studio-plan", "roadmap/trip-editing-plan", "roadmap/decisions"]),
 ]
 
 
