@@ -12,11 +12,38 @@ The controlled vocabularies it encodes: [`knowledge/data/taxonomy.md`](../knowle
 cd db
 docker-compose up -d          # postgis/postgis:16-3.4; first boot auto-applies sql/
 ./smoke.sh                    # end-to-end smoke test (rolls back, leaves no data)
-./apply.sh                    # re-apply sql/ after edits (drops + rebuilds the climbing schema)
 docker exec -it climbing-db psql -U climbing   # interactive psql
 ```
 
 Connection: `postgres://climbing:climbing@localhost:5432/climbing` (local dev only).
+
+**⚠️ `./apply.sh` DROPS the whole `climbing` schema — including real crawl + curation
+work.** Since #34 the DB is the working store, so the only safe rebuild is:
+
+```bash
+./apply.sh && ../agent/.venv/bin/python tools/ingest_corpus.py   # restore from corpus.json
+```
+
+## The Curation Studio — turn drafts into curated routes ✏️
+
+```bash
+../agent/.venv/bin/python tools/curate.py      # → http://localhost:8890 (localhost-only)
+```
+
+**Postgres-first (decision #34):** this app is how the corpus gets edited. The queue
+serves `draft` routes one at a time with evidence alongside (source links, AI tag
+receipt, OSM pin, climatology); you verify facts, fix tags, fill the gaps (stars,
+season, sun window…), write the **intro / approach / pitch-by-pitch** prose, and
+**Publish** (`⌘⏎`) — which atomically flips `status → publish` + `tagged_by → human`.
+A CHECK constraint (`route_publish_needs_human_tags`, `sql/025_curation.sql`) makes a
+non-human-tagged publish row impossible — governance #32 lives in the database. Not
+verifiable from a desk? Flag it 🥾 *needs field check* with a curator note. The Grid
+view bulk-edits one column across selected rows (never bulk-publishes).
+
+**Export after every session:** the ⇩ button (or `python3 tools/build_corpus.py`) writes
+the whole DB to `db/corpus.json` + the served copy under `knowledge/data/` — commit that
+diff; it is the backup `ingest_corpus.py` restores from, and the audit trail of who
+curated what.
 
 ## Layout
 
@@ -25,9 +52,15 @@ Connection: `postgres://climbing:climbing@localhost:5432/climbing` (local dev on
 | `sql/001_extensions.sql` | PostGIS + pg_trgm; drops/recreates the `climbing` schema (re-runnable) |
 | `sql/010_taxonomy.sql` | Lookup tables — one per closed enum in `taxonomy.md` |
 | `sql/020_core.sql` | `source`, `area` hierarchy, `route`, junctions, provenance, references, climatology |
+| `sql/025_curation.sql` | Curation & tag provenance: `tagged_by`/`tag_prov`/`curation_notes`/`needs_field_check` + publish⇒human CHECK (#32/#34) |
 | `sql/030_views.sql` | `area_resolved` / `route_resolved` — downward inheritance (gradeContext, rock, aspect) |
 | `sql/1xx_seed_*.sql` | Enum values, the dataGrade ladder, the source registry |
 | `smoke/smoke_test.sql` | Insert the taxonomy.md example route; verify enum rejection, hazard-evidence trigger, inheritance, geo radius query, grade mapping; rollback |
+| `tools/curate.py` + `tools/curate_ui.html` | **The Curation Studio** (localhost:8890) — see above |
+| `tools/ingest_corpus.py` | corpus.json + multi-pitch seeds → Postgres (restore path; never overwrites human rows) |
+| `tools/build_corpus.py` | Postgres → `db/corpus.json` export (the committed backup) |
+| `tools/crawl_worker.py` + clients | UKC/theCrag crawler → draft routes (resumable frontier) |
+| `tools/ai_tag.py` | Claude infers features/character/protection from prose → `enrichment-cache.json`, lands as `taggedBy: llm` |
 
 ## Design in one paragraph
 
