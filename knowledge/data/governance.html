@@ -1,0 +1,86 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Data Governance · multi-pitch Live</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"><style>
+:root{--ink:#0C0D10;--ink2:#12141B;--ink3:#191C27;--ink4:#20243A;--seam:#252840;
+--chalk:#EAE6DD;--chalk2:#9B9890;--chalk3:#5A5860;--go:#6CB268;--amb:#C8A44A;
+--wet:#B94438;--spike:#C4FF5C;--r:6px;--r-lg:12px}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--ink);color:var(--chalk)}
+body{font-family:'Inter',system-ui,sans-serif;font-size:15px;line-height:1.65;
+-webkit-font-smoothing:antialiased}
+.top{position:sticky;top:0;z-index:10;height:48px;background:var(--ink2);
+border-bottom:1px solid var(--seam);display:flex;align-items:center;gap:12px;padding:0 18px}
+.logo{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--chalk);
+letter-spacing:-.2px;text-decoration:none}
+.top a.btn{margin-left:auto;font-size:12px;color:var(--chalk2);text-decoration:none;
+border:1px solid var(--seam);border-radius:var(--r);padding:5px 12px}
+.top a.btn:hover{color:var(--chalk);border-color:var(--chalk3)}
+.wrap{max-width:860px;margin:0 auto;padding:32px 22px 96px}
+.crumb{font-size:12px;color:var(--chalk3);margin-bottom:22px;font-family:'DM Mono',monospace}
+.crumb a{color:var(--chalk2);text-decoration:none}
+.crumb a:hover{color:var(--spike)}
+h1,h2,h3,h4{font-family:'Syne',sans-serif;letter-spacing:-.3px;line-height:1.25;
+scroll-margin-top:64px}
+h1{font-size:30px;font-weight:800;margin:.2em 0 .6em}
+h2{font-size:21px;font-weight:700;margin:1.8em 0 .5em;padding-top:.4em;
+border-top:1px solid var(--seam)}
+h3{font-size:16.5px;font-weight:700;margin:1.4em 0 .4em;color:var(--chalk)}
+h4{font-size:14px;font-weight:700;margin:1.2em 0 .3em;color:var(--chalk2)}
+p{margin:.7em 0}
+a{color:var(--amb);text-decoration:none;border-bottom:1px solid rgba(200,164,74,.28)}
+a:hover{color:var(--spike);border-bottom-color:var(--spike)}
+strong{color:#fff;font-weight:600}
+code{font-family:'DM Mono',ui-monospace,monospace;font-size:.86em;background:var(--ink3);
+border:1px solid var(--seam);border-radius:4px;padding:1px 5px;color:var(--amb)}
+pre{background:var(--ink2);border:1px solid var(--seam);border-radius:var(--r-lg);
+padding:16px 18px;overflow-x:auto;margin:1em 0}
+pre code{background:none;border:none;padding:0;color:var(--chalk2);font-size:12.5px;
+line-height:1.5;white-space:pre}
+blockquote{margin:1.1em 0;padding:.4em 16px;border-left:3px solid var(--amb);
+background:var(--amb-d,rgba(200,164,74,.07));border-radius:0 var(--r) var(--r) 0;
+color:var(--chalk2)}
+blockquote p{margin:.4em 0}
+hr{border:none;border-top:1px solid var(--seam);margin:2em 0}
+ul,ol{margin:.6em 0;padding-left:1.4em}
+li{margin:.28em 0}
+li>ul,li>ol{margin:.25em 0}
+.tw{overflow-x:auto;margin:1.1em 0;border:1px solid var(--seam);border-radius:var(--r-lg)}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--seam);
+vertical-align:top}
+th{background:var(--ink3);font-family:'Syne',sans-serif;font-weight:700;font-size:12px;
+color:var(--chalk);white-space:nowrap}
+tr:last-child td{border-bottom:none}
+td code{white-space:nowrap}
+.idx-group{margin:1.4em 0}
+.idx-group h3{border-bottom:1px solid var(--seam);padding-bottom:.3em}
+.idx-card{display:block;padding:12px 14px;margin:8px 0;background:var(--ink2);
+border:1px solid var(--seam);border-radius:var(--r-lg);color:var(--chalk);
+border-bottom:1px solid var(--seam)}
+.idx-card:hover{border-color:var(--chalk3);color:var(--chalk)}
+.idx-card b{font-family:'Syne',sans-serif}
+.idx-card span{display:block;color:var(--chalk2);font-size:13px;margin-top:2px}
+@media(max-width:600px){.wrap{padding:22px 15px 80px}h1{font-size:24px}body{font-size:14px}}
+</style></head><body><div class=top><a class=logo href="../../index.html">🧗 multi-pitch <span style="color:var(--spike)">Live</span></a><a class=btn href="../../knowledge/index.html">📚 Knowledge</a><a class=btn href="../../knowledge/corpus-inspector.html">🧗 Inspector</a><a class=btn href="../../knowledge/data-dependencies.html">🗺 Data map</a><a class=btn href="../../index.html">▶ Dashboard</a></div><div class=wrap><div class=crumb><a href="../index.html">📚 knowledge</a> / data / <b style='color:var(--chalk2)'>governance</b></div><h1 id="data-governance-curated-vs-everything-else">Data governance — curated vs everything else</h1>
+<blockquote><p><strong>Purpose:</strong> make it possible to tell <strong>at a glance</strong> which climb/venue data a human has verified and which is machine-scraped or AI-inferred — and enforce one hard rule: <strong>suggestions and ranking read curated, human-tagged data only.</strong> <strong>Status:</strong> ✅ Decided — <a href="../roadmap/decisions.html">#32</a>. Provenance fields live in <code>corpus.json</code> today; the trip-pipeline enforcement is pending (see the scoreboard below).</p></blockquote>
+<h2 id="the-one-rule">The one rule</h2>
+<blockquote><p>Any feature that <strong>recommends</strong> — the agent's route suggestions, the dashboard's venue ranking, "best of" lists — may only use rows where <strong><code>status: publish</code></strong> AND <strong><code>taggedBy: human</code></strong>. Everything else exists to be <em>reviewed</em>, not to be <em>served</em>.</p></blockquote>
+<p>Live <strong>environmental</strong> data (weather, flights, stays) is exempt: it can't be human-curated by nature. It may feed scoring as <em>conditions</em>, but must always be provenance-labelled in the UI (the <a href="../roadmap/decisions.html">#31</a> weather chips are the precedent) — and it must never be treated as a <strong>climb fact</strong>.</p>
+<h2 id="the-trust-tiers">The trust tiers</h2>
+<p>Every area/route in <a href="corpus.json"><code>corpus.json</code></a> carries three provenance fields: <code>status</code> (publish/draft), <code>source</code> (where the row came from), <code>taggedBy</code> (who tagged it). That makes the tiers a <strong>query, not a judgment call</strong>:</p>
+<div class="tw"><table><thead><tr><th>Tier</th><th>Filter</th><th>What it means</th><th>May feed suggestions/ranking?</th></tr></thead><tbody><tr><td><strong>Curated</strong></td><td><code>status:publish</code> + <code>taggedBy:human</code></td><td>A human verified the facts <em>and</em> the tags</td><td>✅ <strong>Yes — the only tier that may</strong></td></tr><tr><td><strong>Seeded</strong></td><td><code>status:draft</code>, <code>source:multi-pitch.com</code> / <code>sheet-gazetteer</code></td><td>Scraped/imported, unreviewed</td><td>❌ Review queue only</td></tr><tr><td><strong>AI-tagged</strong></td><td><code>taggedBy:llm</code> (+ <code>tagProv: {model, date}</code>)</td><td>Tags inferred from prose by Claude (<code>db/tools/ai_tag.py</code>)</td><td>❌ Never counts as curated, even on a publish row</td></tr><tr><td><strong>External live</strong></td><td>Open-Meteo · OSM · flight APIs</td><td>Environmental conditions, refetched daily</td><td>⚠️ As <em>conditions</em> only, provenance-labelled</td></tr></tbody></table></div>
+<p>Current corpus counts (<code>counts</code> block in <code>corpus.json</code>): <strong>40/151 areas</strong> and <strong>8/58 routes</strong> are curated; all 50 seeded routes are <code>taggedBy: llm</code>.</p>
+<h2 id="promotion-how-draft-becomes-curated">Promotion: how draft becomes curated</h2>
+<ol><li>Open the row in the <a href="../corpus-inspector.html">Corpus Inspector</a> (drafts render dimmed).</li><li>Verify the facts (grade, pitches, coords) against a guidebook / logbook source, and accept or fix each AI tag — the <code>tagProv</code> chip tells you which tags were inferred.</li><li>Flip <code>status → publish</code> and <code>taggedBy: llm</code> <strong>→ <code>human</code></strong>, set <code>dataGrade</code> honestly. A publish row with <code>taggedBy: llm</code> is a <strong>governance bug</strong> — the build should flag it.</li></ol>
+<p><code>build_corpus.py</code> protects the other direction automatically: LLM tags <strong>never overwrite</strong> a <code>taggedBy: human</code> row on rebuild.</p>
+<h2 id="enforcement-scoreboard-today">Enforcement scoreboard (today)</h2>
+<div class="tw"><table><thead><tr><th>Consumer</th><th>Reads</th><th>Curated-only?</th></tr></thead><tbody><tr><td>Agent search (<code>agent/search.py</code>)</td><td>Postgres</td><td>✅ Hard-wired <code>WHERE r.status = &#x27;publish&#x27;</code></td></tr><tr><td><code>corpus.json</code> builder (<code>db/tools/build_corpus.py</code>)</td><td>DB + venues.json + MP seed</td><td>✅ Stamps <code>status</code>/<code>source</code>/<code>taggedBy</code>/<code>tagProv</code> on every row</td></tr><tr><td>Corpus Inspector</td><td>corpus.json snapshot</td><td>⚠️ Shows publish/draft; should also badge <code>taggedBy: llm</code> tags</td></tr><tr><td><strong>Dashboard ranking</strong> (<code>engine/scoring.py</code>)</td><td>sheet + venues.json + <strong>raw multi-pitch.com</strong></td><td>❌ <strong>Violation</strong> — the <em>Coverage</em> sub-score counts uncurated multi-pitch.com routes (<code>scoring.py</code>, <code>routes_s</code>), and the tidal flag comes from the same feed</td></tr><tr><td>Trip pipeline (<code>update_report.py</code>)</td><td>old five sources, not corpus.json</td><td>❌ Pre-#27 wiring — the pending refactor</td></tr></tbody></table></div>
+<p><strong>Pending (trip-planner process, out of this doc's lane):</strong> when <code>update_report.py</code> / <code>scoring.py</code> switch to <code>corpus.json</code> (#27's 🔜 step), the Coverage sub-score and tidal flag must filter to curated rows — or be explicitly relabelled in the UI as "uncurated coverage signal" if we decide to keep them as a soft hint.</p>
+<h2 id="where-each-judgment-lives-quick-reference">Where each judgment lives (quick reference)</h2>
+<ul><li><strong>Human judgments</strong> — Postgres publish rows, <code>venues.json</code>, the sheet's judgment columns</li></ul>
+<p>  (volume/difficulty/cost). All curated by definition; the sheet becomes a derived export   under #27.</p>
+<ul><li><strong>Machine facts</strong> — multi-pitch.com scrape (<code>db/mp-climbs.json</code>), GAZETTEER coords.</li></ul>
+<p>  Draft until promoted.</p>
+<ul><li><strong>Machine inferences</strong> — <code>db/enrichment-cache.json</code> (LLM tags, keyed by route, with</li></ul>
+<p>  <code>_prov</code>). Merged into corpus as <code>taggedBy: llm</code>.</p>
+<ul><li><strong>Environmental</strong> — <code>climo-cache.json</code>, <code>venue-env.json</code>, flights/stays caches. Never</li></ul>
+<p>  climb facts; provenance-labelled per #31.</p>
+<p>See also: <a href="source-of-truth.html">source-of-truth</a> (why one corpus), the <a href="../data-dependencies.html">Data map</a> (visual wiring), <a href="../roadmap/decisions.html">decisions #27/#31/#32</a>.</p></div></body></html>

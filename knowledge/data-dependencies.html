@@ -61,6 +61,8 @@
   .node.hand{border-color:var(--accent);border-left-width:5px}
   .node.gen{border-style:dashed;border-color:var(--line-2)}
   .node.ext{border-color:var(--weather);border-left-width:5px;background:var(--weather-soft)}
+  .node.ai{border-style:dashed;border-color:var(--amber);border-left-width:5px;background:var(--amber-soft)}
+  .node.ai .ntag{color:var(--amber)}
   .node.orphan{opacity:.55}
   .ntag{font-size:9.5px;letter-spacing:.09em;text-transform:uppercase;font-weight:700;margin-bottom:5px}
   .node.hand .ntag{color:var(--accent-ink)}
@@ -119,11 +121,15 @@
   <div style="margin:16px 0 4px;border:1.5px solid var(--accent);background:var(--accent-soft);border-radius:12px;padding:14px 18px;font-size:14px;color:var(--accent-ink)">
     <b>Decided — <a href="roadmap/decisions.html" style="color:inherit">#27</a>:</b> one authored <a class="nlink" href="data/corpus.json" target="_blank" rel="noopener"><b>db/corpus.json</b> ↗</a> is now the single source of truth (curated <code style="font-family:var(--mono)">status:publish</code> + seeded <code style="font-family:var(--mono)">status:draft</code>). The diagram below is <b>today's wiring</b> — the trip pipeline still reads the old files until it's switched to <code style="font-family:var(--mono)">corpus.json</code>. Full design: <a href="data/source-of-truth.html" style="color:inherit">source-of-truth</a>. <b>Tip:</b> click any file below to open it.
   </div>
+  <div style="margin:10px 0 4px;border:1.5px solid var(--amber);background:var(--amber-soft);border-radius:12px;padding:14px 18px;font-size:14px">
+    <b style="color:var(--amber)">Governance — <a href="roadmap/decisions.html" style="color:inherit">#32</a>:</b> every corpus row is stamped <code style="font-family:var(--mono)">status</code> · <code style="font-family:var(--mono)">source</code> · <code style="font-family:var(--mono)">taggedBy: human|llm|source</code>, so curated vs not is a <b>filter, not a guess</b> — today <b>40/151 areas and 8/58 routes are curated</b>. Suggestions &amp; ranking may only read <code style="font-family:var(--mono)">status:publish + taggedBy:human</code>; the agent search already enforces this, the dashboard ranking doesn't yet (its <i>Coverage</i> sub-score counts raw multi-pitch.com routes). Policy, tiers &amp; scoreboard: <a href="data/governance.html" style="color:inherit"><b>data governance</b></a>.
+  </div>
 
   <div class="legend">
-    <span class="lg"><span class="swb"></span>Hand-authored (source of truth)</span>
+    <span class="lg"><span class="swb"></span>Curated / hand-authored (source of truth)</span>
     <span class="lg"><span class="swb gen"></span>Generated / cache</span>
     <span class="lg"><span class="swb ext"></span>External API</span>
+    <span class="lg"><span class="swb" style="border-style:dashed;border-color:var(--amber);background:var(--amber-soft)"></span>AI-inferred (LLM) — never counts as curated</span>
     <span class="lg"><span class="sw"></span>writes / feeds</span>
     <span class="lg"><span class="sw b"></span>live fetch</span>
     <span class="lg"><span class="sw m"></span>manual sync (no automation)</span>
@@ -136,6 +142,15 @@
       <!-- WORLD A -->
       <div class="lane">
         <div class="lanehead">World A · Corpus DB<small>Individual routes · read by the agent · my inspector reads this</small></div>
+
+        <div class="tier">
+          <div class="node ext" id="mpSeed"><div class="ntag">scraped seed</div><div class="npath"><a class="nlink" href="https://github.com/uncinimichel/climbing-agent/blob/main/db/mp-climbs.json" target="_blank" rel="noopener">db/mp-climbs.json ↗</a></div><div class="ndesc">multi-pitch.com scrape, committed. Seeds <b>draft</b> rows only.</div></div>
+          <div class="node ai" id="aiTags"><div class="ntag">ai-inferred tags</div><div class="npath"><a class="nlink" href="https://github.com/uncinimichel/climbing-agent/blob/main/db/tools/ai_tag.py" target="_blank" rel="noopener">ai_tag.py → enrichment-cache.json ↗</a></div><div class="ndesc">Claude-extracted features/character/protection. Lands as <code style="font-family:var(--mono)">taggedBy:llm</code> + tagProv — review before publish.</div></div>
+        </div>
+
+        <div class="tier"><div class="node gen" id="buildCorpus"><div class="ntag">transform · corpus builder</div><div class="npath"><a class="nlink" href="https://github.com/uncinimichel/climbing-agent/blob/main/db/tools/build_corpus.py" target="_blank" rel="noopener">db/tools/build_corpus.py ↗</a></div><div class="ndesc">Merges Postgres publish rows + venues.json (curated) + MP seed + AI tags. Never overwrites human tags.</div></div></div>
+
+        <div class="tier"><div class="node hand" id="corpusJson"><div class="ntag">source of truth · the corpus (#27)</div><div class="npath"><a class="nlink" href="data/corpus.json" target="_blank" rel="noopener">db/corpus.json ↗</a></div><div class="ndesc"><b>40/151 areas · 8/58 routes curated.</b> Every row: status · source · taggedBy. Curated = <code style="font-family:var(--mono)">status:publish + taggedBy:human</code>.</div></div></div>
 
         <div class="tier"><div class="node hand" id="taxonomyMd"><div class="ntag">source of truth · vocabulary</div><div class="npath"><a class="nlink" href="data/taxonomy.html" target="_blank" rel="noopener">knowledge/data/taxonomy.md ↗</a></div><div class="ndesc">Grades, rock, features, hazards. Edit vocab here first.</div></div></div>
 
@@ -183,7 +198,7 @@
     </div>
   </div>
 
-  <div class="callout">⚠ <b>They don't sync.</b> Adding a venue to <code style="font-family:var(--mono)">venues.json</code> does <b>not</b> create a DB route, and adding a DB route does <b>not</b> appear on the dashboard. The dotted line is a <b>planned</b> importer (<code style="font-family:var(--mono)">extra-climbing.json → area_reference</code>) that isn't built yet. To have something in both worlds today, add it in both.</div>
+  <div class="callout">⚠ <b>They don't sync.</b> Adding a venue to <code style="font-family:var(--mono)">venues.json</code> does <b>not</b> create a DB route, and adding a DB route does <b>not</b> appear on the dashboard. The grey dotted lines are the <b>planned</b> #27 bridges — <code style="font-family:var(--mono)">corpus.json</code> seeding Postgres, and the trip driver reading <code style="font-family:var(--mono)">corpus.json</code> instead of the old files — neither is built yet. To have something in both worlds today, add it in both.</div>
 
   <div class="recipes">
     <div class="recipe">
@@ -211,11 +226,14 @@
 
   <div class="callout" style="border-color:var(--ghost);background:transparent;color:var(--muted)">🔜 <b>Pending (trip-planner process):</b> switch <code style="font-family:var(--mono)">update_report.py</code>/<code style="font-family:var(--mono)">sheet_venues.py</code> to read <code style="font-family:var(--mono)">corpus.json</code>, delete <code style="font-family:var(--mono)">GAZETTEER</code>, make <code style="font-family:var(--mono)">climbing-trips.csv</code> a generated export. Until then the diagram above is live.</div>
 
-  <footer>Traced from update_report.py, engine/render.py, engine/sheet_venues.py, agent/search.py, and db/sql + db/dev.<br>Weather is stored twice, differently: hand-typed <code style="font-family:var(--mono)">route_climatology</code> (World A) vs live Open-Meteo <code style="font-family:var(--mono)">climo-cache.json</code> (World B).</footer>
+  <footer>Traced from update_report.py, engine/render.py, engine/sheet_venues.py, engine/scoring.py, agent/search.py, db/tools/build_corpus.py, and db/sql + db/dev. Verified 2026-07-13.<br>Weather is stored twice, differently: hand-typed <code style="font-family:var(--mono)">route_climatology</code> (World A) vs live Open-Meteo <code style="font-family:var(--mono)">climo-cache.json</code> (World B).<br>Governance tiers &amp; the curated-only ranking rule (#32): <a class="nlink" href="data/governance.html">data governance</a>.</footer>
 </div>
 
 <script>
 const EDGES=[
+  ['mpSeed','buildCorpus','api'],['aiTags','buildCorpus','solid'],
+  ['venuesJson','buildCorpus','solid'],
+  ['buildCorpus','corpusJson','solid'],
   ['taxonomyMd','dbsql','manual'],
   ['dbsql','pg','solid'],['samplesql','pg','solid'],
   ['pg','views','solid'],
@@ -224,7 +242,7 @@ const EDGES=[
   ['weatherApi','driver','api'],['mpData','driver','api'],
   ['driver','caches','solid'],
   ['driver','indexHtml','solid'],['driver','venuePages','solid'],
-  ['venuesJson','pg','ghost'],
+  ['corpusJson','pg','ghost'],['corpusJson','driver','ghost'],
 ];
 const COL={solid:'var(--accent)',api:'var(--weather)',manual:'var(--amber)',ghost:'var(--ghost)'};
 const svg=document.getElementById('edges');

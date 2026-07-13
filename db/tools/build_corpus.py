@@ -211,6 +211,7 @@ def build():
             "character": r.get("character") or [], "hazards": r.get("hazards") or [],
             "climatology": r.get("climatology") or [],
             "geoLocation": [r.get("lat"), r.get("lon")],
+            "taggedBy": "human",
         })
 
     # 2. venues.json curated crags → publish areas (coords / rock / aspect)
@@ -260,6 +261,7 @@ def build():
             "climatology": c.get("climatology") or [],
             "description": c.get("description") or "",
             "geoLocation": ll,
+            "taggedBy": "source",
         })
 
     # 4. GAZETTEER venue coords → draft areas (decision #27: coords live in the corpus)
@@ -268,13 +270,18 @@ def build():
                   rock=norm_rock(g.get("rock")), aspect=g.get("aspect"),
                   status="draft", source="sheet-gazetteer")
 
-    # 5. merge Phase-2 AI tags (feature/character/protection/discipline), tagged once by ai_tag.py
+    # 5. merge Phase-2 AI tags (feature/character/protection/discipline), tagged once by
+    #    ai_tag.py. Governance (decision #32): LLM tags never silently pass as curated —
+    #    the route is stamped taggedBy:llm + tagProv so consumers can tell them apart,
+    #    and only a human review flips it to taggedBy:human.
     if ENRICH_CACHE.exists():
         enrich = json.loads(ENRICH_CACHE.read_text())
         for r in routes:
             e = enrich.get(str(r["id"]))
             if not e:
                 continue
+            if r.get("taggedBy") == "human":
+                continue  # curated tags win — never overwrite human work with LLM output
             if e.get("features"):
                 r["features"] = e["features"]
             if e.get("character"):
@@ -283,19 +290,25 @@ def build():
                 r["protection"] = e["protection"]
             if e.get("discipline"):
                 r["disciplines"] = sorted(set((r.get("disciplines") or []) + e["discipline"]))
+            r["taggedBy"] = "llm"
+            prov = e.get("_prov") or {}
+            r["tagProv"] = {"model": prov.get("model"), "date": prov.get("date")}
 
     area_list = areas.list()
     pub_a = sum(a["status"] == "publish" for a in area_list)
     pub_r = sum(r["status"] == "publish" for r in routes)
+    llm_r = sum(r.get("taggedBy") == "llm" for r in routes)
     corpus = {
-        "schemaVersion": "1.0",
+        "schemaVersion": "1.1",
         "generated": date.today().isoformat(),
         "note": "Single source of truth for climbs/venues (decision #27). Shaped as the "
-                "Postgres seed. Curated = status:publish; seeded/unverified = status:draft.",
+                "Postgres seed. Curated = status:publish; seeded/unverified = status:draft. "
+                "Governance (#32): suggestions/ranking may only use status:publish + "
+                "taggedBy:human rows; taggedBy:llm marks machine-inferred tags.",
         "taxonomyRef": TAXONOMY_REF,
         "counts": {"areas": len(area_list), "areasCurated": pub_a,
                    "routes": len(routes), "routesCurated": pub_r,
-                   "routesSeeded": len(routes) - pub_r},
+                   "routesSeeded": len(routes) - pub_r, "routesLlmTagged": llm_r},
         "areas": area_list,
         "routes": routes,
     }

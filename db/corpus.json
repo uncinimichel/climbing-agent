@@ -1,14 +1,15 @@
 {
-  "schemaVersion": "1.0",
-  "generated": "2026-07-06",
-  "note": "Single source of truth for climbs/venues (decision #27). Shaped as the Postgres seed. Curated = status:publish; seeded/unverified = status:draft.",
+  "schemaVersion": "1.1",
+  "generated": "2026-07-13",
+  "note": "Single source of truth for climbs/venues (decision #27). Shaped as the Postgres seed. Curated = status:publish; seeded/unverified = status:draft. Governance (#32): suggestions/ranking may only use status:publish + taggedBy:human rows; taggedBy:llm marks machine-inferred tags.",
   "taxonomyRef": "knowledge/data/tag-spec.json",
   "counts": {
     "areas": 151,
     "areasCurated": 40,
     "routes": 58,
     "routesCurated": 8,
-    "routesSeeded": 50
+    "routesSeeded": 50,
+    "routesLlmTagged": 50
   },
   "areas": [
     {
@@ -2407,7 +2408,7 @@
   ],
   "routes": [
     {
-      "id": 3,
+      "id": 1,
       "area": "old-man-of-stoer",
       "name": "Original Route",
       "status": "publish",
@@ -2469,10 +2470,11 @@
       "geoLocation": [
         58.258,
         -5.361
-      ]
+      ],
+      "taggedBy": "human"
     },
     {
-      "id": 4,
+      "id": 2,
       "area": "idwal-slabs",
       "name": "Tennis Shoe",
       "status": "publish",
@@ -2516,10 +2518,11 @@
       "geoLocation": [
         53.114,
         -4.029
-      ]
+      ],
+      "taggedBy": "human"
     },
     {
-      "id": 5,
+      "id": 3,
       "area": "three-cliffs-bay",
       "name": "Scavenger",
       "status": "publish",
@@ -2567,10 +2570,11 @@
       "geoLocation": [
         51.57,
         -4.111
-      ]
+      ],
+      "taggedBy": "human"
     },
     {
-      "id": 6,
+      "id": 4,
       "area": "gimmer-crag",
       "name": "Ash Tree Slabs",
       "status": "publish",
@@ -2610,10 +2614,11 @@
       "geoLocation": [
         54.447,
         -3.112
-      ]
+      ],
+      "taggedBy": "human"
     },
     {
-      "id": 7,
+      "id": 5,
       "area": "fair-head",
       "name": "Girona",
       "status": "publish",
@@ -2657,10 +2662,11 @@
       "geoLocation": [
         55.222,
         -6.156
-      ]
+      ],
+      "taggedBy": "human"
     },
     {
-      "id": 8,
+      "id": 6,
       "area": "los-galayos",
       "name": "Sur Clásica (Punta Margarita)",
       "status": "publish",
@@ -2705,10 +2711,11 @@
       "geoLocation": [
         40.26,
         -5.174
-      ]
+      ],
+      "taggedBy": "human"
     },
     {
-      "id": 9,
+      "id": 7,
       "area": "aiguille-dibona",
       "name": "Voie Boell",
       "status": "publish",
@@ -2766,10 +2773,11 @@
       "geoLocation": [
         44.931,
         6.274
-      ]
+      ],
+      "taggedBy": "human"
     },
     {
-      "id": 10,
+      "id": 8,
       "area": "anica-kuk",
       "name": "Mosoraški",
       "status": "publish",
@@ -2828,7 +2836,8 @@
       "geoLocation": [
         44.301,
         15.465
-      ]
+      ],
+      "taggedBy": "human"
     },
     {
       "id": "mp-10",
@@ -2943,7 +2952,12 @@
         50.9194,
         -4.5567
       ],
-      "protection": "R"
+      "taggedBy": "llm",
+      "protection": "R",
+      "tagProv": {
+        "model": "claude-cli",
+        "date": "2026-07-06"
+      }
     },
     {
       "id": "mp-11",
@@ -3049,7 +3063,12 @@
         55.6367,
         -5.2232
       ],
-      "protection": "UNSPECIFIED"
+      "taggedBy": "llm",
+      "protection": "UNSPECIFIED",
+      "tagProv": {
+        "model": "claude-cli",
+        "date": "2026-07-06"
+      }
     },
     {
       "id": "mp-12",
@@ -3169,7 +3188,12 @@
         41.5888,
         1.815
       ],
-      "protection": "PG-13"
+      "taggedBy": "llm",
+      "protection": "PG-13",
+      "tagProv": {
+        "model": "claude-cli",
+        "date": "2026-07-06"
+      }
     },
     {
       "id": "mp-13",
@@ -3277,7 +3301,12 @@
         54.6262,
         -8.6852
       ],
-      "protection": "G"
+      "taggedBy": "llm",
+      "protection": "G",
+      "tagProv": {
+        "model": "claude-cli",
+        "date": "2026-07-06"
+      }
     },
     {
       "id": "mp-14",
@@ -3388,7 +3417,12 @@
         50.0369,
         -5.6819
       ],
-      "protection": "UNSPECIFIED"
+      "taggedBy": "llm",
+      "protection": "UNSPECIFIED",
+      "tagProv": {
+        "model": "claude-cli",
+        "date": "2026-07-06"
+      }
     },
     {
       "id": "mp-15",
@@ -3500,7 +3534,12 @@
         44.5897,
         -104.7153
       ],
-      "protection": "UNSPECIFIED"
+      "taggedBy": "llm",
+      "protection": "UNSPECIFIED",
+      "tagProv": {
+        "model": "claude-cli",
+        "date": "2026-07-06"
+      }
     },
     {
       "id": "mp-16",
@@ -3612,7 +3651,12 @@
         53.0602,
         -4.0539
       ],
-      "protection": "PG"
+      "taggedBy": "llm",
+      "protection": "PG",
+      "tagProv": {
+        "model": "claude-cli",
+        "date": "2026-07-06"
+      }
     },
     {
       "id": "mp-17",
@@ -3725,7 +3769,12 @@
         68.1625,
         16.5907
       ],
-      "protection": "UNSPECIFIED"
+      "taggedBy": "llm",
+      "protection": "UNSPECIFIED",
+      "tagProv": {
+        "model": "claude-cli",
+        "date": "2026-07-06"
+      }
     },
     {
       "id": "mp-18",
@@ -3834,7 +3883,12 @@
         54.4507,
         -3.2203
       ],
-      "protection": "UNSPECIFIED"
+      "taggedBy": "llm",
+      "protection": "UNSPECIFIED",
+      "tagProv": {
+        "model": "claude-cli",
+        "date": "2026-07-06"
+      }
     },
     {
       "id": "mp-19",
@@ -3943,7 +3997,12 @@
         50.6375,
         -115.1674
       ],
-      "protection": "G"
+      "taggedBy": "llm",
+      "protection": "G",
+      "tagProv": {
+        "model": "claude-cli",
+        "date": "2026-07-06"
+      }
     },
     {
       "id": "mp-2",
@@ -4055,7 +4114,12 @@
         50.1758,
         -5.6204
       ],
-      "protection": "G"
+      "taggedBy": "llm",
+      "protection": "G",
+      "tagProv": {
+        "model": "claude-cli",
+        "date": "2026-07-06"
+      }
     },
     {
       "id": "mp-20",
@@ -4168,7 +4232,12 @@
         54.1793,
         -5.9477
       ],
-      "protection": "PG"
+      "taggedBy": "llm",
+      "protection": "PG",
+      "tagProv": {
+        "model": "claude-cli",
+        "date": "2026-07-06"
+      }
     },
     {
       "id": "mp-21",
@@ -4272,7 +4341,12 @@
         22.3519,
         114.1852
       ],
-      "protection": "PG"
+      "taggedBy": "llm",
+      "protection": "PG",
+      "tagProv": {
+        "model": "claude-cli",
+        "date": "2026-07-06"
+      }
     },
     {
       "id": "mp-22",
@@ -4392,7 +4466,12 @@
         38.6339,
         0.0743
       ],
-      "protection": "PG"
+      "taggedBy": "llm",
+      "protection": "PG",
+      "tagProv": {
+        "model": "claude-cli",
+        "date": "2026-07-06"
+      }
     },
     {
       "id": "mp-23",
@@ -4503,7 +4582,12 @@
         39.7201,
         21.6278
       ],
-      "protection": "PG-13"
+      "taggedBy": "llm",
+      "protection": "PG-13",
+      "tagProv": {
+        "model": "claude-cli",
+        "date": "2026-07-06"
+      }
     },
     {
       "id": "mp-24",
@@ -4614,7 +4698,12 @@
         44.9612,
         6.2439
       ],
-      "protection": "PG"
+      "taggedBy": "llm",
+      "protection": "PG",
+      "tagProv": {
+        "model": "claude-cli",
+        "date": "2026-07-06"
+      }
     },
     {
       "id": "mp-25",
@@ -4724,7 +4813,12 @@
         47.117,
         8.9851
       ],
-      "protection": "runout"
+      "taggedBy": "llm",
+      "protection": "runout",
+      "tagProv": {
+        "model": "claude-cli",
+        "date": "2026-07-06"
+      }
     },
     {
       "id": "mp-26",
@@ -4841,7 +4935,12 @@
         46.4604,
         11.6245
       ],
-      "protection": "PG"
+      "taggedBy": "llm",
+      "protection": "PG",
+      "tagProv": {
+        "model": "claude-cli",
+        "date": "2026-07-06"
+      }
     },
     {
       "id": "mp-28",
@@ -4959,7 +5058,12 @@
         28.2235,
         -16.6345
       ],
-      "protection": "UNSPECIFIED"
+      "taggedBy": "llm",
+      "protection": "UNSPECIFIED",
+      "tagProv": {
+        "model": "claude-cli",
+        "date": "2026-07-06"
+      }
     },
     {
       "id": "mp-29",
@@ -5073,7 +5177,12 @@
         51.6648,
         -2.6643
       ],
-      "protection": "G"
+      "taggedBy": "llm",
+      "protection": "G",
+      "tagProv": {
+        "model": "claude-cli",
+        "date": "2026-07-06"
+      }
     },
     {
       "id": "mp-3",
@@ -5184,7 +5293,12 @@
         53.0793,
         -4.093
       ],
-      "protection": "UNSPECIFIED"
+      "taggedBy": "llm",
+      "protection": "UNSPECIFIED",
+      "tagProv": {
+        "model": "claude-cli",
+        "date": "2026-07-06"
+      }
     },
     {
       "id": "mp-30",
@@ -5298,7 +5412,12 @@
         51.4685,
         -2.6332
       ],
-      "protection": "G"
+      "taggedBy": "llm",
+      "protection": "G",
+      "tagProv": {
+        "model": "claude-cli",
+        "date": "2026-07-06"
+      }
     },
     {
       "id": "mp-32",
@@ -5408,7 +5527,12 @@
         50.2262,
         4.8913
       ],
-      "protection": "UNSPECIFIED"
+      "taggedBy": "llm",
+      "protection": "UNSPECIFIED",
+      "tagProv": {
+        "model": "claude-cli",
+        "date": "2026-07-06"
+      }
     },
     {
       "id": "mp-33",
@@ -5518,7 +5642,12 @@
         46.6009,
         11.7547
       ],
-      "protection": "UNSPECIFIED"
+      "taggedBy": "llm",
+      "protection": "UNSPECIFIED",
+      "tagProv": {
+        "model": "claude-cli",
+        "date": "2026-07-06"
+      }
     },
     {
       "id": "mp-34",
@@ -5632,7 +5761,12 @@
         58.8837,
         -3.4305
       ],
-      "protection": "UNSPECIFIED"
+      "taggedBy": "llm",
+      "protection": "UNSPECIFIED",
+      "tagProv": {
+        "model": "claude-cli",
+        "date": "2026-07-06"
+      }
     },
     {
       "id": "mp-35",
@@ -5744,7 +5878,12 @@
         29.8127,
         -9.0668
       ],
-      "protection": "UNSPECIFIED"
+      "taggedBy": "llm",
+      "protection": "UNSPECIFIED",
+      "tagProv": {
+        "model": "claude-cli",
+        "date": "2026-07-06"
+      }
     },
     {
       "id": "mp-37",
@@ -5858,7 +5997,12 @@
         29.6968,
         -8.9759
       ],
-      "protection": "PG"
+      "taggedBy": "llm",
+      "protection": "PG",
+      "tagProv": {
+        "model": "claude-cli",
+        "date": "2026-07-06"
+      }
     },
     {
       "id": "mp-38",
@@ -5967,7 +6111,12 @@
         29.8426,
         -9.0235
       ],
-      "protection": "PG"
+      "taggedBy": "llm",
+      "protection": "PG",
+      "tagProv": {
+        "model": "claude-cli",
+        "date": "2026-07-06"
+      }
     },
     {
       "id": "mp-39",
@@ -6079,7 +6228,12 @@
         29.8087,
         -9.0643
       ],
-      "protection": "UNSPECIFIED"
+      "taggedBy": "llm",
+      "protection": "UNSPECIFIED",
+      "tagProv": {
+        "model": "claude-cli",
+        "date": "2026-07-06"
+      }
     },
     {
       "id": "mp-4",
@@ -6186,7 +6340,12 @@
         43.1948,
         23.5301
       ],
-      "protection": "UNSPECIFIED"
+      "taggedBy": "llm",
+      "protection": "UNSPECIFIED",
+      "tagProv": {
+        "model": "claude-cli",
+        "date": "2026-07-06"
+      }
     },
     {
       "id": "mp-40",
@@ -6297,7 +6456,12 @@
         51.5684,
         -4.1226
       ],
-      "protection": "PG"
+      "taggedBy": "llm",
+      "protection": "PG",
+      "tagProv": {
+        "model": "claude-cli",
+        "date": "2026-07-06"
+      }
     },
     {
       "id": "mp-41",
@@ -6409,7 +6573,12 @@
         54.1606,
         -5.9614
       ],
-      "protection": "runout"
+      "taggedBy": "llm",
+      "protection": "runout",
+      "tagProv": {
+        "model": "claude-cli",
+        "date": "2026-07-06"
+      }
     },
     {
       "id": "mp-42",
@@ -6526,7 +6695,12 @@
         46.4991,
         11.808
       ],
-      "protection": "PG"
+      "taggedBy": "llm",
+      "protection": "PG",
+      "tagProv": {
+        "model": "claude-cli",
+        "date": "2026-07-06"
+      }
     },
     {
       "id": "mp-43",
@@ -6641,7 +6815,12 @@
         46.5091,
         11.7738
       ],
-      "protection": "G"
+      "taggedBy": "llm",
+      "protection": "G",
+      "tagProv": {
+        "model": "claude-cli",
+        "date": "2026-07-06"
+      }
     },
     {
       "id": "mp-44",
@@ -6753,7 +6932,12 @@
         38.5891,
         -0.2065
       ],
-      "protection": "G"
+      "taggedBy": "llm",
+      "protection": "G",
+      "tagProv": {
+        "model": "claude-cli",
+        "date": "2026-07-06"
+      }
     },
     {
       "id": "mp-45",
@@ -6869,7 +7053,12 @@
         53.1249,
         -4.0998
       ],
-      "protection": "PG"
+      "taggedBy": "llm",
+      "protection": "PG",
+      "tagProv": {
+        "model": "claude-cli",
+        "date": "2026-07-06"
+      }
     },
     {
       "id": "mp-46",
@@ -6983,7 +7172,12 @@
         53.1087,
         -4.0201
       ],
-      "protection": "G"
+      "taggedBy": "llm",
+      "protection": "G",
+      "tagProv": {
+        "model": "claude-cli",
+        "date": "2026-07-06"
+      }
     },
     {
       "id": "mp-47",
@@ -7100,7 +7294,12 @@
         38.635,
         -0.1822
       ],
-      "protection": "PG"
+      "taggedBy": "llm",
+      "protection": "PG",
+      "tagProv": {
+        "model": "claude-cli",
+        "date": "2026-07-06"
+      }
     },
     {
       "id": "mp-48",
@@ -7218,7 +7417,12 @@
         38.6355,
         0.0746
       ],
-      "protection": "UNSPECIFIED"
+      "taggedBy": "llm",
+      "protection": "UNSPECIFIED",
+      "tagProv": {
+        "model": "claude-cli",
+        "date": "2026-07-06"
+      }
     },
     {
       "id": "mp-49",
@@ -7331,7 +7535,12 @@
         54.1568,
         -5.9794
       ],
-      "protection": "PG"
+      "taggedBy": "llm",
+      "protection": "PG",
+      "tagProv": {
+        "model": "claude-cli",
+        "date": "2026-07-06"
+      }
     },
     {
       "id": "mp-5",
@@ -7442,7 +7651,12 @@
         54.7612,
         -8.6916
       ],
-      "protection": "R"
+      "taggedBy": "llm",
+      "protection": "R",
+      "tagProv": {
+        "model": "claude-cli",
+        "date": "2026-07-06"
+      }
     },
     {
       "id": "mp-50",
@@ -7559,7 +7773,12 @@
         54.1447,
         -6.0628
       ],
-      "protection": "PG"
+      "taggedBy": "llm",
+      "protection": "PG",
+      "tagProv": {
+        "model": "claude-cli",
+        "date": "2026-07-06"
+      }
     },
     {
       "id": "mp-51",
@@ -7673,7 +7892,12 @@
         38.6275,
         -0.1563
       ],
-      "protection": "G"
+      "taggedBy": "llm",
+      "protection": "G",
+      "tagProv": {
+        "model": "claude-cli",
+        "date": "2026-07-06"
+      }
     },
     {
       "id": "mp-52",
@@ -7789,7 +8013,12 @@
         53.1156,
         -3.9947
       ],
-      "protection": "G"
+      "taggedBy": "llm",
+      "protection": "G",
+      "tagProv": {
+        "model": "claude-cli",
+        "date": "2026-07-06"
+      }
     },
     {
       "id": "mp-53",
@@ -7902,7 +8131,12 @@
         38.5891,
         -0.2077
       ],
-      "protection": "G"
+      "taggedBy": "llm",
+      "protection": "G",
+      "tagProv": {
+        "model": "claude-cli",
+        "date": "2026-07-06"
+      }
     },
     {
       "id": "mp-54",
@@ -8020,7 +8254,12 @@
         54.1348,
         -6.0894
       ],
-      "protection": "PG"
+      "taggedBy": "llm",
+      "protection": "PG",
+      "tagProv": {
+        "model": "claude-cli",
+        "date": "2026-07-06"
+      }
     },
     {
       "id": "mp-6",
@@ -8127,7 +8366,12 @@
         46.5033,
         11.8021
       ],
-      "protection": "UNSPECIFIED"
+      "taggedBy": "llm",
+      "protection": "UNSPECIFIED",
+      "tagProv": {
+        "model": "claude-cli",
+        "date": "2026-07-06"
+      }
     },
     {
       "id": "mp-7",
@@ -8239,7 +8483,12 @@
         53.1105,
         -4.026
       ],
-      "protection": "UNSPECIFIED"
+      "taggedBy": "llm",
+      "protection": "UNSPECIFIED",
+      "tagProv": {
+        "model": "claude-cli",
+        "date": "2026-07-06"
+      }
     },
     {
       "id": "mp-8",
@@ -8349,7 +8598,12 @@
       "geoLocation": [
         51.1886,
         -4.6762
-      ]
+      ],
+      "taggedBy": "llm",
+      "tagProv": {
+        "model": "claude-cli",
+        "date": "2026-07-06"
+      }
     },
     {
       "id": "mp-9",
@@ -8459,7 +8713,12 @@
         41.9765,
         -8.2244
       ],
-      "protection": "UNSPECIFIED"
+      "taggedBy": "llm",
+      "protection": "UNSPECIFIED",
+      "tagProv": {
+        "model": "claude-cli",
+        "date": "2026-07-06"
+      }
     }
   ]
 }

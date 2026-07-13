@@ -497,6 +497,27 @@ condition-algorithm.md; tests green (17).
 
 ---
 
+### #32 — Suggestions & ranking read curated (human-tagged) data only (2026-07-13)
+**Decision:** One governance rule across both worlds: anything that **recommends** (agent
+search results, dashboard venue ranking) may only use rows with **`status: publish` AND
+`taggedBy: human`**. To make the tiers queryable, every route in `corpus.json` now carries
+**`taggedBy: human | llm | source`**, and LLM-tagged rows keep **`tagProv: {model, date}`**
+(carried from `enrichment-cache.json`'s `_prov`, which was previously dropped on merge —
+human and machine tags were indistinguishable downstream). `build_corpus.py` also refuses
+to overwrite `taggedBy: human` tags with LLM output on rebuild. Live environmental data
+(weather/flights/stays) is exempt as *conditions* — provenance-labelled per #31, never a
+climb fact. Full policy + tier table: [`data/governance.md`](../data/governance.md).
+**Why:** Michel: the data map showed "so many sources" with no way to see at a glance what
+is curated — and rankings must not be built on unverified scrape/AI output. Audit found
+`agent/search.py` already enforces `status='publish'`, but the dashboard's *Coverage*
+sub-score counts raw multi-pitch.com routes and its tidal flag comes from the same
+uncurated feed.
+**Status:** ⚠️ Partial — provenance fields + governance doc live (`corpus.json` schema 1.1,
+50 routes stamped `llm`, 8 `human`); the `scoring.py`/`update_report.py` enforcement rides
+on the #27 🔜 pipeline switch (trip-planner process).
+
+---
+
 *Template for new entries:*
 ```
 ### #N — Title (date)
