@@ -61,7 +61,7 @@ border-bottom:1px solid var(--seam)}
 @media(max-width:600px){.wrap{padding:22px 15px 80px}h1{font-size:24px}body{font-size:14px}}
 </style></head><body><div class=top><a class=logo href="../../index.html">🧗 multi-pitch <span style="color:var(--spike)">Live</span></a><a class=btn href="../../knowledge/index.html">📚 Knowledge</a><a class=btn href="../../knowledge/corpus-inspector.html">🧗 Inspector</a><a class=btn href="../../knowledge/data-dependencies.html">🗺 Data map</a><a class=btn href="../../index.html">▶ Dashboard</a></div><div class=wrap><div class=crumb><a href="../index.html">📚 knowledge</a> / operations / <b style="color:var(--chalk2)">serpapi-quota.html</b></div><h1>🛰️ API Usage &amp; Cost — Live</h1>
 <p>What the data stack costs and how close it is to its ceilings, refreshed on every build. The only quota that can actually run out is <strong>SerpApi (Google Flights)</strong>, sampled via <code>account.json</code> (which itself costs no search). Flight pricing degrades to "search ↗" links once it hits zero — the build never fails. See <a href="external-apis.html">External APIs</a>.</p>
-<div style="background:var(--ink2);border:1px solid var(--seam);border-radius:var(--r-lg);padding:20px 22px;margin:1.2em 0"><div style="font-family:'Syne',sans-serif;font-size:34px;font-weight:800;color:var(--go)">708 <span style="font-size:16px;color:var(--chalk2);font-weight:600">/ 1000 searches left</span></div><div style="color:var(--chalk2);font-size:13px;margin:4px 0 14px">292 used this month · plan: Starter Plan · checked 2026-07-12 08:08 UTC</div><div style="height:10px;background:var(--ink4);border-radius:6px;overflow:hidden"><div style="height:100%;width:29%;background:var(--go)"></div></div><div style="color:var(--chalk3);font-size:12px;margin-top:6px;font-family:'DM Mono',monospace">29% of monthly quota used · hour rate limit 200/h</div></div>
+<div style="background:var(--ink2);border:1px solid var(--seam);border-radius:var(--r-lg);padding:20px 22px;margin:1.2em 0"><div style="font-family:'Syne',sans-serif;font-size:34px;font-weight:800;color:var(--go)">690 <span style="font-size:16px;color:var(--chalk2);font-weight:600">/ 1000 searches left</span></div><div style="color:var(--chalk2);font-size:13px;margin:4px 0 14px">310 used this month · plan: Starter Plan · checked 2026-07-13 09:02 UTC</div><div style="height:10px;background:var(--ink4);border-radius:6px;overflow:hidden"><div style="height:100%;width:31%;background:var(--go)"></div></div><div style="color:var(--chalk3);font-size:12px;margin-top:6px;font-family:'DM Mono',monospace">31% of monthly quota used · hour rate limit 200/h</div></div>
 <h2>The full API stack — cost &amp; limits</h2>
 <p>Total cash cost of the stack: <strong>£0/month</strong>. Everything except SerpApi is free and un-keyed; SerpApi is free-tier but quota-capped, which is why it gets the live meter above. Caches are committed to the repo so daily builds barely touch the rate-limited sources. Full failure behaviour per source: <a href="external-apis.html">External APIs</a>.</p>
 <div class="tw"><table><thead><tr><th>Source</th><th>Cost</th><th>Limit</th><th>Our usage</th><th>Backstop</th></tr></thead><tbody>
@@ -74,6 +74,7 @@ border-bottom:1px solid var(--seam)}
 </tbody></table></div>
 <h2>SerpApi history</h2>
 <div class="tw"><table><thead><tr><th>Checked (UTC)</th><th>Left</th><th>Used (month)</th><th>Per month</th><th>Plan</th></tr></thead><tbody>
+<tr><td>2026-07-13 09:02 UTC</td><td>690</td><td>310</td><td>1000</td><td>Starter Plan</td></tr>
 <tr><td>2026-07-12 08:08 UTC</td><td>708</td><td>292</td><td>1000</td><td>Starter Plan</td></tr>
 <tr><td>2026-07-11 07:47 UTC</td><td>728</td><td>272</td><td>1000</td><td>Starter Plan</td></tr>
 <tr><td>2026-07-10 09:31 UTC</td><td>747</td><td>253</td><td>1000</td><td>Starter Plan</td></tr>
@@ -113,5 +114,4 @@ border-bottom:1px solid var(--seam)}
 <tr><td>2026-07-04 20:49 UTC</td><td>35</td><td>215</td><td>250</td><td>Free Plan</td></tr>
 <tr><td>2026-07-04 20:16 UTC</td><td>36</td><td>214</td><td>250</td><td>Free Plan</td></tr>
 <tr><td>2026-07-04 09:33 UTC</td><td>46</td><td>204</td><td>250</td><td>Free Plan</td></tr>
-<tr><td>2026-07-04 08:30 UTC</td><td>52</td><td>198</td><td>250</td><td>Free Plan</td></tr>
 </tbody></table></div></div></body></html>
