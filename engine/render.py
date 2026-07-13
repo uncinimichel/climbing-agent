@@ -113,6 +113,47 @@ def _esc(t):
             .replace(">", "&gt;").replace('"', "&quot;"))
 
 
+# One nav, every generated page — homepage, venues/, knowledge/ (Michel,
+# 13 Jul: "same header on each page created"). (label, href, title,
+# external, strong); internal hrefs are repo-root-relative and get
+# ../-prefixed per page depth by nav_links().
+NAV_LINKS = [
+    ("Knowledge", "knowledge/index.html",
+     "The project knowledge base", False, False),
+    ("Inspector", "knowledge/corpus-inspector.html",
+     "Browse every climb with its taxonomy + weather (reads corpus.json)", False, False),
+    ("Data map", "knowledge/data-dependencies.html",
+     "How climb/venue data flows — the source of truth (decision #27)", False, False),
+    ("API Status", "knowledge/operations/serpapi-quota.html",
+     "Live SerpApi/flight-search quota and API cost status", False, False),
+    ("Map", MP_MAP_URL, "Every venue on the multi-pitch.com map", True, False),
+    ("Spreadsheet", SHEET_URL, "The curated venue spreadsheet", True, False),
+    ("GitHub", REPO_URL, "Project source on GitHub", True, False),
+    ("multi-pitch.com ↗", SITE_URL, "", True, True),
+]
+
+
+def nav_links(depth=0):
+    """Resolved (label, href, title, external, strong) tuples for a page
+    `depth` directories below the repo root — a Dashboard link is prepended
+    on every page that isn't the dashboard itself."""
+    pre = "../" * depth
+    links = [("Dashboard", pre or "./", "The live ranked dashboard", False, False)] if depth else []
+    return links + [(lbl, (href if ext else pre + href), title, ext, strong)
+                    for lbl, href, title, ext, strong in NAV_LINKS]
+
+
+def nav_html(depth=0):
+    """The shared header nav markup (site CSS: .tl pills)."""
+    out = []
+    for lbl, href, title, ext, strong in nav_links(depth):
+        out.append('<a class="tl%s" href="%s"%s%s>%s</a>' % (
+            " strong" if strong else "", _esc(href),
+            f' title="{_esc(title)}"' if title else "",
+            ' target="_blank" rel="noopener"' if ext else "", _esc(lbl)))
+    return "".join(out)
+
+
 def _sky_label(e):
     """Text version of the tile icon's cloud logic, for the static tables."""
     o = e.get("fc") or e.get("out") or {}
@@ -904,14 +945,7 @@ PAGE_BODY = """<body>
   <div class="trip-line" id="tripline"></div>
   <nav class="top-links">
     <button class="tl" onclick="help(1)" title="How the ranking works" aria-label="How the ranking works">?</button>
-    <a class="tl" href="knowledge/index.html">Knowledge</a>
-    <a class="tl" href="knowledge/corpus-inspector.html" title="Browse every climb with its taxonomy + weather (reads corpus.json)">Inspector</a>
-    <a class="tl" href="knowledge/data-dependencies.html" title="How climb/venue data flows — the source of truth (decision #27)">Data map</a>
-    <a class="tl" href="knowledge/operations/serpapi-quota.html" title="Live SerpApi/flight-search quota and API cost status">API Status</a>
-    <a class="tl" id="mapBtn" target="_blank" rel="noopener">Map</a>
-    <a class="tl" id="sheetBtn" target="_blank" rel="noopener">Spreadsheet</a>
-    <a class="tl" id="ghBtn" target="_blank" rel="noopener" title="Project source on GitHub">GitHub</a>
-    <a class="tl strong" id="mpBtn" target="_blank" rel="noopener">multi-pitch.com ↗</a>
+    %%NAV%%
   </nav>
 </header>
 <div class="basis" id="basis"></div>
@@ -981,10 +1015,6 @@ var THERMO_ICON='https://multi-pitch.com/img/icons/weather/Thermometer-50.svg';
 var RAIN_ICON='https://multi-pitch.com/img/icons/weather/Umbrella.svg';
 
 document.getElementById('tripline').innerHTML=D.trip.pills.map(esc).join(' · ');
-document.getElementById('mapBtn').href=safeUrl(D.trip.mapUrl);
-document.getElementById('sheetBtn').href=safeUrl(D.trip.sheetUrl);
-document.getElementById('mpBtn').href=safeUrl(D.trip.mpUrl);
-document.getElementById('ghBtn').href=safeUrl(D.trip.repoUrl);
 document.getElementById('basis').innerHTML=D.banner.html+' <span class="updstamp">· page updated '+esc(D.trip.updated)+'</span>';
 document.getElementById('updated').textContent='Updated '+D.trip.updated+' · weather: Open-Meteo · flights: Google Flights · stays: OpenStreetMap';
 
@@ -1748,6 +1778,7 @@ def render_page(data, tag_spec):
             + ";window.TAGFAM=" + json.dumps(tag_spec.fam_of)
             + ";window.TAGFAMS=" + json.dumps(tag_spec.fams_meta, ensure_ascii=False) + ";</script>\n"
             + PAGE_BODY.replace("%%TRAVELLER_HOMES%%", homes or "each traveller's home")
+                        .replace("%%NAV%%", nav_html(0))
             + footer
             + "<script>" + PAGE_JS + "</script>\n</body></html>\n")
 
@@ -1762,7 +1793,22 @@ def build_html(ranked, now, banner, ctx, mp_climbs, guidebooks, extra_climbing_d
     return render_page(data, tag_spec)
 
 
-def venue_page(v, trip, tag_spec):
+def all_areas_nav(v, all_venues):
+    """Same 'All climbing areas' cross-link block the homepage footer has —
+    on every venue page (Michel, 13 Jul: links everywhere), sibling-relative
+    so the static pages interlink without going through the SPA."""
+    if not all_venues:
+        return ""
+    me = v.get("shortName")
+    links = "".join(
+        (f'<b>{_esc(o["shortName"])}</b>' if o["shortName"] == me else
+         f'<a href="{_slug(o["shortName"])}.html">{_esc(o["shortName"])} ({_esc(o["country"])})</a>')
+        for o in all_venues)
+    return ('<div class="areas"><span class="areas-hd">All climbing areas</span>'
+            f'<nav>{links}</nav></div>')
+
+
+def venue_page(v, trip, tag_spec, all_venues=None):
     """Static, crawlable page per venue (SEO): the SPA's #hash routes all look
     like ONE page to search engines, so each venue gets a real URL with the
     weather table, routes and resources server-rendered. Carries the planner's
@@ -1854,19 +1900,19 @@ table{{border-collapse:collapse;width:100%;font-size:12.5px;font-family:var(--mo
 th{{color:var(--muted);font-weight:600}} li{{margin-bottom:7px}} ul{{padding-left:20px}}
 .cta{{display:inline-block;margin-top:20px;background:var(--ink);color:var(--bg);border-radius:8px;padding:8px 14px;text-decoration:none;font-weight:600}}
 footer{{margin-top:34px;color:var(--faint);font-size:12px;border-top:1px solid var(--line);padding-top:12px}}
+.areas{{margin:0 0 14px}}
+.areas-hd{{display:block;font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin-bottom:8px}}
+.areas nav{{display:flex;flex-wrap:wrap;gap:4px 14px}}
+.areas a{{color:var(--muted);text-decoration:none;white-space:nowrap}}
+.areas a:hover{{color:var(--ink);text-decoration:underline}}
+.areas b{{color:var(--ink);white-space:nowrap}}
 {tag_spec.venue_css}
 </style></head><body>
 <header class="top">
   <a class="wordmark" href="../"><img class="mplogo" src="https://multi-pitch.com/img/logo/mp-logo-white.png" alt="" onerror="this.style.display='none'">multi<b>·</b>pitch<em>trip planner</em></a>
   <div class="trip-line">{_esc(pills)}</div>
   <nav class="top-links">
-    <a class="tl" href="../" title="How the ranking works — in the live planner">?</a>
-    <a class="tl" href="../knowledge/index.html">Knowledge</a>
-    <a class="tl" href="../knowledge/operations/serpapi-quota.html" title="Live SerpApi/flight-search quota and API cost status">API Status</a>
-    <a class="tl" href="{_esc(trip.get('mapUrl',''))}" target="_blank" rel="noopener">Map</a>
-    <a class="tl" href="{_esc(trip.get('sheetUrl',''))}" target="_blank" rel="noopener">Spreadsheet</a>
-    <a class="tl" href="{_esc(trip.get('repoUrl',''))}" target="_blank" rel="noopener">GitHub</a>
-    <a class="tl strong" href="{_esc(trip.get('mpUrl',''))}" target="_blank" rel="noopener">multi-pitch.com ↗</a>
+    {nav_html(1)}
   </nav>
 </header>
 <main class="wrap">
@@ -1884,7 +1930,7 @@ footer{{margin-top:34px;color:var(--faint);font-size:12px;border-top:1px solid v
 {f'<h2>More climbing &amp; guidebook resources</h2><ul>{extras}</ul>' if extras else ''}
 {f'<h2>Getting there</h2><p>{_esc(" · ".join(fl))}</p>' if fl else ''}
 <a class="cta" href="../#{slug}">Open {_esc(v.get('shortName',name))} in the live planner →</a>
-<footer>Part of the <a href="{PAGES_BASE}">multi-pitch climbing trip planner</a> — 40+ European venues ranked daily by weather.
+<footer>{all_areas_nav(v, all_venues)}Part of the <a href="{PAGES_BASE}">multi-pitch climbing trip planner</a> — 40+ European venues ranked daily by weather.
 Data: <a href="https://open-meteo.com/" rel="noopener">Open-Meteo</a> · routes: <a href="{SITE_URL}" rel="noopener">multi-pitch.com</a>.</footer>
 </main>
 </body></html>
@@ -1903,7 +1949,8 @@ def write_venue_pages(data, repo_root, tag_spec):
     slugs = []
     for v in data["venues"]:
         slug = _slug(v["shortName"])
-        (vdir / f"{slug}.html").write_text(venue_page(v, data["trip"], tag_spec))
+        (vdir / f"{slug}.html").write_text(venue_page(v, data["trip"], tag_spec,
+                                                       all_venues=data["venues"]))
         slugs.append(slug)
     return slugs
 

@@ -16,9 +16,12 @@ Run: python3 trip-ni-july-2026/scripts/build_knowledge.py
 import html
 import json
 import re
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT))
+from engine.render import nav_links  # noqa: E402 — one nav spec for every generated page
 KDIR = ROOT / "knowledge"
 TAG_SPEC_FILE = KDIR / "data" / "tag-spec.json"
 
@@ -284,10 +287,13 @@ def page(title: str, body: str, depth: int, crumb: str) -> str:
         f"<title>{html.escape(title)} · multi-pitch Live</title>{FONTS}"
         f"<style>{CSS}</style></head><body>"
         f'<div class=top><a class=logo href="{home}index.html">🧗 multi-pitch <span style="color:var(--spike)">Live</span></a>'
-        f'<a class=btn href="{home}knowledge/index.html">📚 Knowledge</a>'
-        f'<a class=btn href="{home}knowledge/corpus-inspector.html">🧗 Inspector</a>'
-        f'<a class=btn href="{home}knowledge/data-dependencies.html">🗺 Data map</a>'
-        f'<a class=btn href="{home}index.html">▶ Dashboard</a></div>'
+        + "".join(
+            f'<a class=btn href="{html.escape(href)}"'
+            + (f' title="{html.escape(title)}"' if title else "")
+            + (' target=_blank rel=noopener' if ext else "")
+            + f'>{html.escape(lbl)}</a>'
+            for lbl, href, title, ext, _strong in nav_links(depth))
+        + '</div>'
         f'<div class=wrap><div class=crumb>{crumb}</div>{body}</div></body></html>'
     )
 
