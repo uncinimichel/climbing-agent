@@ -123,20 +123,33 @@ means caching is shared across everyone's trips for free.
 ## Date flexibility (±N days) — schema-ready, implementation later
 
 Michel (13 Jul 2026): if leaving a day earlier/later gets a better flight or stay,
-the system and the user should know. `trips.json` already carries `flex_days: 0–3`
-per trip (NI: 2), validated from M1 — implementation lands with M3/M5:
+the system and the user should know. `trips.json` carries `flex_days: 0–3` per trip
+(NI: 2). *✅ Implemented 13 Jul 2026 — `engine/flights.flex_alternatives()`.*
 
-1. **Links first, quota never.** Skyscanner/Booking/Airbnb URLs are date-filled
-   templates, so the venue page can offer ±1/±2-day search links for free before
-   any live pricing exists.
-2. **Live alternative pricing, hard-bounded.** Each date permutation is one
-   SerpApi call, so flex pricing is capped: nearest live trip only, its current
-   **#1 venue only**, out±N × back±N deduped to ≤8 calls/day, and only when the
-   quota guard says yes. Result cached under the usual `(route, dates)` key.
-3. **Surfacing.** A "−1 day saves £42" pill next to the flight card (dashboard)
-   and on the manage screen (admin), linking to the cheaper combo's book link.
-   No auto-rebooking, no changes to the scored trip window — flex informs, the
-   humans decide.
+**API research finding (13 Jul 2026):** SerpApi cannot do this in one call. Its
+`google_flights` engine is exact-date only; its `google_flights_deals` engine
+accepts flexible date windows but **has no `arrival_id`** (it's a
+where-should-I-go discovery tool), and the calendar-style API belongs to a
+different provider (SearchApi). So flex is bounded multiple calls — and because
+the user's mental model is *shift the whole trip*, we price **diagonal shifts
+only** (out and back move together, trip length constant): ±N days =
+`2·flex_days` calls per flying traveller, not an N×N grid.
+
+As built:
+
+1. **Links always, free.** Every shift gets a date-filled Skyscanner link with
+   no key and no quota — a no-key run still shows "📅 Flexible dates: −2d · −1d
+   · +1d · +2d" under the flight card.
+2. **Live pricing, hard-bounded.** Top-ranked venue only, flying travellers
+   only, ≤ 2·flex_days searches each, gated by the QuotaGuard and cached under
+   the usual `(route, dates)` key. Unpriceable shifts reuse the previous run's
+   flex prices (flights-latest.json `flex` block, only when the top venue is
+   unchanged) and are marked `cached`.
+3. **Surfacing.** Cheaper shift → green "📅 Leave 1 day earlier: £38 — save
+   £42 ↗" pill on the flight card (and a line in daily-report.md); priced but
+   not cheaper → "±2 days checked — your dates are cheapest". The admin forms
+   carry a Date-flexibility control (Exact / ±1 / ±2 / ±3). No auto-rebooking,
+   no change to the scored trip window — flex informs, the humans decide.
 
 **M4 — root becomes the trips list** (*gated on the NI trip ending, ~29 Jul*).
 Server-rendered trips-list page at root per the approved mockup (status tags,

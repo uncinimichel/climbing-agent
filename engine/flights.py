@@ -15,7 +15,7 @@ behavior is unchanged; a real budget-tracking implementation is milestone M3.
 """
 import sys
 import urllib.parse
-from datetime import date
+from datetime import date, timedelta
 
 from .http import get_json, redact
 from .quota import AlwaysAllowQuotaGuard, NullFlightCache
@@ -108,6 +108,78 @@ def traveller_flight(venue, who, ctx, quota_guard=None, flight_cache=None):
         return {"mode": "fly", "options": [], "to": t.get("to"),
                 "book_url": skyscanner_url(origin.split(",")[0], t["to"], out_date, back_date)}
     return {"mode": "unknown"}
+
+
+def flex_alternatives(venue, ctx, quota_guard=None, flight_cache=None,
+                      prev_flex=None, today=None):
+    """±flex_days whole-trip shifts for ONE venue (decision #33 §Date
+    flexibility): same trip length, out and back moved together — 'leave a day
+    earlier/later'. SerpApi's google_flights engine has no flexible-date
+    search and its Deals engine can't pin an arrival airport, so each shift is
+    its own (bounded) search: ≤ 2·flex_days calls per flying traveller, and
+    the caller only asks for the top-ranked venue.
+
+    Every alternative always carries a date-filled Skyscanner link (free, no
+    key needed); a live price is added when key + quota allow. When a shift
+    can't be priced this run, its last-known price is reused from `prev_flex`
+    (the previous run's flights-latest.json 'flex' block — caller must only
+    pass it when it belongs to the same venue).
+
+    Returns {traveller_key: [{shift, out, back, book_url, price?, view_url?,
+    cached?}, ...]} or None when flex is off / nobody flies."""
+    n = int(getattr(ctx, "flex_days", 0) or 0)
+    if n <= 0:
+        return None
+    quota_guard = quota_guard or AlwaysAllowQuotaGuard()
+    flight_cache = flight_cache or NullFlightCache()
+    out0 = date.fromisoformat(ctx.rep_combo["out"])
+    back0 = date.fromisoformat(ctx.rep_combo["back"])
+    today = today or date.today()
+    prev = prev_flex or {}
+    result = {}
+    for who in ctx.traveller_keys:
+        t = venue.get("travel", {}).get(who, {})
+        if t.get("mode") != "fly" or not t.get("to"):
+            continue
+        origin = ctx.origin[who]
+        alts = []
+        for shift in range(-n, n + 1):
+            if shift == 0:
+                continue          # baseline dates are priced by the normal pass
+            out, back = out0 + timedelta(days=shift), back0 + timedelta(days=shift)
+            if out <= today:
+                continue
+            alt = {"shift": shift, "out": out.isoformat(), "back": back.isoformat(),
+                   "book_url": skyscanner_url(origin.split(",")[0], t["to"],
+                                               out.isoformat(), back.isoformat())}
+            f = None
+            if ctx.serpapi_key:
+                route_key, dates_key = f"{origin}->{t['to']}", f"{alt['out']}|{alt['back']}"
+                f = flight_cache.get(route_key, dates_key)
+                if f is None and quota_guard.can_spend(1):
+                    try:
+                        f = serp_flights(origin, t["to"], alt["out"], alt["back"],
+                                          ctx.flights_cfg["route"]["passengers"], ctx.serpapi_key)
+                        if f:
+                            quota_guard.record_spend(1)
+                            flight_cache.set(route_key, dates_key, f)
+                    except Exception as e:
+                        print(f"[warn] flex lookup failed ({who} {shift:+d}d -> {t.get('to')}): "
+                              f"{redact(e, ctx.serpapi_key)}", file=sys.stderr)
+            if f and f.get("options"):
+                alt["price"] = f["options"][0]["price"]
+                alt["view_url"] = f.get("view_url") or alt["book_url"]
+            else:
+                pv = next((a for a in (prev.get(who) or [])
+                           if a.get("shift") == shift and a.get("price") is not None), None)
+                if pv:
+                    alt["price"] = pv["price"]
+                    alt["view_url"] = pv.get("view_url") or alt["book_url"]
+                    alt["cached"] = True
+            alts.append(alt)
+        if alts:
+            result[who] = alts
+    return result or None
 
 
 def price_top_venues(ranked, ctx, quota_guard=None, flight_cache=None, prev_prices=None):

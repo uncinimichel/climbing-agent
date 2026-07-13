@@ -84,6 +84,9 @@ class TripContext:
     # trips.json traveller entries: [{key, name, homes: [{city, lat, lon}],
     # airports: [IATA...]}, ...]. None → synthesized from flights_cfg (legacy).
     travellers: list | None = None
+    # ± days the whole trip may shift for cheaper flights/stays (trips.json
+    # flex_days, decision #33 §Date flexibility). 0 = exact dates only.
+    flex_days: int = 0
 
     @property
     def graph_start(self):

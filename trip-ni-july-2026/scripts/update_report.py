@@ -155,6 +155,20 @@ def main():
         scoring.apply_composite(r, ctx, mp_climbs)
     ranked = scoring.rank(results)            # …and settle the final order
 
+    # ±flex_days trip shifts for the TOP venue only (quota-capped by design):
+    # last-known flex prices are reused only if yesterday's top venue is the same
+    top = next((r for r in ranked if r.get("ok") and r["score"] >= 0), None)
+    flex = None
+    if top:
+        prev_flex_blk = flights_data.get("flex") or {}
+        prev_flex = (prev_flex_blk.get("travellers")
+                     if prev_flex_blk.get("venue") == top["venue"]["name"] else None)
+        flex = flights.flex_alternatives(top["venue"], ctx, quota_guard, flight_cache, prev_flex)
+        if flex:
+            top["flex"] = flex
+    flights_data["flex"] = ({"venue": top["venue"]["name"], "travellers": flex}
+                            if flex else None)
+
     # day-over-day movement: annotate vs yesterday's order, record today's
     rank_history.apply(ROOT / "rank-history.json", today, ranked)
 

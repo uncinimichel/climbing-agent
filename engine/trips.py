@@ -142,4 +142,5 @@ def context_for(trip, venues, flights_cfg, serpapi_key=None, top_n_flights=4):
         serpapi_key=serpapi_key,
         top_n_flights=top_n_flights,
         travellers=trip["travellers"],
+        flex_days=trip.get("flex_days", 0),
     )

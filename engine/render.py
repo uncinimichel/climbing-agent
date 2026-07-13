@@ -433,6 +433,9 @@ def venue_payload(n, r, ctx, mp_climbs, guidebooks, extra_climbing_data, tag_spe
         return {"mode": "unknown"}
 
     flights_out = {w: (fl.get(w) or fallback_flight(w)) for w in ctx.traveller_keys}
+    for w, alts in (r.get("flex") or {}).items():   # ±day shifts, top venue only
+        if w in flights_out:
+            flights_out[w] = dict(flights_out[w], flex=alts)
 
     facts = []
 
@@ -772,6 +775,10 @@ svg.topo .dseg{pointer-events:stroke}
 .fprice{font-family:var(--mono);font-weight:600;font-size:24px;letter-spacing:-.02em;margin-bottom:4px}
 .fprice span{font-family:var(--body);font-size:11px;font-weight:400;color:var(--muted)}
 .stale{font-size:10.5px;color:var(--mixed);margin:2px 0 4px}
+.flexline{display:block;font-family:var(--mono);font-size:10.5px;color:var(--muted);margin-top:8px}
+.flexline a{color:var(--muted)}
+.flexline.save{color:var(--dry);font-weight:600;text-decoration:none;border:1px solid rgba(87,166,100,.4);background:var(--dry-bg);border-radius:6px;padding:4px 9px;width:fit-content}
+.flexline.save:hover{border-color:var(--dry)}
 .fopt{display:flex;justify-content:space-between;gap:8px;font-size:12px;padding:5px 0;border-bottom:1px solid var(--line);color:var(--muted)}
 .fopt:last-of-type{border-bottom:0}
 .fopt>span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -1470,6 +1477,26 @@ function renderBrk(v){
 }
 document.addEventListener('click',function(){if(window._bpClear)window._bpClear();});
 
+function flexHtml(f){
+  // ±day whole-trip shifts (top venue only): cheaper shift → green save pill;
+  // priced but not cheaper → quiet reassurance; unpriced → free search links.
+  var alts=f.flex||[];
+  if(!alts.length)return '';
+  var base=(f.options&&f.options.length)?num(f.options[0].price):null;
+  var priced=alts.filter(function(a){return a.price!=null});
+  if(priced.length&&base!=null){
+    var best=priced.reduce(function(a,b){return num(b.price)<num(a.price)?b:a});
+    if(num(best.price)<base){
+      var d=num(best.shift),lbl=d<0?('Leave '+(-d)+' day'+(d<-1?'s':'')+' earlier'):('Leave '+d+' day'+(d>1?'s':'')+' later');
+      return '<a class="flexline save" target="_blank" rel="noopener" href="'+safeUrl(best.view_url||best.book_url)+'">📅 '+lbl+': £'+num(best.price)+' — save £'+(base-num(best.price))+(best.cached?' · last check':'')+' ↗</a>';
+    }
+    var span=Math.max.apply(null,alts.map(function(a){return Math.abs(num(a.shift))}));
+    return '<div class="flexline">📅 ±'+span+' days checked — your dates are cheapest</div>';
+  }
+  return '<div class="flexline">📅 Flexible dates: '+alts.map(function(a){
+    var s=num(a.shift);return '<a target="_blank" rel="noopener" href="'+safeUrl(a.book_url)+'">'+(s>0?'+':'')+s+'d ↗</a>';
+  }).join(' · ')+'</div>';
+}
 function flightCard(who,from,f){
   var inner;
   if(!f||f.mode==='unknown'){
@@ -1493,7 +1520,8 @@ function flightCard(who,from,f){
         +(view&&view!==book?'<a class="btn ghost" target="_blank" rel="noopener" href="'+view+'">All options</a>':'');
     }
   }
-  return '<div class="fcard"><div class="fwho">'+esc(who)+'</div><div class="ffrom">from '+esc(from)+'</div>'+inner+'</div>';
+  return '<div class="fcard"><div class="fwho">'+esc(who)+'</div><div class="ffrom">from '+esc(from)+'</div>'+inner
+    +(f&&f.mode==='fly'?flexHtml(f):'')+'</div>';
 }
 
 function climbHtml(c){
@@ -1953,6 +1981,21 @@ def build_md(ranked, now, banner, ctx, mp_climbs, match_sheet_row=None):
                + (f" · [sheet r{row}]({SHEET_URL}#gid=0&range={row}:{row})" if row else " · not in sheet"))
         lines.append(f"| {rank_cell} | {flag(v['country'])} {v['name']}<br><sub>{src}</sub> | {r['score']} | {cstr} | "
                      + " | ".join(fcell(fl.get(k), k) for k in keys) + " |")
+    flexed = next((r for r in ranked if r.get("flex")), None)
+    if flexed:
+        bits = []
+        for who, alts in flexed["flex"].items():
+            base = (((flexed.get("flights") or {}).get(who) or {}).get("options") or [])
+            base_p = base[0]["price"] if base else None
+            priced = [a for a in alts if a.get("price") is not None]
+            if priced and base_p is not None:
+                best = min(priced, key=lambda a: a["price"])
+                if best["price"] < base_p:
+                    bits.append(f"{names.get(who, who)} {best['shift']:+d}d = £{best['price']} "
+                                f"(save £{base_p - best['price']})")
+        if bits:
+            lines += ["", f"**📅 Flexible dates** (±{ctx.flex_days}d, {flexed['venue']['name']}): "
+                      + "; ".join(bits)]
     lines += ["", f"_Flights: top {ctx.top_n_flights} venues, return {ctx.rep_combo['out']}→{ctx.rep_combo['back']} ({ctx.rep_combo['nights']}n); "
               f"date options: {ctx.combo_labels}. Use the book links to adjust. "
               f"Stays: OpenStreetMap lodging within {STAY_RADIUS_KM} km per venue (houses, camping, hotels "
