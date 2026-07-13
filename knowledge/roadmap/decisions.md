@@ -571,6 +571,34 @@ UI smoke-tested end-to-end. Pending: ai_tag v2 per-tag receipts; corpus-inspecto
 
 ---
 
+### #35 — Taxonomies are studio-managed: values live in Postgres, files are generated (2026-07-13)
+**Decision:** Michel: the studio had no way to extend disciplines/features/character/
+hazards — "we need those dynamic, and a page to change them, and this helps the AI too."
+So: a **Taxonomy tab** in the Curation Studio manages every vocabulary (discipline,
+feature, character, hazard, rock, sun_window, protection) — add a value (its one-line
+**meaning is required**: the AI tagger reads it), edit meanings inline, delete only when
+unused (usage counts shown). Writes hit Postgres, then auto-regenerate
+**`db/sql/105_taxonomy_extensions.sql`** (generated upsert re-seed — `apply.sh` replays
+the live vocabulary) and **`knowledge/data/taxonomy-values.json`** (the served live set).
+**`ai_tag.py` now reads allowed values from the live DB** (fallback: the json export,
+then the seed file) — a value added in the studio reaches the AI with zero code changes.
+Same session, same directive: **grades stop being free text** (grade system is a select
+naming its scale/region; the value is validated per-system — BAS/FS/YDS/UIAA/… patterns,
+BAS ladder as suggestions; **publish blocks on mismatch** — audit caught 10/218 dirty
+drafts incl. literal 'None' strings), protection meanings surfaced (G/PG/PG-13/R/X is
+**Erickson's US seriousness scale**, seeded with meanings — not invented), and routes
+gained structured **`parking`** coordinates (026/027 migrations, corpus round-trip).
+`taxonomy.md` stays the SEMANTIC source of truth; its value tables are documentation of
+a live set it may lag.
+**Why:** closed enums only work if extending them is cheap — otherwise curators shoehorn
+("no offwidth tag? call it crack") and the AI can never learn new vocabulary. And an
+enum value without a definition can't be tagged consistently by human or machine.
+**Status:** ⚠️ Partial — tooling ✅ live (add/edit/delete round-tripped, apply.sh replay
+verified); the cross-platform vocabulary audit (Rockfax symbols, UKC, theCrag, MP,
+OpenBeta) is running — its accepted additions/renames land via the new pipeline.
+
+---
+
 *Template for new entries:*
 ```
 ### #N — Title (date)
