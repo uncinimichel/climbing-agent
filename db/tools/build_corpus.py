@@ -66,6 +66,7 @@ SELECT json_agg(r ORDER BY r.path_tokens, r.name) FROM (
     rr.intro_html, rr.approach_html, rr.pitch_info_html,
     (SELECT name FROM area WHERE id = rr.area_id) AS area_name,
     ST_Y(rr.geom::geometry) AS lat, ST_X(rr.geom::geometry) AS lon,
+    ST_Y(rr.parking::geometry) AS parking_lat, ST_X(rr.parking::geometry) AS parking_lon,
     (SELECT array_agg(discipline_code ORDER BY discipline_code) FROM route_discipline d WHERE d.route_id = rr.id) AS disciplines,
     (SELECT array_agg(feature_code ORDER BY feature_code) FROM route_feature f WHERE f.route_id = rr.id) AS features,
     (SELECT array_agg(character_code ORDER BY character_code) FROM route_character c WHERE c.route_id = rr.id) AS "character",
@@ -136,6 +137,7 @@ def export_route(r: dict) -> dict:
         "description": r.get("intro_html"), "approach": r.get("approach_html"),
         "pitchInfo": r.get("pitch_info_html"), "pitchRows": r.get("pitch_rows") or [],
         "geoLocation": [round(r["lat"], 4), round(r["lon"], 4)] if r.get("lat") is not None else None,
+        "parking": [round(r["parking_lat"], 6), round(r["parking_lon"], 6)] if r.get("parking_lat") is not None else None,
         "refs": r.get("refs") or [],
     }
     if r.get("tag_prov"):

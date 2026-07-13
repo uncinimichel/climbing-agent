@@ -29,9 +29,29 @@ ROOT = Path(__file__).resolve().parents[2]
 MP = ROOT / "db" / "mp-climbs.json"
 CACHE = ROOT / "db" / "enrichment-cache.json"
 SEED = ROOT / "db" / "sql" / "100_seed_taxonomy.sql"
+LIVE_VALUES = ROOT / "knowledge" / "data" / "taxonomy-values.json"
+_FAMILY_BY_TABLE = {"feature": "feature", "character": "character",
+                    "discipline": "discipline", "protection_grade": "protection"}
 
 
 def enum(table):
+    """Allowed values for a taxonomy table — the LIVE set, so values added in the
+    Curation Studio's Taxonomy page reach the tagger (decision #35). Preference:
+    Postgres → taxonomy-values.json export → the hand-written seed file."""
+    q = f"SELECT string_agg(code, ',' ORDER BY code) FROM climbing.{table};"
+    for cmd in (["psql", "postgresql://climbing:climbing@localhost:5432/climbing", "-tAc", q],
+                ["docker", "exec", "climbing-db", "psql", "-U", "climbing", "-d", "climbing", "-tAc", q]):
+        try:
+            out = subprocess.run(cmd, capture_output=True, text=True, timeout=10)
+            if out.returncode == 0 and out.stdout.strip():
+                return out.stdout.strip().split(",")
+        except Exception:
+            continue
+    if LIVE_VALUES.exists():
+        fam = _FAMILY_BY_TABLE.get(table)
+        rows = json.loads(LIVE_VALUES.read_text()).get("families", {}).get(fam)
+        if rows:
+            return [r["code"] for r in rows]
     sql = SEED.read_text()
     for chunk in re.split(r"INSERT INTO ", sql)[1:]:
         if re.match(r"(\w+)", chunk).group(1) == table:

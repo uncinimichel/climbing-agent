@@ -1,0 +1,534 @@
+{
+ "generated": "2026-07-13",
+ "note": "Live enum values exported from Postgres (decision #35). Semantic definitions & tagging rules: taxonomy.md. Managed via the Curation Studio; regenerate with db/tools/export_taxonomy.py.",
+ "families": {
+  "discipline": [
+   {
+    "code": "aid",
+    "meaning": "Weighting gear to progress (A/C grades).",
+    "usage": 1
+   },
+   {
+    "code": "alpine",
+    "meaning": "Mountain approach, altitude, mixed commitment.",
+    "usage": 9
+   },
+   {
+    "code": "big-wall",
+    "meaning": "Multi-day / very long.",
+    "usage": 0
+   },
+   {
+    "code": "bouldering",
+    "meaning": "Ropeless, low, over pads.",
+    "usage": 0
+   },
+   {
+    "code": "deepwatersolo",
+    "meaning": "Ropeless over water (DWS).",
+    "usage": 0
+   },
+   {
+    "code": "ice",
+    "meaning": "Frozen falls/ice (WI grades).",
+    "usage": 0
+   },
+   {
+    "code": "mixed",
+    "meaning": "Rock + ice (M grades).",
+    "usage": 2
+   },
+   {
+    "code": "multi-pitch",
+    "meaning": "Multiple rope-lengths with belay stances (the platform's focus).",
+    "usage": 224
+   },
+   {
+    "code": "single-pitch",
+    "meaning": "One rope-length.",
+    "usage": 2
+   },
+   {
+    "code": "snow",
+    "meaning": "Snow climbing.",
+    "usage": 0
+   },
+   {
+    "code": "sport",
+    "meaning": "Pre-placed bolts.",
+    "usage": 6
+   },
+   {
+    "code": "tr",
+    "meaning": "Top-rope.",
+    "usage": 0
+   },
+   {
+    "code": "trad",
+    "meaning": "Leader-placed removable protection.",
+    "usage": 226
+   },
+   {
+    "code": "via-ferrata",
+    "meaning": "Protected cabled route.",
+    "usage": 0
+   }
+  ],
+  "feature": [
+   {
+    "code": "arête",
+    "meaning": null,
+    "usage": 22
+   },
+   {
+    "code": "chimney",
+    "meaning": null,
+    "usage": 16
+   },
+   {
+    "code": "corner",
+    "meaning": null,
+    "usage": 47
+   },
+   {
+    "code": "crack",
+    "meaning": null,
+    "usage": 65
+   },
+   {
+    "code": "face",
+    "meaning": null,
+    "usage": 19
+   },
+   {
+    "code": "flake",
+    "meaning": null,
+    "usage": 14
+   },
+   {
+    "code": "groove",
+    "meaning": null,
+    "usage": 46
+   },
+   {
+    "code": "offwidth",
+    "meaning": null,
+    "usage": 7
+   },
+   {
+    "code": "pillar",
+    "meaning": null,
+    "usage": 16
+   },
+   {
+    "code": "pockets",
+    "meaning": null,
+    "usage": 2
+   },
+   {
+    "code": "ridge",
+    "meaning": null,
+    "usage": 12
+   },
+   {
+    "code": "roof",
+    "meaning": null,
+    "usage": 21
+   },
+   {
+    "code": "slab",
+    "meaning": null,
+    "usage": 37
+   },
+   {
+    "code": "tufa",
+    "meaning": null,
+    "usage": 0
+   }
+  ],
+  "character": [
+   {
+    "code": "crimpy",
+    "meaning": "Specifically small-edge crimping.",
+    "usage": 4
+   },
+   {
+    "code": "delicate",
+    "meaning": "Balance/friction climbing; precision under little security.",
+    "usage": 15
+   },
+   {
+    "code": "exposed",
+    "meaning": "Big-air positions beyond what the protection grade captures.",
+    "usage": 32
+   },
+   {
+    "code": "fingery",
+    "meaning": "Significant small holds on the hard sections (Rockfax \"f\").",
+    "usage": 6
+   },
+   {
+    "code": "fluttery",
+    "meaning": "Bold — big fall potential and scary run-outs (Rockfax \"h\").",
+    "usage": 0
+   },
+   {
+    "code": "powerful",
+    "meaning": "Demands strength on steep ground (Rockfax \"p\").",
+    "usage": 5
+   },
+   {
+    "code": "pumpy",
+    "meaning": "Steep endurance climbing — the pump is the crux.",
+    "usage": 2
+   },
+   {
+    "code": "reachy",
+    "meaning": "Move spans favour reach; height-dependent.",
+    "usage": 5
+   },
+   {
+    "code": "sustained",
+    "meaning": "Lots of hard moves with little respite (Rockfax \"s\").",
+    "usage": 23
+   },
+   {
+    "code": "technical",
+    "meaning": "Intricate movement; body position over pulling.",
+    "usage": 23
+   }
+  ],
+  "hazard": [
+   {
+    "code": "abseil",
+    "kind": "route",
+    "meaning": "Requires an abseil (approach/descent).",
+    "safety_critical": false,
+    "feeds": "gear & planning",
+    "usage": 22
+   },
+   {
+    "code": "altitude",
+    "kind": "objective",
+    "meaning": "High enough for thin air / altitude effects.",
+    "safety_critical": true,
+    "feeds": "planning",
+    "usage": 0
+   },
+   {
+    "code": "avalanche",
+    "kind": "objective",
+    "meaning": "Avalanche terrain (snow slopes, couloirs).",
+    "safety_critical": true,
+    "feeds": "safety",
+    "usage": 0
+   },
+   {
+    "code": "boat",
+    "kind": "route",
+    "meaning": "Reached by boat or swim.",
+    "safety_critical": false,
+    "feeds": "logistics",
+    "usage": 2
+   },
+   {
+    "code": "cornice",
+    "kind": "objective",
+    "meaning": "Corniced ridge/summit.",
+    "safety_critical": true,
+    "feeds": "safety",
+    "usage": 0
+   },
+   {
+    "code": "crevasse",
+    "kind": "objective",
+    "meaning": "Crevasse hazard on the approach/route.",
+    "safety_critical": true,
+    "feeds": "safety",
+    "usage": 0
+   },
+   {
+    "code": "grassLedges",
+    "kind": "route",
+    "meaning": "Vegetated ledges (wet/awkward).",
+    "safety_critical": false,
+    "feeds": "conditions",
+    "usage": 7
+   },
+   {
+    "code": "loose",
+    "kind": "route",
+    "meaning": "Loose / friable rock.",
+    "safety_critical": true,
+    "feeds": "safety",
+    "usage": 14
+   },
+   {
+    "code": "polished",
+    "kind": "route",
+    "meaning": "Slick, polished rock.",
+    "safety_critical": false,
+    "feeds": "difficulty-in-practice",
+    "usage": 9
+   },
+   {
+    "code": "rockfall",
+    "kind": "objective",
+    "meaning": "Rockfall-prone (loose gullies, thaw, parties above).",
+    "safety_critical": true,
+    "feeds": "safety",
+    "usage": 0
+   },
+   {
+    "code": "seepage",
+    "kind": "route",
+    "meaning": "Weeps / holds water after rain.",
+    "safety_critical": true,
+    "feeds": "Predictive Condition Algorithm",
+    "usage": 8
+   },
+   {
+    "code": "serac",
+    "kind": "objective",
+    "meaning": "Serac hazard on the approach/route.",
+    "safety_critical": true,
+    "feeds": "safety",
+    "usage": 0
+   },
+   {
+    "code": "stormExposed",
+    "kind": "objective",
+    "meaning": "Exposed to lightning / no quick escape in a storm.",
+    "safety_critical": true,
+    "feeds": "safety",
+    "usage": 2
+   },
+   {
+    "code": "tidal",
+    "kind": "route",
+    "meaning": "Access/base tide-dependent (sea cliffs).",
+    "safety_critical": true,
+    "feeds": "tide-window logic (live 2026-07-05: planner tide tiles, Open-Meteo Marine)",
+    "usage": 6
+   },
+   {
+    "code": "traverse",
+    "kind": "route",
+    "meaning": "Significant traverse.",
+    "safety_critical": false,
+    "feeds": "rope management / commitment",
+    "usage": 19
+   }
+  ],
+  "rock": [
+   {
+    "code": "andesite",
+    "friction_dry": null,
+    "seeps": false,
+    "fragile_when_wet": false,
+    "notes": "Volcanic; blocky, variable quality.",
+    "usage": 0
+   },
+   {
+    "code": "basalt",
+    "friction_dry": null,
+    "seeps": false,
+    "fragile_when_wet": false,
+    "notes": "Columnar jointing gives parallel crack systems; moderate drying.",
+    "usage": 0
+   },
+   {
+    "code": "chalk",
+    "friction_dry": null,
+    "seeps": true,
+    "fragile_when_wet": true,
+    "notes": "Soft marine limestone (Dover, Beachy Head) — friable, specialist trad; never climb wet; protection unreliable.",
+    "usage": 0
+   },
+   {
+    "code": "conglomerate",
+    "friction_dry": null,
+    "seeps": false,
+    "fragile_when_wet": false,
+    "notes": "Cobbles in matrix (Montserrat, Meteora, Riglos); pockety; protection often spaced.",
+    "usage": 0
+   },
+   {
+    "code": "dolerite",
+    "friction_dry": null,
+    "seeps": false,
+    "fragile_when_wet": false,
+    "notes": "Fair Head — grippy, dries reasonably; sea-cliff exposure.",
+    "usage": 0
+   },
+   {
+    "code": "dolomite",
+    "friction_dry": null,
+    "seeps": false,
+    "fragile_when_wet": false,
+    "notes": "Alpine; afternoon convection risk.",
+    "usage": 0
+   },
+   {
+    "code": "gabbro",
+    "friction_dry": null,
+    "seeps": false,
+    "fragile_when_wet": false,
+    "notes": "Extremely grippy (Skye); rough.",
+    "usage": 0
+   },
+   {
+    "code": "gneiss",
+    "friction_dry": null,
+    "seeps": false,
+    "fragile_when_wet": false,
+    "notes": "Banded metamorphic (Alps, Norway); generally solid, good friction.",
+    "usage": 0
+   },
+   {
+    "code": "granite",
+    "friction_dry": null,
+    "seeps": false,
+    "fragile_when_wet": false,
+    "notes": "Dries fast; low seepage; good friction when cool. Poorly-cemented grades shed grains.",
+    "usage": 0
+   },
+   {
+    "code": "gritstone",
+    "friction_dry": null,
+    "seeps": false,
+    "fragile_when_wet": true,
+    "notes": "Coarse UK sandstone — superb friction, rounded breaks; dries fast, greasy in humidity; avoid when wet.",
+    "usage": 0
+   },
+   {
+    "code": "limestone",
+    "friction_dry": 0.64,
+    "seeps": true,
+    "fragile_when_wet": false,
+    "notes": "Seeps for days; overhangs stay wet; slick when humid.",
+    "usage": 0
+   },
+   {
+    "code": "quartzite",
+    "friction_dry": null,
+    "seeps": false,
+    "fragile_when_wet": false,
+    "notes": "Hard, can be polished; variable drying.",
+    "usage": 0
+   },
+   {
+    "code": "rhyolite",
+    "friction_dry": null,
+    "seeps": false,
+    "fragile_when_wet": false,
+    "notes": "Welsh mountain rock; lichenous, slow to dry high up.",
+    "usage": 0
+   },
+   {
+    "code": "sandstone",
+    "friction_dry": 0.74,
+    "seeps": false,
+    "fragile_when_wet": true,
+    "notes": "Fragile when wet — do not climb wet (holds break). Highest dry friction.",
+    "usage": 0
+   },
+   {
+    "code": "schist",
+    "friction_dry": null,
+    "seeps": false,
+    "fragile_when_wet": false,
+    "notes": "Layered; can be friable and ledgy; holds moisture in breaks.",
+    "usage": 0
+   },
+   {
+    "code": "slate",
+    "friction_dry": null,
+    "seeps": false,
+    "fragile_when_wet": false,
+    "notes": "Non-porous — drains instantly but slick when wet; positive edges; quarried faces.",
+    "usage": 0
+   },
+   {
+    "code": "volcanic",
+    "friction_dry": null,
+    "seeps": false,
+    "fragile_when_wet": false,
+    "notes": "Lake District; broken, mountain drainage.",
+    "usage": 0
+   }
+  ],
+  "sun_window": [
+   {
+    "code": "afternoon",
+    "meaning": null,
+    "usage": 2
+   },
+   {
+    "code": "all-day",
+    "meaning": null,
+    "usage": 2
+   },
+   {
+    "code": "morning",
+    "meaning": null,
+    "usage": 2
+   },
+   {
+    "code": "shade",
+    "meaning": null,
+    "usage": 2
+   }
+  ],
+  "protection": [
+   {
+    "code": "G",
+    "meaning": "Solid, plentiful protection.",
+    "sort_order": 0,
+    "usage": 18
+   },
+   {
+    "code": "PG",
+    "meaning": "Good protection, generally safe.",
+    "sort_order": 1,
+    "usage": 22
+   },
+   {
+    "code": "PG-13",
+    "meaning": "Mostly good; some runouts or marginal placements.",
+    "sort_order": 2,
+    "usage": 3
+   },
+   {
+    "code": "R",
+    "meaning": "Serious — runout; a fall risks injury.",
+    "sort_order": 3,
+    "usage": 5
+   },
+   {
+    "code": "runout",
+    "meaning": "A stretch with no protection below you (OpenBeta SafetyEnum).",
+    "sort_order": null,
+    "usage": 2
+   },
+   {
+    "code": "terrain",
+    "meaning": "Danger from the terrain itself, not fall distance.",
+    "sort_order": null,
+    "usage": 0
+   },
+   {
+    "code": "UNSPECIFIED",
+    "meaning": "Protection not yet assessed — the honest default.",
+    "sort_order": null,
+    "usage": 176
+   },
+   {
+    "code": "X",
+    "meaning": "Extreme — ground-fall / death potential.",
+    "sort_order": 4,
+    "usage": 0
+   }
+  ]
+ }
+}

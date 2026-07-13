@@ -108,6 +108,22 @@
   .st.d{border:1.5px dashed var(--amber);color:var(--amber);background:var(--amber-soft)}
   .st.p{border:1.5px solid var(--accent);color:var(--accent-ink);background:var(--accent-soft)}
   .st.f{border:1.5px solid var(--blue);color:var(--blue);background:var(--blue-soft)}
+  .taxfam{margin-bottom:14px}
+  .taxfam h2{font-family:var(--serif);font-size:17px;margin:0 0 2px}
+  .taxfam .purpose{font-size:12px;color:var(--muted);margin-bottom:8px}
+  .taxrow{display:grid;grid-template-columns:150px 1fr 90px 60px;gap:8px;align-items:center;
+    padding:5px 0;border-bottom:1px solid var(--line);font-size:12.5px}
+  .taxrow .code{font-family:var(--mono);font-weight:600}
+  .taxrow input{width:100%;border:1px solid transparent;background:transparent;color:var(--ink);
+    font:12.5px var(--sans);padding:3px 6px;border-radius:6px}
+  .taxrow input:hover,.taxrow input:focus{border-color:var(--line-2);background:var(--panel-2);outline:none}
+  .taxrow .use{color:var(--faint);font-family:var(--mono);font-size:11px;text-align:right}
+  .taxrow .del{color:var(--red);cursor:pointer;text-align:right}
+  .taxadd{display:grid;grid-template-columns:150px 1fr auto;gap:8px;margin-top:8px}
+  .taxadd input,.taxadd select{border:1.5px dashed var(--line-2);border-radius:7px;background:var(--panel-2);
+    color:var(--ink);padding:6px 8px;font:12.5px var(--sans)}
+  .taxflags{font-size:10px;letter-spacing:.04em;text-transform:uppercase;font-weight:700}
+  .taxflags .safe{color:var(--red)}
   @media (max-width:900px){.queue{grid-template-columns:1fr}}
 
   /* shared multi-pitch Live header — same bar as every built knowledge page */
@@ -132,6 +148,7 @@
     <div class="views">
       <button id="vq" class="on" onclick="setView('q')">Queue</button>
       <button id="vg" onclick="setView('g')">Grid</button>
+      <button id="vt" onclick="setView('t')">Taxonomy</button>
     </div>
   </header>
 
@@ -139,6 +156,8 @@
     <div id="main"><div class="card">loading…</div></div>
     <div class="rail" id="rail"></div>
   </div>
+
+  <div class="taxview" id="taxview" style="display:none"></div>
 
   <div class="gridview" id="gridview">
     <div class="bulk">
@@ -176,6 +195,8 @@ async function boot(){
   ENUMS=await api('/enums');
   bulkFieldChanged();
   await loadQueue();
+  if(location.hash==='#taxonomy')setView('t');
+  if(location.hash==='#grid')setView('g');
 }
 async function loadQueue(keepId){
   const q=$('q').value, st=$('statusFilter').value;
@@ -230,11 +251,21 @@ function renderCard(){
         ${s==='publish'?'✓ published':s==='quarantined'?'✕ quarantined':(r.needs_field_check?'🥾 field check':'draft · '+r.tagged_by+'-tagged')}</span>
       <span class="crag">${(r.path_tokens||[]).join(' › ')} · ${r.eff_rock_code||'rock?'} · ${r.eff_aspect||'aspect?'} · <span style="font-family:var(--mono)">#${r.id}</span></span></div>
     <div class="facts">
-      ${factInput('grade','original_grade',r.original_grade)}
+      <div class="fact${!r.grade_system_code?' miss':''}"><b>grade system</b>
+        <select onchange="save('grade_system_code',this.value||null)"><option value=""></option>
+          ${(ENUMS.grade_systems||[]).map(g=>`<option value="${g.code}" title="${g.name} · ${g.region}" ${g.code==r.grade_system_code?'selected':''}>${g.code}</option>`).join('')}
+        </select></div>
+      <div class="fact${r.grade_warning?' miss':''}" title="${r.grade_warning||'grade in the selected system'}"><b>grade ${r.grade_warning?'⚠':''}</b>
+        <input list="gradeLadder" value="${r.original_grade??''}" onchange="saveGrade(this.value)">
+        <datalist id="gradeLadder">${((ENUMS.grade_ladder||{})[r.grade_system_code]||[]).map(g=>`<option value="${g}">`).join('')}</datalist></div>
       ${factInput('length m','length_m',r.length_m)}
       ${factInput('pitches','pitches_count',r.pitches_count)}
       ${factInput('incline','incline_code',r.incline_code,ENUMS.incline)}
-      ${factInput('protection','protection_code',r.protection_code,ENUMS.protection)}
+      <div class="fact"><b>protection</b>
+        <select title="${(ENUMS.protection.find(p=>p.code==r.protection_code)||{}).meaning||'Erickson seriousness scale (G/PG/PG-13/R/X)'}"
+          onchange="save('protection_code',this.value||null);renderCard()"><option value=""></option>
+          ${ENUMS.protection.map(o=>`<option title="${o.meaning}" ${o.code==r.protection_code?'selected':''}>${o.code}</option>`).join('')}
+        </select></div>
       ${factInput('prot. style','protection_style',r.protection_style,ENUMS.protection_style,true)}
       ${factInput('belays','belays',r.belays,ENUMS.belays,true)}
       ${factInput('elevation m','elevation_m',r.elevation_m,null,true)}
@@ -242,7 +273,10 @@ function renderCard(){
       ${factInput('approach min','approach_time_min',r.approach_time_min)}
       ${factInput('descent','descent_method',r.descent_method,ENUMS.descent_method,true)}
       ${factInput('rack','rack',r.rack,null,true)}
+      <div class="fact${r.parking_lat==null?' miss':''}" title="parking lat, lon — where you leave the car"><b>parking</b>
+        <input value="${r.parking_lat!=null?r.parking_lat+', '+r.parking_lon:''}" placeholder="lat, lon" onchange="saveParking(this.value)"></div>
     </div>
+    ${r.grade_warning?`<div class="minor" style="color:var(--amber);margin-top:4px">⚠ ${r.grade_warning} — publish is blocked until the grade matches its scale</div>`:''}
     <div class="sec">tags <small>— click to drop · dashed = ${r.tagged_by}-tagged, solid = human-verified · they turn solid on publish</small></div>
     ${FAMS.map(([f,extra])=>`<div class="chips" style="margin-bottom:5px">
         <span class="minor" style="width:76px">${f}</span>
@@ -290,6 +324,20 @@ async function savePitches(){
 }
 function dropTag(f,t){R.tags[f]=R.tags[f].filter(x=>x!==t);saveTags();renderCard()}
 function addTag(f,t){if(!t)return;R.tags[f]=[...(R.tags[f]||[]),t];saveTags();renderCard()}
+function saveGrade(v){
+  api('/route/'+R.id,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({original_grade:v||null})})
+    .then(d=>{R.original_grade=v;R.grade_warning=d.gradeWarning;
+      if(d.gradeWarning)toast('⚠ '+d.gradeWarning);else toast('grade ok ('+(R.grade_system_code||'?')+')');
+      renderCard()}).catch(e=>toast('⚠ '+e));
+}
+function saveParking(v){
+  const m=(v||'').match(/(-?\d+\.?\d*)[ ,]+(-?\d+\.?\d*)/);
+  const val=m?[+m[1],+m[2]]:null;
+  if(v && !m){toast('⚠ parking must be "lat, lon"');return}
+  api('/route/'+R.id,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({parking:val})})
+    .then(()=>{R.parking_lat=val?val[0]:null;R.parking_lon=val?val[1]:null;toast(val?'parking saved':'parking cleared');renderRail()})
+    .catch(e=>toast('⚠ '+e));
+}
 function setStars(n){R.stars=(R.stars===n?n-1:n)||null;save('stars',R.stars);renderCard()}
 function toggleMonth(m){const s=new Set(R.best_season||[]);s.has(m)?s.delete(m):s.add(m);R.best_season=[...s].sort((a,b)=>a-b);save('best_season',R.best_season.length?R.best_season:null);renderCard()}
 
@@ -362,10 +410,61 @@ async function bulkApply(){
   toast(`set ${f} on ${ids.length} routes`);loadQueue(R?.id);
 }
 
+const TAX_PURPOSE={
+  discipline:'What kind of climbing it is (composable — a route can be trad + multi-pitch).',
+  feature:'Rock architecture the route climbs — what the AI extracts from "a great corner crack".',
+  character:'How it climbs (Rockfax-style) — sustained, exposed, delicate…',
+  hazard:'Access & danger flags. kind=route (tidal, loose…) vs kind=objective (rockfall, avalanche…). Safety-critical ones need source evidence on every route.',
+  rock:'Rock types — each carries drying/seepage behaviour that feeds the conditions engine.',
+  sun_window:'When the crag gets sun — feeds the felt-temperature model.',
+  protection:'Erickson seriousness scale (G/PG/PG-13/R/X, from US guidebooks) + OpenBeta extras.'};
+async function renderTax(){
+  const T=await api('/taxonomy');
+  $('taxview').innerHTML=Object.entries(T).map(([fam,rows])=>`
+   <div class="card taxfam">
+    <h2>${fam} <span class="minor">· ${rows.length} values</span></h2>
+    <div class="purpose">${TAX_PURPOSE[fam]||''}</div>
+    ${rows.map(r=>`<div class="taxrow">
+       <span class="code">${r.code}${fam==='hazard'?` <span class="taxflags">${r.kind==='objective'?'⛰':''}${r.safety_critical?' <span class=safe>⚠evidence</span>':''}</span>`:''}</span>
+       <input value="${(r.meaning??r.notes??'').replace(/"/g,'&quot;')}" placeholder="meaning — feeds the AI tagger"
+         onchange="taxEdit('${fam}','${r.code}','${fam==='rock'?'notes':'meaning'}',this.value)">
+       <span class="use">${r.usage} route${r.usage==1?'':'s'}</span>
+       <span class="del">${r.usage?'':`<span onclick="taxDel('${fam}','${r.code}')" title="remove (unused)">✕</span>`}</span>
+     </div>`).join('')}
+    <div class="taxadd">
+      <input id="nc-${fam}" placeholder="new code (kebab-case)">
+      <input id="nm-${fam}" placeholder="meaning — required, one line, the AI reads this">
+      <span>${fam==='hazard'?`<select id="nk-${fam}"><option value="route">route</option><option value="objective">objective</option></select>
+        <label class="minor"><input type="checkbox" id="ns-${fam}"> safety-critical</label>`:''}
+        <button class="btn sm" onclick="taxAdd('${fam}')">+ add to ${fam}</button></span>
+    </div>
+   </div>`).join('')+
+   `<div class="minor" style="margin:6px 4px 40px">Every change writes Postgres, then regenerates <code>db/sql/105_taxonomy_extensions.sql</code> + <code>knowledge/data/taxonomy-values.json</code> — the queue's “+ add” dropdowns and the AI tagger (<code>ai_tag.py</code>) read the live set. Semantics &amp; tagging rules: <a href="https://uncinimichel.github.io/climbing-agent/knowledge/data/taxonomy.html" target="_blank">taxonomy.md</a>. Values in use can't be deleted.</div>`;
+}
+async function taxAdd(fam){
+  const body={code:$('nc-'+fam).value.trim(),meaning:$('nm-'+fam).value.trim()};
+  if(fam==='rock'){body.notes=body.meaning;delete body.meaning}
+  if(fam==='hazard'){body.kind=$('nk-'+fam).value;body.safety_critical=$('ns-'+fam).checked}
+  try{await api('/taxonomy/'+fam,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    toast('added '+body.code+' to '+fam);ENUMS=await api('/enums');renderTax()}
+  catch(e){toast('⚠ '+e)}
+}
+async function taxEdit(fam,code,field,val){
+  try{await api(`/taxonomy/${fam}/${encodeURIComponent(code)}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({[field]:val||null})});toast('saved '+code)}
+  catch(e){toast('⚠ '+e)}
+}
+async function taxDel(fam,code){
+  try{await api(`/taxonomy/${fam}/${encodeURIComponent(code)}`,{method:'DELETE'});toast('removed '+code);ENUMS=await api('/enums');renderTax()}
+  catch(e){toast('⚠ '+e)}
+}
 function setView(v){
   $('queueview').style.display=v==='q'?'grid':'none';
   $('gridview').style.display=v==='g'?'block':'none';
-  $('vq').classList.toggle('on',v==='q');$('vg').classList.toggle('on',v==='g');
+  $('taxview').style.display=v==='t'?'block':'none';
+  document.querySelector('.actions').style.display=v==='t'?'none':'block';
+  $('vq').classList.toggle('on',v==='q');$('vg').classList.toggle('on',v==='g');$('vt').classList.toggle('on',v==='t');
+  if(v==='t')renderTax();
+  if(v==='q'&&R)openRoute(R.id);  // re-render with possibly grown ENUMS
 }
 document.addEventListener('keydown',e=>{
   if(!(e.metaKey||e.ctrlKey))return;
