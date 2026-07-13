@@ -1,6 +1,6 @@
 {
   "comment": "Latest flight prices per combo (round-trip, 1 pax, GBP). Updated on demand by Claude or by an API script. null = not yet checked.",
-  "checked_at": "2026-07-13 21:06 UTC (Google Flights/SerpApi)",
+  "checked_at": "2026-07-13 21:58 UTC (Google Flights/SerpApi)",
   "currency": "GBP",
   "rep_combo": {
     "id": "fri-tue",
@@ -15,21 +15,12 @@
         "to": "MAD",
         "options": [
           {
-            "price": 136,
+            "price": 145,
             "airline": "Wizz Air",
             "from": "LTN",
             "to": "MAD",
             "dep": "08:00",
             "arr": "11:40",
-            "stops": 0
-          },
-          {
-            "price": 137,
-            "airline": "easyJet",
-            "from": "LGW",
-            "to": "MAD",
-            "dep": "06:05",
-            "arr": "09:35",
             "stops": 0
           },
           {
@@ -39,6 +30,15 @@
             "to": "MAD",
             "dep": "12:30",
             "arr": "16:00",
+            "stops": 0
+          },
+          {
+            "price": 156,
+            "airline": "easyJet",
+            "from": "LGW",
+            "to": "MAD",
+            "dep": "06:05",
+            "arr": "09:35",
             "stops": 0
           }
         ],
@@ -87,7 +87,7 @@
         "to": "TFS",
         "options": [
           {
-            "price": 140,
+            "price": 146,
             "airline": "Jet2",
             "from": "STN",
             "to": "TFS",
@@ -131,7 +131,7 @@
             "stops": 0
           },
           {
-            "price": 467,
+            "price": 468,
             "airline": "Tap Air Portugal",
             "from": "DUB",
             "to": "TFS",
@@ -140,13 +140,13 @@
             "stops": 1
           },
           {
-            "price": 556,
-            "airline": "Aer Lingus",
-            "from": "DUB",
+            "price": 477,
+            "airline": "British Airways",
+            "from": "BHD",
             "to": "TFS",
-            "dep": "15:00",
-            "arr": "19:35",
-            "stops": 0
+            "dep": "20:10",
+            "arr": "11:45",
+            "stops": 1
           }
         ],
         "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDVEZTGjASCjIwMjYtMDctMjhqBwgBEgNURlNyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
@@ -159,7 +159,7 @@
         "to": "ZAD",
         "options": [
           {
-            "price": 231,
+            "price": 232,
             "airline": "Ryanair",
             "from": "STN",
             "to": "ZAD",
@@ -266,6 +266,15 @@
         "to": "ASR",
         "options": [
           {
+            "price": 480,
+            "airline": "Turkish Airlines",
+            "from": "DUB",
+            "to": "ASR",
+            "dep": "17:05",
+            "arr": "03:15",
+            "stops": 1
+          },
+          {
             "price": 507,
             "airline": "Turkish Airlines",
             "from": "DUB",
@@ -275,21 +284,12 @@
             "stops": 1
           },
           {
-            "price": 537,
+            "price": 616,
             "airline": "Turkish Airlines",
             "from": "DUB",
             "to": "ASR",
             "dep": "05:35",
             "arr": "16:00",
-            "stops": 1
-          },
-          {
-            "price": 537,
-            "airline": "Turkish Airlines",
-            "from": "DUB",
-            "to": "ASR",
-            "dep": "17:05",
-            "arr": "03:15",
             "stops": 1
           }
         ],
@@ -339,6 +339,15 @@
         "options": [
           {
             "price": 216,
+            "airline": "Aer Lingus",
+            "from": "DUB",
+            "to": "LYS",
+            "dep": "06:15",
+            "arr": "09:30",
+            "stops": 0
+          },
+          {
+            "price": 224,
             "airline": "Air France",
             "from": "DUB",
             "to": "LYS",
@@ -347,21 +356,12 @@
             "stops": 1
           },
           {
-            "price": 290,
-            "airline": "Air France",
-            "from": "DUB",
-            "to": "LYS",
-            "dep": "05:55",
-            "arr": "17:50",
-            "stops": 1
-          },
-          {
-            "price": 320,
+            "price": 361,
             "airline": "Lufthansa",
             "from": "DUB",
             "to": "LYS",
-            "dep": "06:05",
-            "arr": "13:55",
+            "dep": "17:40",
+            "arr": "23:30",
             "stops": 1
           }
         ],
@@ -387,7 +387,7 @@
             "stops": 0
           },
           {
-            "price": 28,
+            "price": 29,
             "airline": "Ryanair",
             "from": "DUB",
             "to": "BRS",
@@ -455,7 +455,7 @@
         "to": "BIO",
         "options": [
           {
-            "price": 85,
+            "price": 81,
             "airline": "Wizz Air",
             "from": "LTN",
             "to": "BIO",
@@ -464,7 +464,7 @@
             "stops": 0
           },
           {
-            "price": 100,
+            "price": 106,
             "airline": "Vueling",
             "from": "LGW",
             "to": "BIO",
@@ -473,12 +473,12 @@
             "stops": 0
           },
           {
-            "price": 112,
+            "price": 118,
             "airline": "Vueling",
-            "from": "LGW",
+            "from": "LHR",
             "to": "BIO",
-            "dep": "19:40",
-            "arr": "22:40",
+            "dep": "15:30",
+            "arr": "18:35",
             "stops": 0
           }
         ],
@@ -499,7 +499,7 @@
             "stops": 1
           },
           {
-            "price": 304,
+            "price": 310,
             "airline": "Air France",
             "from": "DUB",
             "to": "BIO",
@@ -580,7 +580,7 @@
             "stops": 2
           },
           {
-            "price": 350,
+            "price": 354,
             "airline": "Air France",
             "from": "DUB",
             "to": "LJU",
@@ -667,7 +667,7 @@
           "out": "2026-07-26",
           "back": "2026-07-30",
           "book_url": "https://www.skyscanner.net/transport/flights/lgw/mad/260726/260730/",
-          "price": 109,
+          "price": 110,
           "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTA3LTI2agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDTUFEGkISCjIwMjYtMDctMzBqBwgBEgNNQURyBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ"
         }
       ],
@@ -693,7 +693,7 @@
           "out": "2026-07-25",
           "back": "2026-07-29",
           "book_url": "https://www.skyscanner.net/transport/flights/bfs/mad/260725/260729/",
-          "price": 179,
+          "price": 190,
           "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTI1agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDTUFEGjASCjIwMjYtMDctMjlqBwgBEgNNQURyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ"
         },
         {
