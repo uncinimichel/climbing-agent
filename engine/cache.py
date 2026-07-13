@@ -9,6 +9,8 @@ refactor — DiskCache is the only implementation needed to keep the NI cron
 working exactly as it does today.
 """
 import json
+import sys
+from datetime import datetime, timezone
 
 
 class Cache:
@@ -55,11 +57,26 @@ class EnvCache:
     writes the trip-independent weather/tide layer once per venue; this just
     serves it back by "lat,lon" so the live fetchers can skip re-hitting the
     provider APIs. Missing file/venue is not an error — callers fall back to a
-    live call, exactly as today."""
+    live call, exactly as today.
 
-    def __init__(self, path):
+    max_age_hours: when set, a file whose generated_at is older than this is
+    treated as empty (→ live fetches) instead of served. The cache is designed
+    to be produced and consumed within the same daily run; a local re-render
+    days later must not rank the board on an old forecast (the 2026-07-13
+    stale-cache reshuffle). Left None for offline consumers (backtests) that
+    deliberately replay whatever file exists."""
+
+    def __init__(self, path, max_age_hours=None):
         try:
             env = json.loads(path.read_text())
+            if max_age_hours is not None:
+                gen = datetime.fromisoformat(env["generated_at"])
+                age_h = (datetime.now(timezone.utc) - gen).total_seconds() / 3600
+                if age_h > max_age_hours:
+                    print(f"[warn] venue-env cache is {age_h:.0f}h old (> {max_age_hours}h) — "
+                          "ignoring it; run fetch_env.py to refresh", file=sys.stderr)
+                    self._by_coord = {}
+                    return
             self._by_coord = {f"{x['lat']},{x['lon']}": x for x in env.get("venues", {}).values()}
         except Exception:
             self._by_coord = {}

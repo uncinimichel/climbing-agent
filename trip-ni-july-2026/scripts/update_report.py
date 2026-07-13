@@ -127,7 +127,9 @@ def build_banner(ctx, ranked):
 def main():
     ctx, sheet_rows, guidebooks, extra_climbing_data, tag_spec, mp_climbs = build_context()
 
-    env_cache = EnvCache(ROOT / "venue-env.json")
+    # 18h: a same-day re-render reuses the cron's fetch; an older file is
+    # rejected so a manual run can't rank the board on a days-old forecast
+    env_cache = EnvCache(ROOT / "venue-env.json", max_age_hours=18)
     climo_cache = DiskCache(ROOT / "climo-cache.json",
                              key_filter=lambda k: k.endswith("|" + weather.CLIMO_VER))
     stays_cache = DiskCache(ROOT / "stays-cache.json")
