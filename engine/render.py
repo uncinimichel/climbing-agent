@@ -490,7 +490,8 @@ def venue_payload(n, r, ctx, mp_climbs, guidebooks, extra_climbing_data, tag_spe
         series.append(entry)
 
     return {
-        "rank": n, "name": v["name"], "shortName": short_name(v["name"]),
+        "rank": n, "delta": r.get("rank_delta"), "isNew": r.get("rank_new", False),
+        "name": v["name"], "shortName": short_name(v["name"]),
         "lat": v.get("lat"), "lon": v.get("lon"),
         "country": v["country"], "flag": flag(v["country"]), "rock": v.get("rock", ""),
         "style": v.get("style", ""),
@@ -582,10 +583,12 @@ body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:14p
 .board-hd{padding:16px 18px 10px}
 .eyebrow{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
 .board-sub{font-size:11.5px;color:var(--faint);margin-top:3px}
-.row{display:grid;grid-template-columns:30px minmax(0,1fr);column-gap:12px;width:100%;text-align:left;border:0;border-top:1px solid var(--line);background:none;padding:13px 18px;cursor:pointer;font:inherit;color:inherit}
+.row{position:relative;display:grid;grid-template-columns:30px minmax(0,1fr);column-gap:12px;width:100%;text-align:left;border:0;border-top:1px solid var(--line);background:none;padding:13px 18px;cursor:pointer;font:inherit;color:inherit}
 .row:hover{background:#1F232B}
 .row.active{background:var(--card);box-shadow:inset 3px 0 0 var(--ink)}
 .rnum{grid-row:1/5;font-family:var(--disp);font-weight:800;font-size:21px;line-height:1.1;color:var(--ink);opacity:.3}
+.rdelta{position:absolute;left:18px;bottom:12px;width:30px;font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.02em;white-space:nowrap}
+.rdelta.up{color:var(--dry)}.rdelta.down{color:var(--wet)}.rdelta.same{color:var(--faint)}.rdelta.new{color:var(--muted)}
 .rinfo{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;font-family:var(--mono)}
 .bd-leg{display:flex;gap:13px;margin-top:11px;font-family:var(--mono);font-size:10.5px;color:var(--muted);flex-wrap:wrap}
 .bd-leg i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:5px}
@@ -979,6 +982,22 @@ document.getElementById('ghBtn').href=safeUrl(D.trip.repoUrl);
 document.getElementById('basis').innerHTML=D.banner.html+' <span class="updstamp">· page updated '+esc(D.trip.updated)+'</span>';
 document.getElementById('updated').textContent='Updated '+D.trip.updated+' · weather: Open-Meteo · flights: Google Flights · stays: OpenStreetMap';
 
+function deltaHtml(v){
+  if(v.isNew)return '<span class="rdelta new" title="new in the ranking since yesterday">NEW</span>';
+  var d=v.delta;
+  if(d==null)return '';
+  if(d>0)return '<span class="rdelta up" title="up '+d+(d===1?' place':' places')+' since yesterday">▲'+d+'</span>';
+  if(d<0)return '<span class="rdelta down" title="down '+(-d)+(d===-1?' place':' places')+' since yesterday">▼'+(-d)+'</span>';
+  return '<span class="rdelta same" title="same position as yesterday">=</span>';
+}
+function deltaTxt(v){
+  if(v.isNew)return ' · new entry';
+  var d=v.delta;
+  if(d==null)return '';
+  if(d>0)return ' · ▲'+d+' since yesterday';
+  if(d<0)return ' · ▼'+(-d)+' since yesterday';
+  return '';
+}
 function rowHtml(v,i){
   var c=cond(v),sc=num(v.score);
   var bar=v.score>=0
@@ -987,7 +1006,7 @@ function rowHtml(v,i){
   var tc=v.listTemp==null?null:(v.listTemp<=20?'var(--dry)':(v.listTemp<=27?'var(--mixed)':'var(--wet)'));
   var info='<span class="rinfo">'+(tc?'<b style="color:'+tc+'">'+num(v.listTemp)+'°C avg</b>'+(v.listInfo?' · ':''):'')+esc(v.listInfo||'')+'</span>';
   return '<button class="row" data-i="'+i+'" onclick="sel('+i+')">'
-    +'<span class="rnum">'+num(v.rank)+'</span>'
+    +'<span class="rnum">'+num(v.rank)+'</span>'+deltaHtml(v)
     +'<span class="rname">'+esc(v.flag)+' '+esc(v.shortName)+'</span>'
     +'<span class="rsub">'+esc(v.country)+(v.rock?' · '+esc(v.rock):'')+' · <b style="color:'+c[1]+';font-weight:600">'+c[0].toLowerCase()+'</b></span>'
     +info+bar+'</button>';
@@ -1035,7 +1054,7 @@ function bandHtml(v){
   var bg=img?'background:linear-gradient(90deg,rgba(20,22,26,.94) 22%,rgba(20,22,26,.55)),url('+img+') center/cover no-repeat':'background:'+c[2];
   return '<header class="band" style="'+bg+'">'
     +'<div class="band-body">'
-    +'<div class="eyebrow">No.'+num(v.rank)+' of '+V.length+' · '+esc(v.flag)+' '+esc(v.country)+'</div>'
+    +'<div class="eyebrow">No.'+num(v.rank)+' of '+V.length+esc(deltaTxt(v))+' · '+esc(v.flag)+' '+esc(v.country)+'</div>'
     +'<h1 class="vname">'+esc(v.shortName)+'</h1>'
     +'<div class="vmeta">'+esc(v.style||'')+'</div></div>'
     +(v.breakdown?'<div id="brkChart" class="brkchart hdr"></div>':'')
@@ -1906,8 +1925,13 @@ def build_md(ranked, now, banner, ctx, mp_climbs, match_sheet_row=None):
              "|---|---|---|---|---|---|"]
     for n, r in enumerate(ranked, 1):
         v = r["venue"]
+        d = r.get("rank_delta")
+        mv = ("🆕" if r.get("rank_new")
+              else "" if d is None
+              else f"▲{d}" if d > 0 else f"▼{-d}" if d < 0 else "=")
+        rank_cell = f"{n} {mv}".rstrip()
         if not r.get("ok") or r["score"] < 0:
-            lines.append(f"| {n} | {v['name']} | – | – | – | – |")
+            lines.append(f"| {rank_cell} | {v['name']} | – | – | – | – |")
             continue
         c = r.get("climo")
         cstr = f"{c['tmax']}°C, {c['rain_pct']}% wet" if c else "–"
@@ -1916,7 +1940,7 @@ def build_md(ranked, now, banner, ctx, mp_climbs, match_sheet_row=None):
         row = match_sheet_row(v["name"]) if match_sheet_row else None
         src = (f"[mp map]({MP_MAP_URL})" + (f" ({len(nb)})" if nb else "")
                + (f" · [sheet r{row}]({SHEET_URL}#gid=0&range={row}:{row})" if row else " · not in sheet"))
-        lines.append(f"| {n} | {flag(v['country'])} {v['name']}<br><sub>{src}</sub> | {r['score']} | {cstr} | {fcell(fl.get('michel'))} | {fcell(fl.get('dan'))} |")
+        lines.append(f"| {rank_cell} | {flag(v['country'])} {v['name']}<br><sub>{src}</sub> | {r['score']} | {cstr} | {fcell(fl.get('michel'))} | {fcell(fl.get('dan'))} |")
     lines += ["", f"_Flights: top {ctx.top_n_flights} venues, return {ctx.rep_combo['out']}→{ctx.rep_combo['back']} ({ctx.rep_combo['nights']}n); "
               f"date options: {ctx.combo_labels}. Use the book links to adjust. "
               f"Stays: OpenStreetMap lodging within {STAY_RADIUS_KM} km per venue (houses, camping, hotels "

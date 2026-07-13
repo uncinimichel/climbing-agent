@@ -73,6 +73,7 @@ jobs:
                   venues/ sitemap.xml robots.txt \
                   trip-ni-july-2026/daily-report.md \
                   trip-ni-july-2026/history/ trip-ni-july-2026/flights-latest.json \
+                  trip-ni-july-2026/rank-history.json \
                   trip-ni-july-2026/serpapi-usage.json \
                   trip-ni-july-2026/climo-cache.json \
                   knowledge/

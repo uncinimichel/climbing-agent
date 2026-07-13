@@ -36,7 +36,7 @@ from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
-from engine import climbs, flights, quota, render, scoring, sheet_venues, weather  # noqa: E402
+from engine import climbs, flights, quota, rank_history, render, scoring, sheet_venues, weather  # noqa: E402
 from engine.cache import DiskCache, EnvCache  # noqa: E402
 from engine.models import TripContext  # noqa: E402
 
@@ -156,6 +156,9 @@ def main():
     for r in ranked[:ctx.top_n_flights]:
         scoring.apply_composite(r, ctx, mp_climbs)
     ranked = scoring.rank(results)            # …and settle the final order
+
+    # day-over-day movement: annotate vs yesterday's order, record today's
+    rank_history.apply(ROOT / "rank-history.json", today, ranked)
 
     # persist (so history captures prices and a no-key run can reuse them)
     flights_data["rep_combo"] = ctx.rep_combo

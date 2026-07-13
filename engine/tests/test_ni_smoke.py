@@ -50,8 +50,8 @@ def test_update_report_runs_clean_and_shape_matches():
     venues = data["venues"]
     assert len(venues) > 30, f"expected a few dozen venues, got {len(venues)}"
 
-    required_keys = {"rank", "name", "shortName", "country", "score", "wx", "series",
-                     "flights", "stays", "tags", "breakdown"}
+    required_keys = {"rank", "delta", "isNew", "name", "shortName", "country", "score",
+                     "wx", "series", "flights", "stays", "tags", "breakdown"}
     for v in venues:
         missing = required_keys - v.keys()
         assert not missing, f"venue {v.get('name')!r} is missing keys: {missing}"
