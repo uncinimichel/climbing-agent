@@ -583,11 +583,11 @@ body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:14p
 .board-hd{padding:16px 18px 10px}
 .eyebrow{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
 .board-sub{font-size:11.5px;color:var(--faint);margin-top:3px}
-.row{position:relative;display:grid;grid-template-columns:30px minmax(0,1fr);column-gap:12px;width:100%;text-align:left;border:0;border-top:1px solid var(--line);background:none;padding:13px 18px;cursor:pointer;font:inherit;color:inherit}
+.row{display:grid;grid-template-columns:30px minmax(0,1fr);column-gap:12px;width:100%;text-align:left;border:0;border-top:1px solid var(--line);background:none;padding:13px 18px;cursor:pointer;font:inherit;color:inherit}
 .row:hover{background:#1F232B}
 .row.active{background:var(--card);box-shadow:inset 3px 0 0 var(--ink)}
 .rnum{grid-row:1/5;font-family:var(--disp);font-weight:800;font-size:21px;line-height:1.1;color:var(--ink);opacity:.3}
-.rdelta{position:absolute;left:18px;bottom:12px;width:30px;font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.02em;white-space:nowrap}
+.rdelta{margin-left:7px;font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:.02em;white-space:nowrap;vertical-align:1.5px}
 .rdelta.up{color:var(--dry)}.rdelta.down{color:var(--wet)}.rdelta.same{color:var(--faint)}.rdelta.new{color:var(--muted)}
 .rinfo{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;font-family:var(--mono)}
 .bd-leg{display:flex;gap:13px;margin-top:11px;font-family:var(--mono);font-size:10.5px;color:var(--muted);flex-wrap:wrap}
@@ -1006,8 +1006,8 @@ function rowHtml(v,i){
   var tc=v.listTemp==null?null:(v.listTemp<=20?'var(--dry)':(v.listTemp<=27?'var(--mixed)':'var(--wet)'));
   var info='<span class="rinfo">'+(tc?'<b style="color:'+tc+'">'+num(v.listTemp)+'°C avg</b>'+(v.listInfo?' · ':''):'')+esc(v.listInfo||'')+'</span>';
   return '<button class="row" data-i="'+i+'" onclick="sel('+i+')">'
-    +'<span class="rnum">'+num(v.rank)+'</span>'+deltaHtml(v)
-    +'<span class="rname">'+esc(v.flag)+' '+esc(v.shortName)+'</span>'
+    +'<span class="rnum">'+num(v.rank)+'</span>'
+    +'<span class="rname">'+esc(v.flag)+' '+esc(v.shortName)+deltaHtml(v)+'</span>'
     +'<span class="rsub">'+esc(v.country)+(v.rock?' · '+esc(v.rock):'')+' · <b style="color:'+c[1]+';font-weight:600">'+c[0].toLowerCase()+'</b></span>'
     +info+bar+'</button>';
 }
