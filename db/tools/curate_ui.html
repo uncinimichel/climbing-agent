@@ -109,8 +109,18 @@
   .st.p{border:1.5px solid var(--accent);color:var(--accent-ink);background:var(--accent-soft)}
   .st.f{border:1.5px solid var(--blue);color:var(--blue);background:var(--blue-soft)}
   @media (max-width:900px){.queue{grid-template-columns:1fr}}
+
+  /* shared multi-pitch Live header — same bar as every built knowledge page */
+  .mp-top{position:relative;top:0;z-index:50;height:48px;background:#12141B;border-bottom:1px solid #252840;
+    display:flex;align-items:center;gap:12px;padding:0 18px}
+  .mp-top .mp-logo{font-size:16px;font-weight:800;color:#EAE6DD;letter-spacing:-.2px;text-decoration:none;font-family:system-ui,sans-serif}
+  .mp-top .mp-live{color:#C4FF5C}
+  .mp-top a.mp-btn{font-size:12px;color:#9B9890;text-decoration:none;border:1px solid #252840;border-radius:6px;padding:5px 12px;font-family:system-ui,sans-serif}
+  .mp-top a.mp-btn:hover{color:#EAE6DD;border-color:#5A5860}
+  .mp-top a.mp-btn.on{color:#C4FF5C;border-color:#5A5860}
 </style>
 
+<div class="mp-top"><a class="mp-logo" href="https://uncinimichel.github.io/climbing-agent/index.html" target="_blank">🧗 multi-pitch <span class="mp-live">Live</span></a><span class="mp-btn" style="border-style:dashed;cursor:default">✏ Curation Studio · localhost</span><span style="margin-left:auto"></span><a class="mp-btn" target="_blank" href="https://uncinimichel.github.io/climbing-agent/knowledge/index.html">📚 Knowledge</a><a class="mp-btn" target="_blank" href="https://uncinimichel.github.io/climbing-agent/knowledge/corpus-inspector.html">🧗 Inspector</a><a class="mp-btn" target="_blank" href="https://uncinimichel.github.io/climbing-agent/knowledge/data-dependencies.html">🗺 Data map</a><a class="mp-btn" target="_blank" href="https://uncinimichel.github.io/climbing-agent/index.html">▶ Dashboard</a></div>
 <div class="wrap">
   <header class="app">
     <h1>🧗 Curation Studio</h1>

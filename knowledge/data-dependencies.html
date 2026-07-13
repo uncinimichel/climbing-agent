@@ -107,15 +107,19 @@
   .nlink{color:inherit;text-decoration:none;border-bottom:1px dotted currentColor;opacity:.95}
   .nlink:hover{color:var(--accent);border-bottom-style:solid}
   .npath a.nlink{font-family:var(--mono)}
+
+  /* shared multi-pitch Live header — same bar as every built knowledge page */
+  .mp-top{position:sticky;top:0;z-index:50;height:48px;background:#12141B;border-bottom:1px solid #252840;
+    display:flex;align-items:center;gap:12px;padding:0 18px}
+  .mp-top .mp-logo{font-size:16px;font-weight:800;color:#EAE6DD;letter-spacing:-.2px;text-decoration:none;font-family:system-ui,sans-serif}
+  .mp-top .mp-live{color:#C4FF5C}
+  .mp-top a.mp-btn{font-size:12px;color:#9B9890;text-decoration:none;border:1px solid #252840;border-radius:6px;padding:5px 12px;font-family:system-ui,sans-serif}
+  .mp-top a.mp-btn:hover{color:#EAE6DD;border-color:#5A5860}
+  .mp-top a.mp-btn.on{color:#C4FF5C;border-color:#5A5860}
 </style>
 
+<div class="mp-top"><a class="mp-logo" href="../index.html">🧗 multi-pitch <span class="mp-live">Live</span></a><span style="margin-left:auto"></span><a class="mp-btn" href="index.html">📚 Knowledge</a><a class="mp-btn" href="corpus-inspector.html">🧗 Inspector</a><a class="mp-btn on" href="data-dependencies.html">🗺 Data map</a><a class="mp-btn" href="../index.html">▶ Dashboard</a></div>
 <div class="wrap">
-  <nav class="pagenav">
-    <a class="homelink" href="../index.html">▶ Dashboard</a>
-    <a class="homelink" href="index.html">📚 Knowledge</a>
-    <a class="homelink" href="corpus-inspector.html">🧗 Inspector</a>
-    <a class="homelink active" href="data-dependencies.html" aria-current="page">🗺 Data map</a>
-  </nav>
   <h1>Where the source of truth lives</h1>
   <p class="lede">Your repo holds <b>two parallel data worlds that never touch</b>. Each has its own place to add data, its own weather source, and its own idea of what a "climb" is. This map shows what's hand-authored (the real sources of truth), what's generated, and — at the bottom — exactly where to add a new climb or venue.</p>
   <div style="margin:16px 0 4px;border:1.5px solid var(--accent);background:var(--accent-soft);border-radius:12px;padding:14px 18px;font-size:14px;color:var(--accent-ink)">
