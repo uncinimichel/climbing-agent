@@ -7,11 +7,13 @@ derived property computed from those fields (graph window, rep combo, period
 label) — so the same object can represent the one hardcoded NI trip today, or
 an arbitrary user-defined trip tomorrow.
 
-Traveller keys stay hardcoded to ("michel", "dan") for now, matching
-venues.json's `travel` dicts and every downstream function that keys off them
-(flights.py, render.py's PAGE_JS). Generalizing to an arbitrary traveller list
-is out of scope for this refactor (zero functional change) — see M2+ in the
-implementation plan.
+Travellers are data (decision #33 M2): TripContext.travellers carries the
+trips.json registry entries ({key, name, homes, airports}) and every consumer
+(flights.py, scoring.py's distance signal, render.py's pills/flight cards/
+markdown) iterates them — no hardcoded traveller keys anywhere. When built
+without a registry (legacy from_files path used by fetch_env/backtest), a
+minimal traveller list is synthesized from flights.json's route
+traveller_origins/traveller_coords.
 """
 from dataclasses import dataclass, field
 from datetime import date, timedelta
@@ -41,14 +43,6 @@ def short_name(name):
     return name.split("(")[0].split(",")[0].strip()
 
 
-TRAVELLERS = ("michel", "dan")
-ORIGIN_CITY = {"michel": "London", "dan": "Belfast/Dublin"}
-# Home coordinates per traveller, for the distance-from-home signal. Each is a
-# list (Dan can start from Belfast or Dublin) — the nearest is used.
-ORIGIN_COORDS = {
-    "michel": [(51.5074, -0.1278)],                       # London
-    "dan": [(54.607, -5.926), (53.349, -6.260)],          # Belfast, Dublin
-}
 DEFAULT_CLIMO_YEARS = [2021, 2022, 2023, 2024]
 
 
@@ -87,6 +81,9 @@ class TripContext:
     top_n_flights: int = 4
     climo_years: list = field(default_factory=lambda: list(DEFAULT_CLIMO_YEARS))
     prefs: Preferences = field(default_factory=Preferences)
+    # trips.json traveller entries: [{key, name, homes: [{city, lat, lon}],
+    # airports: [IATA...]}, ...]. None → synthesized from flights_cfg (legacy).
+    travellers: list | None = None
 
     @property
     def graph_start(self):
@@ -130,26 +127,50 @@ class TripContext:
                           for c in self.flights_cfg["combos"])
 
     @property
-    def origin(self):
-        to = self.flights_cfg["route"].get("traveller_origins", {})
-        return {
-            "michel": ",".join(to.get("michel", self.flights_cfg["route"]["origin_airports"])),
-            "dan": ",".join(to.get("dan", self.flights_cfg["route"]["dest_airports"])),
-        }
+    def travellers_norm(self):
+        """The traveller list every consumer iterates. trips.json entries when
+        present; otherwise synthesized from flights.json's route
+        traveller_origins/traveller_coords (legacy from_files path — keys
+        starting with '_', e.g. a JSON _comment, are skipped)."""
+        if self.travellers:
+            return self.travellers
+        route = (self.flights_cfg or {}).get("route") or {}
+        to = {k: v for k, v in (route.get("traveller_origins") or {}).items()
+              if not k.startswith("_")}
+        tc = {k: v for k, v in (route.get("traveller_coords") or {}).items()
+              if not k.startswith("_")}
+        keys = list(to) or list(tc)
+        return [{"key": k, "name": k.title(),
+                 "homes": [{"city": "", "lat": p[0], "lon": p[1]} for p in tc.get(k, [])],
+                 "airports": list(to.get(k) or [])} for k in keys]
 
     @property
-    def origin_city(self):
-        return dict(ORIGIN_CITY)
+    def traveller_keys(self):
+        return [t["key"] for t in self.travellers_norm]
+
+    @property
+    def traveller_names(self):
+        return {t["key"]: t["name"] for t in self.travellers_norm}
+
+    @property
+    def traveller_cities(self):
+        """Display label per traveller: 'London', 'Belfast / Dublin'."""
+        return {t["key"]: " / ".join(h["city"] for h in t.get("homes", []) if h.get("city"))
+                for t in self.travellers_norm}
+
+    @property
+    def origin(self):
+        """Departure airports per traveller as the comma-joined string
+        serp_flights expects."""
+        return {t["key"]: ",".join(t.get("airports") or [])
+                for t in self.travellers_norm}
 
     @property
     def origin_coords(self):
-        """Home [lat, lon] per traveller for the distance-from-home signal, read
-        from flights.json's route.traveller_coords (falls back to ORIGIN_COORDS).
-        Keys starting with '_' (e.g. a JSON _comment) are skipped."""
-        tc = (self.flights_cfg.get("route") or {}).get("traveller_coords")
-        src = tc if tc else ORIGIN_COORDS
-        return {k: [tuple(p) for p in v]
-                for k, v in src.items() if not k.startswith("_")}
+        """Home [lat, lon] points per traveller for the distance-from-home
+        signal — the nearest is used."""
+        return {t["key"]: [(h["lat"], h["lon"]) for h in t.get("homes", [])]
+                for t in self.travellers_norm}
 
     @classmethod
     def from_files(cls, venues_cfg, flights_cfg, serpapi_key=None, top_n_flights=4):

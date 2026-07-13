@@ -214,7 +214,7 @@ def extra_climbing(v, extra_climbing_data):
     return extra_climbing_data.get(v["name"])
 
 
-def _list_info(v, r, cards):
+def _list_info(v, r, cards, ctx):
     """Compact extra line for the leaderboard: expected trip temperature, total
     flight cost when priced, route count, and the sheet's difficulty band."""
     parts = []
@@ -226,7 +226,7 @@ def _list_info(v, r, cards):
     if t is None:
         t = (c or {}).get("tmax") if c else None
     prices = []
-    for who in ("michel", "dan"):
+    for who in ctx.traveller_keys:
         mode = (v.get("travel", {}).get(who) or {}).get("mode")
         opts = (((r.get("flights") or {}).get(who)) or {}).get("options") or []
         if mode in ("local", "drive"):
@@ -432,8 +432,7 @@ def venue_payload(n, r, ctx, mp_climbs, guidebooks, extra_climbing_data, tag_spe
                     "book_url": skyscanner_url(ctx.origin[who].split(",")[0], cfg["to"], out_date, back_date)}
         return {"mode": "unknown"}
 
-    mf = fl.get("michel") or fallback_flight("michel")
-    md = fl.get("dan") or fallback_flight("dan")
+    flights_out = {w: (fl.get(w) or fallback_flight(w)) for w in ctx.traveller_keys}
 
     facts = []
 
@@ -517,15 +516,15 @@ def venue_payload(n, r, ctx, mp_climbs, guidebooks, extra_climbing_data, tag_spe
                        else f"Typical {ctx.period_lbl} daily pattern (avg {ctx.climo_years[0]}–{ctx.climo_years[-1]})"),
         "grades": grades, "hero": (cards[0]["img"] if cards else None), "climbs": cards,
         "facts": facts,
-        "flights": {"michel": mf, "dan": md},
+        "flights": flights_out,
         "stays": r.get("stays"), "guide": guidebook(v, guidebooks),
         "extraClimbing": extra_climbing(v, extra_climbing_data),
         "maps": maps_url(v), "weather": weather_url(v), "mpMap": MP_MAP_URL,
         "tidal": tidal,
         "tags": venue_tags(v, cards, grades, tag_spec,
                             (f"{tag} · {rain}% wet days" if rain is not None else tag), tidal),
-        "listInfo": _list_info(v, r, cards)["txt"],
-        "listTemp": _list_info(v, r, cards)["temp"],
+        "listInfo": _list_info(v, r, cards, ctx)["txt"],
+        "listTemp": _list_info(v, r, cards, ctx)["temp"],
         "breakdown": r.get("breakdown"),
         "auto": bool(v.get("auto")),
     }
@@ -950,11 +949,11 @@ PAGE_BODY = """<body>
       stay, not live quotes.</p>
       <p><b style="color:var(--dry)">Venue fit · 20%</b> — from the spreadsheet's judgment
       columns: how much multi-pitch there is, its difficulty spread, and whether the
-      minimum sensible trip fits your dates — plus <b>distance from home</b> (London for
-      Michel, Belfast/Dublin for Dan), so nearby European crags edge out ones in Africa or
+      minimum sensible trip fits your dates — plus <b>distance from home</b>
+      (%%TRAVELLER_HOMES%%), so nearby European crags edge out ones in Africa or
       the US when all else is close.</p>
       <p>Ranking basis by date: <b>typical weather for your trip dates</b> (recent-year averages) blended with the
-      <b>long-range outlook</b> now (a forecast model that can see up to ~45 days ahead — the ‘45-day’ is the model’s reach, not your trip length). As the <b>live 16-day forecast</b> reaches into your window it takes over <b>only for the days it actually covers</b> — a venue whose forecast reaches 2 of your 6 trip days is scored ⅓ on those live days and ⅔ on typical weather for the rest, so a couple of dry days at the edge of the forecast can’t out-rank a whole typical-week verdict. It fully supersedes once it spans the trip. The page
+      <b>long-range outlook</b> now (a forecast model that can see up to ~45 days ahead — the ‘45-day’ is the model’s reach, not your trip length). As the <b>live 16-day forecast</b> reaches into your window it takes over <b>only for the days it actually covers</b> — a venue whose forecast reaches only the first 2 of your trip days is scored on the live forecast for just those 2 and on typical weather for the rest, so a couple of dry days at the edge of the forecast can’t out-rank a whole typical-week verdict. It fully supersedes once it spans the trip. The page
       rebuilds daily at 06:00 UTC. Full maths:
       <a class="lk" href="knowledge/data/condition-algorithm.html">condition algorithm</a>.</p>
     </div>
@@ -1635,8 +1634,7 @@ function detailHtml(v){
     +hl
     +verdictHtml(v)
     +'<div class="sec"><div class="eyebrow">Getting there</div><div class="fgrid">'
-      +flightCard('Michel','London',v.flights&&v.flights.michel)
-      +flightCard('Dan','Belfast / Dublin',v.flights&&v.flights.dan)+'</div></div>'
+      +(D.trip.travellers||[]).map(function(t){return flightCard(t.name,t.from,v.flights&&v.flights[t.key])}).join('')+'</div></div>'
     +((climbs)?'<div class="sec"><div class="sec-hd"><div class="eyebrow">'+(hl?'More climbs':'Climbs')+' nearby · from multi-pitch.com</div>'
       +(safeUrl(v.mpMap)?'<a class="lk sm" target="_blank" rel="noopener" href="'+safeUrl(v.mpMap)+'">Browse the map ↗</a>':'')+'</div>'+climbs+'</div>':'')
     +extraClimbingHtml(v)
@@ -1674,10 +1672,14 @@ def build_data(ranked, now, banner, ctx, mp_climbs, guidebooks, extra_climbing_d
     from . import weather as _weather
     payload = [venue_payload(n, r, ctx, mp_climbs, guidebooks, extra_climbing_data, tag_spec)
                for n, r in enumerate(ranked, 1)]
+    cities = ctx.traveller_cities
+    travellers = [{"key": t["key"], "name": t["name"], "from": cities.get(t["key"], "")}
+                  for t in ctx.travellers_norm]
     trip = {
-        "pills": ["✈ Michel · London", "✈ Dan · Belfast / Dublin",
-                  f"📅 {ctx.rep_out_lbl} – {ctx.rep_back_lbl}",
-                  f"🧗 {len(payload)} areas ranked"],
+        "pills": [f"✈ {t['name']} · {t['from']}" for t in travellers]
+                 + [f"📅 {ctx.rep_out_lbl} – {ctx.rep_back_lbl}",
+                    f"🧗 {len(payload)} areas ranked"],
+        "travellers": travellers,
         "dates": f"{ctx.rep_out_lbl} → {ctx.rep_back_lbl}",
         "periodLbl": ctx.period_lbl,
         "repoUrl": REPO_URL,
@@ -1710,12 +1712,14 @@ def render_page(data, tag_spec):
     # tag colours (CSS) + tooltips + legend are generated from tag-spec.json
     tagt = json.dumps(tag_spec.tips, ensure_ascii=False).replace("</", "<\\/")
     tagleg = json.dumps(tag_spec.legend, ensure_ascii=False).replace("</", "<\\/")
+    homes = ", ".join(f"{_esc(t['from'])} for {_esc(t['name'])}"
+                      for t in (data["trip"].get("travellers") or []) if t.get("from"))
     return (PAGE_HEAD.replace("/*TAG_CSS*/", tag_spec.css)
             + "\n<script>window.DATA=" + blob
             + ";window.TAGT=" + tagt + ";window.TAGLEG=" + tagleg
             + ";window.TAGFAM=" + json.dumps(tag_spec.fam_of)
             + ";window.TAGFAMS=" + json.dumps(tag_spec.fams_meta, ensure_ascii=False) + ";</script>\n"
-            + PAGE_BODY
+            + PAGE_BODY.replace("%%TRAVELLER_HOMES%%", homes or "each traveller's home")
             + footer
             + "<script>" + PAGE_JS + "</script>\n</body></html>\n")
 
@@ -1772,7 +1776,8 @@ def venue_page(v, trip, tag_spec):
         f'<span class="src">({_esc(x.get("source",""))})</span> — {_esc(x.get("note",""))}</li>'
         for x in (v.get("extraClimbing") or []) if isinstance(x, dict) and x.get("url"))
     fl = []
-    for who, lbl in (("michel", "from London"), ("dan", "from Belfast / Dublin")):
+    for t in trip.get("travellers") or []:
+        who, lbl = t["key"], f"from {t['from']}" if t.get("from") else t["name"]
         f = (v.get("flights") or {}).get(who) or {}
         opts = f.get("options") or []
         if f.get("mode") == "fly" and opts:
@@ -1901,11 +1906,15 @@ def write_seo_files(slugs, today, repo_root):
 
 
 def build_md(ranked, now, banner, ctx, mp_climbs, match_sheet_row=None):
-    def fcell(f):
+    names = ctx.traveller_names
+    cities = ctx.traveller_cities
+    keys = ctx.traveller_keys
+
+    def fcell(f, who=None):
         if not f:
             return "—"
         if f["mode"] == "local":
-            return "local (Dan)"
+            return f"local ({names.get(who, who)})" if who else "local"
         if f["mode"] == "drive":
             return "drive/train"
         url = f.get("view_url") or f.get("book_url")
@@ -1921,8 +1930,10 @@ def build_md(ranked, now, banner, ctx, mp_climbs, match_sheet_row=None):
              f"**Links:** [multi-pitch.com]({SITE_URL}) · [venue spreadsheet]({SHEET_URL}) · "
              f"[live dashboard](https://uncinimichel.github.io/climbing-agent/)", "",
              "## 🏆 Venues + flights (best first)", "",
-             "| # | Venue | Score | Typical July | ✈️ Michel (London) | ✈️ Dan (Belfast) |",
-             "|---|---|---|---|---|---|"]
+             "| # | Venue | Score | Typical July | "
+             + " | ".join(f"✈️ {names[k]}" + (f" ({cities[k]})" if cities.get(k) else "") for k in keys)
+             + " |",
+             "|---|" + "---|" * (3 + len(keys))]
     for n, r in enumerate(ranked, 1):
         v = r["venue"]
         d = r.get("rank_delta")
@@ -1931,7 +1942,7 @@ def build_md(ranked, now, banner, ctx, mp_climbs, match_sheet_row=None):
               else f"▲{d}" if d > 0 else f"▼{-d}" if d < 0 else "=")
         rank_cell = f"{n} {mv}".rstrip()
         if not r.get("ok") or r["score"] < 0:
-            lines.append(f"| {rank_cell} | {v['name']} | – | – | – | – |")
+            lines.append(f"| {rank_cell} | {v['name']} | – | – |" + " – |" * len(keys))
             continue
         c = r.get("climo")
         cstr = f"{c['tmax']}°C, {c['rain_pct']}% wet" if c else "–"
@@ -1940,7 +1951,8 @@ def build_md(ranked, now, banner, ctx, mp_climbs, match_sheet_row=None):
         row = match_sheet_row(v["name"]) if match_sheet_row else None
         src = (f"[mp map]({MP_MAP_URL})" + (f" ({len(nb)})" if nb else "")
                + (f" · [sheet r{row}]({SHEET_URL}#gid=0&range={row}:{row})" if row else " · not in sheet"))
-        lines.append(f"| {rank_cell} | {flag(v['country'])} {v['name']}<br><sub>{src}</sub> | {r['score']} | {cstr} | {fcell(fl.get('michel'))} | {fcell(fl.get('dan'))} |")
+        lines.append(f"| {rank_cell} | {flag(v['country'])} {v['name']}<br><sub>{src}</sub> | {r['score']} | {cstr} | "
+                     + " | ".join(fcell(fl.get(k), k) for k in keys) + " |")
     lines += ["", f"_Flights: top {ctx.top_n_flights} venues, return {ctx.rep_combo['out']}→{ctx.rep_combo['back']} ({ctx.rep_combo['nights']}n); "
               f"date options: {ctx.combo_labels}. Use the book links to adjust. "
               f"Stays: OpenStreetMap lodging within {STAY_RADIUS_KM} km per venue (houses, camping, hotels "

@@ -34,9 +34,8 @@ from datetime import date, datetime, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
-from engine import climbs, sheet_venues, weather  # noqa: E402
+from engine import climbs, sheet_venues, trips, weather  # noqa: E402
 from engine.http import redact  # noqa: E402
-from engine.models import TripContext  # noqa: E402
 from engine.render import _slug  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -50,16 +49,11 @@ def _iso(d):
 
 
 def _load_context():
+    trip = trips.trip_for_dir(REPO_ROOT, ROOT)
     venues_cfg = json.loads((ROOT / "venues.json").read_text())
     flights_cfg = json.loads((ROOT / "flights.json").read_text())
     merged_venues = sheet_venues.build_venues(venues_cfg["venues"], CLIMBING_CSV)
-    return TripContext(
-        trip_name=venues_cfg["trip"],
-        target_start=date.fromisoformat(venues_cfg["target_window"]["start"]),
-        target_end=date.fromisoformat(venues_cfg["target_window"]["end"]),
-        venues=merged_venues,
-        flights_cfg=flights_cfg,
-    )
+    return trips.context_for(trip, merged_venues, flights_cfg)
 
 
 def _norm_days(fc_raw, sea_raw, tide_ex):

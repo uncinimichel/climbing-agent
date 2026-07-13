@@ -1,8 +1,9 @@
 {
   "trip": "Climbing trip ~24 July 2026 — Michel & Dan",
   "target_window": {
-    "start": "2026-07-22",
-    "end": "2026-07-27"
+    "start": "2026-07-24",
+    "end": "2026-07-28",
+    "_comment": "LEGACY — ignored since decision #33 M1: the trips.json registry window wins. Kept in sync for humans only."
   },
   "notes": "Single source of truth for candidate venues. The script reads THIS file to decide what to query (weather + flights). 'travel' gives how each person reaches the venue: mode fly|local|drive and the destination airport IATA they fly into (Michel from London, Dan from Belfast).",
   "venues": [

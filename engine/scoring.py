@@ -279,7 +279,7 @@ def apply_composite(r, ctx, mp_climbs=None):
     # travel: known flight prices (live or cached) per traveller; drive/local are cheap
     fl = r.get("flights") or {}
     costs, cost_bits = [], []
-    for who, label in (("michel", "Michel"), ("dan", "Dan")):
+    for who, label in ctx.traveller_names.items():
         mode = (v.get("travel", {}).get(who) or {}).get("mode")
         opts = ((fl.get(who) or {}).get("options")) or []
         if mode == "local":

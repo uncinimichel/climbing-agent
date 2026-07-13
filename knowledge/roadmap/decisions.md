@@ -534,7 +534,11 @@ hardcoded — wants to add/remove/edit people and trips; happy to keep hardcoded
 structure/JSON for the time being, "we will move to db and api at one point". Single
 editor (Michel), so no auth; quota is the scarce resource, so it never multiplies with
 trip count.
-**Status:** 🔜 Planned — mockup approved, plan committed; M1 (trips.json + loader) first.
+**Status:** ⚠️ Partial — M1 (trips.json registry + loader, `dcbe6a6`) and M2 (traveller
+generalisation: no hardcoded traveller keys left in engine/; pills/flight cards/markdown
+all data-driven) live 13 Jul 2026. Trip window corrected to 24–28 Jul; `flex_days: 2`
+in schema (±day flight/stay alternatives — planned, see plan §Date flexibility).
+M3 (multi-trip behind flag) next; M4 root swap gated on trip end.
 
 ---
 

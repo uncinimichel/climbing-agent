@@ -41,7 +41,7 @@ sys.path.insert(0, str(REPO_ROOT))
 from engine import climbs, scoring, sheet_venues, weather  # noqa: E402
 from engine.cache import DiskCache, EnvCache  # noqa: E402
 from engine.geo import haversine_km  # noqa: E402
-from engine.models import TripContext  # noqa: E402
+from engine import trips  # noqa: E402
 
 # ---------------------------------------------------------------------------
 # Home origins for the distance-from-home signal (Michel: London; Dan: NI/Dublin)
@@ -224,11 +224,9 @@ def composite(v, r, w, ctx, params, mp_climbs, flights_by_name):
 def load_board():
     venues_cfg = json.loads((ROOT / "venues.json").read_text())
     merged = sheet_venues.build_venues(venues_cfg["venues"], REPO_ROOT / "climbing-trips.csv")
-    ctx = TripContext(
-        trip_name=venues_cfg["trip"],
-        target_start=date.fromisoformat(venues_cfg["target_window"]["start"]),
-        target_end=date.fromisoformat(venues_cfg["target_window"]["end"]),
-        venues=merged, flights_cfg=json.loads((ROOT / "flights.json").read_text()),
+    ctx = trips.context_for(
+        trips.trip_for_dir(REPO_ROOT, ROOT), merged,
+        json.loads((ROOT / "flights.json").read_text()),
         serpapi_key=None, top_n_flights=10)
     env = EnvCache(ROOT / "venue-env.json")
     climo = DiskCache(ROOT / "climo-cache.json",

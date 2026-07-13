@@ -70,11 +70,16 @@ read/write functions become the first API endpoints (a `TripStore` seam mirrorin
 **M1 — `trips.json` + loader (no behaviour change).** Schema above; `engine/trips.py`
 with `load_trips()` / `trip_context(trip)`; NI entry generated from today's config;
 driver reads its `TripContext` through it. Smoke test: rendered output unchanged.
+*✅ Done 13 Jul 2026 (`dcbe6a6`).*
 
 **M2 — traveller generalisation** (the "M2+" flagged in `models.py`). Kill the
 `TRAVELLERS`/`ORIGIN_CITY`/`ORIGIN_COORDS` constants; thread `ctx.travellers` through
 `flights.py`, `scoring.py`'s distance signal, and `render.py` (pills, flight cards,
 payload, markdown all data-driven). The `render.py:1659` hardcode dies here.
+*✅ Done 13 Jul 2026 — plus: trip window corrected to 24–28 Jul (Michel), fetch_env/
+backtest now read the registry, `flex_days` validated in the schema. Venue `travel`
+dicts (sheet-derived, michel/dan-keyed) remain per-traveller overrides; travellers
+without one fall back to the distance estimate, as designed.*
 
 **M3 — multi-trip rendering, behind `MULTI_TRIP=1`.** Driver loops live trips from
 `trips.json`: each renders to `trips/<slug>/` (own venue pages, own daily report).
@@ -114,6 +119,24 @@ matters, widen to one whole-year fetch per venue and slice in code.
 When the DB/API arrives (M6), these caches become tables with the same keys — this
 was exactly the paused plan's `DynamoCache` observation: no trip/user in the key
 means caching is shared across everyone's trips for free.
+
+## Date flexibility (±N days) — schema-ready, implementation later
+
+Michel (13 Jul 2026): if leaving a day earlier/later gets a better flight or stay,
+the system and the user should know. `trips.json` already carries `flex_days: 0–3`
+per trip (NI: 2), validated from M1 — implementation lands with M3/M5:
+
+1. **Links first, quota never.** Skyscanner/Booking/Airbnb URLs are date-filled
+   templates, so the venue page can offer ±1/±2-day search links for free before
+   any live pricing exists.
+2. **Live alternative pricing, hard-bounded.** Each date permutation is one
+   SerpApi call, so flex pricing is capped: nearest live trip only, its current
+   **#1 venue only**, out±N × back±N deduped to ≤8 calls/day, and only when the
+   quota guard says yes. Result cached under the usual `(route, dates)` key.
+3. **Surfacing.** A "−1 day saves £42" pill next to the flight card (dashboard)
+   and on the manage screen (admin), linking to the cheaper combo's book link.
+   No auto-rebooking, no changes to the scored trip window — flex informs, the
+   humans decide.
 
 **M4 — root becomes the trips list** (*gated on the NI trip ending, ~29 Jul*).
 Server-rendered trips-list page at root per the approved mockup (status tags,

@@ -83,17 +83,48 @@ def test_default_dir_for_new_trips():
     assert trips.trip_dir(REPO_ROOT, {"slug": "alps-2027"}) == REPO_ROOT / "trips" / "alps-2027"
 
 
-def test_ni_context_matches_legacy_construction():
-    """Zero-drift: registry-built context == the old venues.json-driven one."""
+def test_ni_context_from_registry():
+    """The registry is the source of truth: dates, name and travellers on the
+    built context come from trips.json, and every traveller-derived property
+    the pipeline consumes is data-driven (no hardcoded keys anywhere)."""
     ni = trips.get_trip(REPO_ROOT, "ni-july-2026")
     d = trips.trip_dir(REPO_ROOT, ni)
     venues_cfg = json.loads((d / "venues.json").read_text())
     flights_cfg = json.loads((d / "flights.json").read_text())
     ctx = trips.context_for(ni, venues_cfg["venues"], flights_cfg, top_n_flights=10)
 
-    assert ctx.trip_name == venues_cfg["trip"]
-    assert ctx.target_start == date.fromisoformat(venues_cfg["target_window"]["start"])
-    assert ctx.target_end == date.fromisoformat(venues_cfg["target_window"]["end"])
+    assert ctx.trip_name == ni.get("title") or ni["name"]
+    assert ctx.target_start == date.fromisoformat(ni["start"])
+    assert ctx.target_end == date.fromisoformat(ni["end"])
     # derived values the render layer actually consumes
     assert ctx.period_lbl and ctx.trip_days == (ctx.target_end - ctx.target_start).days + 1
     assert ctx.rep_out_lbl and ctx.rep_back_lbl
+
+    # traveller generalisation (M2): everything derives from trips.json entries
+    assert ctx.traveller_keys == [t["key"] for t in ni["travellers"]]
+    assert ctx.traveller_names["michel"] == "Michel"
+    assert ctx.traveller_cities["dan"] == "Belfast / Dublin"
+    assert ctx.origin["michel"] == "LGW,LHR,LTN,STN,LCY"
+    assert ctx.origin_coords["dan"] == [(54.607, -5.926), (53.349, -6.26)]
+
+
+def test_legacy_context_synthesizes_travellers_from_flights_cfg():
+    """TripContext built without a registry (fetch_env/backtest's old path)
+    still gets a usable traveller list out of flights.json's route config."""
+    from engine.models import TripContext
+    ni = trips.get_trip(REPO_ROOT, "ni-july-2026")
+    d = trips.trip_dir(REPO_ROOT, ni)
+    flights_cfg = json.loads((d / "flights.json").read_text())
+    ctx = TripContext(trip_name="x", target_start=date(2026, 7, 24),
+                      target_end=date(2026, 7, 28), venues=[], flights_cfg=flights_cfg)
+    assert set(ctx.traveller_keys) == {"michel", "dan"}
+    assert ctx.origin["dan"] == "BFS,BHD,DUB"
+    assert len(ctx.origin_coords["dan"]) == 2
+
+
+def test_flex_days_validated():
+    assert trips.validate_trip(_bad(flex_days=2))["flex_days"] == 2
+    with pytest.raises(ValueError, match="flex_days"):
+        trips.validate_trip(_bad(flex_days=7))
+    with pytest.raises(ValueError, match="flex_days"):
+        trips.validate_trip(_bad(flex_days="2"))

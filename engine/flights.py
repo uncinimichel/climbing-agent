@@ -4,9 +4,9 @@ split so pricing is a pure function (price_top_venues) instead of a function
 that mutates a module-level FLIGHTS_DATA global and writes flights-latest.json
 as a side effect — the caller decides where the result goes.
 
-For the TOP-N ranked venues we price a representative round-trip for Michel
-(from London) and Dan (from Belfast) into that venue's airport, with view/book
-links. NI venues: Dan is local. UK-mainland: Michel drives. To stay within the
+For the TOP-N ranked venues we price a representative round-trip for every
+traveller (ctx.traveller_keys) into that venue's airport, with view/book
+links. A venue's travel dict can mark a traveller local/drive. To stay within the
 SerpApi quota we price only the top N venues, one representative combo each.
 
 quota_guard/flight_cache are the quota.QuotaGuard/quota.FlightCache seams (see
@@ -131,7 +131,7 @@ def price_top_venues(ranked, ctx, quota_guard=None, flight_cache=None, prev_pric
             cache[v["name"]] = r["flights"]
             continue
         flights = {}
-        for w in ("michel", "dan"):
+        for w in ctx.traveller_keys:
             f = traveller_flight(v, w, ctx, quota_guard, flight_cache)
             if not f.get("options"):
                 cached = (prev.get(v["name"]) or {}).get(w)

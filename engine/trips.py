@@ -78,6 +78,10 @@ def validate_trip(trip):
         if not isinstance(airports, list) or not all(isinstance(a, str) and a for a in airports):
             _err(slug, f"traveller '{key}' needs 'airports' as a list of IATA codes "
                        "(may be empty only for a driving-only traveller)")
+    flex = trip.get("flex_days", 0)
+    if not isinstance(flex, int) or not 0 <= flex <= 3:
+        _err(slug, f"'flex_days' must be an integer 0–3 (± days around the trip "
+                   f"for flight/stay alternatives), got {flex!r}")
     return trip
 
 
@@ -137,4 +141,5 @@ def context_for(trip, venues, flights_cfg, serpapi_key=None, top_n_flights=4):
         flights_cfg=flights_cfg,
         serpapi_key=serpapi_key,
         top_n_flights=top_n_flights,
+        travellers=trip["travellers"],
     )
