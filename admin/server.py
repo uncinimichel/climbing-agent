@@ -138,11 +138,17 @@ def index():
 @app.get("/api/trips")
 def list_trips():
     data = _read_registry()
+    csv = ROOT / "climbing-trips.csv"
     for t in data["trips"]:
         d = trips_mod.trip_dir(ROOT, t)
         vf = d / "venues.json"
-        t["_venueNames"] = ([v["name"] for v in json.loads(vf.read_text()).get("venues", [])]
-                             if vf.exists() else [])
+        if vf.exists():
+            base = json.loads(vf.read_text()).get("venues", [])
+            # the sheet-merged list is what the pipeline actually ranks
+            merged = sheet_venues.build_venues(base, csv) if csv.exists() else base
+            t["_venueNames"] = [v["name"] for v in merged]
+        else:
+            t["_venueNames"] = []
         t["_dirExists"] = d.exists()
     return data
 
