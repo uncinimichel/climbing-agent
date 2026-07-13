@@ -53,3 +53,25 @@ sync when new concepts appear in the code or docs.
 | **Rack** | The set of protection gear a route needs (cams, nuts, quickdraws). |
 | **Half / double ropes** | Two thinner ropes clipped alternately — standard trad multi-pitch practice; enables full-length abseil retreat. |
 | **Objective hazard** | Danger from the mountain itself (rockfall, avalanche, serac, lightning), not from the climbing moves. |
+
+## Data & governance vocabulary
+
+The words we use about the data itself — several sound like file names but are **labels on
+rows**, not places. One body of data, many stamps. Policy: [`data/governance.md`](../data/governance.md);
+wiring: the [Data map](../data-dependencies.md); decisions [#27](../roadmap/decisions.md) / [#32](../roadmap/decisions.md).
+
+| Term | In plain English | Meaning |
+|---|---|---|
+| **Corpus** (`db/corpus.json`) | *the library* | Latin "body" — the **one complete body** of climb/crag data. Everything else (trips, dashboard, CSV, Postgres) is a selection, view, or export of it. It is a **file**. |
+| **Curated** | *verified by a human* | **Not a file** — a *filter* over the corpus: rows with `status:publish` **and** `taggedBy:human`. The only data suggestions/ranking may use (#32). |
+| **Seeded** | *imported, unreviewed* | Rows a machine put in the corpus (multi-pitch.com scrape, gazetteer coords). They exist to be reviewed, not served. |
+| **`status`** | *verified or not* | Per-row stamp: `publish` (a human verified the facts) / `draft` (nobody has yet). |
+| **`source`** | *where it came from* | Per-row stamp: `curated` (hand-entered), `multi-pitch.com` (scraped), `sheet-gazetteer` (coords crutch). |
+| **`taggedBy`** | *who did the tags* | Per-row stamp on the descriptive tags (features/character/protection): `human` / `llm` (Claude inferred them from prose) / `source` (came with the scrape). `llm` **never counts as curated**, even on a publish row. |
+| **`tagProv`** | *the AI receipt* | On `taggedBy:llm` rows: which model tagged it and when — `{model, date}`. |
+| **Promotion** | *review → verified* | The human workflow that turns a draft row curated: check facts against a guidebook, accept/fix each AI tag, flip `status→publish` + `taggedBy→human`. |
+| **Enrichment cache** (`db/enrichment-cache.json`) | *the AI's notebook* | Cached LLM tag inferences, one per route, paid for once. Merged into the corpus as `taggedBy:llm`. |
+| **World A / World B** | *the two islands* | The corpus DB (routes, the agent) vs the trip planner (venues, the dashboard). Today they don't sync — see the Data map. |
+| **Overlay** | *trip choices, not facts* | A file that **references** corpus IDs and adds only trip-scoped judgment (who's going, priority, dates). Never copies crag facts. What `venues.json` becomes. |
+| **GAZETTEER** | *the coords crutch* | A hand Python dict in `engine/sheet_venues.py` holding coords for sheet rows with no curated entry. Folded into the corpus by #27; scheduled for deletion. |
+| **Environmental data** | *conditions, not climb facts* | Live weather / flights / stays. Can't be human-curated by nature, so it's exempt from the curated-only rule — allowed in scoring as *conditions*, always provenance-labelled (#31). |
