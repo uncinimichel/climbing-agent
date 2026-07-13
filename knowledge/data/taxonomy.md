@@ -5,13 +5,22 @@ The controlled vocabulary Phase 2's Taxonomy Engine must map raw text onto. The 
 these tables is rejected or repaired, never surfaced. This is what turns chaotic
 guidebook prose into queryable structured data.
 
-> Status: this dictionary is **specified** here. Automated population (NLP parsing) is
-> *planned*; today the values are supplied by hand in `venues.json` / `data.json`.
+> Status: since decision #35 the **values live in Postgres and are managed in the
+> Curation Studio's Taxonomy page** (localhost:8890 → Taxonomy): add a value with its
+> one-line meaning there and it immediately reaches the studio's tag dropdowns AND the
+> AI tagger (`ai_tag.py` reads the live set). Every change auto-regenerates
+> [`taxonomy-values.json`](taxonomy-values.json) (the served live list, with usage
+> counts) and `db/sql/105_taxonomy_extensions.sql` (so a DB rebuild replays it).
+> **This document stays the semantic source of truth** — what each family means, the
+> tagging rules, the science; its value tables are documentation and may lag the live
+> set by a few entries.
 >
 > **Grounded in real data:** these vocabularies are validated against the
-> **multi-pitch.com** dataset (`/dev/multi-pitch`, ~40 fully-tagged routes). The full
-> per-route record they populate is in [`route-schema.md`](route-schema.md); the
-> normalized difficulty ladder is in [`grade-conversion.md`](grade-conversion.md).
+> **multi-pitch.com** dataset (`/dev/multi-pitch`, ~40 fully-tagged routes) and a
+> 2026-07-13 cross-platform survey (Rockfax symbols, UKC, theCrag, Mountain Project,
+> OpenBeta — see `roadmap/curation-studio-plan.md`). The full per-route record they
+> populate is in [`route-schema.md`](route-schema.md); the normalized difficulty
+> ladder is in [`grade-conversion.md`](grade-conversion.md).
 
 ## Tag quick-reference (the canonical set)
 

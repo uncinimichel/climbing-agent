@@ -55,6 +55,14 @@ Target: **~15–30 s per route** when the sources agree; the queue defers anythi
 | M5 | Schema: `db/sql/025_curation.sql` — `tagged_by`/`tag_prov`/`curation_notes`/`needs_field_check`/`curated_at` + **DB CHECK: publish ⇒ human-tagged** (#32 at the database) | ✅ |
 | M6 | Postgres-first plumbing: `ingest_corpus.py` (corpus.json → PG restore/seed, human rows never overwritten; prose joined from the local multi-pitch site source, pitchInfo parsed to `pitch` rows) + `build_corpus.py` rewritten as pure PG → corpus.json exporter. Round-trip verified idempotent | ✅ |
 
+**Taxonomy is editable in the studio too (#35):** the third tab manages every
+vocabulary — add a value (its one-line meaning is required because the AI tagger reads
+it), edit meanings inline, delete only when no route uses it. Writes hit Postgres, then
+auto-regenerate `105_taxonomy_extensions.sql` + `knowledge/data/taxonomy-values.json`,
+and `ai_tag.py` picks the new values up live. Grades are validated per-system (pick the
+scale, the value must match it — publish is blocked otherwise) and routes carry
+structured `parking` coordinates.
+
 **⚠ Operational note:** `db/apply.sh` drops the whole schema. The restore path is
 `./apply.sh && agent/.venv/bin/python db/tools/ingest_corpus.py` — corpus.json IS the
 backup, so **export (the ⇩ button) after every curation session and commit the diff**.

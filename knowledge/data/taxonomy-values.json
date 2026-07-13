@@ -77,72 +77,72 @@
   "feature": [
    {
     "code": "arête",
-    "meaning": null,
+    "meaning": "A narrow outward-pointing edge or prow — climbed on or beside it, exposed on both sides.",
     "usage": 22
    },
    {
     "code": "chimney",
-    "meaning": null,
+    "meaning": "A crack wide enough to fit the whole body inside; climbed by back-and-footing.",
     "usage": 16
    },
    {
     "code": "corner",
-    "meaning": null,
+    "meaning": "An inside angle where two faces meet (dihedral / open book) — the opposite of an arête.",
     "usage": 47
    },
    {
     "code": "crack",
-    "meaning": null,
+    "meaning": "A fissure taking jams and natural protection — the classic trad medium.",
     "usage": 65
    },
    {
     "code": "face",
-    "meaning": null,
+    "meaning": "An open wall climbed on holds rather than a crack line.",
     "usage": 19
    },
    {
     "code": "flake",
-    "meaning": null,
+    "meaning": "A partly-detached sheet of rock forming an edge or crack behind it — check it is attached.",
     "usage": 14
    },
    {
     "code": "groove",
-    "meaning": null,
+    "meaning": "A shallow rounded corner or scoop, often climbed by bridging.",
     "usage": 46
    },
    {
     "code": "offwidth",
-    "meaning": null,
+    "meaning": "A crack too wide to jam and too narrow to chimney — awkward, specialist technique and big gear.",
     "usage": 7
    },
    {
     "code": "pillar",
-    "meaning": null,
+    "meaning": "A free-standing or semi-detached column of rock.",
     "usage": 16
    },
    {
     "code": "pockets",
-    "meaning": null,
+    "meaning": "Holes or solution pockets used as holds (limestone / conglomerate).",
     "usage": 2
    },
    {
     "code": "ridge",
-    "meaning": null,
+    "meaning": "A long crest line with exposure on both sides — alpine-flavoured climbing.",
     "usage": 12
    },
    {
     "code": "roof",
-    "meaning": null,
+    "meaning": "A horizontal overhang crossed on its underside.",
     "usage": 21
    },
    {
     "code": "slab",
-    "meaning": null,
+    "meaning": "Rock below vertical — friction and balance rather than pulling.",
     "usage": 37
    },
    {
     "code": "tufa",
-    "meaning": null,
+    "meaning": "Calcite ribs and blobs left by flowing water on limestone; pinched rather than pulled.",
     "usage": 0
    }
   ],
@@ -461,22 +461,22 @@
   "sun_window": [
    {
     "code": "afternoon",
-    "meaning": null,
+    "meaning": "Sun from around midday (roughly W-facing) — cold starts, warm finishes.",
     "usage": 2
    },
    {
     "code": "all-day",
-    "meaning": null,
+    "meaning": "Open to the sun most of the day (roughly S-facing) — dries fast, hot in summer.",
     "usage": 2
    },
    {
     "code": "morning",
-    "meaning": null,
+    "meaning": "Sun until around midday (roughly E-facing) — cool afternoons.",
     "usage": 2
    },
    {
     "code": "shade",
-    "meaning": null,
+    "meaning": "Little or no direct sun (N-facing or sheltered) — slow to dry, cool in heat.",
     "usage": 2
    }
   ],

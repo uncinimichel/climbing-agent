@@ -24,20 +24,20 @@ ON CONFLICT (code) DO UPDATE SET meaning = EXCLUDED.meaning;
 
 -- feature (14 values)
 INSERT INTO feature (code, meaning) VALUES
-    ('arête', NULL),
-    ('chimney', NULL),
-    ('corner', NULL),
-    ('crack', NULL),
-    ('face', NULL),
-    ('flake', NULL),
-    ('groove', NULL),
-    ('offwidth', NULL),
-    ('pillar', NULL),
-    ('pockets', NULL),
-    ('ridge', NULL),
-    ('roof', NULL),
-    ('slab', NULL),
-    ('tufa', NULL)
+    ('arête', 'A narrow outward-pointing edge or prow — climbed on or beside it, exposed on both sides.'),
+    ('chimney', 'A crack wide enough to fit the whole body inside; climbed by back-and-footing.'),
+    ('corner', 'An inside angle where two faces meet (dihedral / open book) — the opposite of an arête.'),
+    ('crack', 'A fissure taking jams and natural protection — the classic trad medium.'),
+    ('face', 'An open wall climbed on holds rather than a crack line.'),
+    ('flake', 'A partly-detached sheet of rock forming an edge or crack behind it — check it is attached.'),
+    ('groove', 'A shallow rounded corner or scoop, often climbed by bridging.'),
+    ('offwidth', 'A crack too wide to jam and too narrow to chimney — awkward, specialist technique and big gear.'),
+    ('pillar', 'A free-standing or semi-detached column of rock.'),
+    ('pockets', 'Holes or solution pockets used as holds (limestone / conglomerate).'),
+    ('ridge', 'A long crest line with exposure on both sides — alpine-flavoured climbing.'),
+    ('roof', 'A horizontal overhang crossed on its underside.'),
+    ('slab', 'Rock below vertical — friction and balance rather than pulling.'),
+    ('tufa', 'Calcite ribs and blobs left by flowing water on limestone; pinched rather than pulled.')
 ON CONFLICT (code) DO UPDATE SET meaning = EXCLUDED.meaning;
 
 -- character (10 values)
@@ -96,10 +96,10 @@ ON CONFLICT (code) DO UPDATE SET friction_dry = EXCLUDED.friction_dry, seeps = E
 
 -- sun_window (4 values)
 INSERT INTO sun_window (code, meaning) VALUES
-    ('afternoon', NULL),
-    ('all-day', NULL),
-    ('morning', NULL),
-    ('shade', NULL)
+    ('afternoon', 'Sun from around midday (roughly W-facing) — cold starts, warm finishes.'),
+    ('all-day', 'Open to the sun most of the day (roughly S-facing) — dries fast, hot in summer.'),
+    ('morning', 'Sun until around midday (roughly E-facing) — cool afternoons.'),
+    ('shade', 'Little or no direct sun (N-facing or sheltered) — slow to dry, cool in heat.')
 ON CONFLICT (code) DO UPDATE SET meaning = EXCLUDED.meaning;
 
 -- protection (8 values)

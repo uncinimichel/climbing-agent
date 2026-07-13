@@ -40,6 +40,13 @@ non-human-tagged publish row impossible — governance #32 lives in the database
 verifiable from a desk? Flag it 🥾 *needs field check* with a curator note. The Grid
 view bulk-edits one column across selected rows (never bulk-publishes).
 
+**Taxonomy tab (#35):** vocabularies (discipline/feature/character/hazard/rock/
+sun-window/protection) are managed here too — add a value with its one-line meaning
+(the AI tagger reads it), edit inline, delete only when unused. Writes regenerate
+`sql/105_taxonomy_extensions.sql` + `knowledge/data/taxonomy-values.json` automatically.
+Grades are per-system validated (pick the scale first; publish blocks on mismatch);
+parking is a structured `lat, lon` field.
+
 **Export after every session:** the ⇩ button (or `python3 tools/build_corpus.py`) writes
 the whole DB to `db/corpus.json` + the served copy under `knowledge/data/` — commit that
 diff; it is the backup `ingest_corpus.py` restores from, and the audit trail of who
