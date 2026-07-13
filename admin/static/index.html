@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Trip admin · multi-pitch</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#14161A; --panel:#191C21; --card:#20242B; --ink:#E9E7E1; --muted:#A0A19A; --faint:#6E7069;
+  --line:#2A2E36; --line2:#353A44;
+  --dry:#57A664; --dry-bg:rgba(87,166,100,.12); --mixed:#B98A2E; --mixed-bg:rgba(185,138,46,.12);
+  --wet:#D06A57; --wet-bg:rgba(208,106,87,.12);
+  --disp:'Bricolage Grotesque',sans-serif; --body:'IBM Plex Sans',sans-serif; --mono:'IBM Plex Mono',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:14px;line-height:1.55;min-height:100vh}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px;border-radius:4px}
+.top{display:flex;align-items:center;gap:14px;padding:13px 22px;border-bottom:1px solid var(--line2);background:var(--panel);position:sticky;top:0;z-index:5}
+.wordmark{font-family:var(--disp);font-weight:800;font-size:19px;letter-spacing:-.02em}
+.wordmark em{font-style:normal;font-weight:500;font-size:10px;font-family:var(--mono);color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-left:8px}
+.localpill{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--mixed);border:1px solid rgba(185,138,46,.45);background:var(--mixed-bg);border-radius:5px;padding:2px 7px}
+.sp{flex:1}
+.tl{font-size:12px;font-weight:500;text-decoration:none;color:var(--ink);border:1px solid var(--line2);border-radius:7px;padding:5px 11px;background:var(--card);white-space:nowrap}
+.tl:hover{border-color:var(--muted)}
+.tl.strong{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.wrap{max-width:880px;margin:0 auto;padding:26px 22px 80px}
+.screen{display:none}.screen.on{display:block}
+.eyebrow{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+
+.list-head{display:flex;align-items:baseline;gap:14px;margin-bottom:16px;flex-wrap:wrap}
+.list-head h1{font-family:var(--disp);font-weight:800;font-size:26px;letter-spacing:-.02em}
+.list-head .n{font-family:var(--mono);font-size:11px;color:var(--muted)}
+.trips{border:1px solid var(--line2);border-radius:12px;background:var(--panel);overflow:hidden}
+.trip{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 18px;align-items:center;width:100%;text-align:left;background:none;border:0;border-top:1px solid var(--line);padding:16px 18px}
+.trip:first-child{border-top:0}
+.trip:hover{background:#1F232B}
+.trip .tname{font-family:var(--disp);font-weight:700;font-size:16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.trip .tinfo{grid-column:1;font-family:var(--mono);font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tag{font-family:var(--mono);font-size:10px;letter-spacing:.05em;text-transform:uppercase;padding:3px 8px;border-radius:5px;border:1px solid var(--line2);white-space:nowrap}
+.tag.live{color:var(--dry);border-color:rgba(87,166,100,.4);background:var(--dry-bg)}
+.tag.draft{color:var(--mixed);border-color:rgba(185,138,46,.45);background:var(--mixed-bg)}
+.tag.ended{color:var(--faint)}
+.list-note{margin-top:12px;font-family:var(--mono);font-size:11px;color:var(--faint);line-height:1.7}
+.list-note b{color:var(--muted)}
+
+.statushead{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.statushead h1{font-family:var(--disp);font-weight:800;font-size:24px;letter-spacing:-.02em}
+.pillbar{display:flex;flex-wrap:wrap;gap:8px;padding:14px 16px;background:var(--card);border:1px solid var(--line2);border-radius:12px;margin-bottom:8px}
+.pill{font-family:var(--mono);font-size:11.5px;border:1px solid var(--line2);border-radius:999px;padding:4px 12px;background:var(--panel);white-space:nowrap}
+.pill.empty{color:var(--faint);border-style:dashed}
+.pillcap{font-family:var(--mono);font-size:10px;color:var(--faint);margin:0 2px 22px}
+.pillcap b{color:var(--muted)}
+
+fieldset{border:1px solid var(--line2);border-radius:12px;background:var(--panel);padding:18px;margin-bottom:18px;min-width:0}
+legend{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);padding:0 8px;margin-left:-8px}
+.frow{display:flex;gap:14px;flex-wrap:wrap}
+.fld{display:flex;flex-direction:column;gap:6px;flex:1;min-width:180px}
+.fld label{font-size:12px;font-weight:600}
+.fld .hint{font-size:11.5px;color:var(--faint);line-height:1.45}
+input[type=text],input[type=date],input[type=search]{background:var(--card);border:1px solid var(--line2);border-radius:7px;color:var(--ink);font:inherit;padding:8px 11px;width:100%}
+input::placeholder{color:var(--faint)}
+input:focus-visible{outline:2px solid var(--ink);outline-offset:0}
+input[type=date]{font-family:var(--mono);font-size:12.5px}
+.derived{font-family:var(--mono);font-size:11px;color:var(--muted);align-self:flex-end;padding-bottom:9px;white-space:nowrap}
+.derived b{color:var(--ink)}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{font-family:var(--mono);font-size:11.5px;padding:6px 13px;border-radius:7px;border:1px solid var(--line2);background:var(--card);color:var(--muted)}
+.seg button.on{color:var(--bg);background:var(--ink);border-color:var(--ink);font-weight:600}
+.trav{display:grid;grid-template-columns:minmax(110px,.8fr) minmax(150px,1.2fr) minmax(140px,1fr) auto;gap:10px;align-items:start;padding:12px 0;border-top:1px solid var(--line)}
+.trav:first-of-type{border-top:0;padding-top:2px}
+.trav .fld{min-width:0}
+.geo{font-family:var(--mono);font-size:10px;color:var(--dry);min-height:14px}
+.geo.err{color:var(--wet)}
+.iconbtn{background:none;border:1px solid var(--line2);border-radius:7px;color:var(--muted);width:34px;height:34px;flex:none;font-size:15px;margin-top:24px}
+.iconbtn:hover{color:var(--wet);border-color:var(--wet)}
+.addbtn{background:none;border:1px dashed var(--line2);border-radius:7px;color:var(--muted);font-size:12px;padding:8px 14px;margin-top:12px}
+.addbtn:hover{color:var(--ink);border-color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;max-height:210px;overflow-y:auto}
+.chip{font-family:var(--mono);font-size:11.5px;padding:5px 12px;border-radius:999px;border:1px solid var(--line2);background:var(--card);color:var(--muted)}
+.chip.on{color:var(--bg);background:var(--ink);border-color:var(--ink);font-weight:600}
+.chip.hide{display:none}
+.chipmeta{font-family:var(--mono);font-size:10.5px;color:var(--faint);margin-top:12px}
+.formfoot{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:4px}
+.btn{border-radius:7px;padding:9px 18px;font-size:13px;font-weight:600;border:1px solid var(--line2);background:var(--card);color:var(--ink)}
+.btn.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.btn.warn{color:var(--wet);border-color:rgba(208,106,87,.45);background:var(--wet-bg)}
+.errbox{display:none;font-family:var(--mono);font-size:12px;color:var(--wet);border:1px solid rgba(208,106,87,.45);background:var(--wet-bg);border-radius:8px;padding:10px 14px;margin-bottom:16px;white-space:pre-wrap}
+.danger{border-color:rgba(208,106,87,.35);margin-top:26px}
+.danger legend{color:var(--wet)}
+.drow{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:10px 0;border-top:1px solid var(--line)}
+.drow:first-of-type{border-top:0;padding-top:0}
+.drow p{font-size:12.5px;color:var(--muted);max-width:52ch}
+.drow p b{color:var(--ink)}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--ink);color:var(--bg);font-family:var(--mono);font-size:12px;font-weight:600;padding:10px 18px;border-radius:8px;transition:transform .25s;z-index:10}
+.toast.show{transform:translateX(-50%) translateY(0)}
+@media(max-width:640px){.trip{grid-template-columns:1fr}.trav{grid-template-columns:1fr}.iconbtn{margin-top:0;justify-self:end}}
+</style></head><body>
+
+<div class="top">
+  <span class="wordmark">multi<b>·</b>pitch<em>trip admin</em></span>
+  <span class="localpill">localhost — writes trips.json</span>
+  <span class="sp"></span>
+  <a class="tl" href="https://uncinimichel.github.io/climbing-agent/" target="_blank" rel="noopener">Dashboard ↗</a>
+  <button class="tl" id="nav-list">All trips</button>
+  <button class="tl strong" id="nav-new">+ New trip</button>
+</div>
+
+<div class="wrap screen on" id="s-list">
+  <div class="list-head"><h1>Your trips</h1><span class="n" id="list-n"></span></div>
+  <div class="trips" id="trip-rows"></div>
+  <p class="list-note">Open a trip to change its dates, travellers, flexibility or status.
+  Changes apply from the next daily ranking (06:00 UTC). <b>Nothing is committed automatically</b> —
+  review with <b>git diff</b> and commit when happy. New trips render once multi-trip (M3) is switched on.</p>
+</div>
+
+<div class="wrap screen" id="s-form">
+  <div class="statushead"><h1 id="f-title">New trip</h1><span id="f-status"></span></div>
+  <div class="errbox" id="errbox"></div>
+  <div class="pillbar" id="pills" aria-live="polite"></div>
+  <p class="pillcap"><b>Dashboard header preview</b> — this is what the top of the trip's page will say.</p>
+
+  <form id="form">
+    <fieldset>
+      <legend>Trip</legend>
+      <div class="frow">
+        <div class="fld" style="flex:1.6">
+          <label for="f-name">Trip name</label>
+          <input type="text" id="f-name" placeholder="e.g. Picos de Europa" autocomplete="off">
+        </div>
+        <div class="fld"><label for="f-out">First climbing day</label><input type="date" id="f-out"></div>
+        <div class="fld"><label for="f-back">Last climbing day</label><input type="date" id="f-back"></div>
+        <span class="derived" id="f-period"></span>
+      </div>
+      <div class="frow" style="margin-top:14px">
+        <div class="fld">
+          <label id="flex-lbl">Date flexibility</label>
+          <div class="seg" id="f-flex" role="radiogroup" aria-labelledby="flex-lbl">
+            <button type="button" data-flex="0">Exact dates</button>
+            <button type="button" data-flex="1">± 1 day</button>
+            <button type="button" data-flex="2">± 2 days</button>
+            <button type="button" data-flex="3">± 3 days</button>
+          </div>
+          <span class="hint">If shifting the whole trip finds a cheaper flight, the dashboard shows
+          "Leave 1 day earlier: save £42" on the top venue. Your dates stay in charge — this only informs.</span>
+        </div>
+        <div class="fld" id="status-fld" hidden>
+          <label id="st-lbl">Status</label>
+          <div class="seg" id="f-st" role="radiogroup" aria-labelledby="st-lbl">
+            <button type="button" data-st="live">Live</button>
+            <button type="button" data-st="draft">Draft</button>
+            <button type="button" data-st="ended">Ended</button>
+          </div>
+          <span class="hint">Live = ranked daily. Draft = kept, not ranked. Ended = archived.</span>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Travellers</legend>
+      <div id="travs"></div>
+      <button type="button" class="addbtn" id="add-trav">+ Add traveller</button>
+    </fieldset>
+
+    <fieldset id="venues-fs">
+      <legend>Candidate areas</legend>
+      <div class="fld">
+        <label for="f-vq">Search the catalogue</label>
+        <input type="search" id="f-vq" placeholder="Filter areas" autocomplete="off">
+        <span class="hint" id="v-hint">Picked areas are copied into the new trip's venues.json.</span>
+      </div>
+      <div class="chips" id="chips"></div>
+      <p class="chipmeta" id="chip-n"></p>
+    </fieldset>
+
+    <div class="formfoot">
+      <button type="submit" class="btn primary" id="save-btn">Create trip</button>
+      <button type="button" class="btn" id="cancel-btn">Back to trips</button>
+      <span class="hint" id="foot-note"></span>
+    </div>
+  </form>
+
+  <fieldset class="danger" id="danger" hidden>
+    <legend>Careful now</legend>
+    <div class="drow">
+      <p><b>Delete this trip.</b> Removes it from the registry — it stops being ranked.
+      The trip's folder and history stay on disk.</p>
+      <button type="button" class="btn warn" id="del-btn">Delete trip</button>
+    </div>
+  </fieldset>
+</div>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+'use strict';
+var REG=null, CATALOGUE=[], editing=null;   // editing = slug or null (create)
+
+function $(id){return document.getElementById(id)}
+function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function toast(m){var t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(function(){t.classList.remove('show')},2600)}
+function slugify(s){return s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'')}
+var MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+var DAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+function parseD(v){if(!v)return null;var p=v.split('-');return new Date(+p[0],+p[1]-1,+p[2])}
+function dayLbl(d){return DAYS[d.getDay()]+' '+d.getDate()+' '+MONTHS[d.getMonth()].slice(0,3)}
+function periodLabel(a,b){function part(d){var s=d.getDate()<=10?'early':d.getDate()<=20?'mid':'late';return s+' '+MONTHS[d.getMonth()]}var pa=part(a),pb=part(b);return pa===pb?pa:pa+'–'+pb}
+
+function nav(screen){
+  $('s-list').classList.toggle('on',screen==='list');
+  $('s-form').classList.toggle('on',screen==='form');
+  window.scrollTo(0,0);
+}
+
+/* ---------- list ---------- */
+function loadList(){
+  fetch('/api/trips').then(function(r){return r.json()}).then(function(data){
+    REG=data;
+    $('list-n').textContent=data.trips.length+' trip'+(data.trips.length===1?'':'s')+' · registry: trips.json';
+    $('trip-rows').innerHTML='';
+    data.trips.forEach(function(t){
+      var b=document.createElement('button');b.className='trip';b.type='button';
+      var trav=t.travellers.map(function(x){return x.name}).join(', ');
+      b.innerHTML='<span class="tname">'+esc(t.name)+' <span class="tag '+esc(t.status)+'">'+esc(t.status)+'</span></span>'
+        +'<span class="tinfo">📅 '+esc(t.start)+' → '+esc(t.end)+' · ✈ '+esc(trav)
+        +' · 🧗 '+t._venueNames.length+' areas'+(t.flex_days?' · ±'+t.flex_days+'d':'')+'</span>';
+      b.addEventListener('click',function(){openEdit(t.slug)});
+      $('trip-rows').appendChild(b);
+    });
+    nav('list');
+  });
+}
+
+/* ---------- travellers ---------- */
+function travRow(t){
+  t=t||{};
+  var row=document.createElement('div');row.className='trav';
+  var cities=(t.homes||[]).map(function(h){return h.city}).join(' / ');
+  row.innerHTML=
+    '<div class="fld"><label>Name</label><input type="text" class="tv-name" value="'+esc(t.name||'')+'" placeholder="e.g. Rob"></div>'
+    +'<div class="fld"><label>Flies from</label><input type="text" class="tv-home" value="'+esc(cities)+'" placeholder="e.g. Belfast / Dublin">'
+    +'<span class="geo"></span></div>'
+    +'<div class="fld"><label>Airports</label><input type="text" class="tv-air" value="'+esc((t.airports||[]).join(', '))+'" placeholder="e.g. BFS, DUB">'
+    +'<span class="hint">Auto-suggested for known cities; edit freely.</span></div>'
+    +'<button type="button" class="iconbtn" aria-label="Remove traveller">✕</button>';
+  row._homes=t.homes||[];
+  row.querySelector('.iconbtn').addEventListener('click',function(){row.remove();renderPills()});
+  row.querySelectorAll('input').forEach(function(i){i.addEventListener('input',renderPills)});
+  row.querySelector('.tv-home').addEventListener('change',function(){geocodeRow(row)});
+  $('travs').appendChild(row);
+  return row;
+}
+function geocodeRow(row){
+  var input=row.querySelector('.tv-home'),out=row.querySelector('.geo');
+  var parts=input.value.split('/').map(function(s){return s.trim()}).filter(Boolean);
+  if(!parts.length){row._homes=[];out.textContent='';return}
+  out.className='geo';out.textContent='looking up '+parts.join(', ')+'…';
+  Promise.all(parts.map(function(city){
+    return fetch('/api/geocode?q='+encodeURIComponent(city)).then(function(r){return r.json()})
+      .then(function(res){return res[0]?{city:res[0].city,lat:res[0].lat,lon:res[0].lon,_air:res[0].airports}:null});
+  })).then(function(homes){
+    var ok=homes.filter(Boolean);
+    row._homes=ok.map(function(h){return {city:h.city,lat:h.lat,lon:h.lon}});
+    if(!ok.length){out.className='geo err';out.textContent='no match — check the spelling';return}
+    out.textContent='✓ '+ok.map(function(h){return h.city+' ('+h.lat+', '+h.lon+')'}).join(' · ');
+    var air=row.querySelector('.tv-air');
+    var sugg=[];ok.forEach(function(h){(h._air||[]).forEach(function(a){if(sugg.indexOf(a)<0)sugg.push(a)})});
+    if(!air.value.trim()&&sugg.length)air.value=sugg.join(', ');
+    renderPills();
+  }).catch(function(){out.className='geo err';out.textContent='lookup failed — is the network up?'});
+}
+$('add-trav').addEventListener('click',function(){travRow();renderPills()});
+
+/* ---------- segments ---------- */
+function segInit(id,attr,val){
+  var seg=$(id);
+  seg.querySelectorAll('button').forEach(function(b){
+    b.classList.toggle('on',b.getAttribute(attr)==String(val));
+  });
+}
+function segVal(id,attr){var b=$(id).querySelector('button.on');return b?b.getAttribute(attr):null}
+['f-flex','f-st'].forEach(function(id){
+  $(id).addEventListener('click',function(e){
+    var b=e.target.closest('button');if(!b)return;
+    $(id).querySelectorAll('button').forEach(function(x){x.classList.remove('on')});
+    b.classList.add('on');renderPills();
+  });
+});
+
+/* ---------- venue chips (create only) ---------- */
+function buildChips(selected){
+  var box=$('chips');box.innerHTML='';
+  CATALOGUE.forEach(function(v){
+    var c=document.createElement('button');c.type='button';
+    c.className='chip'+(selected.indexOf(v.name)>=0?' on':'');c.textContent=v.name;
+    c.addEventListener('click',function(){c.classList.toggle('on');chipCount();renderPills()});
+    box.appendChild(c);
+  });
+  chipCount();
+}
+function chipCount(){
+  var n=document.querySelectorAll('#chips .chip.on').length;
+  $('chip-n').textContent=n+' of '+CATALOGUE.length+' areas selected';
+}
+$('f-vq').addEventListener('input',function(e){
+  var q=e.target.value.toLowerCase();
+  document.querySelectorAll('#chips .chip').forEach(function(c){
+    c.classList.toggle('hide',q&&c.textContent.toLowerCase().indexOf(q)<0);
+  });
+});
+
+/* ---------- pill preview ---------- */
+function pill(t,empty){return '<span class="pill'+(empty?' empty':'')+'">'+t+'</span>'}
+function renderPills(){
+  var html='',rows=document.querySelectorAll('#travs .trav');
+  var any=false;
+  rows.forEach(function(r){
+    var n=r.querySelector('.tv-name').value.trim(),h=r.querySelector('.tv-home').value.trim();
+    if(n||h){any=true;html+=pill('✈ '+esc(n||'?')+' · '+esc(h||'?'))}
+  });
+  if(!any)html+=pill('✈ add a traveller',true);
+  var out=parseD($('f-out').value),back=parseD($('f-back').value);
+  var flex=+(segVal('f-flex','data-flex')||0);
+  if(out&&back&&back>=out){
+    html+=pill('📅 '+dayLbl(out)+' – '+dayLbl(back)+(flex?' · ±'+flex+'d':''));
+    $('f-period').innerHTML='reads as <b>'+periodLabel(out,back)+'</b>';
+  }else{html+=pill('📅 pick your dates',true);$('f-period').textContent=''}
+  var nSel=editing?null:document.querySelectorAll('#chips .chip.on').length;
+  html+=editing
+    ? pill('🧗 '+(REG.trips.find(function(t){return t.slug===editing})._venueNames.length)+' areas ranked')
+    : (nSel?pill('🧗 '+nSel+' areas ranked'):pill('🧗 pick some areas',true));
+  $('pills').innerHTML=html;
+}
+['f-name','f-out','f-back'].forEach(function(id){$(id).addEventListener('input',renderPills)});
+
+/* ---------- open create / edit ---------- */
+function openCreate(){
+  editing=null;
+  $('f-title').textContent='New trip';$('f-status').innerHTML='';
+  $('errbox').style.display='none';$('travs').innerHTML='';
+  $('f-name').value='';$('f-out').value='';$('f-back').value='';
+  segInit('f-flex','data-flex',0);segInit('f-st','data-st','draft');
+  $('status-fld').hidden=true;$('danger').hidden=true;
+  $('venues-fs').style.display='';buildChips([]);
+  travRow({name:'Michel',homes:[{city:'London',lat:51.5074,lon:-0.1278}],airports:['LGW','LHR','LTN','STN','LCY']});
+  $('save-btn').textContent='Create trip';
+  $('foot-note').textContent='Creates the registry entry + scaffolds the trip folder. Ranked once multi-trip is on.';
+  renderPills();nav('form');
+}
+function openEdit(slug){
+  var t=REG.trips.find(function(x){return x.slug===slug});if(!t)return;
+  editing=slug;
+  $('f-title').textContent=t.name;
+  $('f-status').innerHTML='<span class="tag '+esc(t.status)+'">'+esc(t.status)+'</span>';
+  $('errbox').style.display='none';$('travs').innerHTML='';
+  $('f-name').value=t.name;$('f-out').value=t.start;$('f-back').value=t.end;
+  segInit('f-flex','data-flex',t.flex_days||0);segInit('f-st','data-st',t.status);
+  $('status-fld').hidden=false;$('danger').hidden=false;
+  $('venues-fs').style.display='none';   // per-trip venue edits: <dir>/venues.json (M3 follow-up)
+  t.travellers.forEach(function(x){travRow(x)});
+  $('save-btn').textContent='Save changes';
+  $('foot-note').textContent='Saved changes apply from the next daily ranking.';
+  renderPills();nav('form');
+}
+
+/* ---------- save ---------- */
+function collectTrip(){
+  var travellers=[];
+  var ok=true;
+  document.querySelectorAll('#travs .trav').forEach(function(r){
+    var name=r.querySelector('.tv-name').value.trim();
+    var homesTxt=r.querySelector('.tv-home').value.trim();
+    if(!name&&!homesTxt)return;
+    var homes=r._homes&&r._homes.length?r._homes:null;
+    if(!homes){ok=false;r.querySelector('.geo').className='geo err';
+      r.querySelector('.geo').textContent='press Tab after the city so it can be looked up';}
+    travellers.push({key:slugify(name||'x'),name:name,
+      homes:homes||[],
+      airports:r.querySelector('.tv-air').value.split(',').map(function(s){return s.trim().toUpperCase()}).filter(Boolean)});
+  });
+  if(!ok)return null;
+  var name=$('f-name').value.trim();
+  var t={slug:editing||slugify(name),name:name,
+    status:editing?segVal('f-st','data-st'):'draft',
+    start:$('f-out').value,end:$('f-back').value,
+    flex_days:+(segVal('f-flex','data-flex')||0),
+    travellers:travellers};
+  if(editing){var old=REG.trips.find(function(x){return x.slug===editing});
+    if(old.title)t.title=old.title;if(old.dir)t.dir=old.dir;}
+  return t;
+}
+$('form').addEventListener('submit',function(e){
+  e.preventDefault();
+  var t=collectTrip();if(!t)return;
+  var venues=editing?[]:Array.prototype.map.call(document.querySelectorAll('#chips .chip.on'),function(c){return c.textContent});
+  var req=editing
+    ?fetch('/api/trips/'+editing,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({trip:t,venues:[]})})
+    :fetch('/api/trips',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({trip:t,venues:venues})});
+  req.then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j}})})
+    .then(function(res){
+      if(!res.ok){var eb=$('errbox');eb.textContent=res.j.detail||JSON.stringify(res.j);eb.style.display='block';window.scrollTo(0,0);return}
+      toast(editing?'Changes saved — applies from the next daily ranking':'Trip created — remember to git commit');
+      loadList();
+    }).catch(function(){toast('Save failed — is the server still running?')});
+});
+
+$('del-btn').addEventListener('click',function(){
+  if(!editing)return;
+  if(!confirm('Delete "'+editing+'" from the registry? Its folder and history stay on disk.'))return;
+  fetch('/api/trips/'+editing,{method:'DELETE'})
+    .then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j}})})
+    .then(function(res){
+      if(!res.ok){toast(res.j.detail||'delete failed');return}
+      toast('Trip removed from the registry');loadList();
+    });
+});
+
+/* ---------- boot ---------- */
+$('nav-list').addEventListener('click',loadList);
+$('nav-new').addEventListener('click',openCreate);
+$('cancel-btn').addEventListener('click',loadList);
+fetch('/api/venues').then(function(r){return r.json()}).then(function(v){CATALOGUE=v;loadList()});
+</script>
+</body></html>
