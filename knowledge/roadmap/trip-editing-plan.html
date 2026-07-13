@@ -1,0 +1,109 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Trip Editing Plan · multi-pitch Live</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"><style>
+:root{--ink:#0C0D10;--ink2:#12141B;--ink3:#191C27;--ink4:#20243A;--seam:#252840;
+--chalk:#EAE6DD;--chalk2:#9B9890;--chalk3:#5A5860;--go:#6CB268;--amb:#C8A44A;
+--wet:#B94438;--spike:#C4FF5C;--r:6px;--r-lg:12px}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--ink);color:var(--chalk)}
+body{font-family:'Inter',system-ui,sans-serif;font-size:15px;line-height:1.65;
+-webkit-font-smoothing:antialiased}
+.top{position:sticky;top:0;z-index:10;height:48px;background:var(--ink2);
+border-bottom:1px solid var(--seam);display:flex;align-items:center;gap:12px;padding:0 18px}
+.logo{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--chalk);
+letter-spacing:-.2px;text-decoration:none}
+.top a.btn{margin-left:auto;font-size:12px;color:var(--chalk2);text-decoration:none;
+border:1px solid var(--seam);border-radius:var(--r);padding:5px 12px}
+.top a.btn:hover{color:var(--chalk);border-color:var(--chalk3)}
+.wrap{max-width:860px;margin:0 auto;padding:32px 22px 96px}
+.crumb{font-size:12px;color:var(--chalk3);margin-bottom:22px;font-family:'DM Mono',monospace}
+.crumb a{color:var(--chalk2);text-decoration:none}
+.crumb a:hover{color:var(--spike)}
+h1,h2,h3,h4{font-family:'Syne',sans-serif;letter-spacing:-.3px;line-height:1.25;
+scroll-margin-top:64px}
+h1{font-size:30px;font-weight:800;margin:.2em 0 .6em}
+h2{font-size:21px;font-weight:700;margin:1.8em 0 .5em;padding-top:.4em;
+border-top:1px solid var(--seam)}
+h3{font-size:16.5px;font-weight:700;margin:1.4em 0 .4em;color:var(--chalk)}
+h4{font-size:14px;font-weight:700;margin:1.2em 0 .3em;color:var(--chalk2)}
+p{margin:.7em 0}
+a{color:var(--amb);text-decoration:none;border-bottom:1px solid rgba(200,164,74,.28)}
+a:hover{color:var(--spike);border-bottom-color:var(--spike)}
+strong{color:#fff;font-weight:600}
+code{font-family:'DM Mono',ui-monospace,monospace;font-size:.86em;background:var(--ink3);
+border:1px solid var(--seam);border-radius:4px;padding:1px 5px;color:var(--amb)}
+pre{background:var(--ink2);border:1px solid var(--seam);border-radius:var(--r-lg);
+padding:16px 18px;overflow-x:auto;margin:1em 0}
+pre code{background:none;border:none;padding:0;color:var(--chalk2);font-size:12.5px;
+line-height:1.5;white-space:pre}
+blockquote{margin:1.1em 0;padding:.4em 16px;border-left:3px solid var(--amb);
+background:var(--amb-d,rgba(200,164,74,.07));border-radius:0 var(--r) var(--r) 0;
+color:var(--chalk2)}
+blockquote p{margin:.4em 0}
+hr{border:none;border-top:1px solid var(--seam);margin:2em 0}
+ul,ol{margin:.6em 0;padding-left:1.4em}
+li{margin:.28em 0}
+li>ul,li>ol{margin:.25em 0}
+.tw{overflow-x:auto;margin:1.1em 0;border:1px solid var(--seam);border-radius:var(--r-lg)}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--seam);
+vertical-align:top}
+th{background:var(--ink3);font-family:'Syne',sans-serif;font-weight:700;font-size:12px;
+color:var(--chalk);white-space:nowrap}
+tr:last-child td{border-bottom:none}
+td code{white-space:nowrap}
+.idx-group{margin:1.4em 0}
+.idx-group h3{border-bottom:1px solid var(--seam);padding-bottom:.3em}
+.idx-card{display:block;padding:12px 14px;margin:8px 0;background:var(--ink2);
+border:1px solid var(--seam);border-radius:var(--r-lg);color:var(--chalk);
+border-bottom:1px solid var(--seam)}
+.idx-card:hover{border-color:var(--chalk3);color:var(--chalk)}
+.idx-card b{font-family:'Syne',sans-serif}
+.idx-card span{display:block;color:var(--chalk2);font-size:13px;margin-top:2px}
+@media(max-width:600px){.wrap{padding:22px 15px 80px}h1{font-size:24px}body{font-size:14px}}
+</style></head><body><div class=top><a class=logo href="../../index.html">🧗 multi-pitch <span style="color:var(--spike)">Live</span></a><a class=btn href="../../knowledge/index.html">📚 Knowledge</a><a class=btn href="../../knowledge/corpus-inspector.html">🧗 Inspector</a><a class=btn href="../../knowledge/data-dependencies.html">🗺 Data map</a><a class=btn href="../../index.html">▶ Dashboard</a></div><div class=wrap><div class=crumb><a href="../index.html">📚 knowledge</a> / roadmap / <b style='color:var(--chalk2)'>trip-editing-plan</b></div><h1 id="trip-editing-plan-multi-trip-file-backed-local-admin-forms">Trip editing plan — multi-trip, file-backed, local admin forms</h1>
+<p><em>(Stage 6 slice, planned 13 Jul 2026 — see decision <a href="decisions.html">#33</a>. Approved UI mockup: three screens — trips list / new trip / manage trip — in the dashboard's own design language, with a live "dashboard header pill" preview as the signature element.)</em></p>
+<h2 id="decisions-this-plan-is-built-on-michel-13-jul-2026">Decisions this plan is built on (Michel, 13 Jul 2026)</h2>
+<ol><li><strong>Storage stays files + JSON for now.</strong> Trips live in a committed <code>trips.json</code>;</li></ol>
+<p>   per-trip data keeps the directory-per-trip pattern. A DB + API comes <em>later</em> —    the schema below is designed to be that API's contract, not a throwaway.</p>
+<ol><li><strong>Single editor: Michel</strong>, via a <strong>local-only admin server</strong> (the <code>agent/server.py</code></li></ol>
+<p>   pattern: FastAPI on localhost, never deployed). No auth, no AWS.</p>
+<ol><li><strong>Flight quota: nearest live trip only.</strong> Only the soonest-departing live trip</li></ol>
+<p>   spends SerpApi quota; every other trip shows the existing distance-based estimates.</p>
+<ol><li><strong>Build now, behind a flag.</strong> Multi-trip rendering lands guarded by an env flag;</li></ol>
+<p>   the NI trip stays on the untouched default path until proven (trip ends 28 Jul).</p>
+<ol><li><strong>Public root becomes the trips list.</strong> Each trip dashboard moves to</li></ol>
+<p>   <code>trips/&lt;slug&gt;/</code>; the NI move happens <strong>after</strong> the trip ends (M4), with hash-link    forwarding and sitemap updates.</p>
+<ol><li><strong>Traveller homes are geocoded from city text</strong> (Open-Meteo geocoding API, free);</li></ol>
+<p>   airports derived with manual override in the form. <code>&quot;Belfast / Dublin&quot;</code>-style    alternatives keep working — cheaper origin wins, nearest home coord used.</p>
+<h2 id="where-the-code-already-is">Where the code already is</h2>
+<p>The heavy lifting was done by the <code>engine/</code> extraction: <code>TripContext</code> (<code>engine/models.py</code>) already parameterises dates, venues and flight config, and <code>flights.json</code> already carries per-traveller <code>route.traveller_origins</code> / <code>traveller_coords</code>. What is still hardcoded to <code>(&quot;michel&quot;, &quot;dan&quot;)</code>:</p>
+<ul><li><code>engine/models.py:44-51</code> — <code>TRAVELLERS</code>, <code>ORIGIN_CITY</code>, <code>ORIGIN_COORDS</code> constants.</li><li><code>engine/render.py</code> — pills (<code>:1659</code>), flight cards in <code>PAGE_JS</code> (<code>:1638</code>), payload</li></ul>
+<p>  (<code>:229</code>, <code>:435</code>, <code>:520</code>), markdown table (<code>:1775</code>, <code>:1943</code>).</p>
+<ul><li><code>trip-ni-july-2026/venues.json</code> — per-venue <code>travel</code> dicts keyed by traveller.</li><li>One trip, one output: the driver (<code>trip-ni-july-2026/scripts/update_report.py</code>,</li></ul>
+<p>  now a 187-line thin shell) renders root <code>index.html</code> only.</p>
+<h2 id="trips-json-the-future-api-contract">trips.json — the future API contract</h2>
+<p>Repo root <code>trips.json</code> (validated by a new <code>engine/trips.py</code>):</p>
+<pre><code>{ &quot;schema&quot;: 1, &quot;trips&quot;: [ {
+    &quot;slug&quot;: &quot;ni-july-2026&quot;,
+    &quot;name&quot;: &quot;Northern Ireland&quot;,
+    &quot;status&quot;: &quot;live&quot;,                    // live | draft | ended
+    &quot;start&quot;: &quot;2026-07-24&quot;, &quot;end&quot;: &quot;2026-07-28&quot;,
+    &quot;dir&quot;: &quot;trip-ni-july-2026&quot;,          // legacy; new trips default trips/&lt;slug&gt;/
+    &quot;travellers&quot;: [
+      { &quot;key&quot;: &quot;michel&quot;, &quot;name&quot;: &quot;Michel&quot;,
+        &quot;homes&quot;: [ {&quot;city&quot;: &quot;London&quot;, &quot;lat&quot;: 51.5074, &quot;lon&quot;: -0.1278} ],
+        &quot;airports&quot;: [&quot;LGW&quot;,&quot;LHR&quot;,&quot;LTN&quot;,&quot;STN&quot;,&quot;LCY&quot;] },
+      { &quot;key&quot;: &quot;dan&quot;, &quot;name&quot;: &quot;Dan&quot;,
+        &quot;homes&quot;: [ {&quot;city&quot;: &quot;Belfast&quot;, &quot;lat&quot;: 54.607, &quot;lon&quot;: -5.926},
+                   {&quot;city&quot;: &quot;Dublin&quot;,  &quot;lat&quot;: 53.349, &quot;lon&quot;: -6.260} ],
+        &quot;airports&quot;: [&quot;BFS&quot;,&quot;BHD&quot;,&quot;DUB&quot;] } ]
+} ] }</code></pre>
+<p>Per-trip venue lists, caches, history and <code>flights.json</code> stay in the trip's <code>dir</code> (unchanged shapes; <code>venues.json</code> <code>travel</code> dicts become <em>optional</em> per-traveller overrides — unknown travellers fall back to the existing distance estimate). When the DB/API arrives, <code>trips.json</code> rows become table rows and the admin server's read/write functions become the first API endpoints (a <code>TripStore</code> seam mirroring <code>engine/cache.py</code>'s <code>Cache</code> protocol keeps that swap mechanical).</p>
+<h2 id="milestones">Milestones</h2>
+<p><strong>M1 — <code>trips.json</code> + loader (no behaviour change).</strong> Schema above; <code>engine/trips.py</code> with <code>load_trips()</code> / <code>trip_context(trip)</code>; NI entry generated from today's config; driver reads its <code>TripContext</code> through it. Smoke test: rendered output unchanged.</p>
+<p><strong>M2 — traveller generalisation</strong> (the "M2+" flagged in <code>models.py</code>). Kill the <code>TRAVELLERS</code>/<code>ORIGIN_CITY</code>/<code>ORIGIN_COORDS</code> constants; thread <code>ctx.travellers</code> through <code>flights.py</code>, <code>scoring.py</code>'s distance signal, and <code>render.py</code> (pills, flight cards, payload, markdown all data-driven). The <code>render.py:1659</code> hardcode dies here.</p>
+<p><strong>M3 — multi-trip rendering, behind <code>MULTI_TRIP=1</code>.</strong> Driver loops live trips from <code>trips.json</code>: each renders to <code>trips/&lt;slug&gt;/</code> (own venue pages, own daily report). Nearest-departing live trip gets SerpApi pricing; the rest estimate. Weather/stay caches are already keyed by lat/lon only, so they're shared across trips for free. Flag stays off in <code>weather.yml</code> until after 28 Jul.</p>
+<p><strong>M4 — root becomes the trips list</strong> (<em>gated on the NI trip ending, ~29 Jul</em>). Server-rendered trips-list page at root per the approved mockup (status tags, per-day condition strips: forecast / typical-hatched / as-it-happened from each trip's history). NI dashboard moves to <code>trips/ni-july-2026/</code>; a small shim on the new root forwards legacy <code>/#venue-slug</code> deep links to the primary trip's page; <code>sitemap.xml</code> and venue back-links regenerate.</p>
+<p><strong>M5 — local admin server (the approved forms).</strong> Localhost FastAPI app (pattern: <code>agent/server.py</code>) serving the three mockup screens wired to <code>trips.json</code>: list, create (city → Open-Meteo geocode → coords + suggested airports, editable), manage (edit fields, pause = <code>status: draft</code>, delete with confirm). Validates via <code>engine/trips.py</code> before writing; optional auto-commit. Local page can load the real Bricolage Grotesque / IBM Plex webfonts. Only depends on M1 — can land early.</p>
+<p><strong>M6 — DB + API (deferred, deliberately).</strong> Not in scope now. Path: <code>TripStore</code> protocol → SQLite/Postgres implementation → the admin server's endpoints become the API → revisit the paused multi-user plan (auth/quota-guard) only if editing ever goes beyond Michel.</p>
+<h2 id="sequencing-risk">Sequencing &amp; risk</h2>
+<p>M1 → M2 now (each with the render-unchanged smoke test), M3 next with the flag off, M5 any time after M1. M4 waits for the trip to end — the one user-facing URL move happens once, when nobody is mid-trip on the page. Riskiest step is M2 (touches ranking + render for the live trip); the smoke test plus the flag keep the 06:00 UTC report safe. SerpApi exposure is unchanged by design (one trip prices, same as today).</p></div></body></html>

@@ -518,6 +518,26 @@ on the #27 🔜 pipeline switch (trip-planner process).
 
 ---
 
+### #33 — Trips become editable: file-backed multi-trip + local admin forms (2026-07-13)
+**Decision:** Generalise from the one hardcoded NI trip to a committed **`trips.json`**
+(schema doubles as the future API contract), traveller list fully config-driven (the
+"M2+" left in `engine/models.py`), one dashboard per live trip under `trips/<slug>/`,
+public root becomes a **trips list**, and the approved three-screen forms (list / new /
+manage) ship as a **localhost-only FastAPI admin page**. Storage stays files + JSON for
+now — DB + API is an explicit later migration (`TripStore` seam), not built today.
+SerpApi policy: **only the nearest-departing live trip prices flights**; others use
+distance estimates. Multi-trip rendering lands behind `MULTI_TRIP=1`, off until the NI
+trip ends (28 Jul); the root-URL swap is gated on the same date. Full plan:
+[`trip-editing-plan.md`](trip-editing-plan.md).
+**Why:** Michel: the header pills ("✈ Michel · London …") and the whole trip are
+hardcoded — wants to add/remove/edit people and trips; happy to keep hardcoded file
+structure/JSON for the time being, "we will move to db and api at one point". Single
+editor (Michel), so no auth; quota is the scarce resource, so it never multiplies with
+trip count.
+**Status:** 🔜 Planned — mockup approved, plan committed; M1 (trips.json + loader) first.
+
+---
+
 *Template for new entries:*
 ```
 ### #N — Title (date)
