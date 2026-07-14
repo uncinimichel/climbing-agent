@@ -144,8 +144,10 @@ def list_trips():
         vf = d / "venues.json"
         if vf.exists():
             base = json.loads(vf.read_text()).get("venues", [])
-            # the sheet-merged list is what the pipeline actually ranks
-            merged = sheet_venues.build_venues(base, csv) if csv.exists() else base
+            # sheet-curated trips (NI) rank the merged list; scaffolded trips
+            # rank exactly their own venues.json (engine/driver.trip_context)
+            merged = (sheet_venues.build_venues(base, csv)
+                      if t.get("sheet_merge") and csv.exists() else base)
             t["_venueNames"] = [v["name"] for v in merged]
         else:
             t["_venueNames"] = []
@@ -203,9 +205,30 @@ def update_trip(slug: str, body: TripIn):
         if d.exists() and (old["start"], old["end"], old["travellers"]) != \
                           (new["start"], new["end"], new["travellers"]):
             _write_flights_cfg(d, new)                   # rep dates follow the window
+        if body.venues is not None and body.venues != []:
+            _apply_venue_picks(new, body.venues)
     except ValueError as e:
         raise HTTPException(400, str(e))
     return {"ok": True}
+
+
+def _apply_venue_picks(trip: dict, names: list[str]) -> None:
+    """Rewrite the trip's venues.json venue list from catalogue picks.
+    Sheet-curated trips are refused — their list belongs to the spreadsheet."""
+    if trip.get("sheet_merge"):
+        raise ValueError(f"trip '{trip['slug']}': its venue list is curated by the "
+                         "Google Sheet — edit the spreadsheet, not the picker")
+    d = trips_mod.trip_dir(ROOT, trip)
+    vf = d / "venues.json"
+    if not vf.exists():
+        raise ValueError(f"trip '{trip['slug']}': no venues.json to update")
+    cat = {v["name"]: v for v in _catalogue()}
+    missing = [n for n in names if n not in cat]
+    if missing:
+        raise ValueError(f"trip '{trip['slug']}': unknown areas {missing}")
+    cfg = json.loads(vf.read_text())
+    cfg["venues"] = [cat[n] for n in names]
+    vf.write_text(json.dumps(cfg, ensure_ascii=False, indent=2) + "\n")
 
 
 @app.delete("/api/trips/{slug}")

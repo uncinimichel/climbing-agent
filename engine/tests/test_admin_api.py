@@ -115,3 +115,37 @@ def test_slug_and_dir_are_not_editable_via_put(client, tmp_path):
     reg = json.loads((tmp_path / "trips.json").read_text())
     assert reg["trips"][0]["slug"] == "ni-july-2026"
     assert reg["trips"][0]["dir"] == "trip-ni-july-2026"
+
+
+def test_put_venue_picks_update_scaffolded_trip(client, tmp_path):
+    client.post("/api/trips", json=_draft())
+    body = _draft()
+    body["venues"] = ["Fair Head, NI", "Mournes, NI"]
+    r = client.put("/api/trips/test-alps", json=body)
+    assert r.status_code == 200, r.text
+    v = json.loads((tmp_path / "trips" / "test-alps" / "venues.json").read_text())
+    assert [x["name"] for x in v["venues"]] == ["Fair Head, NI", "Mournes, NI"]
+
+
+def test_put_venue_picks_refused_for_sheet_trip(client):
+    ni = client.get("/api/trips").json()["trips"][0]
+    body = {"trip": {k: v for k, v in ni.items() if not k.startswith("_")},
+            "venues": ["Fair Head, NI"]}
+    r = client.put("/api/trips/ni-july-2026", json=body)
+    assert r.status_code == 400 and "curated by the" in r.json()["detail"]
+
+
+def test_put_unknown_area_rejected(client):
+    client.post("/api/trips", json=_draft())
+    body = _draft()
+    body["venues"] = ["Atlantis Sea Cliffs"]
+    r = client.put("/api/trips/test-alps", json=body)
+    assert r.status_code == 400 and "unknown areas" in r.json()["detail"]
+
+
+def test_listing_venue_counts_respect_sheet_merge(client):
+    client.post("/api/trips", json=_draft())
+    trips_ = client.get("/api/trips").json()["trips"]
+    by = {t["slug"]: t for t in trips_}
+    assert len(by["ni-july-2026"]["_venueNames"]) >= 13     # merged when csv present
+    assert by["test-alps"]["_venueNames"] == ["Fair Head, NI"]   # exactly its own list

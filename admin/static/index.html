@@ -194,7 +194,7 @@ input[type=date]{font-family:var(--mono);font-size:12.5px}
 
 <script>
 'use strict';
-var REG=null, CATALOGUE=[], editing=null;   // editing = slug or null (create)
+var REG=null, CATALOGUE=[], editing=null, editingSheet=false;   // editing = slug or null (create)
 
 function $(id){return document.getElementById(id)}
 function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
@@ -325,8 +325,9 @@ function renderPills(){
     html+=pill('📅 '+dayLbl(out)+' – '+dayLbl(back)+(flex?' · ±'+flex+'d':''));
     $('f-period').innerHTML='reads as <b>'+periodLabel(out,back)+'</b>';
   }else{html+=pill('📅 pick your dates',true);$('f-period').textContent=''}
-  var nSel=editing?null:document.querySelectorAll('#chips .chip.on').length;
-  html+=editing
+  var chipsActive=$('venues-fs').style.display!=='none';
+  var nSel=chipsActive?document.querySelectorAll('#chips .chip.on').length:null;
+  html+=(editing&&!chipsActive)
     ? pill('🧗 '+(REG.trips.find(function(t){return t.slug===editing})._venueNames.length)+' areas ranked')
     : (nSel?pill('🧗 '+nSel+' areas ranked'):pill('🧗 pick some areas',true));
   $('pills').innerHTML=html;
@@ -349,14 +350,20 @@ function openCreate(){
 }
 function openEdit(slug){
   var t=REG.trips.find(function(x){return x.slug===slug});if(!t)return;
-  editing=slug;
+  editing=slug;editingSheet=!!t.sheet_merge;
   $('f-title').textContent=t.name;
   $('f-status').innerHTML='<span class="tag '+esc(t.status)+'">'+esc(t.status)+'</span>';
   $('errbox').style.display='none';$('travs').innerHTML='';
   $('f-name').value=t.name;$('f-out').value=t.start;$('f-back').value=t.end;
   segInit('f-flex','data-flex',t.flex_days||0);segInit('f-st','data-st',t.status);
   $('status-fld').hidden=false;$('danger').hidden=false;
-  $('venues-fs').style.display='none';   // per-trip venue edits: <dir>/venues.json (M3 follow-up)
+  if(editingSheet){
+    $('venues-fs').style.display='none';   // list curated by the Google Sheet
+  }else{
+    $('venues-fs').style.display='';
+    $('v-hint').textContent='Picked areas replace the trip\u2019s venue list; rankings refresh next morning.';
+    buildChips(t._venueNames);
+  }
   t.travellers.forEach(function(x){travRow(x)});
   $('save-btn').textContent='Save changes';
   $('foot-note').textContent='Saved changes apply from the next daily ranking.';
@@ -392,9 +399,11 @@ function collectTrip(){
 $('form').addEventListener('submit',function(e){
   e.preventDefault();
   var t=collectTrip();if(!t)return;
-  var venues=editing?[]:Array.prototype.map.call(document.querySelectorAll('#chips .chip.on'),function(c){return c.textContent});
+  var chipsActive=$('venues-fs').style.display!=='none';
+  var venues=chipsActive?Array.prototype.map.call(document.querySelectorAll('#chips .chip.on'),function(c){return c.textContent}):[];
+  if(chipsActive&&!venues.length){var eb=$('errbox');eb.textContent='pick at least one area';eb.style.display='block';window.scrollTo(0,0);return}
   var req=editing
-    ?fetch('/api/trips/'+editing,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({trip:t,venues:[]})})
+    ?fetch('/api/trips/'+editing,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({trip:t,venues:venues})})
     :fetch('/api/trips',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({trip:t,venues:venues})});
   req.then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j}})})
     .then(function(res){
