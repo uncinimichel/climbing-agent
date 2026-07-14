@@ -3,6 +3,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Curation Studio</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
   :root{
     --paper:#EAECE7; --panel:#F3F4F0; --panel-2:#E1E4DD; --ink:#232A27; --muted:#616B64; --faint:#8A938C;
@@ -88,7 +90,17 @@
   .src{font-size:11.5px;border:1px solid var(--blue);color:var(--blue);background:var(--blue-soft);padding:3px 9px;border-radius:99px;text-decoration:none}
   .receipt{font-size:11.5px;color:var(--muted)}
   .receipt code{font-family:var(--mono);font-size:10.5px}
-  iframe.map{width:100%;height:180px;border:1px solid var(--line-2);border-radius:9px}
+  #livemap{width:100%;height:230px;border:1px solid var(--line-2);border-radius:9px;z-index:1}
+  .pk-pin{background:var(--blue);color:#fff;border-radius:50%;width:22px;height:22px;display:flex;
+    align-items:center;justify-content:center;font:700 12px var(--sans);border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.4)}
+  .pkrow{display:grid;grid-template-columns:22px 1fr auto 20px;gap:6px;align-items:center;margin-top:6px;font-size:12px}
+  .pkrow input{border:1px solid var(--line);border-radius:6px;background:var(--panel-2);color:var(--ink);padding:4px 7px;font:12px var(--sans)}
+  .pkrow .ll{font-family:var(--mono);font-size:10.5px;color:var(--faint)}
+  .pkrow .x{color:var(--red);cursor:pointer}
+  .gradehint{font-size:11.5px;color:var(--muted);margin-top:4px}
+  .gradehint b{color:var(--accent-ink)}
+  .gradehint button{font:600 11px var(--sans);border:1px solid var(--accent);color:var(--accent-ink);
+    background:var(--accent-soft);border-radius:6px;padding:2px 8px;cursor:pointer;margin-left:6px}
 
   .actions{position:fixed;left:0;right:0;bottom:0;background:var(--panel);border-top:1px solid var(--line-2);box-shadow:0 -6px 18px rgba(35,42,39,.12);z-index:20}
   .actions .in{max-width:1240px;margin:0 auto;padding:10px 20px;display:flex;gap:9px;align-items:center;flex-wrap:wrap}
@@ -251,12 +263,12 @@ function renderCard(){
         ${s==='publish'?'✓ published':s==='quarantined'?'✕ quarantined':(r.needs_field_check?'🥾 field check':'draft · '+r.tagged_by+'-tagged')}</span>
       <span class="crag">${(r.path_tokens||[]).join(' › ')} · ${r.eff_rock_code||'rock?'} · ${r.eff_aspect||'aspect?'} · <span style="font-family:var(--mono)">#${r.id}</span></span></div>
     <div class="facts">
-      <div class="fact${!r.grade_system_code?' miss':''}"><b>grade system</b>
-        <select onchange="save('grade_system_code',this.value||null)"><option value=""></option>
-          ${(ENUMS.grade_systems||[]).map(g=>`<option value="${g.code}" title="${g.name} · ${g.region}" ${g.code==r.grade_system_code?'selected':''}>${g.code}</option>`).join('')}
+      <div class="fact${!r.grade_system_code?' miss':''}" style="grid-column:span 2"><b>grade system — the scale this grade is in</b>
+        <select onchange="save('grade_system_code',this.value||null);R.grade_system_code=this.value||null;renderCard()"><option value="">pick the scale…</option>
+          ${(ENUMS.grade_systems||[]).map(g=>`<option value="${g.code}" ${g.code==r.grade_system_code?'selected':''}>${g.code} — ${g.name} (${g.region})</option>`).join('')}
         </select></div>
       <div class="fact${r.grade_warning?' miss':''}" title="${r.grade_warning||'grade in the selected system'}"><b>grade ${r.grade_warning?'⚠':''}</b>
-        <input list="gradeLadder" value="${r.original_grade??''}" onchange="saveGrade(this.value)">
+        <input list="gradeLadder" value="${r.original_grade??''}" placeholder="${GRADE_EG[r.grade_system_code]||''}" onchange="saveGrade(this.value)">
         <datalist id="gradeLadder">${((ENUMS.grade_ladder||{})[r.grade_system_code]||[]).map(g=>`<option value="${g}">`).join('')}</datalist></div>
       ${factInput('length m','length_m',r.length_m)}
       ${factInput('pitches','pitches_count',r.pitches_count)}
@@ -273,9 +285,8 @@ function renderCard(){
       ${factInput('approach min','approach_time_min',r.approach_time_min)}
       ${factInput('descent','descent_method',r.descent_method,ENUMS.descent_method,true)}
       ${factInput('rack','rack',r.rack,null,true)}
-      <div class="fact${r.parking_lat==null?' miss':''}" title="parking lat, lon — where you leave the car"><b>parking</b>
-        <input value="${r.parking_lat!=null?r.parking_lat+', '+r.parking_lon:''}" placeholder="lat, lon" onchange="saveParking(this.value)"></div>
     </div>
+    ${gradeHint(r)}
     ${r.grade_warning?`<div class="minor" style="color:var(--amber);margin-top:4px">⚠ ${r.grade_warning} — publish is blocked until the grade matches its scale</div>`:''}
     <div class="sec">tags <small>— click to drop · dashed = ${r.tagged_by}-tagged, solid = human-verified · they turn solid on publish</small></div>
     ${FAMS.map(([f,extra])=>`<div class="chips" style="margin-bottom:5px">
@@ -324,19 +335,37 @@ async function savePitches(){
 }
 function dropTag(f,t){R.tags[f]=R.tags[f].filter(x=>x!==t);saveTags();renderCard()}
 function addTag(f,t){if(!t)return;R.tags[f]=[...(R.tags[f]||[]),t];saveTags();renderCard()}
+const GRADE_EG={BAS:'VS 4c · HVS 5a · E1 5b',FS:'6a+ / f6a+',YDS:'5.9 · 5.10b',UIAA:'V+ · VI-',
+  ALP:'PD · TD+',SCO:'V,6',EW:'18',V:'V4',Font:'6B+',WI:'WI4',M:'M5',A:'A2',N:'6-'};
+function suggestSys(r){
+  const country=((r.path_tokens||[])[0]||'').toLowerCase();
+  const disc=(r.tags?.disciplines)||[];
+  if(disc.includes('sport'))return 'FS';
+  const ctx=(r.eff_grade_context||'').toUpperCase();
+  if(ctx==='GB'||ctx==='IE')return 'BAS';
+  if(/kingdom|england|scotland|wales|ireland/.test(country))return 'BAS';
+  if(/spain|france|belgium|portugal/.test(country))return 'FS';
+  if(/austria|germany|switzerland|italy|dolomit|slovenia|croatia/.test(country))return 'UIAA';
+  if(/united states|usa|canada/.test(country))return 'YDS';
+  if(/norway|sweden/.test(country))return 'N';
+  if(disc.includes('alpine'))return 'ALP';
+  return null;
+}
+function gradeHint(r){
+  const sug=suggestSys(r);
+  if(!sug)return '';
+  const g=(ENUMS.grade_systems||[]).find(x=>x.code===sug)||{};
+  if(!r.grade_system_code)
+    return `<div class="gradehint">This looks like a <b>${(r.tags?.disciplines||[]).includes('sport')?'sport':'trad'}</b> route in <b>${(r.path_tokens||[])[0]||'?'}</b> → grades are usually <b>${sug} — ${g.name||''}</b> (${GRADE_EG[sug]||''})<button onclick="save('grade_system_code','${sug}');R.grade_system_code='${sug}';renderCard()">use ${sug}</button></div>`;
+  if(r.grade_system_code!==sug)
+    return `<div class="gradehint">Heads up: routes here usually use <b>${sug}</b> (${GRADE_EG[sug]||''}) — this one is set to <b>${r.grade_system_code}</b>. Fine if intentional (e.g. a sport line).</div>`;
+  return '';
+}
 function saveGrade(v){
   api('/route/'+R.id,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({original_grade:v||null})})
     .then(d=>{R.original_grade=v;R.grade_warning=d.gradeWarning;
       if(d.gradeWarning)toast('⚠ '+d.gradeWarning);else toast('grade ok ('+(R.grade_system_code||'?')+')');
       renderCard()}).catch(e=>toast('⚠ '+e));
-}
-function saveParking(v){
-  const m=(v||'').match(/(-?\d+\.?\d*)[ ,]+(-?\d+\.?\d*)/);
-  const val=m?[+m[1],+m[2]]:null;
-  if(v && !m){toast('⚠ parking must be "lat, lon"');return}
-  api('/route/'+R.id,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({parking:val})})
-    .then(()=>{R.parking_lat=val?val[0]:null;R.parking_lon=val?val[1]:null;toast(val?'parking saved':'parking cleared');renderRail()})
-    .catch(e=>toast('⚠ '+e));
 }
 function setStars(n){R.stars=(R.stars===n?n-1:n)||null;save('stars',R.stars);renderCard()}
 function toggleMonth(m){const s=new Set(R.best_season||[]);s.has(m)?s.delete(m):s.add(m);R.best_season=[...s].sort((a,b)=>a-b);save('best_season',R.best_season.length?R.best_season:null);renderCard()}
@@ -354,16 +383,50 @@ function renderRail(){
       ${['features','character','protection','discipline'].filter(k=>r.receipt[k]).map(k=>`<br>· <b>${k}</b>: ${[].concat(r.receipt[k]).join(', ')}`).join('')}
       <br><span class="minor">accept = leave the chip; wrong = click it off</span></div>`
     :'<div class="receipt minor">no AI receipt (tags came with the source or a human)</div>';
-  const map=r.lat?`<iframe class="map" loading="lazy" src="https://www.openstreetmap.org/export/embed.html?bbox=${r.lon-0.02}%2C${r.lat-0.012}%2C${r.lon+0.02}%2C${r.lat+0.012}&layer=mapnik&marker=${r.lat}%2C${r.lon}"></iframe>
-      <div class="minor" style="margin-top:4px"><a target="_blank" href="https://www.openstreetmap.org/?mlat=${r.lat}&mlon=${r.lon}#map=15/${r.lat}/${r.lon}">${r.lat.toFixed(4)}, ${r.lon.toFixed(4)} — open ↗</a></div>`
-    :'<div class="minor">⚠ no coordinates — fix before publish</div>';
+  const pkRows=(r.parkings||[]).map((pk,i)=>`<div class="pkrow">
+      <span class="pk-pin" style="width:18px;height:18px;font-size:10px">P${i+1}</span>
+      <input value="${(pk.label||'').replace(/"/g,'&quot;')}" placeholder="label (car park, layby…)" onchange="R.parkings[${i}].label=this.value;saveParkings()">
+      <span class="ll">${(+pk.lat).toFixed(5)}, ${(+pk.lon).toFixed(5)}</span>
+      <span class="x" onclick="R.parkings.splice(${i},1);saveParkings();renderRail()">✕</span></div>`).join('');
   $('rail').innerHTML=`
     <div class="card"><h3>Sources</h3><div class="srcs">${links}</div></div>
     <div class="card"><h3>AI tag receipt</h3>${rec}</div>
-    <div class="card"><h3>Map — verify the pin</h3>${map}</div>
+    <div class="card"><h3>Map — route pin + parking</h3>
+      ${r.lat?'<div id="livemap"></div>':'<div class="minor">⚠ no route coordinates — fix before publish</div>'}
+      <div class="minor" style="margin-top:5px">🅿 <b>click the map</b> to drop a parking pin (multiple allowed — main car park, layby, high-tide option…). Drag a P pin to fix it.</div>
+      ${pkRows||'<div class="minor" style="margin-top:4px">no parking pins yet</div>'}
+    </div>
     <div class="card"><h3>Climatology</h3><div class="minor">${(r.climatology||[]).length?
       r.climatology.map(m=>`${'JFMAMJJASOND'[m.month-1]}:${Math.round(m.rainy_days??0)}d`).join(' '):'none'}
       <br>rainy days/month (source data)</div></div>`;
+  if(r.lat&&window.L)initMap(r);
+}
+let MAP=null;
+function initMap(r){
+  if(MAP){MAP.remove();MAP=null}
+  MAP=L.map('livemap',{scrollWheelZoom:false}).setView([r.lat,r.lon],14);
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OSM'}).addTo(MAP);
+  L.marker([r.lat,r.lon],{title:'route'}).addTo(MAP).bindPopup('route: '+r.name);
+  (r.parkings||[]).forEach((pk,i)=>{
+    const m=L.marker([pk.lat,pk.lon],{draggable:true,
+      icon:L.divIcon({className:'',html:`<div class="pk-pin">P${i+1}</div>`,iconSize:[22,22],iconAnchor:[11,11]})})
+      .addTo(MAP).bindPopup((pk.label||'parking')+' — drag to adjust');
+    m.on('dragend',e=>{const ll=e.target.getLatLng();R.parkings[i].lat=ll.lat;R.parkings[i].lon=ll.lng;saveParkings()});
+  });
+  const pts=[[r.lat,r.lon],...(r.parkings||[]).map(p=>[p.lat,p.lon])];
+  if(pts.length>1)MAP.fitBounds(pts,{padding:[30,30]});
+  MAP.on('click',e=>{
+    const label=prompt('Parking label (e.g. "main car park", "layby on A2"):','parking');
+    if(label===null)return;
+    R.parkings=R.parkings||[];R.parkings.push({label:label||'parking',lat:e.latlng.lat,lon:e.latlng.lng});
+    saveParkings();renderRail();
+  });
+}
+function saveParkings(){
+  api('/route/'+R.id+'/parkings',{method:'PUT',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(R.parkings||[])})
+    .then(d=>toast(d.parkings+' parking pin'+(d.parkings==1?'':'s')+' saved'))
+    .catch(e=>toast('⚠ '+e));
 }
 
 // ── actions ─────────────────────────────

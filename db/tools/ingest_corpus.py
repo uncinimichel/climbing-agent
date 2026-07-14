@@ -108,7 +108,7 @@ def upsert_route(cur, area_pg_id: int, r: dict, mp: dict | None) -> int | None:
             rack, rope, descent_method, descent_notes,
             curation_notes, needs_field_check, curated_at,
             elevation_m, sun_window_code, best_season, stars,
-            intro_html, approach_html, pitch_info_html, geom, parking, timezone)
+            intro_html, approach_html, pitch_info_html, geom, timezone)
         VALUES (%(area)s, %(name)s, %(status)s, %(tagged_by)s, %(tag_prov)s,
             %(len)s, %(pit)s, %(incline)s,
             %(gsys)s, %(og)s, %(tg)s, %(teg)s, %(dg)s,
@@ -120,8 +120,6 @@ def upsert_route(cur, area_pg_id: int, r: dict, mp: dict | None) -> int | None:
             %(intro)s, %(approach)s, %(pitch_html)s,
             CASE WHEN %(lat)s::float8 IS NOT NULL
                  THEN ST_SetSRID(ST_MakePoint(%(lon)s::float8, %(lat)s::float8), 4326) END,
-            CASE WHEN %(plat)s::float8 IS NOT NULL
-                 THEN ST_SetSRID(ST_MakePoint(%(plon)s::float8, %(plat)s::float8), 4326) END,
             %(tz)s)
         ON CONFLICT (area_id, name) DO UPDATE SET
             status = EXCLUDED.status, tagged_by = EXCLUDED.tagged_by,
@@ -139,7 +137,6 @@ def upsert_route(cur, area_pg_id: int, r: dict, mp: dict | None) -> int | None:
             approach_html = COALESCE(EXCLUDED.approach_html, route.approach_html),
             pitch_info_html = COALESCE(EXCLUDED.pitch_info_html, route.pitch_info_html),
             geom = COALESCE(EXCLUDED.geom, route.geom),
-            parking = COALESCE(EXCLUDED.parking, route.parking),
             last_update = now()
         WHERE route.tagged_by <> 'human'
         RETURNING id
@@ -160,10 +157,7 @@ def upsert_route(cur, area_pg_id: int, r: dict, mp: dict | None) -> int | None:
          "elev": r.get("elevation"), "sun": r.get("sunWindow"),
          "season": r.get("bestSeason"), "stars": r.get("stars"),
          "intro": intro, "approach": approach, "pitch_html": pitch_html,
-         "lat": ll[0], "lon": ll[1],
-         "plat": (r.get("parking") or [None, None])[0],
-         "plon": (r.get("parking") or [None, None])[1],
-         "tz": (mp or {}).get("timeZone")},
+         "lat": ll[0], "lon": ll[1], "tz": (mp or {}).get("timeZone")},
     )
     row = cur.fetchone()
     if not row:      # conflict hit a human-tagged row → protected, skipped
@@ -217,6 +211,16 @@ def upsert_route(cur, area_pg_id: int, r: dict, mp: dict | None) -> int | None:
                    original_grade = EXCLUDED.original_grade,
                    description = EXCLUDED.description""",
             {"rid": rid, **p})
+
+    parkings = r.get("parkings") or ([{"label": "parking", "lat": r["parking"][0], "lon": r["parking"][1]}]
+                                     if r.get("parking") else [])
+    if parkings:
+        cur.execute("DELETE FROM route_parking WHERE route_id = %s", (rid,))
+        for i, pk in enumerate(parkings, 1):
+            cur.execute(
+                """INSERT INTO route_parking (route_id, label, geom, ord)
+                   VALUES (%s, %s, ST_SetSRID(ST_MakePoint(%s, %s), 4326), %s)""",
+                (rid, pk.get("label") or "parking", pk["lon"], pk["lat"], i))
 
     if str(r["id"]).startswith("mp-"):
         cur.execute(

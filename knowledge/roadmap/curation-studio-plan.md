@@ -60,8 +60,11 @@ vocabulary — add a value (its one-line meaning is required because the AI tagg
 it), edit meanings inline, delete only when no route uses it. Writes hit Postgres, then
 auto-regenerate `105_taxonomy_extensions.sql` + `knowledge/data/taxonomy-values.json`,
 and `ai_tag.py` picks the new values up live. Grades are validated per-system (pick the
-scale, the value must match it — publish is blocked otherwise) and routes carry
-structured `parking` coordinates.
+scale — shown with its full name and region, suggested from the route's country +
+discipline, e.g. UK trad → BAS "VS 4c · HVS 5a · E1 5b" — and the value must match it;
+publish is blocked otherwise). Routes carry **multiple named parking pins**
+(`route_parking`, 028): the rail shows a live OSM map — click to drop a pin, drag to
+adjust, label each ("main car park", "layby", "high-tide option").
 
 **⚠ Operational note:** `db/apply.sh` drops the whole schema. The restore path is
 `./apply.sh && agent/.venv/bin/python db/tools/ingest_corpus.py` — corpus.json IS the

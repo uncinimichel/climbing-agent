@@ -195,15 +195,16 @@ def route_detail(rid: int):
     with db() as conn, conn.cursor() as cur:
         cur.execute("""
             SELECT r.*, ar.path_tokens, ar.eff_rock_code, ar.eff_aspect, ar.eff_grade_context,
-                   ST_Y(r.geom::geometry) AS lat, ST_X(r.geom::geometry) AS lon,
-                   ST_Y(r.parking::geometry) AS parking_lat, ST_X(r.parking::geometry) AS parking_lon
+                   ST_Y(r.geom::geometry) AS lat, ST_X(r.geom::geometry) AS lon
             FROM route_resolved r JOIN area_resolved ar ON ar.id = r.area_id
             WHERE r.id = %s""", (rid,))
         r = cur.fetchone()
         if not r:
             raise HTTPException(404)
         r.pop("geom", None)
-        r.pop("parking", None)
+        cur.execute("""SELECT id, label, ord, ST_Y(geom::geometry) AS lat, ST_X(geom::geometry) AS lon
+                       FROM route_parking WHERE route_id = %s ORDER BY ord, id""", (rid,))
+        r["parkings"] = cur.fetchall()
         r["grade_warning"] = grade_problem(r.get("grade_system_code"), r.get("original_grade"))
         r["tags"] = agg_tags(cur, rid)
         cur.execute("SELECT number, length_m, grade_system_code, original_grade, description "
@@ -227,8 +228,7 @@ def route_detail(rid: int):
 def patch_route(rid: int, body: dict):
     fields = {k: v for k, v in body.items() if k in PATCHABLE}
     tags = body.get("tags") or {}
-    parking = body.get("parking", "absent")   # [lat, lon] | None to clear
-    if not fields and not tags and parking == "absent":
+    if not fields and not tags:
         raise HTTPException(400, "nothing patchable in body")
     warning = None
     with db() as conn, conn.cursor() as cur:
@@ -238,14 +238,6 @@ def patch_route(rid: int, body: dict):
                         [*fields.values(), rid])
             if not cur.fetchone():
                 raise HTTPException(404)
-        if parking != "absent":
-            if parking:
-                lat, lon = float(parking[0]), float(parking[1])
-                cur.execute("UPDATE route SET parking = ST_SetSRID(ST_MakePoint(%s, %s), 4326), "
-                            "last_update = now() WHERE id = %s", (lon, lat, rid))
-            else:
-                cur.execute("UPDATE route SET parking = NULL, last_update = now() WHERE id = %s",
-                            (rid,))
         if {"original_grade", "grade_system_code"} & set(fields):
             cur.execute("SELECT grade_system_code, original_grade FROM route WHERE id = %s", (rid,))
             g = cur.fetchone()
@@ -266,6 +258,24 @@ def patch_route(rid: int, body: dict):
                         "ON CONFLICT DO NOTHING", (rid, v))
         conn.commit()
     return {"ok": True, "gradeWarning": warning}
+
+
+@app.put("/api/route/{rid}/parkings")
+def put_parkings(rid: int, body: list[dict]):
+    """Replace the route's parking spots: [{label, lat, lon}] — multiple pins, ordered."""
+    with db() as conn, conn.cursor() as cur:
+        cur.execute("DELETE FROM route_parking WHERE route_id = %s", (rid,))
+        for i, pk in enumerate(body, 1):
+            if pk.get("lat") is None or pk.get("lon") is None:
+                continue
+            cur.execute(
+                """INSERT INTO route_parking (route_id, label, geom, ord)
+                   VALUES (%s, %s, ST_SetSRID(ST_MakePoint(%s, %s), 4326), %s)""",
+                (rid, (pk.get("label") or "parking").strip() or "parking",
+                 float(pk["lon"]), float(pk["lat"]), i))
+        cur.execute("UPDATE route SET last_update = now() WHERE id = %s", (rid,))
+        conn.commit()
+    return {"ok": True, "parkings": len(body)}
 
 
 @app.put("/api/route/{rid}/pitches")
