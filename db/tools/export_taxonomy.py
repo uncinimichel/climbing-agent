@@ -87,8 +87,12 @@ def main():
         vals = ",\n".join(
             "    (" + ", ".join(sql_lit(r.get(c)) for c in cols) + ")" for r in rows)
         conflict = f"ON CONFLICT (code) DO UPDATE SET {upd}" if upd else "ON CONFLICT (code) DO NOTHING"
+        live = ", ".join(sql_lit(r["code"]) for r in rows) or "NULL"
         sql_blocks.append(
             f"-- {fam} ({len(rows)} values)\n"
+            # values deleted in the studio must not resurrect when 100 replays;
+            # anything NOT IN the live set is unused by definition (delete guard)
+            f"DELETE FROM {table} WHERE code NOT IN ({live});\n"
             f"INSERT INTO {table} ({', '.join(cols)}) VALUES\n{vals}\n{conflict};")
 
     SQL_OUT.write_text(

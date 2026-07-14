@@ -59,9 +59,12 @@ def ensure_area(conn, corpus_area_id: str) -> int:
     doesn't exist yet (corpus.json is the curated source of coords/rock/
     aspect/gradeContext — decision #27; nothing here is invented)."""
     corpus = _load_corpus()
-    chain = []
+    chain, seen = [], set()
     node_id = corpus_area_id
     while node_id:
+        if node_id in seen:   # self/circular parent (bad export) — stop, don't hang
+            break
+        seen.add(node_id)
         node = corpus[node_id]
         chain.append(node)
         node_id = node.get("parent")

@@ -18,6 +18,7 @@ import os
 import re
 import subprocess
 import sys
+import threading
 from pathlib import Path
 
 import psycopg
@@ -32,6 +33,19 @@ ENRICH_CACHE = ROOT / "db" / "enrichment-cache.json"
 DSN = os.environ.get("DATABASE_URL", "postgresql://climbing:climbing@localhost:5432/climbing")
 
 app = FastAPI(title="Curation Studio")
+
+_enrich = {"mtime": None, "data": {}}
+
+
+def enrich_cache() -> dict:
+    """enrichment-cache.json, re-read only when the file changes."""
+    try:
+        mt = ENRICH_CACHE.stat().st_mtime
+    except FileNotFoundError:
+        return {}
+    if _enrich["mtime"] != mt:
+        _enrich.update(mtime=mt, data=json.loads(ENRICH_CACHE.read_text()))
+    return _enrich["data"]
 
 # fields PATCH may write on route — everything a curator verifies or fills
 PATCHABLE = {
@@ -63,7 +77,8 @@ TAXONOMY = {
     "hazard": ("hazard", ["kind", "meaning", "safety_critical", "feeds"],
                "SELECT count(*) FROM route_hazard j WHERE j.hazard_code = t.code"),
     "rock": ("rock_type", ["friction_dry", "seeps", "fragile_when_wet", "notes"],
-             "SELECT count(*) FROM route r WHERE r.rock_code = t.code"),
+             "SELECT (SELECT count(*) FROM route r WHERE r.rock_code = t.code) + "
+             "(SELECT count(*) FROM area a WHERE a.rock_code = t.code)"),
     "sun_window": ("sun_window", ["meaning"],
                    "SELECT count(*) FROM route r WHERE r.sun_window_code = t.code"),
     "protection": ("protection_grade", ["meaning", "sort_order"],
@@ -105,12 +120,15 @@ def grade_problem(system: str | None, value: str | None) -> str | None:
 
 
 def resync_taxonomy_files():
-    """Regenerate 105_taxonomy_extensions.sql + taxonomy-values.json (best effort)."""
-    try:
-        subprocess.run([sys.executable, str(HERE / "export_taxonomy.py")],
-                       capture_output=True, timeout=60)
-    except Exception:
-        pass
+    """Regenerate 105_taxonomy_extensions.sql + taxonomy-values.json (best effort,
+    fire-and-forget — the write already committed; the files just mirror it)."""
+    def run():
+        try:
+            subprocess.run([sys.executable, str(HERE / "export_taxonomy.py")],
+                           capture_output=True, timeout=60)
+        except Exception:
+            pass
+    threading.Thread(target=run, daemon=True).start()
 
 
 def db():
@@ -219,8 +237,8 @@ def route_detail(rid: int):
     # AI receipt from the enrichment cache (keyed mp-<id>)
     r["receipt"] = None
     mp = next((x for x in r["refs"] if x["source_id"] == "multipitch"), None)
-    if mp and ENRICH_CACHE.exists():
-        r["receipt"] = json.loads(ENRICH_CACHE.read_text()).get(f"mp-{mp['external_id']}")
+    if mp:
+        r["receipt"] = enrich_cache().get(f"mp-{mp['external_id']}")
     return r
 
 
@@ -250,12 +268,20 @@ def patch_route(rid: int, body: dict):
                     cur.execute(f"INSERT INTO {table} (route_id, {col}) VALUES (%s, %s) "
                                 "ON CONFLICT DO NOTHING", (rid, v))
             elif key == "hazards":
+                # keep the real evidence of hazards that stay; only NEW codes get
+                # the curator stamp — tag saves must never erase source provenance
+                cur.execute("SELECT hazard_code, evidence_span, source_url "
+                            "FROM route_hazard WHERE route_id = %s", (rid,))
+                prior = {x["hazard_code"]: x for x in cur.fetchall()}
                 cur.execute("DELETE FROM route_hazard WHERE route_id = %s", (rid,))
                 for v in values:
+                    old = prior.get(v)
                     cur.execute(
-                        "INSERT INTO route_hazard (route_id, hazard_code, evidence_span) "
-                        "VALUES (%s, %s, 'curator verified (Curation Studio)') "
-                        "ON CONFLICT DO NOTHING", (rid, v))
+                        "INSERT INTO route_hazard (route_id, hazard_code, evidence_span, source_url) "
+                        "VALUES (%s, %s, %s, %s) ON CONFLICT DO NOTHING",
+                        (rid, v,
+                         (old and old["evidence_span"]) or "curator verified (Curation Studio)",
+                         old and old["source_url"]))
         conn.commit()
     return {"ok": True, "gradeWarning": warning}
 
@@ -300,15 +326,19 @@ def put_pitches(rid: int, body: list[dict]):
 @app.post("/api/route/{rid}/publish")
 def publish(rid: int):
     with db() as conn, conn.cursor() as cur:
-        cur.execute("SELECT name, original_grade, grade_system_code FROM route WHERE id = %s", (rid,))
+        cur.execute("SELECT name, original_grade, grade_system_code, needs_field_check "
+                    "FROM route WHERE id = %s", (rid,))
         r = cur.fetchone()
         if not r:
             raise HTTPException(404)
         problem = grade_problem(r["grade_system_code"], r["original_grade"])
         if problem:
             raise HTTPException(422, f"grade check: {problem}")
+        if r["needs_field_check"]:
+            raise HTTPException(422, "flagged 🥾 needs field check — clear the flag "
+                                     "(⌘F) once verified, then publish")
         cur.execute("""UPDATE route SET status = 'publish', tagged_by = 'human',
-                       curated_at = now(), needs_field_check = false, last_update = now()
+                       curated_at = now(), last_update = now()
                        WHERE id = %s""", (rid,))
         conn.commit()
     return {"ok": True, "status": "publish"}
@@ -356,8 +386,9 @@ def taxonomy_add(family: str, body: dict):
         raise HTTPException(404, f"unknown family {family}")
     table, cols, _ = TAXONOMY[family]
     code = (body.get("code") or "").strip()
-    if not code or len(code) > 40 or any(ch.isspace() for ch in code):
-        raise HTTPException(422, "code must be a single non-empty token (≤40 chars)")
+    if not code or len(code) > 40 or any(ch.isspace() for ch in code) \
+            or any(ch in code for ch in "'\"<>\\;`"):
+        raise HTTPException(422, "code must be one token (≤40 chars, no quotes/angle brackets)")
     if family == "hazard" and body.get("kind") not in ("route", "objective"):
         raise HTTPException(422, "hazard needs kind: route | objective")
     if "meaning" in cols and not (body.get("meaning") or "").strip():

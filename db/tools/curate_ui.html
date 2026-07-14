@@ -220,22 +220,32 @@ async function loadQueue(keepId){
   if(keepId){const i=QUEUE.findIndex(r=>r.id===keepId); cur=i>=0?i:Math.min(cur,QUEUE.length-1);}
   cur=Math.max(0,Math.min(cur,QUEUE.length-1));
   renderGrid();
-  if(QUEUE.length)await openRoute(QUEUE[cur].id); else {$('main').innerHTML='<div class="card">queue empty 🎉</div>';$('rail').innerHTML='';}
+  if(QUEUE.length)await openRoute(QUEUE[cur].id);
+  else {R=null;$('main').innerHTML='<div class="card">queue empty 🎉</div>';$('rail').innerHTML='';$('nexthint').textContent='';}
 }
 async function openRoute(id){
   R=await api('/route/'+id);
   renderCard(); renderRail();
-  $('nexthint').textContent=`route ${cur+1}/${QUEUE.length}${QUEUE[cur+1]?' — next: '+QUEUE[cur+1].name:''}`;
+  $('nexthint').textContent=`route ${cur+1}/${QUEUE.length}${QUEUE[cur+1]?' — next: '+QUEUE[cur+1].name:''}`;  // textContent — safe
 }
-function move(d){cur=Math.max(0,Math.min(QUEUE.length-1,cur+d));openRoute(QUEUE[cur].id)}
+function move(d){
+  if(!QUEUE.length)return;
+  commitFocus();
+  cur=Math.max(0,Math.min(QUEUE.length-1,cur+d));openRoute(QUEUE[cur].id);
+}
 
 // ── autosave helpers ─────────────────────────────
 function save(field,value){
+  const rid=R.id;   // captured NOW — the debounced write must never hit the next route
   clearTimeout(saveTimers[field]);
   saveTimers[field]=setTimeout(async()=>{
-    try{await api('/route/'+R.id,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({[field]:value})});toast('saved '+field)}
+    try{await api('/route/'+rid,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({[field]:value})});toast('saved '+field)}
     catch(e){toast('⚠ '+e)}
   },450);
+}
+function commitFocus(){   // blur a focused editor so its onchange saves before an action
+  const el=document.activeElement;
+  if(el&&(el.tagName==='TEXTAREA'||el.tagName==='INPUT'||el.tagName==='SELECT'))el.blur();
 }
 function saveTags(){
   api('/route/'+R.id,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({tags:R.tags})})
@@ -251,25 +261,25 @@ function factInput(label,field,val,opts,missing){
       opts.map(o=>`<option ${o==val?'selected':''}>${o}</option>`).join('')+`</select>`;
     return `<div class="${cls}"><b>${label}</b>${sel}</div>`;
   }
-  return `<div class="${cls}"><b>${label}</b><input value="${val??''}" onchange="save('${field}',this.value===''?null:(isNaN(this.value)?this.value:+this.value))"></div>`;
+  return `<div class="${cls}"><b>${label}</b><input value="${esc(val)}" onchange="save('${field}',this.value===''?null:(isNaN(this.value)?this.value:+this.value))"></div>`;
 }
 function renderCard(){
   const r=R, s=r.status, chipCls=r.tagged_by==='human'?'human':'';
   const seasonSet=new Set(r.best_season||[]);
   $('main').innerHTML=`
   <div class="card">
-    <div class="rt-head"><h2>${r.name}</h2><span class="grade">${r.original_grade||'—'}</span>
+    <div class="rt-head"><h2>${esc(r.name)}</h2><span class="grade">${esc(r.original_grade)||'—'}</span>
       <span class="statuschip ${s==='publish'?'pub':s==='quarantined'?'quar':r.needs_field_check?'field':''}">
         ${s==='publish'?'✓ published':s==='quarantined'?'✕ quarantined':(r.needs_field_check?'🥾 field check':'draft · '+r.tagged_by+'-tagged')}</span>
-      <span class="crag">${(r.path_tokens||[]).join(' › ')} · ${r.eff_rock_code||'rock?'} · ${r.eff_aspect||'aspect?'} · <span style="font-family:var(--mono)">#${r.id}</span></span></div>
+      <span class="crag">${esc((r.path_tokens||[]).join(' › '))} · ${r.eff_rock_code||'rock?'} · ${r.eff_aspect||'aspect?'} · <span style="font-family:var(--mono)">#${r.id}</span></span></div>
     <div class="facts">
       <div class="fact${!r.grade_system_code?' miss':''}" style="grid-column:span 2"><b>grade system — the scale this grade is in</b>
         <select onchange="save('grade_system_code',this.value||null);R.grade_system_code=this.value||null;renderCard()"><option value="">pick the scale…</option>
           ${(ENUMS.grade_systems||[]).map(g=>`<option value="${g.code}" ${g.code==r.grade_system_code?'selected':''}>${g.code} — ${g.name} (${g.region})</option>`).join('')}
         </select></div>
       <div class="fact${r.grade_warning?' miss':''}" title="${r.grade_warning||'grade in the selected system'}"><b>grade ${r.grade_warning?'⚠':''}</b>
-        <input list="gradeLadder" value="${r.original_grade??''}" placeholder="${GRADE_EG[r.grade_system_code]||''}" onchange="saveGrade(this.value)">
-        <datalist id="gradeLadder">${((ENUMS.grade_ladder||{})[r.grade_system_code]||[]).map(g=>`<option value="${g}">`).join('')}</datalist></div>
+        <input list="gradeLadder" value="${esc(r.original_grade)}" placeholder="${GRADE_EG[r.grade_system_code]||''}" onchange="saveGrade(this.value)">
+        <datalist id="gradeLadder">${((ENUMS.grade_ladder||{})[r.grade_system_code]||[]).map(g=>`<option value="${esc(g)}">`).join('')}</datalist></div>
       ${factInput('length m','length_m',r.length_m)}
       ${factInput('pitches','pitches_count',r.pitches_count)}
       ${factInput('incline','incline_code',r.incline_code,ENUMS.incline)}
@@ -291,7 +301,7 @@ function renderCard(){
     <div class="sec">tags <small>— click to drop · dashed = ${r.tagged_by}-tagged, solid = human-verified · they turn solid on publish</small></div>
     ${FAMS.map(([f,extra])=>`<div class="chips" style="margin-bottom:5px">
         <span class="minor" style="width:76px">${f}</span>
-        ${(r.tags[f]||[]).map(t=>`<span class="chip ${chipCls} ${extra}" onclick="dropTag('${f}','${t}')">${t}</span>`).join('')}
+        ${(r.tags[f]||[]).map(t=>`<span class="chip ${chipCls} ${extra}" onclick="dropTag('${f}',decodeURIComponent('${encodeURIComponent(t)}'))">${esc(t)}</span>`).join('')}
         <select onchange="addTag('${f}',this.value);this.value=''"><option value="">+ add</option>
           ${(ENUMS[f]||[]).filter(v=>!(r.tags[f]||[]).includes(v)).map(v=>`<option>${v}</option>`).join('')}</select>
       </div>`).join('')}
@@ -315,12 +325,12 @@ function renderCard(){
     <textarea rows="2" onchange="save('curation_notes',this.value||null)">${esc(r.curation_notes)}</textarea>
   </div>`;
 }
-const esc=s=>(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;');
+const esc=s=>String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 function pitchRowHtml(p,i){
   return `<div class="pitchrow" data-i="${i}">
     <input value="${p.number||i+1}" title="No.">
-    <input value="${p.length_m??''}" placeholder="m" title="length m">
-    <input value="${p.original_grade??''}" placeholder="grade" title="grade">
+    <input value="${esc(p.length_m)}" placeholder="m" title="length m">
+    <input value="${esc(p.original_grade)}" placeholder="grade" title="grade">
     <textarea placeholder="moves, crux, belay…">${esc(p.description)}</textarea>
     <button onclick="this.parentNode.remove()" title="remove">✕</button></div>`;
 }
@@ -385,7 +395,7 @@ function renderRail(){
     :'<div class="receipt minor">no AI receipt (tags came with the source or a human)</div>';
   const pkRows=(r.parkings||[]).map((pk,i)=>`<div class="pkrow">
       <span class="pk-pin" style="width:18px;height:18px;font-size:10px">P${i+1}</span>
-      <input value="${(pk.label||'').replace(/"/g,'&quot;')}" placeholder="label (car park, layby…)" onchange="R.parkings[${i}].label=this.value;saveParkings()">
+      <input value="${esc(pk.label)}" placeholder="label (car park, layby…)" onchange="R.parkings[${i}].label=this.value;saveParkings()">
       <span class="ll">${(+pk.lat).toFixed(5)}, ${(+pk.lon).toFixed(5)}</span>
       <span class="x" onclick="R.parkings.splice(${i},1);saveParkings();renderRail()">✕</span></div>`).join('');
   $('rail').innerHTML=`
@@ -431,14 +441,20 @@ function saveParkings(){
 
 // ── actions ─────────────────────────────
 async function publish(){
+  if(!R)return;
+  commitFocus();
   try{await api('/route/'+R.id+'/publish',{method:'POST'});toast('✓ published — tags now human');await loadQueue();}
   catch(e){toast('⚠ '+e)}
 }
 async function quarantine(){
+  if(!R)return;
+  commitFocus();
   try{await api('/route/'+R.id+'/status/quarantined',{method:'POST'});toast('quarantined');await loadQueue();}
   catch(e){toast('⚠ '+e)}
 }
 async function fieldcheck(){
+  if(!R)return;
+  commitFocus();
   const d=await api('/route/'+R.id+'/fieldcheck',{method:'POST'});
   R.needs_field_check=d.needs_field_check;toast(d.needs_field_check?'🥾 flagged for field check':'flag removed');renderCard();loadQueue(R.id);
 }
@@ -452,8 +468,8 @@ function renderGrid(){
   $('gbody').innerHTML=QUEUE.map((r,i)=>`
    <tr onclick="cur=${i};setView('q');openRoute(${r.id})" style="cursor:pointer">
     <td><input type="checkbox" data-id="${r.id}" onclick="event.stopPropagation();selCount()"></td>
-    <td><b>${r.name}</b></td><td>${(r.path_tokens||[]).slice(2).join(' › ')||(r.path_tokens||[]).join(' › ')}</td>
-    <td class="mono">${r.original_grade||'—'}</td><td class="mono">${r.length_m||''}</td><td class="mono">${r.pitches_count||''}</td>
+    <td><b>${esc(r.name)}</b></td><td>${esc((r.path_tokens||[]).slice(2).join(' › ')||(r.path_tokens||[]).join(' › '))}</td>
+    <td class="mono">${esc(r.original_grade)||'—'}</td><td class="mono">${r.length_m||''}</td><td class="mono">${r.pitches_count||''}</td>
     <td>${'★'.repeat(r.stars||0)||'—'}</td>
     <td>${r.has_intro?'✓':'—'}</td><td class="mono">${r.n_pitches_rows||0}</td>
     <td><span class="st ${r.status==='publish'?'p':r.needs_field_check?'f':'d'}">${r.status==='publish'?'✓ pub':r.needs_field_check?'🥾':'draft'}</span></td></tr>`).join('');
@@ -488,11 +504,11 @@ async function renderTax(){
     <h2>${fam} <span class="minor">· ${rows.length} values</span></h2>
     <div class="purpose">${TAX_PURPOSE[fam]||''}</div>
     ${rows.map(r=>`<div class="taxrow">
-       <span class="code">${r.code}${fam==='hazard'?` <span class="taxflags">${r.kind==='objective'?'⛰':''}${r.safety_critical?' <span class=safe>⚠evidence</span>':''}</span>`:''}</span>
-       <input value="${(r.meaning??r.notes??'').replace(/"/g,'&quot;')}" placeholder="meaning — feeds the AI tagger"
-         onchange="taxEdit('${fam}','${r.code}','${fam==='rock'?'notes':'meaning'}',this.value)">
+       <span class="code">${esc(r.code)}${fam==='hazard'?` <span class="taxflags">${r.kind==='objective'?'⛰':''}${r.safety_critical?' <span class=safe>⚠evidence</span>':''}</span>`:''}</span>
+       <input value="${esc(r.meaning??r.notes)}" placeholder="meaning — feeds the AI tagger"
+         onchange="taxEdit('${fam}',decodeURIComponent('${encodeURIComponent(r.code)}'),'${fam==='rock'?'notes':'meaning'}',this.value)">
        <span class="use">${r.usage} route${r.usage==1?'':'s'}</span>
-       <span class="del">${r.usage?'':`<span onclick="taxDel('${fam}','${r.code}')" title="remove (unused)">✕</span>`}</span>
+       <span class="del">${r.usage?'':`<span onclick="taxDel('${fam}',decodeURIComponent('${encodeURIComponent(r.code)}'))" title="remove (unused)">✕</span>`}</span>
      </div>`).join('')}
     <div class="taxadd">
       <input id="nc-${fam}" placeholder="new code (kebab-case)">

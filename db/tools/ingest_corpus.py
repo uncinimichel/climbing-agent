@@ -36,6 +36,7 @@ except ImportError:
 
 ROOT = Path(__file__).resolve().parents[2]
 CORPUS = ROOT / "db" / "corpus.json"
+ENRICH_CACHE = ROOT / "db" / "enrichment-cache.json"
 MP_SNAPSHOT = ROOT / "db" / "mp-climbs.json"
 # Michel's own site source — the RICH per-climb record (intro, approach prose,
 # pitchInfo with per-pitch markup). Preferred over the flattened snapshot when
@@ -105,7 +106,8 @@ def upsert_route(cur, area_pg_id: int, r: dict, mp: dict | None) -> int | None:
             grade_system_code, original_grade, trad_grade, tech_grade, data_grade,
             protection_code, protection_style, belays,
             approach_time_min, approach_difficulty,
-            rack, rope, descent_method, descent_notes,
+            rack, rope, descent_method, descent_abseils, descent_notes,
+            escapable, commitment_code, wind_exposed,
             curation_notes, needs_field_check, curated_at,
             elevation_m, sun_window_code, best_season, stars,
             intro_html, approach_html, pitch_info_html, geom, timezone)
@@ -114,7 +116,8 @@ def upsert_route(cur, area_pg_id: int, r: dict, mp: dict | None) -> int | None:
             %(gsys)s, %(og)s, %(tg)s, %(teg)s, %(dg)s,
             COALESCE(%(prot)s, 'UNSPECIFIED'), %(pstyle)s, %(belays)s,
             %(atime)s, %(adiff)s,
-            %(rack)s, %(rope)s, %(descm)s, %(descn)s,
+            %(rack)s, %(rope)s, %(descm)s, %(descab)s, %(descn)s,
+            %(escap)s, %(commit)s, %(windex)s,
             %(cnotes)s, COALESCE(%(nfc)s, false), %(curated_at)s,
             %(elev)s, %(sun)s, %(season)s, %(stars)s,
             %(intro)s, %(approach)s, %(pitch_html)s,
@@ -122,7 +125,10 @@ def upsert_route(cur, area_pg_id: int, r: dict, mp: dict | None) -> int | None:
                  THEN ST_SetSRID(ST_MakePoint(%(lon)s::float8, %(lat)s::float8), 4326) END,
             %(tz)s)
         ON CONFLICT (area_id, name) DO UPDATE SET
-            status = EXCLUDED.status, tagged_by = EXCLUDED.tagged_by,
+            -- a curator's quarantine outlives a stale backup (draft never un-quarantines)
+            status = CASE WHEN route.status = 'quarantined' AND EXCLUDED.status = 'draft'
+                          THEN route.status ELSE EXCLUDED.status END,
+            tagged_by = EXCLUDED.tagged_by,
             tag_prov = EXCLUDED.tag_prov,
             length_m = EXCLUDED.length_m, pitches_count = EXCLUDED.pitches_count,
             incline_code = EXCLUDED.incline_code,
@@ -131,8 +137,22 @@ def upsert_route(cur, area_pg_id: int, r: dict, mp: dict | None) -> int | None:
             trad_grade = EXCLUDED.trad_grade, tech_grade = EXCLUDED.tech_grade,
             data_grade = EXCLUDED.data_grade,
             protection_code = EXCLUDED.protection_code,
+            protection_style = EXCLUDED.protection_style, belays = EXCLUDED.belays,
+            rack = EXCLUDED.rack, rope = EXCLUDED.rope,
+            descent_method = EXCLUDED.descent_method,
+            descent_abseils = EXCLUDED.descent_abseils,
+            descent_notes = EXCLUDED.descent_notes,
+            escapable = EXCLUDED.escapable, commitment_code = EXCLUDED.commitment_code,
+            wind_exposed = EXCLUDED.wind_exposed,
+            elevation_m = EXCLUDED.elevation_m,
+            sun_window_code = EXCLUDED.sun_window_code,
+            best_season = EXCLUDED.best_season, stars = EXCLUDED.stars,
             approach_time_min = EXCLUDED.approach_time_min,
             approach_difficulty = EXCLUDED.approach_difficulty,
+            curation_notes = EXCLUDED.curation_notes,
+            needs_field_check = EXCLUDED.needs_field_check,
+            curated_at = EXCLUDED.curated_at,
+            timezone = COALESCE(EXCLUDED.timezone, route.timezone),
             intro_html = COALESCE(EXCLUDED.intro_html, route.intro_html),
             approach_html = COALESCE(EXCLUDED.approach_html, route.approach_html),
             pitch_info_html = COALESCE(EXCLUDED.pitch_info_html, route.pitch_info_html),
@@ -151,7 +171,10 @@ def upsert_route(cur, area_pg_id: int, r: dict, mp: dict | None) -> int | None:
          "pstyle": r.get("protectionStyle"), "belays": r.get("belays"),
          "atime": r.get("approachTime"), "adiff": r.get("approachDifficulty"),
          "rack": r.get("rack"), "rope": r.get("rope"),
-         "descm": r.get("descentMethod"), "descn": r.get("descentNotes"),
+         "descm": r.get("descentMethod"), "descab": r.get("descentAbseils"),
+         "descn": r.get("descentNotes"),
+         "escap": r.get("escapable"), "commit": r.get("commitment"),
+         "windex": r.get("windExposed"),
          "cnotes": r.get("curationNotes"), "nfc": r.get("needsFieldCheck"),
          "curated_at": r.get("curatedAt"),
          "elev": r.get("elevation"), "sun": r.get("sunWindow"),
@@ -177,15 +200,16 @@ def upsert_route(cur, area_pg_id: int, r: dict, mp: dict | None) -> int | None:
                 (rid, v))
 
     cur.execute("DELETE FROM route_hazard WHERE route_id = %s", (rid,))
+    hz_ev = r.get("hazardEvidence") or {}
     for hz in r.get("hazards") or []:
-        # safety-critical hazards require evidence (020 trigger) — these flags come
-        # straight from the multi-pitch.com source record
+        # real evidence rides in the export (hazardEvidence); the generic span is
+        # only the fallback for pre-2.1 backups (020 trigger needs SOMETHING)
+        ev = hz_ev.get(hz) or {}
         cur.execute(
             """INSERT INTO route_hazard (route_id, hazard_code, evidence_span, source_url)
-               VALUES (%s, %s, 'multi-pitch.com source flag',
-                       'https://multi-pitch.com/data/data.json')
-               ON CONFLICT DO NOTHING""",
-            (rid, hz))
+               VALUES (%s, %s, %s, %s) ON CONFLICT DO NOTHING""",
+            (rid, hz, ev.get("span") or "multi-pitch.com source flag",
+             ev.get("url") or "https://multi-pitch.com/data/data.json"))
 
     cur.execute("DELETE FROM route_climatology WHERE route_id = %s", (rid,))
     for m in r.get("climatology") or []:
@@ -200,20 +224,18 @@ def upsert_route(cur, area_pg_id: int, r: dict, mp: dict | None) -> int | None:
          "grade_system_code": p.get("gradeSys"), "original_grade": p.get("grade"),
          "description": p.get("description")}
         for p in (r.get("pitchRows") or []) if p.get("number")]
+    if pitch_rows:
+        cur.execute("DELETE FROM pitch WHERE route_id = %s", (rid,))
     for p in pitch_rows:
         cur.execute(
             """INSERT INTO pitch (route_id, number, length_m, grade_system_code,
                                   original_grade, description)
                VALUES (%(rid)s, %(number)s, %(length_m)s, %(grade_system_code)s,
                        %(original_grade)s, %(description)s)
-               ON CONFLICT (route_id, number) DO UPDATE SET
-                   length_m = EXCLUDED.length_m,
-                   original_grade = EXCLUDED.original_grade,
-                   description = EXCLUDED.description""",
+               ON CONFLICT (route_id, number) DO NOTHING""",
             {"rid": rid, **p})
 
-    parkings = r.get("parkings") or ([{"label": "parking", "lat": r["parking"][0], "lon": r["parking"][1]}]
-                                     if r.get("parking") else [])
+    parkings = r.get("parkings") or []
     if parkings:
         cur.execute("DELETE FROM route_parking WHERE route_id = %s", (rid,))
         for i, pk in enumerate(parkings, 1):
@@ -222,12 +244,15 @@ def upsert_route(cur, area_pg_id: int, r: dict, mp: dict | None) -> int | None:
                    VALUES (%s, %s, ST_SetSRID(ST_MakePoint(%s, %s), 4326), %s)""",
                 (rid, pk.get("label") or "parking", pk["lon"], pk["lat"], i))
 
-    if str(r["id"]).startswith("mp-"):
+    refs = r.get("refs") or ([{"source": "multipitch", "id": str(r["id"])[3:],
+                               "url": "https://multi-pitch.com/"}]
+                             if str(r["id"]).startswith("mp-") else [])
+    for ref in refs:
         cur.execute(
             """INSERT INTO external_ref (entity_type, entity_id, source_id, external_id, url)
-               VALUES ('route', %s, 'multipitch', %s, %s)
+               VALUES ('route', %s, %s, %s, %s)
                ON CONFLICT (source_id, external_id) DO NOTHING""",
-            (rid, str(r["id"])[3:], "https://multi-pitch.com/"))
+            (rid, ref["source"], str(ref["id"]), ref.get("url")))
     return rid
 
 
@@ -256,9 +281,16 @@ def main():
         n_areas += 1
 
     # 2. routes (numeric ids are DB-born curated rows — already here, protected anyway)
+    area_memo: dict[str, int] = {}
+
+    def area_pg_id(slug_id):
+        if slug_id not in area_memo:
+            area_memo[slug_id] = route_mapping.ensure_area(conn, slug_id)
+        return area_memo[slug_id]
+
     with conn.cursor() as cur:
         for r in corpus["routes"]:
-            area_pg = route_mapping.ensure_area(conn, r["area"]) if r.get("area") else None
+            area_pg = area_pg_id(r["area"]) if r.get("area") else None
             if area_pg is None:
                 print(f"[warn] {r['id']} has no area — skipped", file=sys.stderr)
                 continue
@@ -270,11 +302,54 @@ def main():
                 n_routes += 1
     conn.commit()
 
+    # 3. apply ai_tag.py's enrichment cache to the DB (the merge the #34 rewrite lost:
+    #    ai_tag writes the cache; THIS is what lands it in Postgres). LLM output never
+    #    touches a human-tagged row; applied rows are stamped taggedBy:llm + tagProv.
+    n_enriched = 0
+    if ENRICH_CACHE.exists():
+        enrich = json.loads(ENRICH_CACHE.read_text())
+        with conn.cursor() as cur:
+            for key, e in enrich.items():
+                if not key.startswith("mp-") or not isinstance(e, dict):
+                    continue
+                cur.execute(
+                    """SELECT r.id FROM route r JOIN external_ref x
+                         ON x.entity_type = 'route' AND x.entity_id = r.id
+                       WHERE x.source_id = 'multipitch' AND x.external_id = %s
+                         AND r.tagged_by <> 'human'""", (key[3:],))
+                row = cur.fetchone()
+                if not row:
+                    continue
+                rid = row["id"]
+                for table, col, values in (
+                    ("route_feature", "feature_code", e.get("features")),
+                    ("route_character", "character_code", e.get("character")),
+                    ("route_discipline", "discipline_code", e.get("discipline")),
+                ):
+                    if not values:
+                        continue
+                    if table != "route_discipline":   # disciplines are additive
+                        cur.execute(f"DELETE FROM {table} WHERE route_id = %s", (rid,))
+                    for v in values:
+                        cur.execute(f"INSERT INTO {table} (route_id, {col}) VALUES (%s, %s) "
+                                    "ON CONFLICT DO NOTHING", (rid, v))
+                prov = e.get("_prov") or {}
+                cur.execute(
+                    """UPDATE route SET
+                           protection_code = COALESCE(%s, protection_code),
+                           tagged_by = 'llm', tag_prov = %s, last_update = now()
+                       WHERE id = %s""",
+                    (e.get("protection"),
+                     json.dumps({"model": prov.get("model"), "date": prov.get("date")}),
+                     rid))
+                n_enriched += 1
+        conn.commit()
+
     with conn.cursor() as cur:
         cur.execute("SELECT status, tagged_by, count(*) AS n FROM route GROUP BY 1, 2 ORDER BY 1, 2")
         summary = ", ".join(f"{x['status']}/{x['tagged_by']}={x['n']}" for x in cur.fetchall())
     print(f"ingested {n_routes} routes ({n_skipped} human-tagged rows protected), "
-          f"{n_areas} corpus areas ensured → DB now: {summary}")
+          f"{n_areas} corpus areas ensured, {n_enriched} enrichment-cache merges → DB now: {summary}")
     conn.close()
 
 

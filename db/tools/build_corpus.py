@@ -44,7 +44,7 @@ def slug(s: str) -> str:
 
 AREAS_Q = r"""
 SELECT json_agg(a ORDER BY a.path_tokens) FROM (
-  SELECT ar.id AS pg_id, ar.name, ar.kind, ar.path_tokens,
+  SELECT ar.id AS pg_id, ar.parent_id, ar.name, ar.kind, ar.path_tokens,
          ar.eff_grade_context, a.grade_context, a.rock_code, a.aspect,
          ST_Y(a.geom::geometry) AS lat, ST_X(a.geom::geometry) AS lon,
          p.name AS parent_name
@@ -60,11 +60,12 @@ SELECT json_agg(r ORDER BY r.path_tokens, r.name) FROM (
     rr.length_m, rr.pitches_count, rr.incline_code, rr.data_grade,
     rr.grade_system_code, rr.original_grade, rr.trad_grade, rr.tech_grade,
     rr.protection_code, rr.protection_style, rr.belays, rr.rack, rr.rope,
+    rr.escapable, rr.commitment_code, rr.timezone,
     rr.approach_time_min, rr.approach_difficulty,
     rr.descent_method, rr.descent_abseils, rr.descent_notes,
     rr.elevation_m, rr.sun_window_code, rr.wind_exposed, rr.best_season, rr.stars,
     rr.intro_html, rr.approach_html, rr.pitch_info_html,
-    (SELECT name FROM area WHERE id = rr.area_id) AS area_name,
+    rr.area_id, (SELECT name FROM area WHERE id = rr.area_id) AS area_name,
     ST_Y(rr.geom::geometry) AS lat, ST_X(rr.geom::geometry) AS lon,
     (SELECT json_agg(json_build_object('label', label,
         'lat', ST_Y(geom::geometry), 'lon', ST_X(geom::geometry)) ORDER BY ord, id)
@@ -73,6 +74,8 @@ SELECT json_agg(r ORDER BY r.path_tokens, r.name) FROM (
     (SELECT array_agg(feature_code ORDER BY feature_code) FROM route_feature f WHERE f.route_id = rr.id) AS features,
     (SELECT array_agg(character_code ORDER BY character_code) FROM route_character c WHERE c.route_id = rr.id) AS "character",
     (SELECT array_agg(hazard_code ORDER BY hazard_code) FROM route_hazard h WHERE h.route_id = rr.id) AS hazards,
+    (SELECT json_object_agg(hazard_code, json_build_object('span', evidence_span, 'url', source_url))
+        FROM route_hazard h WHERE h.route_id = rr.id) AS hazard_evidence,
     (SELECT json_agg(json_build_object('number', number, 'length', length_m,
         'gradeSys', grade_system_code, 'grade', original_grade,
         'description', description) ORDER BY number)
@@ -80,7 +83,8 @@ SELECT json_agg(r ORDER BY r.path_tokens, r.name) FROM (
     (SELECT json_agg(json_build_object('month', month, 'rainyDays', rainy_days,
         'tempHigh', temp_high, 'tempLow', temp_low) ORDER BY month)
         FROM route_climatology w WHERE w.route_id = rr.id) AS climatology,
-    (SELECT json_agg(json_build_object('source', source_id, 'id', external_id, 'url', url))
+    (SELECT json_agg(json_build_object('source', source_id, 'id', external_id, 'url', url)
+                     ORDER BY source_id, external_id)
         FROM external_ref e WHERE e.entity_type = 'route' AND e.entity_id = rr.id) AS refs
   FROM route_resolved rr
 ) r;"""
@@ -99,11 +103,29 @@ def pg_json(query: str):
     return None
 
 
-def export_area(a: dict) -> dict:
+def unique_area_ids(areas_raw: list[dict]) -> dict:
+    """pg_id → exported id. slug(name), with slug--parentslug (then --2, --3…) on
+    collision — duplicate ids silently re-parent routes on restore otherwise."""
+    by_pg, taken = {}, set()
+    for a in areas_raw:                      # sorted by path_tokens → parents first
+        base = slug(a["name"])
+        cand = base
+        if cand in taken and a.get("parent_name"):
+            cand = f"{base}--{slug(a['parent_name'])}"
+        n = 2
+        while cand in taken:
+            cand = f"{base}--{n}"
+            n += 1
+        taken.add(cand)
+        by_pg[a["pg_id"]] = cand
+    return by_pg
+
+
+def export_area(a: dict, ids: dict, parent_pg: dict) -> dict:
     toks = a["path_tokens"] or [a["name"]]
     return {
-        "id": slug(a["name"]), "name": a["name"], "kind": a["kind"],
-        "parent": slug(a["parent_name"]) if a.get("parent_name") else None,
+        "id": ids[a["pg_id"]], "name": a["name"], "kind": a["kind"],
+        "parent": ids.get(parent_pg.get(a["pg_id"])),
         "country": toks[0] if len(toks) > 1 else None,
         "region": toks[1] if len(toks) > 2 else None,
         "geoLocation": [round(a["lat"], 4), round(a["lon"], 4)] if a.get("lat") is not None else None,
@@ -113,11 +135,11 @@ def export_area(a: dict) -> dict:
     }
 
 
-def export_route(r: dict) -> dict:
+def export_route(r: dict, area_ids: dict) -> dict:
     mp_ref = next((x for x in (r.get("refs") or []) if x["source"] == "multipitch"), None)
     rid = f"mp-{mp_ref['id']}" if mp_ref else r["pg_id"]
     out = {
-        "id": rid, "pgId": r["pg_id"], "area": slug(r["area_name"]), "name": r["name"],
+        "id": rid, "pgId": r["pg_id"], "area": area_ids[r["area_id"]], "name": r["name"],
         "status": r["status"], "taggedBy": r["tagged_by"],
         "source": "curated" if r["tagged_by"] == "human" else
                   ("multi-pitch.com" if mp_ref else "crawler"),
@@ -130,11 +152,15 @@ def export_route(r: dict) -> dict:
         "belays": r.get("belays"), "rack": r.get("rack"), "rope": r.get("rope"),
         "approachTime": r.get("approach_time_min"),
         "approachDifficulty": r.get("approach_difficulty"),
-        "descentMethod": r.get("descent_method"), "descentNotes": r.get("descent_notes"),
+        "descentMethod": r.get("descent_method"),
+        "descentAbseils": r.get("descent_abseils"), "descentNotes": r.get("descent_notes"),
+        "escapable": r.get("escapable"), "commitment": r.get("commitment_code"),
+        "windExposed": r.get("wind_exposed"), "timezone": r.get("timezone"),
         "elevation": r.get("elevation_m"), "sunWindow": r.get("sun_window_code"),
         "bestSeason": r.get("best_season"), "stars": r.get("stars"),
         "disciplines": r.get("disciplines") or [], "features": r.get("features") or [],
         "character": r.get("character") or [], "hazards": r.get("hazards") or [],
+        "hazardEvidence": r.get("hazard_evidence") or {},
         "climatology": r.get("climatology") or [],
         "description": r.get("intro_html"), "approach": r.get("approach_html"),
         "pitchInfo": r.get("pitch_info_html"), "pitchRows": r.get("pitch_rows") or [],
@@ -160,18 +186,22 @@ def build():
         sys.exit("[error] Postgres unreachable (colima start && cd db && docker-compose up -d) "
                  "— corpus.json left untouched (it IS the backup)")
 
-    areas = [export_area(a) for a in areas_raw]
-    routes = [export_route(r) for r in routes_raw]
+    area_ids = unique_area_ids(areas_raw)
+    parent_pg = {a["pg_id"]: a.get("parent_id") for a in areas_raw}
+    areas = [export_area(a, area_ids, parent_pg) for a in areas_raw]
+    routes = [export_route(r, area_ids) for r in routes_raw]
 
-    # area status: publish if a human-published route hangs under it — mirrors
-    # the old curated-area semantics
-    pub_chains = set()
-    for r, raw in zip(routes, routes_raw):
+    # area status: publish if a human-published route hangs under it (walked by
+    # pg id, immune to name collisions) — mirrors the old curated-area semantics
+    pub_pg = set()
+    for r in routes_raw:
         if r["status"] == "publish":
-            for tok in raw["path_tokens"] or []:
-                pub_chains.add(slug(tok))
-    for a in areas:
-        if a["id"] in pub_chains:
+            node = r["area_id"]
+            while node is not None and node not in pub_pg:
+                pub_pg.add(node)
+                node = parent_pg.get(node)
+    for a, raw in zip(areas, areas_raw):
+        if raw["pg_id"] in pub_pg:
             a["status"], a["source"] = "publish", "curated"
 
     pub_a = sum(a["status"] == "publish" for a in areas)

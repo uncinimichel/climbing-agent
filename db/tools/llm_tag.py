@@ -165,10 +165,19 @@ def write_tags(conn, route_id: int, tag: dict, enums: dict) -> list[str]:
         incline = None
 
     with conn.cursor() as cur:
+        # governance #32/#34: LLM output is stamped taggedBy:llm with provenance and
+        # never overwrites a human-verified row
         cur.execute(
-            "UPDATE route SET protection_code = %s, protection_style = %s, belays = %s, incline_code = %s WHERE id = %s",
+            """UPDATE route SET protection_code = %s, protection_style = %s, belays = %s,
+                   incline_code = %s, tagged_by = 'llm',
+                   tag_prov = jsonb_build_object('model', 'claude-cli', 'date', to_char(now(), 'YYYY-MM-DD')),
+                   last_update = now()
+               WHERE id = %s AND tagged_by <> 'human'""",
             (protection, protection_style, belays, incline, route_id),
         )
+        if cur.rowcount == 0:
+            conn.commit()
+            return flagged + ["skipped: human-tagged row"]
     conn.commit()
 
     for h in tag.get("hazards", []):

@@ -41,7 +41,7 @@
    {
     "code": "multi-pitch",
     "meaning": "Multiple rope-lengths with belay stances (the platform's focus).",
-    "usage": 224
+    "usage": 218
    },
    {
     "code": "scrambling",
@@ -71,7 +71,7 @@
    {
     "code": "trad",
     "meaning": "Leader-placed removable protection.",
-    "usage": 226
+    "usage": 220
    },
    {
     "code": "via-ferrata",
@@ -562,7 +562,7 @@
     "code": "UNSPECIFIED",
     "meaning": "Protection not yet assessed — the honest default.",
     "sort_order": null,
-    "usage": 176
+    "usage": 170
    },
    {
     "code": "X",

@@ -5,6 +5,7 @@
 SET search_path = climbing, public;
 
 -- discipline (15 values)
+DELETE FROM discipline WHERE code NOT IN ('aid', 'alpine', 'big-wall', 'bouldering', 'deepwatersolo', 'ice', 'mixed', 'multi-pitch', 'scrambling', 'single-pitch', 'snow', 'sport', 'tr', 'trad', 'via-ferrata');
 INSERT INTO discipline (code, meaning) VALUES
     ('aid', 'Weighting gear to progress (A/C grades).'),
     ('alpine', 'Mountain approach, altitude, mixed commitment.'),
@@ -24,6 +25,7 @@ INSERT INTO discipline (code, meaning) VALUES
 ON CONFLICT (code) DO UPDATE SET meaning = EXCLUDED.meaning;
 
 -- feature (17 values)
+DELETE FROM feature WHERE code NOT IN ('arête', 'bulge', 'chimney', 'corner', 'crack', 'face', 'flake', 'groove', 'gully', 'offwidth', 'pillar', 'pockets', 'ramp', 'ridge', 'roof', 'slab', 'tufa');
 INSERT INTO feature (code, meaning) VALUES
     ('arête', 'A narrow outward-pointing edge or prow — climbed on or beside it, exposed on both sides.'),
     ('bulge', 'A rounded steepening passed in a move or two — "pull through the bulge"; smaller than a roof.'),
@@ -45,6 +47,7 @@ INSERT INTO feature (code, meaning) VALUES
 ON CONFLICT (code) DO UPDATE SET meaning = EXCLUDED.meaning;
 
 -- character (11 values)
+DELETE FROM character WHERE code NOT IN ('crimpy', 'delicate', 'exposed', 'fingery', 'fluttery', 'powerful', 'pumpy', 'reachy', 'rounded', 'sustained', 'technical');
 INSERT INTO character (code, meaning) VALUES
     ('crimpy', 'Specifically small-edge crimping.'),
     ('delicate', 'Balance/friction climbing; precision under little security.'),
@@ -60,6 +63,7 @@ INSERT INTO character (code, meaning) VALUES
 ON CONFLICT (code) DO UPDATE SET meaning = EXCLUDED.meaning;
 
 -- hazard (17 values)
+DELETE FROM hazard WHERE code NOT IN ('abseil', 'altitude', 'avalanche', 'boat', 'cornice', 'crevasse', 'grassLedges', 'loose', 'nesting-birds', 'polished', 'rockfall', 'seepage', 'serac', 'stormExposed', 'tidal', 'traverse', 'vegetated');
 INSERT INTO hazard (code, kind, meaning, safety_critical, feeds) VALUES
     ('abseil', 'route', 'Requires an abseil (approach/descent).', false, 'gear & planning'),
     ('altitude', 'objective', 'High enough for thin air / altitude effects.', true, 'planning'),
@@ -81,6 +85,7 @@ INSERT INTO hazard (code, kind, meaning, safety_critical, feeds) VALUES
 ON CONFLICT (code) DO UPDATE SET kind = EXCLUDED.kind, meaning = EXCLUDED.meaning, safety_critical = EXCLUDED.safety_critical, feeds = EXCLUDED.feeds;
 
 -- rock (17 values)
+DELETE FROM rock_type WHERE code NOT IN ('andesite', 'basalt', 'chalk', 'conglomerate', 'dolerite', 'dolomite', 'gabbro', 'gneiss', 'granite', 'gritstone', 'limestone', 'quartzite', 'rhyolite', 'sandstone', 'schist', 'slate', 'volcanic');
 INSERT INTO rock_type (code, friction_dry, seeps, fragile_when_wet, notes) VALUES
     ('andesite', NULL, false, false, 'Volcanic; blocky, variable quality.'),
     ('basalt', NULL, false, false, 'Columnar jointing gives parallel crack systems; moderate drying.'),
@@ -102,6 +107,7 @@ INSERT INTO rock_type (code, friction_dry, seeps, fragile_when_wet, notes) VALUE
 ON CONFLICT (code) DO UPDATE SET friction_dry = EXCLUDED.friction_dry, seeps = EXCLUDED.seeps, fragile_when_wet = EXCLUDED.fragile_when_wet, notes = EXCLUDED.notes;
 
 -- sun_window (4 values)
+DELETE FROM sun_window WHERE code NOT IN ('afternoon', 'all-day', 'morning', 'shade');
 INSERT INTO sun_window (code, meaning) VALUES
     ('afternoon', 'Sun from around midday (roughly W-facing) — cold starts, warm finishes.'),
     ('all-day', 'Open to the sun most of the day (roughly S-facing) — dries fast, hot in summer.'),
@@ -110,6 +116,7 @@ INSERT INTO sun_window (code, meaning) VALUES
 ON CONFLICT (code) DO UPDATE SET meaning = EXCLUDED.meaning;
 
 -- protection (8 values)
+DELETE FROM protection_grade WHERE code NOT IN ('G', 'PG', 'PG-13', 'R', 'runout', 'terrain', 'UNSPECIFIED', 'X');
 INSERT INTO protection_grade (code, meaning, sort_order) VALUES
     ('G', 'Solid, plentiful protection.', 0),
     ('PG', 'Good protection, generally safe.', 1),

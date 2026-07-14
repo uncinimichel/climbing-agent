@@ -55,7 +55,7 @@ since #35 you extend them in the **Curation Studio → Taxonomy tab**, which reg
 | `discipline` | set | `trad` `sport` `multi-pitch` `single-pitch` `alpine` `big-wall` `bouldering` `ice` `mixed` `snow` `aid` `deepwatersolo` `tr` `via-ferrata` `scrambling` |
 | `feature` | set (opt.) | `slab` `face` `crack` `ridge` `arête` `chimney` `corner` `groove` `roof` `offwidth` `flake` `tufa` `pockets` `pillar` `bulge` `gully` `ramp` |
 | `character` | set (opt.) | `sustained` `pumpy` `powerful` `technical` `fingery` `crimpy` `reachy` `delicate` `exposed` `fluttery` `rounded` |
-| `rock` | one | `granite` `limestone` `dolerite` `rhyolite` `sandstone` `gritstone` `gabbro` `quartzite` `volcanic` `dolomite` `slate` `gneiss` `schist` `basalt` `conglomerate` `andesite` |
+| `rock` | one | `granite` `limestone` `dolerite` `rhyolite` `sandstone` `gritstone` `gabbro` `quartzite` `volcanic` `dolomite` `slate` `gneiss` `schist` `basalt` `conglomerate` `andesite` `chalk` |
 | `protection` | one | `G` `PG` `PG-13` `R` `X` `runout` `terrain` `UNSPECIFIED` |
 | `protectionStyle` | one | `gear` `bolted` `mixed` `none` — how the route protects overall |
 | `belays` | one | `gear` `bolted` `mixed` — belay/anchor type (key multi-pitch fact) |

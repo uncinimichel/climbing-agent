@@ -35,10 +35,13 @@ def taxonomy_enums():
     """Allowed code sets per lookup table, parsed from the taxonomy seed (the
     queryable mirror of taxonomy.md). Each row starts `('code', …)`."""
     sql = _read(ROOT / "db" / "sql" / "100_seed_taxonomy.sql")
+    ext = ROOT / "db" / "sql" / "105_taxonomy_extensions.sql"
+    if ext.exists():   # studio-managed values (decision #35) extend the base seed
+        sql += "\n" + _read(ext)
     out = {}
     for chunk in re.split(r"INSERT INTO ", sql)[1:]:
         name = re.match(r"(\w+)", chunk).group(1)
-        out[name] = set(re.findall(r"\(\s*'([^']*)'", chunk))
+        out.setdefault(name, set()).update(re.findall(r"\(\s*'([^']*)'", chunk))
     return out
 
 
@@ -78,7 +81,9 @@ class CorpusIntegrity(unittest.TestCase):
         self.assertEqual(n["routes"], len(self.routes))
         self.assertEqual(n["areas"], len(self.c["areas"]))
         self.assertEqual(n["routesCurated"], sum(r["status"] == "publish" for r in self.routes))
-        self.assertEqual(n["routesSeeded"], sum(r["status"] != "publish" for r in self.routes))
+        self.assertEqual(n["routesSeeded"], sum(r["status"] == "draft" for r in self.routes))
+        self.assertEqual(n.get("routesQuarantined", 0),
+                         sum(r["status"] == "quarantined" for r in self.routes))
         self.assertEqual(n["areasCurated"], sum(a["status"] == "publish" for a in self.c["areas"]))
 
     def test_area_refs_resolve(self):

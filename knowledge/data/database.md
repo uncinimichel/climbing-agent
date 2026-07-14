@@ -71,6 +71,7 @@ Postgres as the later semantic tier — see
 | Facets & flags | `route_discipline` · `route_feature` · `route_character` · `route_hazard` (+ evidence trigger) |
 | Provenance & interop | `provenance` · `external_ref` · `source` · `route_reference` · `guidebook` · `route_guidebook` |
 | Conditions | `route_climatology` (per-month rainyDays/tempH/tempL) |
+| Curation (#34/#35) | `route.tagged_by/tag_prov/curation_notes/needs_field_check/curated_at` (025, CHECK publish ⇒ human-tagged) · `route_parking` — multiple labelled pins (028) · `feature.meaning`/`sun_window.meaning` (026) · `105_taxonomy_extensions.sql` GENERATED from the DB by `export_taxonomy.py` |
 | Views | `area_resolved` · `route_resolved` (inheritance) |
 
 ## Running it
