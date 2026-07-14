@@ -67,6 +67,7 @@ input[type=date]{font-family:var(--mono);font-size:12.5px}
 .seg{display:flex;gap:6px;flex-wrap:wrap}
 .seg button{font-family:var(--mono);font-size:11.5px;padding:6px 13px;border-radius:7px;border:1px solid var(--line2);background:var(--card);color:var(--muted)}
 .seg button.on{color:var(--bg);background:var(--ink);border-color:var(--ink);font-weight:600}
+.flexline{font-family:var(--mono);font-size:10.5px;color:var(--dry);border:1px solid rgba(87,166,100,.4);background:var(--dry-bg);border-radius:6px;padding:4px 9px;width:fit-content;margin-top:6px}
 .trav{display:grid;grid-template-columns:minmax(110px,.8fr) minmax(150px,1.2fr) minmax(140px,1fr) auto;gap:10px;align-items:start;padding:12px 0;border-top:1px solid var(--line)}
 .trav:first-of-type{border-top:0;padding-top:2px}
 .trav .fld{min-width:0}
@@ -142,7 +143,8 @@ input[type=date]{font-family:var(--mono);font-size:12.5px}
             <button type="button" data-flex="3">± 3 days</button>
           </div>
           <span class="hint">If shifting the whole trip finds a cheaper flight, the dashboard shows
-          "Leave 1 day earlier: save £42" on the top venue. Your dates stay in charge — this only informs.</span>
+          it on the top venue. Your dates stay in charge — this only informs.</span>
+          <span class="flexline" id="f-flexline" hidden></span>
         </div>
         <div class="fld" id="status-fld" hidden>
           <label id="st-lbl">Status</label>
@@ -336,7 +338,7 @@ function renderPills(){
 
 /* ---------- open create / edit ---------- */
 function openCreate(){
-  editing=null;
+  editing=null;$('f-flexline').hidden=true;
   $('f-title').textContent='New trip';$('f-status').innerHTML='';
   $('errbox').style.display='none';$('travs').innerHTML='';
   $('f-name').value='';$('f-out').value='';$('f-back').value='';
@@ -356,6 +358,8 @@ function openEdit(slug){
   $('errbox').style.display='none';$('travs').innerHTML='';
   $('f-name').value=t.name;$('f-out').value=t.start;$('f-back').value=t.end;
   segInit('f-flex','data-flex',t.flex_days||0);segInit('f-st','data-st',t.status);
+  var flx=$('f-flexline');
+  if(t._flexLine){flx.hidden=false;flx.textContent='\ud83d\udcc5 Found today: '+t._flexLine}else{flx.hidden=true}
   $('status-fld').hidden=false;$('danger').hidden=false;
   if(editingSheet){
     $('venues-fs').style.display='none';   // list curated by the Google Sheet

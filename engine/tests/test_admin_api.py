@@ -109,6 +109,7 @@ def test_delete_keeps_dir_and_refuses_last_trip(client, tmp_path):
 
 def test_slug_and_dir_are_not_editable_via_put(client, tmp_path):
     body = _draft("ni-july-2026")
+    body["venues"] = []                      # NI is sheet-curated; no picks
     body["trip"]["slug"] = "sneaky-rename"
     body["trip"]["dir"] = "somewhere-else"
     assert client.put("/api/trips/ni-july-2026", json=body).status_code == 200
@@ -149,3 +150,38 @@ def test_listing_venue_counts_respect_sheet_merge(client):
     by = {t["slug"]: t for t in trips_}
     assert len(by["ni-july-2026"]["_venueNames"]) >= 13     # merged when csv present
     assert by["test-alps"]["_venueNames"] == ["Fair Head, NI"]   # exactly its own list
+
+
+def test_put_preserves_title_and_sheet_merge(client, tmp_path):
+    """A client that doesn't echo server-owned fields must not strip them —
+    losing sheet_merge would silently shrink NI from 42 ranked areas to 13."""
+    body = _draft("ni-july-2026")
+    body["venues"] = []                      # NI is sheet-curated; no picks
+    body["trip"]["status"] = "live"          # minimal client payload, no title/sheet_merge
+    assert client.put("/api/trips/ni-july-2026", json=body).status_code == 200
+    ni = json.loads((tmp_path / "trips.json").read_text())["trips"][0]
+    assert ni.get("sheet_merge") is True
+    assert ni.get("title", "").startswith("Climbing trip")
+
+
+def test_create_rejects_unknown_or_empty_picks(client, tmp_path):
+    bad = _draft("typo-trip")
+    bad["venues"] = ["Atlantis Sea Cliffs"]
+    r = client.post("/api/trips", json=bad)
+    assert r.status_code == 400 and "unknown areas" in r.json()["detail"]
+    empty = _draft("empty-trip")
+    empty["venues"] = []
+    r = client.post("/api/trips", json=empty)
+    assert r.status_code == 400 and "at least one area" in r.json()["detail"]
+    # neither half-written trip may linger in the registry
+    reg = json.loads((tmp_path / "trips.json").read_text())
+    assert [t["slug"] for t in reg["trips"]] == ["ni-july-2026"]
+
+
+def test_flex_line_surfaces_saving(client, tmp_path):
+    (tmp_path / "trip-ni-july-2026" / "flights-latest.json").write_text(json.dumps({
+        "venues": {"Gredos": {"michel": {"options": [{"price": 148}]}}},
+        "flex": {"venue": "Gredos",
+                 "travellers": {"michel": [{"shift": -1, "price": 101}]}}}))
+    ni = client.get("/api/trips").json()["trips"][0]
+    assert ni["_flexLine"] == "Gredos — Michel 1d earlier: £101 (save £47)"

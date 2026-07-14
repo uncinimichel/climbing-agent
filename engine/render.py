@@ -1753,15 +1753,20 @@ def build_data(ranked, now, banner, ctx, mp_climbs, guidebooks, extra_climbing_d
             "banner": {"cls": (banner[0] or "info"), "html": banner[1]}}
 
 
-def render_page(data, tag_spec):
+def render_page(data, tag_spec, depth=0, canonical_path=""):
     """Assemble the final page from the embedded-data dict. Kept separate from
     build_html so the page can be re-rendered from an existing index.html's
-    window.DATA without re-hitting any API."""
+    window.DATA without re-hitting any API.
+
+    depth/canonical_path support secondary-trip dashboards (trips/<slug>/,
+    decision #33 M3): internal hrefs get ../-prefixed and the canonical URL
+    points at the page's real address instead of the site root."""
+    pre = "../" * depth
     blob = json.dumps(data, ensure_ascii=False).replace("</", "<\\/")
     # server-rendered venue links: crawlable text + the discovery path to the
     # static venues/ pages, since the SPA's own nav is JS + #hashes
     links = "".join(
-        f'<a href="venues/{_slug(v["shortName"])}.html">{_esc(v["shortName"])} ({_esc(v["country"])})</a>'
+        f'<a href="{pre}venues/{_slug(v["shortName"])}.html">{_esc(v["shortName"])} ({_esc(v["country"])})</a>'
         for v in data["venues"])
     footer = ('<footer class="allv"><div class="eyebrow">All climbing areas</div><nav>'
               + links + '</nav><div class="allv-note">Multi-pitch venues ranked daily by weather · '
@@ -1772,15 +1777,22 @@ def render_page(data, tag_spec):
     tagleg = json.dumps(tag_spec.legend, ensure_ascii=False).replace("</", "<\\/")
     homes = ", ".join(f"{_esc(t['from'])} for {_esc(t['name'])}"
                       for t in (data["trip"].get("travellers") or []) if t.get("from"))
-    return (PAGE_HEAD.replace("/*TAG_CSS*/", tag_spec.css)
+    head = PAGE_HEAD.replace("/*TAG_CSS*/", tag_spec.css)
+    if canonical_path:
+        head = head.replace(f'<link rel="canonical" href="{PAGES_BASE}">',
+                            f'<link rel="canonical" href="{PAGES_BASE}{canonical_path}">')
+    body = (PAGE_BODY.replace("%%TRAVELLER_HOMES%%", homes or "each traveller's home")
+                     .replace("%%NAV%%", nav_html(depth))
+                     .replace('href="knowledge/', f'href="{pre}knowledge/'))
+    js = PAGE_JS.replace('href="knowledge/', f'href="{pre}knowledge/')
+    return (head
             + "\n<script>window.DATA=" + blob
             + ";window.TAGT=" + tagt + ";window.TAGLEG=" + tagleg
             + ";window.TAGFAM=" + json.dumps(tag_spec.fam_of)
             + ";window.TAGFAMS=" + json.dumps(tag_spec.fams_meta, ensure_ascii=False) + ";</script>\n"
-            + PAGE_BODY.replace("%%TRAVELLER_HOMES%%", homes or "each traveller's home")
-                        .replace("%%NAV%%", nav_html(0))
+            + body
             + footer
-            + "<script>" + PAGE_JS + "</script>\n</body></html>\n")
+            + "<script>" + js + "</script>\n</body></html>\n")
 
 
 def build_html(ranked, now, banner, ctx, mp_climbs, guidebooks, extra_climbing_data, tag_spec):

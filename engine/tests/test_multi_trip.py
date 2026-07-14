@@ -70,6 +70,11 @@ def test_multi_trip_renders_both_dashboards():
         assert len(mt["venues"]) == len(picks)
         assert mt["trip"]["pills"][0] == "✈ Rob · Sheffield"
         assert mt["trip"]["travellers"] == [{"key": "rob", "name": "Rob", "from": "Sheffield"}]
+        html = (SCRATCH / "index.html").read_text()
+        assert '"../../knowledge/index.html"' in html      # nav ../-prefixed (depth 2)
+        assert 'href="knowledge/' not in html              # no root-relative leftovers
+        assert 'href="../../venues/' in html               # footer venue links
+        assert 'canonical" href="https://uncinimichel.github.io/climbing-agent/trips/test-mt/"' in html
         fl = json.loads((SCRATCH / "flights-latest.json").read_text())
         assert "no key" in fl["checked_at"]           # secondary trips never spend quota
         assert (SCRATCH / "daily-report.md").exists()

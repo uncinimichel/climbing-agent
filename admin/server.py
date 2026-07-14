@@ -94,11 +94,21 @@ def _catalogue() -> list[dict]:
     return out
 
 
-def _scaffold_trip_dir(trip: dict, venue_names: list[str]) -> None:
+def _resolve_picks(slug: str, names: list[str]) -> list[dict]:
+    """Catalogue dicts for the picked names — unknown names and an empty pick
+    list are errors, so a typo can't silently produce a venue-less trip."""
+    if not names:
+        raise ValueError(f"trip '{slug}': pick at least one area")
+    cat = {v["name"]: v for v in _catalogue()}
+    missing = [n for n in names if n not in cat]
+    if missing:
+        raise ValueError(f"trip '{slug}': unknown areas {missing}")
+    return [cat[n] for n in names]
+
+
+def _scaffold_trip_dir(trip: dict, venues: list[dict]) -> None:
     d = trips_mod.trip_dir(ROOT, trip)
     d.mkdir(parents=True, exist_ok=True)
-    cat = {v["name"]: v for v in _catalogue()}
-    venues = [cat[n] for n in venue_names if n in cat]
     (d / "venues.json").write_text(json.dumps({
         "trip": trip.get("title") or trip["name"],
         "target_window": {"start": trip["start"], "end": trip["end"],
@@ -152,7 +162,32 @@ def list_trips():
         else:
             t["_venueNames"] = []
         t["_dirExists"] = d.exists()
+        t["_flexLine"] = _flex_line(d)
     return data
+
+
+def _flex_line(d: Path) -> str | None:
+    """Human line for the trip's latest ±day finding, from flights-latest.json
+    — what the dashboard's green pill says, for the Manage screen."""
+    try:
+        f = json.loads((d / "flights-latest.json").read_text())
+    except Exception:
+        return None
+    fx = f.get("flex") or {}
+    trav, venue = fx.get("travellers") or {}, fx.get("venue")
+    base_all = (f.get("venues") or {}).get(venue) or {}
+    bits = []
+    for who, alts in trav.items():
+        priced = [a for a in alts if a.get("price") is not None]
+        opts = (base_all.get(who) or {}).get("options") or []
+        base = opts[0].get("price") if opts else None
+        if priced and base is not None:
+            best = min(priced, key=lambda a: a["price"])
+            if best["price"] < base:
+                d_ = best["shift"]
+                lbl = f"{-d_}d earlier" if d_ < 0 else f"{d_}d later"
+                bits.append(f"{who.title()} {lbl}: £{best['price']} (save £{base - best['price']})")
+    return f"{venue} — " + "; ".join(bits) if bits else None
 
 
 @app.get("/api/venues")
@@ -180,9 +215,10 @@ def create_trip(body: TripIn):
         raise HTTPException(400, f"a trip with slug '{trip.get('slug')}' already exists")
     try:
         trips_mod.validate_trip(trip)
+        venues = _resolve_picks(trip["slug"], body.venues)   # reject typos BEFORE any write
         data["trips"].append(trip)
         _write_registry(data)
-        _scaffold_trip_dir(trip, body.venues)
+        _scaffold_trip_dir(trip, venues)
     except ValueError as e:
         raise HTTPException(400, str(e))
     return {"ok": True, "slug": trip["slug"]}
@@ -197,6 +233,9 @@ def update_trip(slug: str, body: TripIn):
     old, new = data["trips"][idx], body.trip
     new["slug"] = slug                                   # slug is the identity; not editable
     new["dir"] = old.get("dir", f"trips/{slug}")
+    for k in ("title", "sheet_merge"):                   # server-owned; a client that
+        if k in old and k not in new:                    # doesn't echo them must not
+            new[k] = old[k]                              # silently strip them
     try:
         trips_mod.validate_trip(new)
         data["trips"][idx] = new
@@ -222,12 +261,8 @@ def _apply_venue_picks(trip: dict, names: list[str]) -> None:
     vf = d / "venues.json"
     if not vf.exists():
         raise ValueError(f"trip '{trip['slug']}': no venues.json to update")
-    cat = {v["name"]: v for v in _catalogue()}
-    missing = [n for n in names if n not in cat]
-    if missing:
-        raise ValueError(f"trip '{trip['slug']}': unknown areas {missing}")
     cfg = json.loads(vf.read_text())
-    cfg["venues"] = [cat[n] for n in names]
+    cfg["venues"] = _resolve_picks(trip["slug"], names)
     vf.write_text(json.dumps(cfg, ensure_ascii=False, indent=2) + "\n")
 
 

@@ -160,7 +160,8 @@ def run_trip(trip, repo_root, shared, serpapi_key=None, site_root=False,
     else:
         out = repo_root / "trips" / trip["slug"]
         out.mkdir(parents=True, exist_ok=True)
-        (out / "index.html").write_text(render.render_page(data, tag_spec))
+        (out / "index.html").write_text(render.render_page(
+            data, tag_spec, depth=2, canonical_path=f"trips/{trip['slug']}/"))
         where = f"trips/{trip['slug']}/index.html"
     md = render.build_md(ranked, now, banner, ctx, mp_climbs,
                           match_sheet_row=lambda name: sheet_venues.match_sheet_row(name, shared["sheet_rows"]))

@@ -56,6 +56,30 @@ def _load_context():
     return trips.context_for(trip, merged_venues, flights_cfg)
 
 
+def _all_live_venues(home_ctx):
+    """Union of venues across every live registry trip, deduped by coordinates
+    — the env layer is trip-independent (decision #24), so one fetch per venue
+    serves all trips (#33 M3). Falls back to the home trip's list if another
+    trip's config is broken (its own build will surface the error)."""
+    from engine import driver
+    seen, out = set(), []
+    for t in trips.load_trips(REPO_ROOT):
+        if t["status"] != "live":
+            continue
+        try:
+            venues = (home_ctx.venues if t["slug"] == trips.trip_for_dir(REPO_ROOT, ROOT)["slug"]
+                      else driver.trip_context(t, REPO_ROOT).venues)
+        except Exception as e:
+            print(f"[warn] skipping venues of trip '{t['slug']}': {redact(e)}", file=sys.stderr)
+            continue
+        for v in venues:
+            k = (round(v["lat"], 3), round(v["lon"], 3))
+            if k not in seen:
+                seen.add(k)
+                out.append(v)
+    return out or home_ctx.venues
+
+
 def _norm_days(fc_raw, sea_raw, tide_ex):
     """Normalized per-date view: forecast (0-16d) wins; seasonal fills the tail (~17-45d).
     Tide times are attached to forecast days for tidal venues, within the marine horizon."""
@@ -115,7 +139,7 @@ def build_env():
         "target_window": {"start": _iso(ctx.target_start), "end": _iso(ctx.target_end)},
         "venues": {},
     }
-    for v in ctx.venues:
+    for v in _all_live_venues(ctx):
         lat, lon = v["lat"], v["lon"]
         tidal = False
         try:
