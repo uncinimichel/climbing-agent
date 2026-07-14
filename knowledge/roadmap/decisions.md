@@ -540,7 +540,9 @@ all data-driven) live 13 Jul 2026. Trip window corrected to 24–28 Jul; `flex_d
 in schema (±day flight/stay alternatives — planned, see plan §Date flexibility).
 M5 admin forms stage 1 live 13 Jul (`admin/` FastAPI localhost, Playwright-verified);
 flex ±days live same day (`flights.flex_alternatives`, links free / pricing quota-capped).
-M3 (multi-trip behind flag) next; M4 root swap gated on trip end.
+M3 built + e2e-tested 14 Jul (shared cache/, engine/driver.py, MULTI_TRIP=1 loop —
+flag flip in weather.yml waits for 28 Jul); M5 stage 2 (venue editing in Manage) live
+14 Jul. M4 root swap remains gated on trip end.
 
 ---
 

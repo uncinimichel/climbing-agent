@@ -82,9 +82,16 @@ dicts (sheet-derived, michel/dan-keyed) remain per-traveller overrides; travelle
 without one fall back to the distance estimate, as designed.*
 
 **M3 — multi-trip rendering, behind `MULTI_TRIP=1`.** Driver loops live trips from
-`trips.json`: each renders to `trips/<slug>/` (own venue pages, own daily report).
+`trips.json`: each renders to `trips/<slug>/` (own daily report; per-venue pages
+and sitemap stay primary-trip-only until M4 decides their multi-trip shape).
 Nearest-departing live trip gets SerpApi pricing; the rest estimate. Includes the
 shared fetch layer below. Flag stays off in `weather.yml` until after 28 Jul.
+*✅ Built + tested 14 Jul 2026 (`75b1cae`, `a29c23f`, `d88f490`): caches moved to
+repo-root `cache/`; pipeline extracted to `engine/driver.py` (`run_trip()` +
+`load_shared()`, sheet merge now an explicit `sheet_merge` registry flag);
+end-to-end test adds a scratch live trip and proves both dashboards render with
+zero fresh fetches (0.7s — the shared cache works) and no quota spend for the
+secondary trip. Remaining: flip `MULTI_TRIP=1` in `weather.yml` after 28 Jul.*
 
 ## Shared fetch layer — one API call per venue per day, however many trips
 
@@ -163,6 +170,9 @@ new root forwards legacy `/#venue-slug` deep links to the primary trip's page;
 create (city → Open-Meteo geocode → coords + suggested airports, editable), manage
 (edit fields, status live/draft/ended, delete with confirm). Validates via
 `engine/trips.py` before writing. Only depends on M1 — can land early.
+*✅ Stage 2 shipped 14 Jul 2026 (`c8ca7ea`): venue editing in Manage for
+scaffolded trips — chip picks rewrite the trip's venues.json from the catalogue;
+sheet-curated trips (NI) stay read-only (the spreadsheet owns their list).*
 *✅ Stage 1 shipped 13 Jul 2026 (`eb66319`, `3f9203d`): `admin/server.py` +
 `admin/static/index.html`. Run `cd admin && ../agent/.venv/bin/uvicorn server:app
 --port 8764`. Create scaffolds `trips/<slug>/{venues,flights}.json` from the
