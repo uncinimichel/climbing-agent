@@ -13,7 +13,7 @@ import sys
 from datetime import date
 
 from . import weather
-from .climbs import nearby_climb_cards, nearby_climbs, venue_is_tidal
+from .climbs import nearby_climbs, venue_is_tidal
 from .geo import haversine_km
 from .http import redact
 from .render import WMO, wmo_icon

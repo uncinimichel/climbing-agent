@@ -532,6 +532,7 @@ def venue_payload(n, r, ctx, mp_climbs, guidebooks, extra_climbing_data, tag_spe
             entry["tide"] = r["tides"][dt.isoformat()]
         series.append(entry)
 
+    _li = _list_info(v, r, cards, ctx)
     return {
         "rank": n, "delta": r.get("rank_delta"), "isNew": r.get("rank_new", False),
         "name": v["name"], "shortName": short_name(v["name"]),
@@ -567,8 +568,8 @@ def venue_payload(n, r, ctx, mp_climbs, guidebooks, extra_climbing_data, tag_spe
         "tidal": tidal,
         "tags": venue_tags(v, cards, grades, tag_spec,
                             (f"{tag} · {rain}% wet days" if rain is not None else tag), tidal),
-        "listInfo": _list_info(v, r, cards, ctx)["txt"],
-        "listTemp": _list_info(v, r, cards, ctx)["temp"],
+        "listInfo": _li["txt"],
+        "listTemp": _li["temp"],
         "breakdown": r.get("breakdown"),
         "auto": bool(v.get("auto")),
     }

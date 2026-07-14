@@ -25,7 +25,6 @@ history) stays on disk. Nothing is git-committed automatically — review with
 from __future__ import annotations
 
 import json
-import re
 import sys
 import urllib.parse
 import urllib.request
@@ -200,8 +199,11 @@ def geocode(q: str):
     """Open-Meteo geocoding proxy (free, no key): city text -> candidates."""
     url = ("https://geocoding-api.open-meteo.com/v1/search?count=5&language=en&format=json&name="
            + urllib.parse.quote(q.strip()))
-    with urllib.request.urlopen(url, timeout=10) as r:
-        res = json.loads(r.read()).get("results") or []
+    try:
+        with urllib.request.urlopen(url, timeout=10) as r:
+            res = json.loads(r.read()).get("results") or []
+    except Exception:
+        res = []          # offline / provider down → "no match", not a 500
     return [{"city": x["name"], "country": x.get("country", ""),
              "lat": round(x["latitude"], 4), "lon": round(x["longitude"], 4),
              "airports": CITY_AIRPORTS.get(x["name"].lower(), [])} for x in res]
