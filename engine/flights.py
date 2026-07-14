@@ -76,6 +76,29 @@ def serp_flights(dep, arr, out_date, back_date, passengers, serpapi_key):
     }
 
 
+def _guarded_search(origin, dest, out_date, back_date, ctx, quota_guard, flight_cache, label):
+    """One SerpApi round-trip search behind the shared (route, dates) cache and
+    the quota guard — the single spend path for baseline AND flex pricing.
+    Returns the priced dict, or None (cache miss + quota refused / no result /
+    error — the caller decides the fallback)."""
+    route_key, dates_key = f"{origin}->{dest}", f"{out_date}|{back_date}"
+    f = flight_cache.get(route_key, dates_key)
+    if f is not None:
+        return f
+    if not quota_guard.can_spend(1):
+        return None
+    try:
+        f = serp_flights(origin, dest, out_date, back_date,
+                          ctx.flights_cfg["route"]["passengers"], ctx.serpapi_key)
+    except Exception as e:
+        print(f"[warn] flight lookup failed ({label}): {redact(e, ctx.serpapi_key)}", file=sys.stderr)
+        return None
+    if f:
+        quota_guard.record_spend(1)
+        flight_cache.set(route_key, dates_key, f)
+    return f
+
+
 def traveller_flight(venue, who, ctx, quota_guard=None, flight_cache=None):
     """Return a flight cell dict for one traveller to this venue."""
     quota_guard = quota_guard or AlwaysAllowQuotaGuard()
@@ -87,22 +110,10 @@ def traveller_flight(venue, who, ctx, quota_guard=None, flight_cache=None):
     out_date, back_date = ctx.rep_combo["out"], ctx.rep_combo["back"]
     origin = ctx.origin[who]
     if mode == "fly" and ctx.serpapi_key:
-        route_key = f"{origin}->{t.get('to')}"
-        dates_key = f"{out_date}|{back_date}"
-        cached = flight_cache.get(route_key, dates_key)
-        if cached is not None:
-            return cached
-        if quota_guard.can_spend(1):
-            try:
-                f = serp_flights(origin, t["to"], out_date, back_date,
-                                  ctx.flights_cfg["route"]["passengers"], ctx.serpapi_key)
-                if f:
-                    quota_guard.record_spend(1)
-                    flight_cache.set(route_key, dates_key, f)
-                    return f
-            except Exception as e:
-                print(f"[warn] flight lookup failed ({who} -> {t.get('to')}): {redact(e, ctx.serpapi_key)}",
-                      file=sys.stderr)
+        f = _guarded_search(origin, t["to"], out_date, back_date, ctx,
+                             quota_guard, flight_cache, f"{who} -> {t.get('to')}")
+        if f:
+            return f
     # no key / quota refused / no result / error: still offer a search link so it's actionable
     if mode == "fly":
         return {"mode": "fly", "options": [], "to": t.get("to"),
@@ -152,20 +163,9 @@ def flex_alternatives(venue, ctx, quota_guard=None, flight_cache=None,
             alt = {"shift": shift, "out": out.isoformat(), "back": back.isoformat(),
                    "book_url": skyscanner_url(origin.split(",")[0], t["to"],
                                                out.isoformat(), back.isoformat())}
-            f = None
-            if ctx.serpapi_key:
-                route_key, dates_key = f"{origin}->{t['to']}", f"{alt['out']}|{alt['back']}"
-                f = flight_cache.get(route_key, dates_key)
-                if f is None and quota_guard.can_spend(1):
-                    try:
-                        f = serp_flights(origin, t["to"], alt["out"], alt["back"],
-                                          ctx.flights_cfg["route"]["passengers"], ctx.serpapi_key)
-                        if f:
-                            quota_guard.record_spend(1)
-                            flight_cache.set(route_key, dates_key, f)
-                    except Exception as e:
-                        print(f"[warn] flex lookup failed ({who} {shift:+d}d -> {t.get('to')}): "
-                              f"{redact(e, ctx.serpapi_key)}", file=sys.stderr)
+            f = (_guarded_search(origin, t["to"], alt["out"], alt["back"], ctx,
+                                  quota_guard, flight_cache, f"flex {who} {shift:+d}d -> {t.get('to')}")
+                 if ctx.serpapi_key else None)
             if f and f.get("options"):
                 alt["price"] = f["options"][0]["price"]
                 alt["view_url"] = f.get("view_url") or alt["book_url"]
@@ -180,6 +180,20 @@ def flex_alternatives(venue, ctx, quota_guard=None, flight_cache=None,
         if alts:
             result[who] = alts
     return result or None
+
+
+def best_flex_saving(alts, base_price):
+    """The cheapest priced ±day alternative strictly cheaper than the baseline
+    price, with its saving — or None. The one definition behind the markdown
+    report line and the admin Manage line (the dashboard JS mirrors it
+    client-side in flexHtml)."""
+    priced = [a for a in (alts or []) if a.get("price") is not None]
+    if base_price is None or not priced:
+        return None
+    best = min(priced, key=lambda a: a["price"])
+    if best["price"] >= base_price:
+        return None
+    return dict(best, saving=base_price - best["price"])
 
 
 def price_top_venues(ranked, ctx, quota_guard=None, flight_cache=None, prev_prices=None):

@@ -17,6 +17,7 @@ import urllib.parse
 from dataclasses import dataclass
 from datetime import date, timedelta
 
+from . import flights as flights_mod
 from .climbs import SITE_URL, grade_range, nearby_climb_cards, nearby_climbs, venue_is_tidal
 from .flights import skyscanner_url
 from .stays import STAY_ADULTS, STAY_RADIUS_KM
@@ -2046,13 +2047,10 @@ def build_md(ranked, now, banner, ctx, mp_climbs, match_sheet_row=None):
         bits = []
         for who, alts in flexed["flex"].items():
             base = (((flexed.get("flights") or {}).get(who) or {}).get("options") or [])
-            base_p = base[0]["price"] if base else None
-            priced = [a for a in alts if a.get("price") is not None]
-            if priced and base_p is not None:
-                best = min(priced, key=lambda a: a["price"])
-                if best["price"] < base_p:
-                    bits.append(f"{names.get(who, who)} {best['shift']:+d}d = £{best['price']} "
-                                f"(save £{base_p - best['price']})")
+            best = flights_mod.best_flex_saving(alts, base[0]["price"] if base else None)
+            if best:
+                bits.append(f"{names.get(who, who)} {best['shift']:+d}d = £{best['price']} "
+                            f"(save £{best['saving']})")
         if bits:
             lines += ["", f"**📅 Flexible dates** (±{ctx.flex_days}d, {flexed['venue']['name']}): "
                       + "; ".join(bits)]

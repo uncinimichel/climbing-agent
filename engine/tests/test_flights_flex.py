@@ -76,3 +76,16 @@ def test_past_departures_skipped():
     fx = flights.flex_alternatives(VENUE, _ctx(2), today=date(2026, 7, 22))
     shifts = [a["shift"] for a in fx["michel"]]
     assert shifts == [-1, 1, 2]                       # −2 would depart on/before 'today'
+
+
+def test_best_flex_saving_picks_cheapest_strictly_cheaper():
+    alts = [{"shift": -1, "price": 118}, {"shift": 2, "price": 110}, {"shift": 1}]
+    best = flights.best_flex_saving(alts, 145)
+    assert best["shift"] == 2 and best["price"] == 110 and best["saving"] == 35
+
+
+def test_best_flex_saving_none_when_not_cheaper_or_unpriced():
+    assert flights.best_flex_saving([{"shift": 1, "price": 200}], 145) is None
+    assert flights.best_flex_saving([{"shift": 1}], 145) is None
+    assert flights.best_flex_saving([], 145) is None
+    assert flights.best_flex_saving([{"shift": 1, "price": 100}], None) is None

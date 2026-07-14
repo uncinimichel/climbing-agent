@@ -16,6 +16,7 @@ minimal traveller list is synthesized from flights.json's route
 traveller_origins/traveller_coords.
 """
 from dataclasses import dataclass, field
+from functools import cached_property
 from datetime import date, timedelta
 
 
@@ -129,7 +130,7 @@ class TripContext:
         return ", ".join(f"{c['out'][5:]}→{c['back'][5:]} ({c['nights']}n)"
                           for c in self.flights_cfg["combos"])
 
-    @property
+    @cached_property
     def travellers_norm(self):
         """The traveller list every consumer iterates. trips.json entries when
         present; otherwise synthesized from flights.json's route

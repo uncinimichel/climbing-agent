@@ -36,7 +36,7 @@ from pydantic import BaseModel
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
-from engine import sheet_venues, trips as trips_mod  # noqa: E402
+from engine import flights as flights_mod, sheet_venues, trips as trips_mod  # noqa: E402
 
 app = FastAPI(title="climbing trip admin — localhost only")
 STATIC = Path(__file__).resolve().parent / "static"
@@ -177,15 +177,12 @@ def _flex_line(d: Path) -> str | None:
     base_all = (f.get("venues") or {}).get(venue) or {}
     bits = []
     for who, alts in trav.items():
-        priced = [a for a in alts if a.get("price") is not None]
         opts = (base_all.get(who) or {}).get("options") or []
-        base = opts[0].get("price") if opts else None
-        if priced and base is not None:
-            best = min(priced, key=lambda a: a["price"])
-            if best["price"] < base:
-                d_ = best["shift"]
-                lbl = f"{-d_}d earlier" if d_ < 0 else f"{d_}d later"
-                bits.append(f"{who.title()} {lbl}: £{best['price']} (save £{base - best['price']})")
+        best = flights_mod.best_flex_saving(alts, opts[0].get("price") if opts else None)
+        if best:
+            d_ = best["shift"]
+            lbl = f"{-d_}d earlier" if d_ < 0 else f"{d_}d later"
+            bits.append(f"{who.title()} {lbl}: £{best['price']} (save £{best['saving']})")
     return f"{venue} — " + "; ".join(bits) if bits else None
 
 
