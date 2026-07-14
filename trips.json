@@ -50,7 +50,8 @@
         }
       ],
       "title": "Climbing trip ~24 July 2026 — Michel & Dan",
-      "dir": "trip-ni-july-2026"
+      "dir": "trip-ni-july-2026",
+      "sheet_merge": true
     }
   ]
 }

@@ -44,7 +44,7 @@ def test_update_report_runs_clean_and_shape_matches():
     assert result.returncode == 0, (
         f"update_report.py exited {result.returncode}\nstdout:\n{result.stdout}\nstderr:\n{result.stderr}"
     )
-    assert "Wrote index.html" in result.stdout
+    assert "wrote index.html" in result.stdout
 
     data = _extract_window_data(INDEX_HTML.read_text(encoding="utf-8"))
     venues = data["venues"]

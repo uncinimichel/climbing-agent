@@ -78,6 +78,9 @@ def validate_trip(trip):
         if not isinstance(airports, list) or not all(isinstance(a, str) and a for a in airports):
             _err(slug, f"traveller '{key}' needs 'airports' as a list of IATA codes "
                        "(may be empty only for a driving-only traveller)")
+    if not isinstance(trip.get("sheet_merge", False), bool):
+        _err(slug, "'sheet_merge' must be a boolean (merge the Google-Sheet venue list "
+                   "into this trip — only meaningful for the trip the sheet curates)")
     flex = trip.get("flex_days", 0)
     if not isinstance(flex, int) or not 0 <= flex <= 3:
         _err(slug, f"'flex_days' must be an integer 0–3 (± days around the trip "
