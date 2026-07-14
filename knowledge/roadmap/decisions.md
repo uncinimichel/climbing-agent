@@ -593,9 +593,16 @@ a live set it may lag.
 **Why:** closed enums only work if extending them is cheap — otherwise curators shoehorn
 ("no offwidth tag? call it crack") and the AI can never learn new vocabulary. And an
 enum value without a definition can't be tagged consistently by human or machine.
-**Status:** ⚠️ Partial — tooling ✅ live (add/edit/delete round-tripped, apply.sh replay
-verified); the cross-platform vocabulary audit (Rockfax symbols, UKC, theCrag, MP,
-OpenBeta) is running — its accepted additions/renames land via the new pipeline.
+**Status:** ✅ Live — tooling round-tripped, and the cross-platform audit (Rockfax
+symbols/manual, UKC, theCrag, Mountain Project, OpenBeta schema) applied THROUGH the new
+pipeline as its end-to-end test: verified our protection scale matches OpenBeta's
+SafetyType exactly and disciplines are a proper superset of theirs; added `bulge`/
+`gully`/`ramp` (feature), `rounded` (character, Rockfax symbol), `scrambling`
+(discipline), `nesting-birds`/`vegetated` (route hazards); clarified `fluttery`
+(= UK "bold", the Rockfax heart), `traverse` (hazard because it gates retreat) and
+`polished`. Family boundary rules (steepness→incline, geometry→feature, rock
+state→hazard, feel→character, gear→protection, fear→fluttery) documented in
+taxonomy.md; ai_tag.py confirmed seeing the new values live.
 
 ---
 

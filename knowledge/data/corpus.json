@@ -1,6 +1,6 @@
 {
   "schemaVersion": "2.0",
-  "generated": "2026-07-13",
+  "generated": "2026-07-14",
   "note": "EXPORT of the Postgres corpus DB (decision #34: Postgres-first — edit via the Curation Studio, not this file; restore via db/tools/ingest_corpus.py). Governance (#32): suggestions/ranking may only use status:publish + taggedBy:human rows.",
   "taxonomyRef": "knowledge/data/tag-spec.json",
   "counts": {
@@ -10499,7 +10499,7 @@
       "taggedBy": "source",
       "source": "crawler",
       "dataGrade": null,
-      "originalGrade": "None",
+      "originalGrade": null,
       "gradeSys": "BAS",
       "tradGrade": "None",
       "techGrade": null,

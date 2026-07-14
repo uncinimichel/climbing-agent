@@ -22,20 +22,39 @@ guidebook prose into queryable structured data.
 > populate is in [`route-schema.md`](route-schema.md); the normalized difficulty
 > ladder is in [`grade-conversion.md`](grade-conversion.md).
 
+## Family boundary rules (for taggers, human or AI)
+
+Where a term could live in two families, the rule that decides it — from the 2026-07-13
+cross-platform audit (Rockfax symbols/manual, UKC, theCrag, Mountain Project, OpenBeta):
+
+- **Steepness → `incline`**; a horizontal ceiling you cross → feature `roof`; a rounded
+  steepening passed in a move or two → feature `bulge`.
+- **Geometry you climb → `feature`. Surface/state of the rock → `hazard`** (`loose`,
+  `polished`, `vegetated`, `seepage`). **How the moves feel → `character`.**
+- **Gear objectively available → `protection`** (Erickson G/PG/PG-13/R/X — matches
+  OpenBeta's SafetyType exactly); **how scary it feels → character `fluttery`** (UK:
+  "bold"). Never encode boldness by inflating the protection grade.
+- `exposed` is a **character** (the sensation of air); commitment/retreat difficulty
+  belongs in `commitment` + `escapable`, not tags.
+- `traverse` stays a **hazard** (not a feature): it earns its flag by complicating
+  retreat, rope-work and the second's safety.
+- Access restrictions in time (`nesting-birds`, `tidal`) are **route hazards** — they
+  gate WHEN you can climb; the conditions engine reads them.
+
 ## Tag quick-reference (the canonical set)
 
 **This file is the single source of truth for tags** — every other doc references these,
 none redefine them. The complete controlled vocabulary, in one scannable block for the
 Phase-3 curated list. Each value is a closed enum; detail + rationale follow below.
-These vocabularies are mirrored as **Postgres lookup tables** (`db/sql/`, seeded in
-`100_seed_taxonomy.sql` — see [`database.md`](database.md)); extend an enum here first,
-then in the seed, so the two never drift.
+These vocabularies live as **Postgres lookup tables** (see [`database.md`](database.md));
+since #35 you extend them in the **Curation Studio → Taxonomy tab**, which regenerates
+`105_taxonomy_extensions.sql` + [`taxonomy-values.json`](taxonomy-values.json) so nothing drifts.
 
 | Facet | Type | Values |
 |---|---|---|
-| `discipline` | set | `trad` `sport` `multi-pitch` `single-pitch` `alpine` `big-wall` `bouldering` `ice` `mixed` `snow` `aid` `deepwatersolo` `tr` `via-ferrata` |
-| `feature` | set (opt.) | `slab` `face` `crack` `ridge` `arête` `chimney` `corner` `groove` `roof` `offwidth` `flake` `tufa` `pockets` `pillar` |
-| `character` | set (opt.) | `sustained` `pumpy` `powerful` `technical` `fingery` `crimpy` `reachy` `delicate` `exposed` `fluttery` |
+| `discipline` | set | `trad` `sport` `multi-pitch` `single-pitch` `alpine` `big-wall` `bouldering` `ice` `mixed` `snow` `aid` `deepwatersolo` `tr` `via-ferrata` `scrambling` |
+| `feature` | set (opt.) | `slab` `face` `crack` `ridge` `arête` `chimney` `corner` `groove` `roof` `offwidth` `flake` `tufa` `pockets` `pillar` `bulge` `gully` `ramp` |
+| `character` | set (opt.) | `sustained` `pumpy` `powerful` `technical` `fingery` `crimpy` `reachy` `delicate` `exposed` `fluttery` `rounded` |
 | `rock` | one | `granite` `limestone` `dolerite` `rhyolite` `sandstone` `gritstone` `gabbro` `quartzite` `volcanic` `dolomite` `slate` `gneiss` `schist` `basalt` `conglomerate` `andesite` |
 | `protection` | one | `G` `PG` `PG-13` `R` `X` `runout` `terrain` `UNSPECIFIED` |
 | `protectionStyle` | one | `gear` `bolted` `mixed` `none` — how the route protects overall |
@@ -44,7 +63,7 @@ then in the seed, so the two never drift.
 | `commitmentGrade` | one | `I`–`VII` (NCCS) · `F`/`PD`/`AD`/`D`/`TD`/`ED` (alpine) |
 | `incline` | compose | `Slab` → `Vertical` → `Overhanging` |
 | `face` (aspect) | one | `N` `NE` `E` `SE` `S` `SW` `W` `NW` |
-| `hazard` (route) | flags | `tidal` `seepage` `abseil` `traverse` `boat` `polished` `loose` `grassLedges` |
+| `hazard` (route) | flags | `tidal` `seepage` `abseil` `traverse` `boat` `polished` `loose` `grassLedges` `nesting-birds` `vegetated` |
 | `hazard` (objective) | flags | `rockfall` `avalanche` `serac` `crevasse` `altitude` `stormExposed` `cornice` |
 | `conditions` | fields | `elevation_m` · `sunWindow` (`morning`/`afternoon`/`all-day`/`shade`) · `bestSeason[]` · `windExposed` |
 | `approach` | fields | `approachTime` (min) · `approachDifficulty` (1–3) |

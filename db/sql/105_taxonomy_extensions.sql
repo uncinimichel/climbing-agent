@@ -1,10 +1,10 @@
 -- 105 — GENERATED taxonomy re-seed (decision #35). Do not edit by hand:
 -- values are managed in Postgres via the Curation Studio's Taxonomy page and
 -- exported here by db/tools/export_taxonomy.py so apply.sh reproduces the live
--- vocabulary. Exported 2026-07-13.
+-- vocabulary. Exported 2026-07-14.
 SET search_path = climbing, public;
 
--- discipline (14 values)
+-- discipline (15 values)
 INSERT INTO discipline (code, meaning) VALUES
     ('aid', 'Weighting gear to progress (A/C grades).'),
     ('alpine', 'Mountain approach, altitude, mixed commitment.'),
@@ -14,6 +14,7 @@ INSERT INTO discipline (code, meaning) VALUES
     ('ice', 'Frozen falls/ice (WI grades).'),
     ('mixed', 'Rock + ice (M grades).'),
     ('multi-pitch', 'Multiple rope-lengths with belay stances (the platform''s focus).'),
+    ('scrambling', 'Easy ungraded/Grade 1-3 terrain between walking and climbing — approach ridges, easy alpine crests.'),
     ('single-pitch', 'One rope-length.'),
     ('snow', 'Snow climbing.'),
     ('sport', 'Pre-placed bolts.'),
@@ -22,39 +23,43 @@ INSERT INTO discipline (code, meaning) VALUES
     ('via-ferrata', 'Protected cabled route.')
 ON CONFLICT (code) DO UPDATE SET meaning = EXCLUDED.meaning;
 
--- feature (14 values)
+-- feature (17 values)
 INSERT INTO feature (code, meaning) VALUES
     ('arête', 'A narrow outward-pointing edge or prow — climbed on or beside it, exposed on both sides.'),
+    ('bulge', 'A rounded steepening passed in a move or two — "pull through the bulge"; smaller than a roof.'),
     ('chimney', 'A crack wide enough to fit the whole body inside; climbed by back-and-footing.'),
     ('corner', 'An inside angle where two faces meet (dihedral / open book) — the opposite of an arête.'),
     ('crack', 'A fissure taking jams and natural protection — the classic trad medium.'),
     ('face', 'An open wall climbed on holds rather than a crack line.'),
     ('flake', 'A partly-detached sheet of rock forming an edge or crack behind it — check it is attached.'),
     ('groove', 'A shallow rounded corner or scoop, often climbed by bridging.'),
+    ('gully', 'A wide mountain cleft or couloir line — common on UK/Irish mountain crags; often loose or wet.'),
     ('offwidth', 'A crack too wide to jam and too narrow to chimney — awkward, specialist technique and big gear.'),
     ('pillar', 'A free-standing or semi-detached column of rock.'),
     ('pockets', 'Holes or solution pockets used as holds (limestone / conglomerate).'),
+    ('ramp', 'An inclined ledge or weakness trending diagonally across steeper rock.'),
     ('ridge', 'A long crest line with exposure on both sides — alpine-flavoured climbing.'),
     ('roof', 'A horizontal overhang crossed on its underside.'),
     ('slab', 'Rock below vertical — friction and balance rather than pulling.'),
     ('tufa', 'Calcite ribs and blobs left by flowing water on limestone; pinched rather than pulled.')
 ON CONFLICT (code) DO UPDATE SET meaning = EXCLUDED.meaning;
 
--- character (10 values)
+-- character (11 values)
 INSERT INTO character (code, meaning) VALUES
     ('crimpy', 'Specifically small-edge crimping.'),
     ('delicate', 'Balance/friction climbing; precision under little security.'),
     ('exposed', 'Big-air positions beyond what the protection grade captures.'),
     ('fingery', 'Significant small holds on the hard sections (Rockfax "f").'),
-    ('fluttery', 'Bold — big fall potential and scary run-outs (Rockfax "h").'),
+    ('fluttery', 'Bold, heady climbing — spaced or marginal gear above hard moves (the Rockfax heart symbol; UK climbers say "bold").'),
     ('powerful', 'Demands strength on steep ground (Rockfax "p").'),
     ('pumpy', 'Steep endurance climbing — the pump is the crux.'),
     ('reachy', 'Move spans favour reach; height-dependent.'),
+    ('rounded', 'Rounded, sloping holds and breaks (gritstone-style) — Rockfax symbol; friction- and humidity-sensitive.'),
     ('sustained', 'Lots of hard moves with little respite (Rockfax "s").'),
     ('technical', 'Intricate movement; body position over pulling.')
 ON CONFLICT (code) DO UPDATE SET meaning = EXCLUDED.meaning;
 
--- hazard (15 values)
+-- hazard (17 values)
 INSERT INTO hazard (code, kind, meaning, safety_critical, feeds) VALUES
     ('abseil', 'route', 'Requires an abseil (approach/descent).', false, 'gear & planning'),
     ('altitude', 'objective', 'High enough for thin air / altitude effects.', true, 'planning'),
@@ -64,13 +69,15 @@ INSERT INTO hazard (code, kind, meaning, safety_critical, feeds) VALUES
     ('crevasse', 'objective', 'Crevasse hazard on the approach/route.', true, 'safety'),
     ('grassLedges', 'route', 'Vegetated ledges (wet/awkward).', false, 'conditions'),
     ('loose', 'route', 'Loose / friable rock.', true, 'safety'),
-    ('polished', 'route', 'Slick, polished rock.', false, 'difficulty-in-practice'),
+    ('nesting-birds', 'route', 'Seasonal nesting restriction (BMC RAD-style) — the crag or route may be banned in spring/summer.', false, 'access gating by date'),
+    ('polished', 'route', 'Glassy, traffic-polished rock — badly friction-dependent; treacherous when humid or damp (Rockfax condition note).', false, 'difficulty-in-practice'),
     ('rockfall', 'objective', 'Rockfall-prone (loose gullies, thaw, parties above).', true, 'safety'),
     ('seepage', 'route', 'Weeps / holds water after rain.', true, 'Predictive Condition Algorithm'),
     ('serac', 'objective', 'Serac hazard on the approach/route.', true, 'safety'),
     ('stormExposed', 'objective', 'Exposed to lightning / no quick escape in a storm.', true, 'safety'),
     ('tidal', 'route', 'Access/base tide-dependent (sea cliffs).', true, 'tide-window logic (live 2026-07-05: planner tide tiles, Open-Meteo Marine)'),
-    ('traverse', 'route', 'Significant traverse.', false, 'rope management / commitment')
+    ('traverse', 'route', 'Sustained sideways climbing — complicates retreat, rope-work and seconding; kept as a hazard because it gates escapability.', false, 'rope management / commitment'),
+    ('vegetated', 'route', 'Dirty or vegetated rock — needs traffic or a dry spell; slower to dry after rain.', false, 'drying-time model')
 ON CONFLICT (code) DO UPDATE SET kind = EXCLUDED.kind, meaning = EXCLUDED.meaning, safety_critical = EXCLUDED.safety_critical, feeds = EXCLUDED.feeds;
 
 -- rock (17 values)

@@ -1,5 +1,5 @@
 {
- "generated": "2026-07-13",
+ "generated": "2026-07-14",
  "note": "Live enum values exported from Postgres (decision #35). Semantic definitions & tagging rules: taxonomy.md. Managed via the Curation Studio; regenerate with db/tools/export_taxonomy.py.",
  "families": {
   "discipline": [
@@ -44,6 +44,11 @@
     "usage": 224
    },
    {
+    "code": "scrambling",
+    "meaning": "Easy ungraded/Grade 1-3 terrain between walking and climbing — approach ridges, easy alpine crests.",
+    "usage": 0
+   },
+   {
     "code": "single-pitch",
     "meaning": "One rope-length.",
     "usage": 2
@@ -81,6 +86,11 @@
     "usage": 22
    },
    {
+    "code": "bulge",
+    "meaning": "A rounded steepening passed in a move or two — \"pull through the bulge\"; smaller than a roof.",
+    "usage": 0
+   },
+   {
     "code": "chimney",
     "meaning": "A crack wide enough to fit the whole body inside; climbed by back-and-footing.",
     "usage": 16
@@ -111,6 +121,11 @@
     "usage": 46
    },
    {
+    "code": "gully",
+    "meaning": "A wide mountain cleft or couloir line — common on UK/Irish mountain crags; often loose or wet.",
+    "usage": 0
+   },
+   {
     "code": "offwidth",
     "meaning": "A crack too wide to jam and too narrow to chimney — awkward, specialist technique and big gear.",
     "usage": 7
@@ -124,6 +139,11 @@
     "code": "pockets",
     "meaning": "Holes or solution pockets used as holds (limestone / conglomerate).",
     "usage": 2
+   },
+   {
+    "code": "ramp",
+    "meaning": "An inclined ledge or weakness trending diagonally across steeper rock.",
+    "usage": 0
    },
    {
     "code": "ridge",
@@ -169,7 +189,7 @@
    },
    {
     "code": "fluttery",
-    "meaning": "Bold — big fall potential and scary run-outs (Rockfax \"h\").",
+    "meaning": "Bold, heady climbing — spaced or marginal gear above hard moves (the Rockfax heart symbol; UK climbers say \"bold\").",
     "usage": 0
    },
    {
@@ -186,6 +206,11 @@
     "code": "reachy",
     "meaning": "Move spans favour reach; height-dependent.",
     "usage": 5
+   },
+   {
+    "code": "rounded",
+    "meaning": "Rounded, sloping holds and breaks (gritstone-style) — Rockfax symbol; friction- and humidity-sensitive.",
+    "usage": 0
    },
    {
     "code": "sustained",
@@ -264,9 +289,17 @@
     "usage": 14
    },
    {
+    "code": "nesting-birds",
+    "kind": "route",
+    "meaning": "Seasonal nesting restriction (BMC RAD-style) — the crag or route may be banned in spring/summer.",
+    "safety_critical": false,
+    "feeds": "access gating by date",
+    "usage": 0
+   },
+   {
     "code": "polished",
     "kind": "route",
-    "meaning": "Slick, polished rock.",
+    "meaning": "Glassy, traffic-polished rock — badly friction-dependent; treacherous when humid or damp (Rockfax condition note).",
     "safety_critical": false,
     "feeds": "difficulty-in-practice",
     "usage": 9
@@ -314,10 +347,18 @@
    {
     "code": "traverse",
     "kind": "route",
-    "meaning": "Significant traverse.",
+    "meaning": "Sustained sideways climbing — complicates retreat, rope-work and seconding; kept as a hazard because it gates escapability.",
     "safety_critical": false,
     "feeds": "rope management / commitment",
     "usage": 19
+   },
+   {
+    "code": "vegetated",
+    "kind": "route",
+    "meaning": "Dirty or vegetated rock — needs traffic or a dry spell; slower to dry after rain.",
+    "safety_critical": false,
+    "feeds": "drying-time model",
+    "usage": 0
    }
   ],
   "rock": [
