@@ -41,7 +41,7 @@ from engine.render import _slug  # noqa: E402
 ROOT = Path(__file__).resolve().parent.parent
 REPO_ROOT = ROOT.parent
 CLIMBING_CSV = REPO_ROOT / "climbing-trips.csv"
-ENV_CACHE_F = ROOT / "venue-env.json"
+ENV_CACHE_F = REPO_ROOT / "cache" / "venue-env.json"
 
 
 def _iso(d):

@@ -7,7 +7,7 @@ prototypes/
 # update_report.py within the same daily run. Heavy (raw hourly × all venues) and
 # fully re-churned every day, so it's kept out of git history (decision #24). The
 # report degrades to live fetches when it's absent.
-trip-ni-july-2026/venue-env.json
+cache/venue-env.json
 
 # Raw crawl captures (roadmap Stage 5) — the crawler's local raw store, never
 # committed to the public repo (theCrag/UKC raw data stays private per agreement).

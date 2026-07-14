@@ -228,11 +228,11 @@ def load_board():
         trips.trip_for_dir(REPO_ROOT, ROOT), merged,
         json.loads((ROOT / "flights.json").read_text()),
         serpapi_key=None, top_n_flights=10)
-    env = EnvCache(ROOT / "venue-env.json")
-    climo = DiskCache(ROOT / "climo-cache.json",
+    env = EnvCache(REPO_ROOT / "cache" / "venue-env.json")
+    climo = DiskCache(REPO_ROOT / "cache" / "climo-cache.json",
                       key_filter=lambda k: k.endswith("|" + weather.CLIMO_VER))
-    stays = DiskCache(ROOT / "stays-cache.json")
-    lh = DiskCache(ROOT / "link-health-cache.json")
+    stays = DiskCache(REPO_ROOT / "cache" / "stays-cache.json")
+    lh = DiskCache(REPO_ROOT / "cache" / "link-health-cache.json")
     mp = climbs.load_mp_climbs()
     flights_by_name = (json.loads((ROOT / "flights-latest.json").read_text()).get("venues") or {})
     res = [scoring.evaluate(v, ctx, env, climo, stays, lh, mp) for v in ctx.venues]

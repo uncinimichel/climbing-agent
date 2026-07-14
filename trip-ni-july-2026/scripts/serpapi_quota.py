@@ -30,8 +30,8 @@ from build_knowledge import page  # noqa: E402
 REPO_ROOT = Path(__file__).resolve().parents[2]
 LOG_PATH = REPO_ROOT / "trip-ni-july-2026" / "serpapi-usage.json"
 HTML_PATH = REPO_ROOT / "knowledge" / "operations" / "serpapi-quota.html"
-STAYS_CACHE = REPO_ROOT / "trip-ni-july-2026" / "stays-cache.json"
-CLIMO_CACHE = REPO_ROOT / "trip-ni-july-2026" / "climo-cache.json"
+STAYS_CACHE = REPO_ROOT / "cache" / "stays-cache.json"
+CLIMO_CACHE = REPO_ROOT / "cache" / "climo-cache.json"
 ACCOUNT_URL = "https://serpapi.com/account.json?api_key="
 MAX_HISTORY = 180  # ~6 months of daily runs
 

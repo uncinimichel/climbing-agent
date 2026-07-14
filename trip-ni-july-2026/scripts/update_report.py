@@ -45,6 +45,9 @@ HISTORY = ROOT / "history"
 DAILY = ROOT / "daily-report.md"
 INDEX = REPO_ROOT / "index.html"
 CLIMBING_CSV = REPO_ROOT / "climbing-trips.csv"
+# Trip-agnostic caches (lat/lon keys, no trip in them) live at the repo root
+# so every trip shares one fetch per venue per day (decision #33 M3).
+CACHE_DIR = REPO_ROOT / "cache"
 
 
 def _dotenv():
@@ -129,11 +132,11 @@ def main():
 
     # 18h: a same-day re-render reuses the cron's fetch; an older file is
     # rejected so a manual run can't rank the board on a days-old forecast
-    env_cache = EnvCache(ROOT / "venue-env.json", max_age_hours=18)
-    climo_cache = DiskCache(ROOT / "climo-cache.json",
+    env_cache = EnvCache(CACHE_DIR / "venue-env.json", max_age_hours=18)
+    climo_cache = DiskCache(CACHE_DIR / "climo-cache.json",
                              key_filter=lambda k: k.endswith("|" + weather.CLIMO_VER))
-    stays_cache = DiskCache(ROOT / "stays-cache.json")
-    link_health_cache = DiskCache(ROOT / "link-health-cache.json")
+    stays_cache = DiskCache(CACHE_DIR / "stays-cache.json")
+    link_health_cache = DiskCache(CACHE_DIR / "link-health-cache.json")
     quota_guard = quota.AlwaysAllowQuotaGuard()
     flight_cache = quota.NullFlightCache()
     flights_data = _load_json(ROOT / "flights-latest.json", {})
