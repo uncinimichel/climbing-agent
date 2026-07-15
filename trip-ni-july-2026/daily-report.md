@@ -1,6 +1,6 @@
 # Climbing trip ~24 July 2026 — Michel & Dan
 
-**Updated:** 2026-07-15 20:31 UTC · ranked best-first.
+**Updated:** 2026-07-15 20:44 UTC · ranked best-first.
 
 > ✅ Trip dates are within the 16-day forecast — venues ranked on the <b>actual trip-window forecast</b>.
 
@@ -25,16 +25,16 @@
 | 13 ▲7 | 🇳🇴 Setesdal<br><sub>[mp map](https://multi-pitch.com/map/) · [sheet r20](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=20:20)</sub> | 58 | 16°C, 40% wet | — | — |
 | 14 ▼6 | ☘️ Mournes, NI<br><sub>[mp map](https://multi-pitch.com/map/) (5) · [sheet r17](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=17:17)</sub> | 57 | 17°C, 30% wet | — | — |
 | 15 ▼9 | 🏴󠁧󠁢󠁷󠁬󠁳󠁿 Snowdonia (Llanberis Pass)<br><sub>[mp map](https://multi-pitch.com/map/) (6) · [sheet r19](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=19:19)</sub> | 56 | 14°C, 50% wet | — | — |
-| 16 ▼11 | 🏴󠁧󠁢󠁥󠁮󠁧󠁿 Isle of White<br><sub>[mp map](https://multi-pitch.com/map/) · [sheet r34](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=34:34)</sub> | 56 | 19°C, 35% wet | — | — |
-| 17 ▼4 | 🇹🇷 Aladaglar<br><sub>[mp map](https://multi-pitch.com/map/) · [sheet r40](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=40:40)</sub> | 56 | 13°C, 5% wet | — | — |
+| 16 ▼3 | 🇹🇷 Aladaglar<br><sub>[mp map](https://multi-pitch.com/map/) · [sheet r40](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=40:40)</sub> | 56 | 13°C, 5% wet | — | — |
+| 17 ▼12 | 🏴󠁧󠁢󠁥󠁮󠁧󠁿 Isle of White<br><sub>[mp map](https://multi-pitch.com/map/) · [sheet r34](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=34:34)</sub> | 55 | 19°C, 35% wet | — | — |
 | 18 ▼3 | 🇧🇬 Vratsa<br><sub>[mp map](https://multi-pitch.com/map/) (1) · [sheet r6](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=6:6)</sub> | 54 | 31°C, 10% wet | — | — |
 | 19 ▲9 | 🇳🇴 Loften<br><sub>[mp map](https://multi-pitch.com/map/) · [sheet r21](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=21:21)</sub> | 54 | 16°C, 20% wet | — | — |
 | 20 ▼13 | 🇸🇰 Zádiel<br><sub>[mp map](https://multi-pitch.com/map/) · [sheet r26](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=26:26)</sub> | 53 | 26°C, 35% wet | — | — |
 | 21 ▼9 | 🇸🇮 Triglav<br><sub>[mp map](https://multi-pitch.com/map/) · [sheet r23](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=23:23)</sub> | 52 | 13°C, 50% wet | — | — |
 | 22 ▲1 | 🇳🇦 Spitzkoppe<br><sub>[mp map](https://multi-pitch.com/map/) · [sheet r32](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=32:32)</sub> | 52 | 24°C, 0% wet | — | — |
 | 23 ▲3 | 🇨🇭 Bruggler<br><sub>[mp map](https://multi-pitch.com/map/) (1) · [sheet r16](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=16:16)</sub> | 49 | 19°C, 65% wet | — | — |
-| 24 ▼7 | 🏴󠁧󠁢󠁳󠁣󠁴󠁿 Hoy<br><sub>[mp map](https://multi-pitch.com/map/) (1) · [sheet r33](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=33:33)</sub> | 48 | 15°C, 25% wet | — | — |
-| 25 ▲4 | 🇬🇷 Meteora<br><sub>[mp map](https://multi-pitch.com/map/) (1) · [sheet r12](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=12:12)</sub> | 47 | 35°C, 0% wet | — | — |
+| 24 ▲5 | 🇬🇷 Meteora<br><sub>[mp map](https://multi-pitch.com/map/) (1) · [sheet r12](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=12:12)</sub> | 47 | 35°C, 0% wet | — | — |
+| 25 ▼8 | 🏴󠁧󠁢󠁳󠁣󠁴󠁿 Hoy<br><sub>[mp map](https://multi-pitch.com/map/) (1) · [sheet r33](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=33:33)</sub> | 47 | 15°C, 25% wet | — | — |
 | 26 ▼17 | 🏴󠁧󠁢󠁳󠁣󠁴󠁿 Isle of Arran<br><sub>[mp map](https://multi-pitch.com/map/) (1) · [sheet r15](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=15:15)</sub> | 46 | 14°C, 30% wet | — | — |
 | 27 ▲6 | 🇮🇹 Campanile Basso<br><sub>[mp map](https://multi-pitch.com/map/) · [sheet r30](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=30:30)</sub> | 46 | 10°C, 75% wet | — | — |
 | 28 ▲2 | 🇮🇹 Dolomites (Cortina)<br><sub>[mp map](https://multi-pitch.com/map/) (5) · [sheet r13](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=13:13)</sub> | 45 | 22°C, 70% wet | — | — |
