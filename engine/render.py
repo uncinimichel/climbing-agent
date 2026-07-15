@@ -674,14 +674,21 @@ svg.topo .dseg{pointer-events:stroke}
    dashed amber "forecast horizon" line where the live forecast gives way. */
 .wx-key{font-family:var(--mono);font-size:10.5px;color:var(--faint);margin:0 0 10px;max-width:960px;line-height:1.6}
 .wx-key b{color:var(--muted);font-weight:600}
-.wxgrid{display:grid;overflow-x:auto;max-width:960px;background:var(--card);border:1px solid var(--line);border-radius:12px;scrollbar-width:thin;scrollbar-color:var(--line2) transparent}
+.wxgrid{display:grid;overflow-x:auto;max-width:960px;background:var(--card);border:1px solid var(--line);border-bottom:0;border-radius:12px 12px 0 0;scrollbar-width:thin;scrollbar-color:var(--line2) transparent}
 .wxgrid>div{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:8px 5px;border-left:1px solid var(--line);border-top:1px solid var(--line)}
 .wxrh{border-left:none!important;align-items:flex-end!important;justify-content:center;text-align:right;font-family:var(--mono);font-size:9.5px;letter-spacing:.03em;text-transform:uppercase;color:var(--faint);padding-right:10px!important;line-height:1.25;white-space:nowrap;position:sticky;left:0;background:var(--card);z-index:2}
 .wxgrid .corner,.wxgrid .wxhd{border-top:none}
-.wxc{cursor:default}
+.wxc{cursor:pointer}
 .wxc:hover{background:#252A32}
 .wxc.trip{background:var(--dry-bg)}
+.wxc.trip:hover{background:rgba(87,166,100,.18)}
+/* the day the panel below is showing — the whole column lights up, trip days
+   included (their green tint used to swallow the hover/selected state) */
+.wxc.sel{background:#2B313B}
+.wxc.trip.sel{background:rgba(87,166,100,.26)}
+.wxhd.sel{box-shadow:inset 0 2px 0 var(--ink)}
 .wxhd.trip{box-shadow:inset 0 2px 0 var(--dry)}
+.wxhd.trip.sel{box-shadow:inset 0 3px 0 var(--dry)}
 .wxc.trip .wd{color:var(--dry)}
 .wxc.hz{border-left:2px dashed var(--mixed)}
 .p-outlook{opacity:.72}
@@ -712,10 +719,11 @@ svg.topo .dseg{pointer-events:stroke}
 .suns .dl{color:var(--muted)}
 .uvr{width:20px;height:20px;border-radius:50%;border:1.5px solid;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:9.5px;font-weight:600;color:var(--ink)}
 .uvr.est{border-style:dashed}
-/* Day detail: docked UNDER the grid (not a floating overlay that covered the
-   rows beneath), laid out wide-and-short so it never obscures anything. Fills
-   on hover/focus/tap of a day; defaults to the first trip day. */
-.wx-detail{margin-top:10px;background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:11px 14px;max-width:960px;min-height:62px;font-size:12.5px;line-height:1.5}
+/* Day detail: the SAME widget continuing below the day grid — no border or
+   line between the days and the hours (BBC-style: pick a day above, its hours
+   unfold beneath on the same surface). Fills on hover/focus/tap of a day;
+   defaults to the first trip day. */
+.wx-detail{margin-top:0;background:var(--card);border:1px solid var(--line);border-top:0;border-radius:0 0 12px 12px;padding:13px 16px 14px;max-width:960px;min-height:62px;font-size:12.5px;line-height:1.5}
 .wx-detail .wxd-head{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:8px}
 .wx-detail .wxd-head b{font-size:13.5px}
 .wx-detail .wxd-why{color:var(--muted);font-size:12px}
@@ -726,21 +734,29 @@ svg.topo .dseg{pointer-events:stroke}
 /* Hour-by-hour strip (docked inside the day panel, forecast days only):
    one column per LOCAL hour at the crag. Night hours sit on a darker band —
    the same day/night split the score now charges rain by, made visible. */
-.wxd-hours{margin-top:12px;border-top:1px solid var(--line);padding-top:10px}
+.wxd-hours{margin-top:11px}
 .wxd-hl{font-family:var(--mono);font-size:9px;letter-spacing:.09em;text-transform:uppercase;color:var(--faint);margin-bottom:7px}
 .wxd-hl b{color:var(--muted);font-weight:600}
-.wxhrs{display:flex;overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:9px;scrollbar-width:thin;scrollbar-color:var(--line2) transparent}
-.wxh{flex:1 0 35px;min-width:35px;display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 2px 6px;border-left:1px solid var(--line)}
+/* the strip is a slider on the SAME surface as the day grid — no box of its
+   own, hour columns separated by the same hairlines as the day columns above;
+   generous cells, arrows to page through, opens scrolled to 06:00 local */
+.wxhrs-wrap{position:relative}
+.wxhrs{position:relative;display:flex;overflow-x:auto;scrollbar-width:thin;scrollbar-color:var(--line2) transparent}
+.wxh{flex:1 0 54px;min-width:54px;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 3px 9px;border-left:1px solid var(--line)}
 .wxh:first-child{border-left:0}
 .wxh.n{background:rgba(9,10,13,.5)}
-.wxh .hh{font-family:var(--mono);font-size:8.5px;color:var(--faint)}
-.wxh .ht{font-family:var(--mono);font-size:10.5px;font-weight:600;line-height:1}
-.wxh .hb{width:13px;height:24px;display:flex;flex-direction:column;justify-content:flex-end;background:var(--panel);border:1px solid var(--line);border-radius:3px;overflow:hidden}
+.wxh .hh{font-family:var(--mono);font-size:9.5px;color:var(--faint)}
+.wxh .ht{font-family:var(--mono);font-size:13.5px;font-weight:600;line-height:1}
+.wxh .hb{width:17px;height:32px;display:flex;flex-direction:column;justify-content:flex-end;background:var(--panel);border:1px solid var(--line);border-radius:3px;overflow:hidden}
 .wxh .hb i{display:block;background:var(--rain);border-radius:2px 2px 0 0}
 .wxh.n .hb i{opacity:.5}
-.wxh .hp{font-family:var(--mono);font-size:8px;min-height:10px;line-height:1.2;white-space:nowrap}
-.wxh .hw{font-family:var(--mono);font-size:8.5px;color:var(--faint);line-height:1.2}
+.wxh .hp{font-family:var(--mono);font-size:9px;min-height:12px;line-height:1.3;white-space:nowrap}
+.wxh .hw{font-family:var(--mono);font-size:9.5px;color:var(--faint);line-height:1.2}
 .wxh.n .ht,.wxh.n .hw{opacity:.75}
+.hnav{position:absolute;top:50%;transform:translateY(-50%);z-index:2;width:24px;height:58px;border:1px solid var(--line2);border-radius:7px;background:rgba(25,28,33,.94);color:var(--ink);font-size:16px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
+.hnav:hover{border-color:var(--muted)}
+.hnav.prev{left:5px}
+.hnav.next{right:5px}
 .wxd-hnote{font-size:10.5px;color:var(--faint);margin-top:7px;line-height:1.55;max-width:820px}
 .wxd-hnote b{color:var(--muted)}
 .crag-clock{font-family:var(--mono);font-size:11px;color:var(--muted);white-space:nowrap;margin-left:auto}
@@ -905,8 +921,8 @@ a.xlink:hover{border-color:var(--muted)}
   .sec{padding:18px 16px}
   .row{padding:11px 16px}
   .chip{min-width:84px;padding:8px 10px}
-  /* hourly strip: slimmer columns, still scrolls sideways under the panel */
-  .wxh{flex:1 0 31px;min-width:31px}
+  /* hourly strip: slightly slimmer columns, arrows + sideways scroll remain */
+  .wxh{flex:1 0 46px;min-width:46px}
   .crag-clock{margin-left:0;width:100%}
   .spot img{height:210px}
   .brk-row{grid-template-columns:72px 1fr 100px}
@@ -1261,7 +1277,8 @@ function wxGlyph(code,night){
   else if(c>=3){inner=CLOUD;label='overcast';}
   else if(c>=1){inner=orb(6,5.5,3)+CLOUD;label=night?'partly clear night':'sunny intervals';}
   else{inner=orb(8,8,4.2);label=night?'clear night':'sunny';}
-  return '<svg width="16" height="16" viewBox="0 0 16 16" role="img" aria-label="'+label+'">'+inner+'</svg>';
+  var sz=arguments.length>2&&arguments[2]?arguments[2]:16;
+  return '<svg width="'+sz+'" height="'+sz+'" viewBox="0 0 16 16" role="img" aria-label="'+label+'">'+inner+'</svg>';
 }
 // Hour-by-hour strip for one forecast day (BBC-style, one column per hour) —
 // hours are the crag's OWN clock: Open-Meteo is fetched with timezone=auto and
@@ -1284,7 +1301,7 @@ function wxHoursHtml(d,v){
       +(wind!=null?', wind '+num(wind)+(gust!=null?' gusting '+num(gust):'')+' km/h':'');
     return '<div class="wxh'+(night?' n':'')+'" title="'+title+'">'
       +'<span class="hh">'+hh+'</span>'
-      +wxGlyph(code,night)
+      +wxGlyph(code,night,22)
       +'<span class="ht" style="color:'+tempColor(t)+'">'+num(t)+'°</span>'
       +'<span class="hb"><i style="height:'+bh+'%"></i></span>'
       +'<span class="hp"'+(pr!=null?' style="color:'+popColor(pr)+'"':'')+'>'+(pr!=null?num(pr)+'%':'')+'</span>'
@@ -1293,7 +1310,9 @@ function wxHoursHtml(d,v){
   }).join('');
   return '<div class="wxd-hours"><div class="wxd-hl">Hour by hour · <b>local crag time'
     +(v&&v.tz?' — '+esc(v.tz):'')+'</b> · sky / °C / rain / chance / wind km·h</div>'
-    +'<div class="wxhrs">'+cells+'</div>'
+    +'<div class="wxhrs-wrap"><button class="hnav prev" type="button" aria-label="Earlier hours">‹</button>'
+    +'<div class="wxhrs" tabindex="0" role="group" aria-label="Hour by hour, local crag time">'+cells+'</div>'
+    +'<button class="hnav next" type="button" aria-label="Later hours">›</button></div>'
     +'<div class="wxd-hnote"><b>Shaded hours are night at the crag.</b> The score charges rain by when it falls: '
     +'rain inside climbing hours (07–20) costs full price, overnight rain only ~¼ — scaled by how fast this rock dries — '
     +'so a wet night before a dry sunny day no longer sinks the day.</div></div>';
@@ -1344,12 +1363,32 @@ function wxDetailHtml(d,v){
 }
 // Fill the docked #wxDetail on hover/focus/tap; default to the first trip day so
 // it's never empty, and never revert on mouseout (keeps the panel steady).
+// The shown day's whole column carries .sel so you can always see which day the
+// panel belongs to, and the hourly slider opens scrolled to 06:00 local.
+function wireHourSlider(panel){
+  var strip=panel.querySelector('.wxhrs');if(!strip)return;
+  var c6=strip.children[6];
+  if(c6)strip.scrollLeft=Math.max(0,c6.offsetLeft-1);
+  var smooth=(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches)?'auto':'smooth';
+  var navs=panel.querySelectorAll('.hnav');
+  for(var k=0;k<navs.length;k++)(function(b){
+    b.addEventListener('click',function(e){
+      e.stopPropagation();
+      strip.scrollBy({left:(b.classList.contains('next')?1:-1)*Math.round(strip.clientWidth*0.7),behavior:smooth});
+    });
+  })(navs[k]);
+}
 function wireWxDetail(root,s2,v){
   var panel=root.querySelector('#wxDetail');if(!panel)return;
-  function fill(i){var d=s2[i];if(d)panel.innerHTML=wxDetailHtml(d,v);}
+  var els=root.querySelectorAll('.wxc');
+  function fill(i){
+    var d=s2[i];if(!d)return;
+    panel.innerHTML=wxDetailHtml(d,v);
+    for(var k=0;k<els.length;k++)els[k].classList.toggle('sel',+els[k].getAttribute('data-i')===i);
+    wireHourSlider(panel);
+  }
   var def=0;for(var m=0;m<s2.length;m++){if(s2[m].trip){def=m;break;}}
   fill(def);
-  var els=root.querySelectorAll('.wxc');
   for(var k=0;k<els.length;k++)(function(el){
     var i=+el.getAttribute('data-i');
     el.addEventListener('mouseenter',function(){fill(i);});
