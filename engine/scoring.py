@@ -116,6 +116,9 @@ def evaluate(v, ctx, env_cache=None, climo_cache=None, stays_cache=None,
         daily = d["daily"]
         days = daily["time"]
         met = weather.forecast_metrics(d)                     # per-ISO-date derived signals
+        hby = weather.hourly_by_date(d)                       # per-date 24h strip (local hours)
+        res["tz"] = d.get("timezone")                         # IANA tz + offset for the
+        res["utc_off"] = d.get("utc_offset_seconds")          # "local time at the crag" clock
         valid = [i for i in range(len(days)) if daily["temperature_2m_max"][i] is not None]
         in_win = [i for i in valid if ctx.target_start <= date.fromisoformat(days[i]) <= ctx.target_end]
         if in_win:                                            # ECMWF-ensemble confidence layer —
@@ -151,12 +154,18 @@ def evaluate(v, ctx, env_cache=None, climo_cache=None, stays_cache=None,
                     "cloud": round(ccs[i]) if ccs[i] is not None else None,
                     "gust": mi.get("gust"), "dew": mi.get("dew"),
                     "friction": mi.get("friction"), "sunFrac": mi.get("sun_frac"),
-                    # rain probability (real → ensemble → weathercode) + ensemble temp range,
+                    # rain probability (climbing-window max when the hourly split is
+                    # available → daily → ensemble → weathercode) + ensemble temp range,
                     # for the widget's chance-of-rain % and the low-confidence temp whisker
                     "prob": round(weather.effective_rain_prob(
-                        daily["precipitation_probability_max"][i], daily["weathercode"][i],
-                        mi.get("ens_prob"))),
+                        mi.get("prob_day") if mi.get("prob_day") is not None
+                        else daily["precipitation_probability_max"][i],
+                        daily["weathercode"][i], mi.get("ens_prob"))),
                     "pop": mi.get("ens_prob"), "tlo": mi.get("tmax_lo"), "thi": mi.get("tmax_hi"),
+                    # day/night rain split + the 24h local-hour strip for the
+                    # hour-by-hour panel (rainNight = prev evening + pre-dawn)
+                    "rainDay": mi.get("rain_day"), "rainNight": mi.get("rain_night"),
+                    "hrs": hby.get(days[i]),
                 }
         if in_win:
             scores = [weather.day_score(daily["weathercode"][i], daily["precipitation_sum"][i],
@@ -179,9 +188,12 @@ def evaluate(v, ctx, env_cache=None, climo_cache=None, stays_cache=None,
             res["fc"] = {
                 "score": round(sum(scores) / len(scores)),
                 "tmax": round(sum(daily["temperature_2m_max"][i] for i in in_win) / len(in_win)),
-                "rain_prob": max(weather.effective_rain_prob(daily["precipitation_probability_max"][i],
-                                                             daily["weathercode"][i],
-                                                             met.get(days[i], {}).get("ens_prob")) for i in in_win),
+                "rain_prob": max(weather.effective_rain_prob(
+                    met.get(days[i], {}).get("prob_day")
+                    if met.get(days[i], {}).get("prob_day") is not None
+                    else daily["precipitation_probability_max"][i],
+                    daily["weathercode"][i],
+                    met.get(days[i], {}).get("ens_prob")) for i in in_win),
                 "sky": WMO.get(dom, "?"), "sky_icon": wmo_icon(dom),
                 "gust_max": max(gusts_w) if gusts_w else None,
                 "wind_dir": wind_dir,

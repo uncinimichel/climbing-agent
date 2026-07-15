@@ -544,6 +544,7 @@ def venue_payload(n, r, ctx, mp_climbs, guidebooks, extra_climbing_data, tag_spe
         "rank": n, "delta": r.get("rank_delta"), "isNew": r.get("rank_new", False),
         "name": v["name"], "shortName": short_name(v["name"]),
         "lat": v.get("lat"), "lon": v.get("lon"),
+        "tz": r.get("tz"), "utcOff": r.get("utc_off"),
         "country": v["country"], "flag": flag(v["country"]), "rock": v.get("rock", ""),
         "style": v.get("style", ""),
         "why": v.get("why", "") or (
@@ -722,6 +723,28 @@ svg.topo .dseg{pointer-events:stroke}
 .wx-detail .wxd-facts>span{white-space:nowrap}
 .wx-detail .wxd-facts i{font-style:normal;font-family:var(--mono);font-size:9px;letter-spacing:.05em;text-transform:uppercase;color:var(--faint);margin-right:5px}
 .wx-detail .dim{color:var(--muted)}
+/* Hour-by-hour strip (docked inside the day panel, forecast days only):
+   one column per LOCAL hour at the crag. Night hours sit on a darker band —
+   the same day/night split the score now charges rain by, made visible. */
+.wxd-hours{margin-top:12px;border-top:1px solid var(--line);padding-top:10px}
+.wxd-hl{font-family:var(--mono);font-size:9px;letter-spacing:.09em;text-transform:uppercase;color:var(--faint);margin-bottom:7px}
+.wxd-hl b{color:var(--muted);font-weight:600}
+.wxhrs{display:flex;overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:9px;scrollbar-width:thin;scrollbar-color:var(--line2) transparent}
+.wxh{flex:1 0 35px;min-width:35px;display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 2px 6px;border-left:1px solid var(--line)}
+.wxh:first-child{border-left:0}
+.wxh.n{background:rgba(9,10,13,.5)}
+.wxh .hh{font-family:var(--mono);font-size:8.5px;color:var(--faint)}
+.wxh .ht{font-family:var(--mono);font-size:10.5px;font-weight:600;line-height:1}
+.wxh .hb{width:13px;height:24px;display:flex;flex-direction:column;justify-content:flex-end;background:var(--panel);border:1px solid var(--line);border-radius:3px;overflow:hidden}
+.wxh .hb i{display:block;background:var(--rain);border-radius:2px 2px 0 0}
+.wxh.n .hb i{opacity:.5}
+.wxh .hp{font-family:var(--mono);font-size:8px;min-height:10px;line-height:1.2;white-space:nowrap}
+.wxh .hw{font-family:var(--mono);font-size:8.5px;color:var(--faint);line-height:1.2}
+.wxh.n .ht,.wxh.n .hw{opacity:.75}
+.wxd-hnote{font-size:10.5px;color:var(--faint);margin-top:7px;line-height:1.55;max-width:820px}
+.wxd-hnote b{color:var(--muted)}
+.crag-clock{font-family:var(--mono);font-size:11px;color:var(--muted);white-space:nowrap;margin-left:auto}
+.crag-clock b{color:var(--ink);font-weight:600}
 .board-sub .lk{font-size:11px}
 .hovl{display:none;position:fixed;inset:0;background:rgba(10,11,14,.72);z-index:60;align-items:center;justify-content:center;padding:18px}
 .hbox{background:var(--panel);border:1px solid var(--line2);border-radius:14px;max-width:660px;max-height:86vh;overflow-y:auto;padding:18px 22px 20px;box-shadow:0 18px 60px rgba(0,0,0,.5)}
@@ -780,41 +803,6 @@ svg.topo .dseg{pointer-events:stroke}
 .wx-cond .cc.good b{color:var(--dry)}
 .wx-cond .cc.warn b{color:var(--mixed)}
 .wx-cond .cc.bad b{color:var(--wet)}
-.wxgrid{display:grid;grid-template-columns:70px minmax(0,1fr);row-gap:2px;max-width:880px}
-.wxlbl{font-family:var(--mono);font-size:9.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);display:flex;align-items:flex-end;padding:0 8px 6px 0}
-.wxlbl .sw{width:8px;height:8px;border-radius:2px;margin-right:5px;flex-shrink:0}
-.wxrow{display:flex}
-.wcol{flex:1;min-width:0;text-align:center;position:relative;padding:0 1px}
-.wcol.trip::before{content:'';position:absolute;inset:0;background:rgba(87,166,100,.07)}
-.bktrow{height:16px;font-family:var(--mono);font-size:9px;color:var(--dry);letter-spacing:.08em;text-transform:uppercase}
-.bktrow .wcol.trip{border-top:2px solid var(--dry)}
-.bktrow .wcol span{position:relative;top:3px;white-space:nowrap}
-.iconrow{height:26px}
-.wxi{width:22px;height:22px;filter:invert(1) brightness(.92);opacity:.92;vertical-align:middle}
-.wxi.sm{width:15px;height:15px;margin-right:4px;flex-shrink:0}
-.temparea{position:relative;height:76px}
-.temparea svg{position:absolute;inset:0;width:100%;height:100%}
-.temparea .wxrow{height:100%}
-.tdot{position:absolute;left:50%;transform:translate(-50%,50%);width:7px;height:7px;border-radius:50%;background:var(--temp);border:2px solid var(--bg)}
-.tdot.ty{width:5px;height:5px;background:var(--faint);border-width:1px}
-.tval{position:absolute;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:9.5px;color:var(--ink)}
-.wcol:not(.trip) .tdot{opacity:.5}
-.wcol:not(.trip) .tval{color:var(--faint)}
-.rainarea .wcol{display:flex;flex-direction:column;justify-content:flex-end;height:66px}
-.mm{font-family:var(--mono);font-size:9px;color:var(--muted);height:13px;white-space:nowrap}
-.rb-pair{display:flex;align-items:flex-end;justify-content:center;gap:2px;width:100%}
-.rbarv{width:38%;max-width:15px;background:var(--rain);border-radius:3px 3px 0 0}
-.rbarv.ty{opacity:.32}
-.wcol:not(.trip) .rbarv{opacity:.18}
-.wcol:not(.trip) .rbarv.ov{opacity:.45}
-.daysrow .wcol{font-family:var(--mono);font-size:9.5px;color:var(--faint);padding-top:5px;white-space:nowrap;overflow:hidden}
-.daysrow .wcol.trip{color:var(--ink);font-weight:600}
-.windrow .wcol{font-family:var(--mono);font-size:9.5px;color:var(--faint);padding-top:2px}
-.windrow .hi{color:var(--mixed);font-weight:600}
-.warr{display:inline-block;font-size:10px;color:var(--muted);margin-left:1px}
-.wx-legend{display:flex;gap:16px;font-size:10.5px;color:var(--muted);margin-top:12px;flex-wrap:wrap}
-.wx-legend .sw{display:inline-block;width:10px;height:8px;border-radius:2px;margin-right:5px;vertical-align:baseline}
-.wx-legend .swl{display:inline-block;width:14px;height:2px;margin:0 5px 3px 0}
 .outlook{margin-top:14px;font-size:12px;color:var(--muted);border:1px dashed var(--line2);border-radius:8px;padding:8px 12px;max-width:760px}
 .outlook b{color:var(--ink)}
 .fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;max-width:880px}
@@ -916,13 +904,10 @@ a.xlink:hover{border-color:var(--muted)}
   .band svg.topo .rings{opacity:.5}
   .sec{padding:18px 16px}
   .row{padding:11px 16px}
-  .wxgrid{grid-template-columns:50px minmax(0,1fr)}
-  .daysrow .wcol{font-size:8.5px}
-  /* wind per-day row is too dense to read on a phone — its signal lives in the
-     takeaway line + the conditions chips, so drop it from the grid here. */
-  .wxlbl-wind,.windrow{display:none}
-  .wxi{width:17px;height:17px}
   .chip{min-width:84px;padding:8px 10px}
+  /* hourly strip: slimmer columns, still scrolls sideways under the panel */
+  .wxh{flex:1 0 31px;min-width:31px}
+  .crag-clock{margin-left:0;width:100%}
   .spot img{height:210px}
   .brk-row{grid-template-columns:72px 1fr 100px}
   .brk-note{margin-left:82px}
@@ -1184,6 +1169,7 @@ function wxHtml(v){
   var s=v.series||[];
   if(!s.length)return '<div class="sec"><div class="eyebrow">Weather</div><div class="empty">No weather data for this area yet.</div></div>';
   return '<div class="sec"><div class="sec-hd"><div class="eyebrow">Weather · '+esc(D.trip.dates)+'</div>'
+    +(v.utcOff!=null?'<span class="crag-clock" id="cragClock" data-off="'+num(v.utcOff)+'" title="'+esc(v.tz||'')+'">🕐 <b>--:--</b> at the crag now'+(v.tz?' <span style="color:var(--faint)">('+esc(v.tz)+')</span>':'')+'</span>':'')
     +(safeUrl(v.weather)?'<a class="lk sm" target="_blank" rel="noopener" href="'+safeUrl(v.weather)+'">Full forecast on Windy ↗</a>':'')+'</div>'
     +takeaway(v)
     +'<div id="wxChart"></div>'
@@ -1254,11 +1240,69 @@ function provWhy(p){return p==='forecast'?'A real forecast, ≤7 days out — tr
   :p==='lowconf'?'A live forecast, but 7–16 days out — read it as a lean, not a promise.'
   :p==='outlook'?'A 45-day outlook — direction of travel, not a daily detail.'
   :'The typical average for this date (2021–24), not a forecast.';}
+// Tiny 16px sky glyph for the hourly strip — same visual language as wxIcon
+// but with MOON variants: is_day comes straight from Open-Meteo, so a clear
+// 22:00 renders a crescent, not a sun.
+function wxGlyph(code,night){
+  var c=code==null?0:num(code);
+  var CLOUD='<path d="M4.6 12.6a3 3 0 0 1 .5-5.9 4 4 0 0 1 7.7.9 2.6 2.6 0 0 1-.6 5Z" fill="#7E838D"/>';
+  var CLOUDHI='<path d="M4.6 10.6a3 3 0 0 1 .5-5.9 4 4 0 0 1 7.7.9 2.6 2.6 0 0 1-.6 5Z" fill="#7E838D"/>';
+  function sun(cx,cy,r){var s='<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="#E5B93F"/>';
+    [0,45,90,135,180,225,270,315].forEach(function(a){var q=a*Math.PI/180;
+      s+='<line x1="'+(cx+(r+0.8)*Math.cos(q)).toFixed(1)+'" y1="'+(cy+(r+0.8)*Math.sin(q)).toFixed(1)+'" x2="'+(cx+(r+2.6)*Math.cos(q)).toFixed(1)+'" y2="'+(cy+(r+2.6)*Math.sin(q)).toFixed(1)+'" stroke="#E5B93F" stroke-width="1" stroke-linecap="round"/>';});
+    return s;}
+  function moon(cx,cy,r){return '<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="#B9C2D0"/>'
+    +'<circle cx="'+(cx+r*0.55).toFixed(1)+'" cy="'+(cy-r*0.35).toFixed(1)+'" r="'+(r*0.92).toFixed(1)+'" fill="#171920"/>';}
+  var orb=night?moon:sun,inner,label;
+  if(c>=95){inner=CLOUDHI+'<path d="M8.6 10.5 6.8 13.6h1.7l-1.1 2.6 3.2-3.6H8.9l1.2-2.1Z" fill="#E5B93F"/>';label='thunderstorm';}
+  else if((c>=71&&c<=77)||c===85||c===86){inner=CLOUDHI+'<g fill="#CBD2DC"><circle cx="7" cy="13" r="1"/><circle cx="10.5" cy="14.3" r="1"/></g>';label='snow';}
+  else if(c>=51){inner=CLOUDHI+'<g stroke="#3987e5" stroke-width="1.4" stroke-linecap="round"><line x1="6.6" y1="12.4" x2="5.9" y2="14.4"/><line x1="10.4" y1="12.4" x2="9.7" y2="14.4"/></g>';label='rain';}
+  else if(c>=45){inner='<g stroke="#7E838D" stroke-width="1.3" stroke-linecap="round"><line x1="3" y1="6" x2="13" y2="6"/><line x1="4" y1="9" x2="12" y2="9"/><line x1="5" y1="12" x2="11" y2="12"/></g>';label='fog';}
+  else if(c>=3){inner=CLOUD;label='overcast';}
+  else if(c>=1){inner=orb(6,5.5,3)+CLOUD;label=night?'partly clear night':'sunny intervals';}
+  else{inner=orb(8,8,4.2);label=night?'clear night':'sunny';}
+  return '<svg width="16" height="16" viewBox="0 0 16 16" role="img" aria-label="'+label+'">'+inner+'</svg>';
+}
+// Hour-by-hour strip for one forecast day (BBC-style, one column per hour) —
+// hours are the crag's OWN clock: Open-Meteo is fetched with timezone=auto and
+// the array index IS the local hour, so nothing here ever goes through a Date
+// object (which would silently re-read the hours in the browser's timezone).
+// Night hours sit on a darker band: the same day/night split the ranking now
+// charges rain by, made visible.
+function wxHoursHtml(d,v){
+  var hrs=d.fc&&d.fc.hrs;
+  if(!hrs||!hrs.length)return '';
+  var mx=1;
+  hrs.forEach(function(h){if(h&&h[1]!=null)mx=Math.max(mx,h[1]);});
+  var cells=hrs.map(function(h,i){
+    var hh=(i<10?'0':'')+i;
+    if(!h)return '<div class="wxh"><span class="hh">'+hh+'</span><span class="hp">·</span></div>';
+    var t=h[0],mm=num(h[1]),pr=h[2],code=h[3],wind=h[4],gust=h[5],night=h[6]===0;
+    var bh=mm>0?Math.max(10,Math.round(mm/mx*100)):0;
+    var title=hh+':00 local — '+num(t)+'°C, '+(mm>0?mm+' mm':'dry')
+      +(pr!=null?' ('+num(pr)+'% chance)':'')
+      +(wind!=null?', wind '+num(wind)+(gust!=null?' gusting '+num(gust):'')+' km/h':'');
+    return '<div class="wxh'+(night?' n':'')+'" title="'+title+'">'
+      +'<span class="hh">'+hh+'</span>'
+      +wxGlyph(code,night)
+      +'<span class="ht" style="color:'+tempColor(t)+'">'+num(t)+'°</span>'
+      +'<span class="hb"><i style="height:'+bh+'%"></i></span>'
+      +'<span class="hp"'+(pr!=null?' style="color:'+popColor(pr)+'"':'')+'>'+(pr!=null?num(pr)+'%':'')+'</span>'
+      +'<span class="hw">'+(wind!=null?num(wind):'')+'</span>'
+      +'</div>';
+  }).join('');
+  return '<div class="wxd-hours"><div class="wxd-hl">Hour by hour · <b>local crag time'
+    +(v&&v.tz?' — '+esc(v.tz):'')+'</b> · sky / °C / rain / chance / wind km·h</div>'
+    +'<div class="wxhrs">'+cells+'</div>'
+    +'<div class="wxd-hnote"><b>Shaded hours are night at the crag.</b> The score charges rain by when it falls: '
+    +'rain inside climbing hours (07–20) costs full price, overnight rain only ~¼ — scaled by how fast this rock dries — '
+    +'so a wet night before a dry sunny day no longer sinks the day.</div></div>';
+}
 // The tap/hover panel: a plain-language breakdown of the day, one labelled line
 // per measurement, led by how much to trust it (its provenance).
 // One day's full breakdown, laid out wide-and-short (header line + a wrapping
 // row of labelled facts) for the docked panel under the grid.
-function wxDetailHtml(d){
+function wxDetailHtml(d,v){
   var o=d.fc||d.out;
   var ARR=['↓','↙','←','↖','↑','↗','→','↘'];
   function warr(x){return x==null?'':ARR[Math.round((((num(x)%360)+360)%360)/45)%8];}
@@ -1275,9 +1319,12 @@ function wxDetailHtml(d){
   } else f.push('<span><i>Temp</i>typical '+num(d.tmax)+'°C</span>');
   if(d.fc){
     var pr=(d.fc.prob!=null)?num(d.fc.prob):null;
+    var mmTxt=(d.fc.rainDay!=null)
+      ?num(d.fc.rainDay)+' mm in climbing hours'+(num(d.fc.rainNight)>0?' · '+num(d.fc.rainNight)+' mm overnight (discounted)':'')
+      :num(d.fc.precip)+' mm';
     f.push('<span><i>Rain</i>'+(pr!=null?pr+'% chance':'—')
       +(p==='lowconf'&&d.fc.pop!=null?' <span class="dim">('+num(d.fc.pop)+'% members wet)</span>':'')
-      +' <span class="dim">· '+num(d.fc.precip)+' mm</span></span>');
+      +' <span class="dim">· '+mmTxt+'</span></span>');
   } else if(d.out) f.push('<span><i>Rain</i>'+num(d.out.precip)+' mm <span class="dim">outlook</span></span>');
   else f.push('<span><i>Rain</i>'+num(d.precip)+' mm <span class="dim">typical</span></span>');
   var wv=(d.fc&&d.fc.wind!=null)?num(d.fc.wind):num(d.wind);
@@ -1292,14 +1339,14 @@ function wxDetailHtml(d){
     +(d.fc.dew!=null?' <span class="dim">dew '+num(d.fc.dew)+'°</span>':'')
     +(d.fc.sunFrac!=null?' <span class="dim">· '+Math.round(num(d.fc.sunFrac)*100)+'% sun</span>':'')+'</span>');
   if(d.sun)f.push('<span><i>Daylight</i>'+(d.sun[0]?esc(d.sun[0])+'→'+esc(d.sun[1])+' <span class="dim">· '+num(d.sun[2])+'h</span>':(d.sun[2]>=24?'24h sun':'no sun'))+'</span>');
-  if(d.tide&&d.tide.length)f.push('<span><i>Tide</i>'+d.tide.map(function(x){return (x.k==='L'?'▼':'▲')+esc(x.t)+' '+num(x.h)+'m';}).join(' · ')+'</span>');
-  return head+'<div class="wxd-facts">'+f.join('')+'</div>';
+  if(d.tide&&d.tide.length)f.push('<span><i>Tide</i>'+d.tide.map(function(x){return (x.k==='L'?'▼':'▲')+esc(x.t)+' '+num(x.h)+'m';}).join(' · ')+' <span class="dim">local</span></span>');
+  return head+'<div class="wxd-facts">'+f.join('')+'</div>'+wxHoursHtml(d,v);
 }
 // Fill the docked #wxDetail on hover/focus/tap; default to the first trip day so
 // it's never empty, and never revert on mouseout (keeps the panel steady).
-function wireWxDetail(root,s2){
+function wireWxDetail(root,s2,v){
   var panel=root.querySelector('#wxDetail');if(!panel)return;
-  function fill(i){var d=s2[i];if(d)panel.innerHTML=wxDetailHtml(d);}
+  function fill(i){var d=s2[i];if(d)panel.innerHTML=wxDetailHtml(d,v);}
   var def=0;for(var m=0;m<s2.length;m++){if(s2[m].trip){def=m;break;}}
   fill(def);
   var els=root.querySelectorAll('.wxc');
@@ -1407,13 +1454,13 @@ function renderWx(v){
     +'<span class="wxchip forecast">Forecast</span> trust it (≤7 days) · '
     +'<span class="wxchip lowconf">Low conf</span> a lean (7–16 days) · '
     +'<span class="wxchip outlook">Outlook</span> 45-day guide · '
-    +'<span class="wxchip typical">Typical</span> average. Colours green/amber/red = fine/caution/rough. Hover or tap a day for the full breakdown below.</div>'
+    +'<span class="wxchip typical">Typical</span> average. Colours green/amber/red = fine/caution/rough. Hover or tap a day for the full breakdown below — live-forecast days include an hour-by-hour strip in the crag\'s own time zone.</div>'
     +'<div class="wxgrid" role="group" aria-label="Daily weather by day" style="grid-template-columns:'+cols+'">'
     +rHead+rSky+rTemp+rRain+rWind+rSun+rTide
     +'</div>'
     +'<div id="wxDetail" class="wx-detail" aria-live="polite"></div>'
     +(v.tidal&&!anyTide?'<div class="wx-key">🌊 tide-dependent access — low-water times appear here once the 10-day tide forecast reaches the trip dates.</div>':'');
-  wireWxDetail(el,s2);
+  wireWxDetail(el,s2,v);
 }
 
 // The weighted ring: the ranking function drawn honestly, two levels deep.
@@ -1720,6 +1767,18 @@ function detailHtml(v){
     +'</div>';
 }
 
+// "HH:MM at the crag now" — pure UTC-offset arithmetic (utc_offset_seconds
+// from the venue's own forecast response), read back through getUTC* so the
+// browser's timezone never leaks in.
+function tickCragClock(){
+  var el=document.getElementById('cragClock');if(!el)return;
+  var off=Number(el.getAttribute('data-off'));if(!isFinite(off))return;
+  var t=new Date(Date.now()+off*1000);
+  function p2(x){return (x<10?'0':'')+x;}
+  var b=el.querySelector('b');if(b)b.textContent=p2(t.getUTCHours())+':'+p2(t.getUTCMinutes());
+}
+setInterval(tickCragClock,30000);
+
 function help(on){document.getElementById('hovl').style.display=on?'flex':'none';}
 document.addEventListener('keydown',function(e){if(e.key==='Escape')help(0);});
 var _booted=false,_cur=0;
@@ -1729,7 +1788,7 @@ function sel(i){
   var rows=document.querySelectorAll('.row');
   for(var k=0;k<rows.length;k++)rows[k].classList.toggle('active',+rows[k].getAttribute('data-i')===i);
   document.getElementById('detail').innerHTML=detailHtml(V[i]);
-  renderBrk(V[i]);renderWx(V[i]);
+  renderBrk(V[i]);renderWx(V[i]);tickCragClock();
   if(_booted)try{history.replaceState(null,'','#'+slugify(V[i].shortName));}catch(e){}
   if(_booted&&window.innerWidth<900)document.getElementById('detail').scrollIntoView({behavior:'smooth',block:'start'});
 }

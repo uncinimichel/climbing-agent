@@ -28,6 +28,13 @@ RAIN_IDEAL_PCT = 12    # rain_penalty: dry-climate comfort band (no penalty belo
 RAIN_STEEP_PCT = 40    # rain_penalty: slope steepens for persistent-rain regimes
 ENS_WET_MM = 1.0       # ensemble: a member counts as "wet" at ≥ this daily precip (mm)
 
+# Climbing hours (local): rain inside this window costs full price; rain in the
+# night BEFORE (previous evening + pre-dawn) only matters through wet rock at
+# breakfast, so it's discounted by NIGHT_RAIN_W × the crag's drying factor —
+# a shaded sea cliff still pays ~40% of night rain, a sunny fast-drying face ~15%.
+CLIMB_H0, CLIMB_H1 = 7, 19   # 07:00–19:59 local
+NIGHT_RAIN_W = 0.25
+
 # Felt temperature ON THE ROCK: direct sun on a wall reads far hotter than air
 # temp, and a shaded N face climbs cooler — crag aspect × actual sunniness.
 # This cuts BOTH ways: in a heatwave the shaded N face is the better call, in a
@@ -111,7 +118,9 @@ def forecast(lat, lon, env_cache=None):
         "precipitation_sum,precipitation_probability_max,precipitation_hours,"
         "windspeed_10m_max,wind_gusts_10m_max,winddirection_10m_dominant,"
         "sunshine_duration,daylight_duration,uv_index_max,cloud_cover_mean"
-        "&hourly=dewpoint_2m,relative_humidity_2m,precipitation"
+        "&hourly=dewpoint_2m,relative_humidity_2m,precipitation,"
+        "temperature_2m,weathercode,precipitation_probability,"
+        "windspeed_10m,wind_gusts_10m,is_day"
         "&timezone=auto&forecast_days=16"
     )
 
@@ -323,6 +332,36 @@ def ensemble_metrics(d, wet_mm=ENS_WET_MM):
     return out
 
 
+def hourly_by_date(d):
+    """Compact per-date hourly strip for the frontend's hour-by-hour panel:
+    {ISO date: 24 × [temp°C, mm, prob%, weathercode, wind, gust, is_day]},
+    where the array index IS the venue-local hour (the fetch uses
+    timezone=auto, so the hourly time strings are already crag-local — never
+    re-parse them through a Date object). Hours with no temperature stay None;
+    dates with no data at all are omitted."""
+    h = (d or {}).get("hourly") or {}
+    ts = h.get("time") or []
+    cols = [h.get(k) or [] for k in
+            ("temperature_2m", "precipitation", "precipitation_probability",
+             "weathercode", "windspeed_10m", "wind_gusts_10m", "is_day")]
+
+    def g(col, j, f):
+        return f(col[j]) if j < len(col) and col[j] is not None else None
+    out = {}
+    for j, s in enumerate(ts):
+        if len(s) < 13:
+            continue
+        ds, hr = s[:10], int(s[11:13])
+        t = g(cols[0], j, round)
+        if t is None or not 0 <= hr <= 23:
+            continue
+        out.setdefault(ds, [None] * 24)[hr] = [
+            t, g(cols[1], j, lambda x: round(x, 1)), g(cols[2], j, round),
+            g(cols[3], j, int), g(cols[4], j, round), g(cols[5], j, round),
+            g(cols[6], j, int)]
+    return out
+
+
 def friction_label(dew):
     """Rock friction from daytime dewpoint (°C). Low dewpoint = crisp, grippy rock;
     high dewpoint = humid, greasy. The single best rock-quality signal we have."""
@@ -391,19 +430,39 @@ def day_score(code, mm, prob, m=None, rain_tol=1.0, heat_tol=1.0):
     dewpoint (friction) — each a gentle, bounded nudge so ranking never swings wildly.
     rain_tol/heat_tol are user-preference multipliers (>1 = more tolerant), 1.0 = neutral.
     When `m` carries an ensemble `ens_prob` (ECMWF member fraction), it supersedes the
-    weathercode guess for the rain base — the confidence signal for the horizon edge."""
+    weathercode guess for the rain base — the confidence signal for the horizon edge.
+
+    When `m` carries the hourly day/night split (rain_day / rain_night /
+    wet_hrs_day / prob_day from forecast_metrics), rain is charged by WHEN it
+    falls: climbing-window rain at full price, night-before rain discounted to
+    NIGHT_RAIN_W × drying factor (a dry sunny day after a wet night is a
+    climbing day, not a washout), and the daily-weathercode rain caps only fire
+    when the climbing window itself is wet — a code-61 day whose rain fell
+    entirely overnight no longer bottoms out at 25."""
     ens_prob = m.get("ens_prob") if m else None
-    s = 100.0 - day_rain_penalty(effective_rain_prob(prob, code, ens_prob), rain_tol) - (mm or 0) * 6
-    if code is not None and code >= 61:
+    split = m is not None and m.get("rain_day") is not None
+    # rain probability: prefer the climbing-window max over the 24h daily max,
+    # so a 90%-chance-overnight day doesn't read as a 90%-chance climbing day
+    p = m["prob_day"] if (split and m.get("prob_day") is not None) else prob
+    if split:
+        night_w = max(0.15, min(0.5, NIGHT_RAIN_W * m.get("dry_f", 1.0)))
+        mm_pen = m["rain_day"] * 6 + (m.get("rain_night") or 0) * 6 * night_w
+    else:
+        mm_pen = (mm or 0) * 6
+    s = 100.0 - day_rain_penalty(effective_rain_prob(p, code, ens_prob), rain_tol) - mm_pen
+    day_wet = (m["rain_day"] >= 0.5 or (m.get("wet_hrs_day") or 0) >= 1) if split else True
+    if code is not None and code >= 61 and day_wet:
         s = min(s, 25)
-    if code in (95, 96, 99):
+    if code in (95, 96, 99) and day_wet:
         s = min(s, 15)
     if m:
         if m.get("gust") is not None:            # gusts bite on exposed routes / sea-cliffs —
             # scaled by wind-vs-face exposure (windward wall > leeward, asp_m)
             s -= max(0, m["gust"] - GUST_BAD_KMH) * 0.6 * m.get("wind_f", 1.0)  # 50 km/h ≈ −12
-        if m.get("precip_hours") is not None:     # hours of rain, not just total mm —
-            # scaled by how slowly this rock dries (shade / sea air, asp_m)
+        if m.get("wet_hrs_day") is not None:      # hours of rain INSIDE the climbing
+            # window — scaled by how slowly this rock dries (shade / sea air, asp_m)
+            s -= min(m["wet_hrs_day"], 12) * 0.8 * m.get("dry_f", 1.0)
+        elif m.get("precip_hours") is not None:   # pre-split fallback: 24h wet hours
             s -= min(m["precip_hours"], 12) * 0.8 * m.get("dry_f", 1.0)  # up to ≈ −10 neutral
         if m.get("sun_frac") is not None:         # sun dries rock → reward, dull → penalise
             s += (m["sun_frac"] - 0.5) * 10        # ±5
@@ -480,6 +539,13 @@ def forecast_metrics(d):
     """Per-day derived climbing signals from a forecast response, keyed by ISO date.
     Daily gives gusts / sunshine / precip-hours; hourly dewpoint+humidity are averaged
     over daytime (09–18 local) for friction, and 07–12 dryness flags an AM window.
+    Hourly precipitation is also split around the climbing day (CLIMB_H0–H1 local):
+      rain_day    — mm that falls while you'd actually be on the rock
+      rain_night  — mm in the night BEFORE (previous evening 20–24 + pre-dawn 00–07),
+                    which only matters through how wet the rock still is at breakfast
+      wet_hrs_day — climbing-window hours with ≥0.2 mm (the honest precip_hours)
+      prob_day    — max hourly rain probability inside the climbing window
+    All hourly timestamps are venue-LOCAL (the fetch uses timezone=auto).
     Everything is best-effort — any missing field just yields None for that signal."""
     daily = d.get("daily", {})
     times = daily.get("time", [])
@@ -494,7 +560,9 @@ def forecast_metrics(d):
     htime = h.get("time", [])
     hdew, hhum, hpre = (h.get("dewpoint_2m") or [], h.get("relative_humidity_2m") or [],
                         h.get("precipitation") or [])
+    hprob = h.get("precipitation_probability") or []
     day_dew, day_hum, am_wet = {}, {}, {}
+    day_mm, eve_mm, dawn_mm, wet_hrs, day_prob = {}, {}, {}, {}, {}
     for j, ts in enumerate(htime):
         date_s, hr = ts[:10], int(ts[11:13]) if len(ts) >= 13 else 0
         if 9 <= hr <= 18:
@@ -504,13 +572,32 @@ def forecast_metrics(d):
                 day_hum.setdefault(date_s, []).append(hhum[j])
         if 7 <= hr <= 12 and j < len(hpre) and (hpre[j] or 0) >= 0.2:
             am_wet[date_s] = True
+        mm = hpre[j] if j < len(hpre) and hpre[j] is not None else None
+        if mm is not None:
+            if CLIMB_H0 <= hr <= CLIMB_H1:
+                day_mm[date_s] = day_mm.get(date_s, 0.0) + mm
+                if mm >= 0.2:
+                    wet_hrs[date_s] = wet_hrs.get(date_s, 0) + 1
+            elif hr > CLIMB_H1:
+                eve_mm[date_s] = eve_mm.get(date_s, 0.0) + mm
+            else:
+                dawn_mm[date_s] = dawn_mm.get(date_s, 0.0) + mm
+        if (CLIMB_H0 <= hr <= CLIMB_H1 and j < len(hprob)
+                and hprob[j] is not None):
+            day_prob[date_s] = max(day_prob.get(date_s, 0), hprob[j])
 
     tmaxs = daily.get("temperature_2m_max") or [None] * len(times)
+    have_split = bool(day_mm or eve_mm or dawn_mm)
     out = {}
     for i, ds in enumerate(times):
         dew = round(sum(day_dew[ds]) / len(day_dew[ds]), 1) if day_dew.get(ds) else None
         hum = round(sum(day_hum[ds]) / len(day_hum[ds])) if day_hum.get(ds) else None
         sf = (sun[i] / daylt[i]) if (sun[i] is not None and daylt[i]) else None
+        # night-before rain = previous date's evening + this date's pre-dawn
+        night = None
+        if have_split:
+            prev = (date.fromisoformat(ds) - timedelta(days=1)).isoformat() if len(ds) == 10 else None
+            night = round(eve_mm.get(prev, 0.0) + dawn_mm.get(ds, 0.0), 1)
         out[ds] = {
             "tmax": tmaxs[i],
             "gust": round(gusts[i]) if gusts[i] is not None else None,
@@ -520,5 +607,9 @@ def forecast_metrics(d):
             "dew": dew, "humid": hum,
             "am_dry": (ds in am_wet) is False if htime else None,
             "friction": friction_label(dew),
+            "rain_day": round(day_mm.get(ds, 0.0), 1) if have_split else None,
+            "rain_night": night,
+            "wet_hrs_day": wet_hrs.get(ds, 0) if have_split else None,
+            "prob_day": day_prob.get(ds) if day_prob else None,
         }
     return out
