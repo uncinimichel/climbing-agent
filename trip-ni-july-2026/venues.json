@@ -5,7 +5,7 @@
     "end": "2026-07-28",
     "_comment": "LEGACY — ignored since decision #33 M1: the trips.json registry window wins. Kept in sync for humans only."
   },
-  "notes": "Single source of truth for candidate venues. The script reads THIS file to decide what to query (weather + flights). 'travel' gives how each person reaches the venue: mode fly|local|drive and the destination airport IATA they fly into (Michel from London, Dan from Belfast).",
+  "notes": "Single source of truth for candidate venues. The script reads THIS file to decide what to query (weather + flights). 'travel' gives how each person reaches the venue: mode fly|local|drive and the destination airport IATA they fly into (Michel from London, Dan from Belfast). Physical-character fields the ranking reads: 'aspect' (N/NE/E/SE/S/SW/W/NW — which way the rock faces; shifts felt temperature and drying), 'coastal' (sea air holds damp — rock stays wet longer), 'wind_exposed' (sea cliff / free-standing tower / summit ridge with no shelter — gusts bite harder), 'drying' ('fast'|'slow' — explicit curator override of the aspect+coastal derivation), 'tidal' (tide-dependent access; also implies coastal air for drying).",
   "venues": [
     {
       "name": "Fair Head, NI",
@@ -26,7 +26,9 @@
           "mode": "local"
         }
       },
-      "aspect": "N"
+      "aspect": "N",
+      "coastal": true,
+      "wind_exposed": true
     },
     {
       "name": "Mournes, NI",
@@ -46,7 +48,8 @@
         "dan": {
           "mode": "local"
         }
-      }
+      },
+      "wind_exposed": true
     },
     {
       "name": "Dolomites (Cortina)",
@@ -128,7 +131,8 @@
           "mode": "fly",
           "to": "MAN"
         }
-      }
+      },
+      "drying": "slow"
     },
     {
       "name": "Isle of Arran",
@@ -149,7 +153,9 @@
           "mode": "fly",
           "to": "GLA"
         }
-      }
+      },
+      "coastal": true,
+      "wind_exposed": true
     },
     {
       "name": "Picos de Europa",
@@ -214,7 +220,9 @@
           "mode": "local"
         }
       },
-      "aspect": "W"
+      "aspect": "W",
+      "coastal": true,
+      "wind_exposed": true
     },
     {
       "name": "West Cornwall (Bosigran)",
@@ -236,7 +244,10 @@
           "to": "NQY"
         }
       },
-      "aspect": "NW"
+      "aspect": "NW",
+      "coastal": true,
+      "wind_exposed": true,
+      "drying": "fast"
     },
     {
       "name": "Écrins (Aiguille Dibona)",
@@ -257,7 +268,8 @@
           "mode": "fly",
           "to": "LYS"
         }
-      }
+      },
+      "wind_exposed": true
     },
     {
       "name": "Stetind (Norway)",
@@ -278,7 +290,9 @@
           "mode": "fly",
           "to": "EVE"
         }
-      }
+      },
+      "coastal": true,
+      "wind_exposed": true
     }
   ]
 }

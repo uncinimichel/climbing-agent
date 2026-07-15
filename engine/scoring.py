@@ -8,6 +8,7 @@ uses live/cached flight prices when known plus the sheet's travel-time band;
 venue fit comes from the sheet's judgment columns (volume of multi-pitch,
 difficulty spread, minimum-trip length).
 """
+import math
 import re
 import sys
 from datetime import date
@@ -170,6 +171,11 @@ def evaluate(v, ctx, env_cache=None, climo_cache=None, stays_cache=None,
             dews_w = [x["dew"] for x in wm if x.get("dew") is not None]
             am_flags = [x["am_dry"] for x in wm if x.get("am_dry") is not None]
             mean_dew = round(sum(dews_w) / len(dews_w), 1) if dews_w else None
+            ph_w = [x["precip_hours"] for x in wm if x.get("precip_hours") is not None]
+            wd_w = [x["wdir"] for x in wm if x.get("wdir") is not None]
+            wind_dir = round(math.degrees(math.atan2(          # circular mean over the window
+                sum(math.sin(math.radians(x)) for x in wd_w),
+                sum(math.cos(math.radians(x)) for x in wd_w))) % 360) if wd_w else None
             res["fc"] = {
                 "score": round(sum(scores) / len(scores)),
                 "tmax": round(sum(daily["temperature_2m_max"][i] for i in in_win) / len(in_win)),
@@ -178,6 +184,8 @@ def evaluate(v, ctx, env_cache=None, climo_cache=None, stays_cache=None,
                                                              met.get(days[i], {}).get("ens_prob")) for i in in_win),
                 "sky": WMO.get(dom, "?"), "sky_icon": wmo_icon(dom),
                 "gust_max": max(gusts_w) if gusts_w else None,
+                "wind_dir": wind_dir,
+                "wet_hours": round(sum(ph_w) / len(ph_w), 1) if ph_w else None,
                 "friction": weather.friction_label(mean_dew), "dew": mean_dew,
                 "am_dry_days": (sum(1 for a in am_flags if a), len(am_flags)) if am_flags else None,
                 "in_window": True, "horizon": days[-1],
@@ -196,15 +204,16 @@ def evaluate(v, ctx, env_cache=None, climo_cache=None, stays_cache=None,
     climo_component = None
     if res["climo"]:
         c = res["climo"]
+        dry_f = weather.drying_factor(v)             # shade/sea air → wet days cost more
         sunny = max(0.35, 1 - c["rain_pct"] / 100)   # dry climate ≈ sunny climate
         cs = weather.climo_score({**c, "tmax": weather.sun_adjusted_tmax(v, c["tmax"], sunny)},
-                                 rain_tol=ctx.prefs.rain_tol, heat_tol=ctx.prefs.heat_tol)
+                                 rain_tol=ctx.prefs.rain_tol, heat_tol=ctx.prefs.heat_tol, dry_f=dry_f)
         if sea:
             # gentle blend: climatology dominant, 45-day outlook nudges it
             ssun = max(0.35, 1 - sea["rain_pct"] / 100)
             ss = weather.climo_score({"tmax": weather.sun_adjusted_tmax(v, sea["tmax"], ssun),
                                        "rain_pct": sea["rain_pct"]},
-                                      rain_tol=ctx.prefs.rain_tol, heat_tol=ctx.prefs.heat_tol)
+                                      rain_tol=ctx.prefs.rain_tol, heat_tol=ctx.prefs.heat_tol, dry_f=dry_f)
             climo_component = (round(0.7 * cs + 0.3 * ss), f"typical {ctx.period_lbl} + long-range outlook")
         else:
             climo_component = (cs, f"typical {ctx.period_lbl} (climatology)")
@@ -234,20 +243,38 @@ def weather_signals(r, v):
     """Per-signal 'health checks' for the header ring's outer tier: how little
     each weather signal is costing (100 = costing nothing). Uses the same
     numbers/penalty curves as the score itself. Wind + friction only exist on
-    the live-forecast horizon — before that they ship as None ('pending')."""
+    the live-forecast horizon — before that they ship as None ('pending').
+    Wind is scaled by where it hits the crag (windward face vs leeward, plus a
+    wind_exposed surcharge); Drying tracks how long the rock stays wet given
+    the crag's shade/sea-air character (weather.drying_factor)."""
     fc = r.get("fc") or {}
+    dry_f = weather.drying_factor(v)
+    traits = weather.drying_traits(v)
     if fc.get("in_window"):
         t = weather.sun_adjusted_tmax(v, fc["tmax"]) if fc.get("tmax") is not None else None
-        g, dw = fc.get("gust_max"), fc.get("dew")
+        g, dw, wh = fc.get("gust_max"), fc.get("dew"), fc.get("wet_hours")
+        wd = fc.get("wind_dir")
+        wf = weather.wind_factor(v, wd)
+        face = wf - (0.25 if v.get("wind_exposed") else 0)   # aspect part alone
+        wind_d = "no gust signal"
+        if g is not None:
+            wind_d = f"gusts to {g} km/h" + (f" from the {weather.compass(wd)}" if wd is not None else "")
+            wind_d += (" — blowing onto the face" if face > 1.1
+                       else " — face part-sheltered (leeward)" if face < 0.9 else "")
+            if v.get("wind_exposed"):
+                wind_d += " · wind-exposed crag, nowhere to hide"
         return [
             {"n": "Rain", "v": _sig(100 - (fc.get("rain_prob") or 0) * 0.8),
              "d": f"max rain prob {fc.get('rain_prob') or 0}% over the trip"},
             {"n": "Heat", "v": _sig(100 - weather.heat_penalty(t) - max(0, 8 - t) * 2) if t is not None else None,
              "d": f"{round(t)}°C felt on the rock" if t is not None else "no temperature signal"},
-            {"n": "Wind", "v": _sig(100 - max(0, (g or 0) - 30) * 0.6) if g is not None else None,
-             "d": f"gusts to {g} km/h" if g is not None else "no gust signal"},
+            {"n": "Wind", "v": _sig(100 - max(0, (g or 0) - 30) * 0.6 * wf) if g is not None else None,
+             "d": wind_d},
             {"n": "Friction", "v": _sig(100 - max(0, (dw or 0) - 12) * 1.2) if dw is not None else None,
              "d": f"daytime dewpoint {dw}°C" if dw is not None else "no dewpoint signal"},
+            {"n": "Drying", "v": _sig(100 - min(wh, 12) * 0.8 * dry_f) if wh is not None else None,
+             "d": (f"~{wh}h/day of rain to dry off" + (f" · {traits}" if traits else ""))
+                  if wh is not None else "no wet-hours signal"},
         ]
     c, sea = r.get("climo"), r.get("seasonal")
     if not c:
@@ -257,12 +284,19 @@ def weather_signals(r, v):
     tm = 0.7 * c["tmax"] + 0.3 * sea["tmax"] if sea else c["tmax"]
     t = weather.sun_adjusted_tmax(v, tm, sunny)
     pend = "activates when the live forecast reaches your dates"
+    # Drying on this horizon = the EXTRA cost of slow-drying rock on typical wet
+    # days (same half-weighted term climo_score charges); fast-drying reads 100.
+    dry_extra = max(0.0, weather.rain_penalty(rp) * (dry_f - 1) * 0.5)
     return [
         {"n": "Rain", "v": _sig(100 - weather.rain_penalty(rp)), "d": f"{rp}% typical wet days"},
         {"n": "Heat", "v": _sig(100 - weather.heat_penalty(t) - max(0, 8 - t) * 2),
          "d": f"{round(t)}°C felt on the rock"},
         {"n": "Wind", "v": None, "d": pend},
         {"n": "Friction", "v": None, "d": pend},
+        {"n": "Drying", "v": _sig(100 - dry_extra),
+         "d": (f"{traits} — wet days cost more here" if dry_f > 1.05
+               else f"{traits} — sheds rain quickly" if traits and dry_f < 0.95
+               else "neutral drying") + f" · {rp}% typical wet days"},
     ]
 
 
@@ -343,7 +377,10 @@ def apply_composite(r, ctx, mp_climbs=None):
         "weights": {"weather": W_WEATHER, "travel": W_TRAVEL, "fit": W_FIT},
         "weather_note": r.get("basis", "") + (
             f" · {v['aspect'].upper()}-facing rock ({weather.ASPECT_ADJ.get(v['aspect'].upper(), 0):+d}°C felt in full sun)"
-            if v.get("aspect") else ""),
+            if v.get("aspect") else "")
+            + (" · sea air — rock holds damp longer" if v.get("coastal") or v.get("tidal") else "")
+            + (" · wind-exposed crag — gusts bite harder" if v.get("wind_exposed") else "")
+            + (f" · dries {v['drying']} (curated)" if v.get("drying") else ""),
         "travel_note": travel_note, "fit_note": fit_note,
         # each factor's own function, for the header ring's outer tier +
         # hover panels (v = 0-100 sub-score, None = pending/no data)

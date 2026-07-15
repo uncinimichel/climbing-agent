@@ -414,6 +414,12 @@ def venue_tags(v, cards, grades, tag_spec, cond_txt=None, tidal=False):
     if asp:
         adj = ASPECT_ADJ.get(asp, 0)
         add("aspect", f"{asp}-facing" + (" · shade" if adj < 0 else " · sun-baked" if adj >= 3 else ""))
+    if v.get("coastal") and not tidal:   # the tidal chip already implies the sea
+        add("coastal", "coastal · sea air")
+    if v.get("wind_exposed"):
+        add("windex", "wind-exposed")
+    if v.get("drying"):
+        add("drying", f"dries {v['drying']}")
     add("wallheight", sh.get("max_height") and f"walls to {sh['max_height']}m")
     if cards:
         add("appr", approach_txt())
@@ -981,8 +987,16 @@ PAGE_BODY = """<body>
       in full sun feels far hotter than the thermometer says, while a shaded north face
       climbs cooler — each crag's <b>aspect</b> shifts its felt temperature, weighted by how
       sunny it actually is (cloud/sunshine from the live forecast once in range; dryness as
-      a proxy before that). Once the trip is inside the 16-day forecast, friction terms
-      (dew point, drying sun, gusts) join in.</p>
+      a proxy before that). This cuts both ways: in a <b>heatwave the shaded north face wins</b>,
+      in a <b>cold snap the sunny south face does</b>. Aspect also steers the <b>wind</b> penalty:
+      a face looking straight into the forecast wind takes the full gust hit, a leeward wall is
+      part-sheltered, and a <b>wind-exposed</b> crag (sea cliff, free-standing tower, summit
+      ridge) pays a surcharge whichever way it blows. And rock doesn't dry at one speed:
+      a <b>shaded north face or a coastal crag in salt-humid sea air stays wet longer</b>
+      after rain than a sun-baked southerly wall, so slow-drying venues lose more per wet
+      day (per-crag drying notes — Cornwall's dries-in-minutes granite, Snowdonia's slow
+      rhyolite — override the derivation). Once the trip is inside the 16-day forecast,
+      friction terms (dew point, drying sun, gusts) join in.</p>
       <p><b style="color:var(--temp)">Travel · 25%</b> — real return-flight prices for both
       of you when priced (now the <b>top 10</b> venues each day), and for anything not yet
       priced a <b>distance-based fare estimate</b> stands in so a far-flung venue can't hide
@@ -1419,7 +1433,7 @@ function renderBrk(v){
   if(!b){el.innerHTML='';return;}
   var W=b.weights||{weather:55,travel:25,fit:20};
   var FACT=[
-    {key:'weather',name:'WEATHER',val:num(b.weather),wt:W.weather,color:'#3987e5',fn:'100 −rain −heat −wind −grease'},
+    {key:'weather',name:'WEATHER',val:num(b.weather),wt:W.weather,color:'#3987e5',fn:'100 −rain −heat −wind −grease −wet rock'},
     {key:'travel',name:'TRAVEL',val:num(b.travel),wt:W.travel,color:'#d95926',fn:'(flights + time + stay) / 3'},
     {key:'fit',name:'VENUE FIT',val:num(b.fit),wt:W.fit,color:'#57A664',fn:'(vol + diff + trip + routes + distance) / 5'}
   ];

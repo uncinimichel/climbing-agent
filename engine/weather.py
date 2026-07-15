@@ -30,7 +30,70 @@ ENS_WET_MM = 1.0       # ensemble: a member counts as "wet" at ≥ this daily pr
 
 # Felt temperature ON THE ROCK: direct sun on a wall reads far hotter than air
 # temp, and a shaded N face climbs cooler — crag aspect × actual sunniness.
+# This cuts BOTH ways: in a heatwave the shaded N face is the better call, in a
+# cold snap the sunny S face is (day_score penalises heat AND cold on the felt
+# temperature, so the aspect shift rewards whichever face fits the day).
 ASPECT_ADJ = {"N": -4, "NE": -3, "NW": -2, "E": -1, "W": 2, "SE": 3, "SW": 3, "S": 4}
+
+# Bearing (°) each aspect looks toward — for wind-vs-face exposure.
+ASPECT_DEG = {"N": 0, "NE": 45, "E": 90, "SE": 135, "S": 180, "SW": 225, "W": 270, "NW": 315}
+
+
+def compass(deg):
+    """Nearest 8-point compass name for a bearing in degrees."""
+    if deg is None:
+        return None
+    return ["N", "NE", "E", "SE", "S", "SW", "W", "NW"][round(deg / 45) % 8]
+
+
+def wind_factor(v, wdir):
+    """Multiplier on the gust penalty from where the wind hits the crag. Wind
+    blowing straight ONTO the face (meteorological direction ≈ the wall's
+    bearing) bites hardest — belays in the blast, ropes blown sideways — while
+    a leeward wall is part-sheltered by its own hillside. A `wind_exposed`
+    crag (sea cliff, free-standing tower, summit ridge) has nothing to hide
+    behind, so it pays a surcharge whichever way the wind blows."""
+    f = 1.0
+    deg = ASPECT_DEG.get((v.get("aspect") or "").upper())
+    if deg is not None and wdir is not None:
+        f += 0.25 * math.cos(math.radians(wdir - deg))   # windward +25% … leeward −25%
+    if v.get("wind_exposed"):
+        f += 0.25
+    return f
+
+
+def drying_factor(v):
+    """How slowly this crag's rock dries after rain — a multiplier on the
+    wet-rock penalties. Shade and sea air both hold water: a N face never gets
+    the drying sun, and a coastal/tidal crag sits in salt-humid air (sea fog,
+    spray), while a sunny S face sheds water fastest. An explicit
+    `drying: "fast"|"slow"` on the venue overrides the derivation — a curator
+    note like Cornwall's 'dries in minutes in a breeze' beats geometry."""
+    d = (v.get("drying") or "").lower()
+    if d == "fast":
+        return 0.7
+    if d == "slow":
+        return 1.4
+    f = 1.0 - ASPECT_ADJ.get((v.get("aspect") or "").upper(), 1) * 0.05  # N +0.2 … S −0.2
+    if v.get("coastal") or v.get("tidal"):
+        f += 0.25
+    return max(0.6, min(1.6, f))
+
+
+def drying_traits(v):
+    """Short human reason for the venue's drying factor ('' when neutral)."""
+    bits = []
+    asp = (v.get("aspect") or "").upper()
+    if ASPECT_ADJ.get(asp, 0) <= -2:
+        bits.append(f"shaded {asp} face")
+    elif ASPECT_ADJ.get(asp, 0) >= 3:
+        bits.append(f"sunny {asp} face")
+    if v.get("coastal") or v.get("tidal"):
+        bits.append("sea air")
+    d = (v.get("drying") or "").lower()
+    if d in ("fast", "slow"):
+        bits.append(f"dries {d} (curated)")
+    return ", ".join(bits)
 
 
 def forecast(lat, lon, env_cache=None):
@@ -336,16 +399,19 @@ def day_score(code, mm, prob, m=None, rain_tol=1.0, heat_tol=1.0):
     if code in (95, 96, 99):
         s = min(s, 15)
     if m:
-        if m.get("gust") is not None:            # gusts bite on exposed routes / sea-cliffs
-            s -= max(0, m["gust"] - GUST_BAD_KMH) * 0.6     # 50 km/h ≈ −12
-        if m.get("precip_hours") is not None:     # hours of rain, not just total mm
-            s -= min(m["precip_hours"], 12) * 0.8  # up to ≈ −10
+        if m.get("gust") is not None:            # gusts bite on exposed routes / sea-cliffs —
+            # scaled by wind-vs-face exposure (windward wall > leeward, asp_m)
+            s -= max(0, m["gust"] - GUST_BAD_KMH) * 0.6 * m.get("wind_f", 1.0)  # 50 km/h ≈ −12
+        if m.get("precip_hours") is not None:     # hours of rain, not just total mm —
+            # scaled by how slowly this rock dries (shade / sea air, asp_m)
+            s -= min(m["precip_hours"], 12) * 0.8 * m.get("dry_f", 1.0)  # up to ≈ −10 neutral
         if m.get("sun_frac") is not None:         # sun dries rock → reward, dull → penalise
             s += (m["sun_frac"] - 0.5) * 10        # ±5
         if m.get("dew") is not None:              # friction / grease
             s -= max(0, m["dew"] - 12) * 1.2       # dew 20 ≈ −10
-        if m.get("tmax") is not None:             # same climbing heat curve as climatology
-            s -= heat_penalty(m["tmax"]) / (heat_tol or 1.0)
+        if m.get("tmax") is not None:             # same climbing heat + cold curves as
+            s -= heat_penalty(m["tmax"]) / (heat_tol or 1.0)   # climatology — on the FELT
+            s -= max(0, COLD_C - m["tmax"]) * 2    # temp, so aspect helps either extreme
     return max(0.0, min(100.0, s))
 
 
@@ -377,8 +443,10 @@ def rain_penalty(pct, tol=1.0):
             + max(0, pct - RAIN_STEEP_PCT) * 1.5) / (tol or 1.0)
 
 
-def climo_score(c, rain_tol=1.0, heat_tol=1.0):
-    s = 100 - rain_penalty(c["rain_pct"], rain_tol)
+def climo_score(c, rain_tol=1.0, heat_tol=1.0, dry_f=1.0):
+    # dry_f (drying_factor): slow-drying rock loses more per typical wet day —
+    # half-weighted here, since climatology already averages over dry-out days
+    s = 100 - rain_penalty(c["rain_pct"], rain_tol) * (1 + (dry_f - 1) * 0.5)
     s -= max(0, COLD_C - c["tmax"]) * 2      # too cold: numb fingers below ~8°C
     s -= heat_penalty(c["tmax"]) / (heat_tol or 1.0)
     return max(0, min(100, round(s)))
@@ -396,9 +464,15 @@ def sun_adjusted_tmax(v, tmax, sun_frac=None):
 
 
 def asp_m(v, m):
-    """Apply the aspect/sun adjustment to a live-forecast day's metrics dict."""
-    if m and m.get("tmax") is not None:
-        m = dict(m, tmax=sun_adjusted_tmax(v, m["tmax"], m.get("sun_frac")))
+    """Fold the venue's physical character into a live-forecast day's metrics:
+    aspect/sun felt temperature, wind-vs-face gust exposure, drying speed."""
+    if not m:
+        return m
+    m = dict(m)
+    if m.get("tmax") is not None:
+        m["tmax"] = sun_adjusted_tmax(v, m["tmax"], m.get("sun_frac"))
+    m["wind_f"] = wind_factor(v, m.get("wdir"))
+    m["dry_f"] = drying_factor(v)
     return m
 
 
@@ -410,6 +484,7 @@ def forecast_metrics(d):
     daily = d.get("daily", {})
     times = daily.get("time", [])
     gusts = daily.get("wind_gusts_10m_max") or [None] * len(times)
+    wdirs = daily.get("winddirection_10m_dominant") or [None] * len(times)
     sun = daily.get("sunshine_duration") or [None] * len(times)
     daylt = daily.get("daylight_duration") or [None] * len(times)
     phours = daily.get("precipitation_hours") or [None] * len(times)
@@ -439,6 +514,7 @@ def forecast_metrics(d):
         out[ds] = {
             "tmax": tmaxs[i],
             "gust": round(gusts[i]) if gusts[i] is not None else None,
+            "wdir": round(wdirs[i]) if wdirs[i] is not None else None,
             "sun_frac": round(sf, 2) if sf is not None else None,
             "precip_hours": round(phours[i], 1) if phours[i] is not None else None,
             "dew": dew, "humid": hum,

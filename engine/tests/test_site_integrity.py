@@ -211,6 +211,44 @@ class KnowledgeIndex(unittest.TestCase):
                                 f"index links {key}.html but the page is missing")
 
 
+# ── F · venue character fields ──────────────────────────────────────────────
+class VenueCharacter(unittest.TestCase):
+    """The ranking reads physical-character fields off every venue entry
+    (aspect / coastal / wind_exposed / drying / tidal — see venues.json
+    "notes"). Guard both curated sources so a typo can't silently become a
+    no-op in scoring (an unknown aspect falls back to the mild sun bump)."""
+    DRYING = {"fast", "slow"}
+    BOOLS = ("coastal", "wind_exposed", "tidal")
+
+    def _check(self, entries, label):
+        bad = []
+        for name, v in entries:
+            if v.get("aspect") and v["aspect"].upper() not in ASPECTS:
+                bad.append(f"{label}:{name}.aspect={v['aspect']!r}")
+            if v.get("drying") and v["drying"].lower() not in self.DRYING:
+                bad.append(f"{label}:{name}.drying={v['drying']!r}")
+            for f in self.BOOLS:
+                if f in v and not isinstance(v[f], bool):
+                    bad.append(f"{label}:{name}.{f}={v[f]!r} (not bool)")
+        self.assertEqual(bad, [], f"bad venue character fields: {bad}")
+
+    def test_venues_json_fields(self):
+        cfg = json.loads(_read(ROOT / "trip-ni-july-2026" / "venues.json"))
+        self._check([(v["name"], v) for v in cfg["venues"]], "venues.json")
+
+    def test_gazetteer_fields(self):
+        import sys
+        sys.path.insert(0, str(ROOT))
+        from engine.sheet_venues import GAZETTEER
+        self._check(list(GAZETTEER.items()), "GAZETTEER")
+
+    def test_new_tag_kinds_in_spec(self):
+        spec = json.loads(_read(KDIR / "data" / "tag-spec.json"))
+        kinds = {t["k"] for t in spec["tags"]}
+        for k in ("aspect", "coastal", "windex", "drying"):
+            self.assertIn(k, kinds, f"tag kind {k!r} missing from tag-spec.json")
+
+
 # ── E · generators wired ────────────────────────────────────────────────────
 class GeneratorsWired(unittest.TestCase):
     def test_nav_links_in_render(self):
