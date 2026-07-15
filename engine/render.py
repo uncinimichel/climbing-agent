@@ -734,12 +734,11 @@ svg.topo .dseg{pointer-events:stroke}
 /* Hour-by-hour strip (docked inside the day panel, forecast days only):
    one column per LOCAL hour at the crag. Night hours sit on a darker band —
    the same day/night split the score now charges rain by, made visible. */
-.wxd-hours{margin-top:11px}
-.wxd-hl{font-family:var(--mono);font-size:9px;letter-spacing:.09em;text-transform:uppercase;color:var(--faint);margin-bottom:7px}
-.wxd-hl b{color:var(--muted);font-weight:600}
-/* the strip is a slider on the SAME surface as the day grid — no box of its
-   own, hour columns separated by the same hairlines as the day columns above;
-   generous cells, arrows to page through, opens scrolled to 06:00 local */
+/* the hours come FIRST in the panel, full-bleed, flowing straight on from the
+   day columns above — no label, no box, no line: the same widget continuing.
+   Hour columns use the same hairlines as the day columns; the strip is a
+   slider with paging arrows that opens scrolled to 06:00 local. */
+.wxd-hours{margin:-13px -16px 12px}
 .wxhrs-wrap{position:relative}
 .wxhrs{position:relative;display:flex;overflow-x:auto;scrollbar-width:thin;scrollbar-color:var(--line2) transparent}
 .wxh{flex:1 0 54px;min-width:54px;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 3px 9px;border-left:1px solid var(--line)}
@@ -757,7 +756,7 @@ svg.topo .dseg{pointer-events:stroke}
 .hnav:hover{border-color:var(--muted)}
 .hnav.prev{left:5px}
 .hnav.next{right:5px}
-.wxd-hnote{font-size:10.5px;color:var(--faint);margin-top:7px;line-height:1.55;max-width:820px}
+.wxd-hnote{font-size:10.5px;color:var(--faint);margin-top:10px;line-height:1.55;max-width:820px}
 .wxd-hnote b{color:var(--muted)}
 .crag-clock{font-family:var(--mono);font-size:11px;color:var(--muted);white-space:nowrap;margin-left:auto}
 .crag-clock b{color:var(--ink);font-weight:600}
@@ -1308,14 +1307,10 @@ function wxHoursHtml(d,v){
       +'<span class="hw">'+(wind!=null?num(wind):'')+'</span>'
       +'</div>';
   }).join('');
-  return '<div class="wxd-hours"><div class="wxd-hl">Hour by hour · <b>local crag time'
-    +(v&&v.tz?' — '+esc(v.tz):'')+'</b> · sky / °C / rain / chance / wind km·h</div>'
+  return '<div class="wxd-hours">'
     +'<div class="wxhrs-wrap"><button class="hnav prev" type="button" aria-label="Earlier hours">‹</button>'
     +'<div class="wxhrs" tabindex="0" role="group" aria-label="Hour by hour, local crag time">'+cells+'</div>'
-    +'<button class="hnav next" type="button" aria-label="Later hours">›</button></div>'
-    +'<div class="wxd-hnote"><b>Shaded hours are night at the crag.</b> The score charges rain by when it falls: '
-    +'rain inside climbing hours (07–20) costs full price, overnight rain only ~¼ — scaled by how fast this rock dries — '
-    +'so a wet night before a dry sunny day no longer sinks the day.</div></div>';
+    +'<button class="hnav next" type="button" aria-label="Later hours">›</button></div></div>';
 }
 // The tap/hover panel: a plain-language breakdown of the day, one labelled line
 // per measurement, led by how much to trust it (its provenance).
@@ -1359,7 +1354,13 @@ function wxDetailHtml(d,v){
     +(d.fc.sunFrac!=null?' <span class="dim">· '+Math.round(num(d.fc.sunFrac)*100)+'% sun</span>':'')+'</span>');
   if(d.sun)f.push('<span><i>Daylight</i>'+(d.sun[0]?esc(d.sun[0])+'→'+esc(d.sun[1])+' <span class="dim">· '+num(d.sun[2])+'h</span>':(d.sun[2]>=24?'24h sun':'no sun'))+'</span>');
   if(d.tide&&d.tide.length)f.push('<span><i>Tide</i>'+d.tide.map(function(x){return (x.k==='L'?'▼':'▲')+esc(x.t)+' '+num(x.h)+'m';}).join(' · ')+' <span class="dim">local</span></span>');
-  return head+'<div class="wxd-facts">'+f.join('')+'</div>'+wxHoursHtml(d,v);
+  // hours FIRST, flowing straight on from the day columns above (no label, no
+  // border — the same widget continuing); the day's summary facts sit below
+  var hrs=wxHoursHtml(d,v);
+  return hrs+head+'<div class="wxd-facts">'+f.join('')+'</div>'
+    +(hrs?'<div class="wxd-hnote"><b>Shaded hours are night at the crag.</b> The score charges rain by when it falls: '
+      +'rain inside climbing hours (07–20) costs full price, overnight rain only ~¼ — scaled by how fast this rock dries — '
+      +'so a wet night before a dry sunny day no longer sinks the day.</div>':'');
 }
 // Fill the docked #wxDetail on hover/focus/tap; default to the first trip day so
 // it's never empty, and never revert on mouseout (keeps the panel steady).
