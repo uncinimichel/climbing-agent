@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+# Recreate the AWS infrastructure from scratch and reload its data.
+#
+# Deploys ONLY the corpus DB (ClimbingAgentCorpusDb). The app stacks
+# (auth/data/api/test) are plan-stage skeletons and are deliberately NOT
+# deployed by this script — "do not deploy anything to prod" (16 Jul 2026).
+#
+# What it does, in order:
+#   1. creates the local CDK venv if missing
+#   2. cdk bootstrap        (no-op when the CDKToolkit stack already exists)
+#   3. cdk deploy the Aurora corpus DB, locked to this machine's public IP
+#      (~15-30 min: Aurora clusters are slow to create)
+#   4. db/cloud-apply.sh    (schema + seeds + corpus.json restore, ~2 min)
+#
+# Prerequisites: aws CLI logged in (account 166832185275), node/npx, python3,
+# and the local climbing-db container running (colima start; cd db && docker-compose up -d)
+# — cloud-apply.sh borrows its psql client.
+#
+# Cost while up: ~£0 idle (scale-to-zero; storage pennies), ~$0.12/ACU-hour
+# only while querying. Tear down again with ./down.sh.
+set -euo pipefail
+cd "$(dirname "$0")"
+
+ACCOUNT=166832185275
+REGION=${AWS_REGION:-eu-west-2}
+
+if [ ! -d .venv ]; then
+    echo "== creating CDK venv"
+    python3 -m venv .venv
+    .venv/bin/pip install -q -r requirements.txt
+fi
+export PATH="$PWD/.venv/bin:$PATH"
+
+IP=$(curl -s https://checkip.amazonaws.com)
+echo "== allowing Postgres access from $IP only"
+
+npx --yes aws-cdk@2 bootstrap "aws://$ACCOUNT/$REGION"
+npx --yes aws-cdk@2 deploy ClimbingAgentCorpusDb \
+    -c "corpusDbAllowedCidr=$IP/32" \
+    --require-approval never --outputs-file corpus-db-outputs.json
+
+echo "== cluster up — loading schema + corpus"
+../db/cloud-apply.sh
+
+echo "== done. Credentials: Secrets Manager 'climbing-agent/corpus-db' ($REGION)."
+echo "   Point any db/ tool at it by setting DATABASE_URL (see db/cloud-apply.sh)."

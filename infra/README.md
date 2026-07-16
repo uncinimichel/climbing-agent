@@ -27,18 +27,34 @@ Python. CI synths on every change to `infra/**` (`.github/workflows/infra.yml`).
 
 Nothing is deployed automatically: `cdk deploy` is a manual, deliberate step.
 
-## Corpus Postgres (`ClimbingAgentCorpusDb` — currently NOT deployed)
+## Bring it all up / tear it all down
 
-Proven end to end on 16 Jul 2026 (deployed, took a full schema + corpus
-restore: 220 routes / 181 areas), then torn down the same morning — Michel's
-call: keep the corpus local on Docker/Colima for now. To bring it back
-(~35 min total):
+Two scripts own the whole lifecycle — both idempotent, both safe to re-run:
 
 ```
-cd infra && PATH=.venv/bin:$PATH npx aws-cdk@2 deploy ClimbingAgentCorpusDb \
-  -c corpusDbAllowedCidr=$(curl -s https://checkip.amazonaws.com)/32 --require-approval never
-../db/cloud-apply.sh
+./up.sh            # bootstrap (if needed) + deploy the corpus DB + load schema & corpus  (~35 min)
+./down.sh          # destroy the corpus DB stack + delete its final snapshots            (~10 min)
+./down.sh --all    # ALSO remove the CDKToolkit bootstrap — account left completely empty
 ```
+
+What they cover, and don't:
+
+- **`up.sh` deploys only `ClimbingAgentCorpusDb`** (Aurora PostgreSQL 16.13
+  Serverless v2, scale-to-zero, TLS forced, port 5432 open to this machine's
+  public IP only, credentials in Secrets Manager `climbing-agent/corpus-db`).
+  The app stacks (auth/data/api/test) are plan-stage skeletons and are never
+  deployed by script — each needs an explicit, deliberate `cdk deploy`.
+- **No backups needed before `down.sh`** — `db/corpus.json` in git is the
+  source of truth; `up.sh` rebuilds the cloud copy from it (proven 16 Jul
+  2026: 220 routes, 181 areas). `down.sh` asks you to type `destroy` first.
+- **Prerequisites**: aws CLI logged in, node/npx, python3, and the local
+  `climbing-db` container running (`colima start`, then `cd db &&
+  docker-compose up -d`) — the data load borrows its psql client.
+- **Cost while up**: ~£0 idle; ~$0.12/ACU-hour only while querying.
+  Cost while down: £0 (plus ~£0 for CDKToolkit's empty bucket unless you
+  used `--all`).
+- **Status right now: everything is DOWN** (torn down 16 Jul 2026,
+  Michel: "keep all local with docker for the moment").
 
 Aurora PostgreSQL Serverless v2 with **scale-to-zero**: ~£0 idle (storage
 pennies), ~$0.12/ACU-hour only while queried, ~15s resume on first statement.
