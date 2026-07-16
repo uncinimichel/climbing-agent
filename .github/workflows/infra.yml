@@ -1,0 +1,31 @@
+name: Infra synth
+
+# cdk synth must stay green on every infra/ change — no credentials, no
+# deploys (deploys are manual, per infra/README.md). The committed
+# cdk.context.json answers the default-VPC lookup offline.
+on:
+  push:
+    branches: [main]
+    paths: ["infra/**"]
+  pull_request:
+    paths: ["infra/**"]
+
+permissions:
+  contents: read
+
+jobs:
+  synth:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: infra
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v5
+      - uses: actions/setup-python@e9aba2c848f5ebd159c070c61ea2c4e2b122355e # v6
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v5
+        with:
+          node-version: "22"
+      - run: pip install -r requirements.txt
+      - run: npx --yes aws-cdk@2 synth -q --strict

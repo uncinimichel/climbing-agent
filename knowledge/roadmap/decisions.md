@@ -608,6 +608,11 @@ taxonomy.md; ai_tag.py confirmed seeing the new values live.
 
 ---
 
+### #36 — Cloud storage split: DynamoDB+S3 for the multi-user app, Aurora Serverless v2 (scale-to-zero) for the corpus Postgres (2026-07-16)
+**Decision:** Resumed the paused multi-user trip-planner plan (`~/.claude/plans/shimmering-wandering-cupcake.md`) starting at M0: new `infra/` CDK-Python package (auth/data/api/test stacks per the plan, synth-only CI in `.github/workflows/infra.yml`, deploys always manual). Storage stays split by shape: the app's trips/flight-cache/quota/jobs go to **DynamoDB on-demand + S3** exactly as planned (~£0/month at this scale); the **taxonomies + climbs corpus** (Postgres-first since #34/#35) gets a cloud home on **Aurora PostgreSQL Serverless v2 with scale-to-zero** (`ClimbingAgentCorpusDb` stack: public endpoint, TLS forced, inbound locked to the curation IP, credentials in Secrets Manager `climbing-agent/corpus-db`). Local Colima Postgres remains the day-to-day default; cloud is opt-in via `DATABASE_URL` (the seam `ingest_corpus.py` already had).
+**Why:** Michel asked to resume the plan and wanted Postgres for the corpus "as we have it locally already". Real Postgres in AWS is otherwise ~£13/mo idle (RDS t4g.micro); Serverless v2 with min-ACU 0 is ~£0 idle (storage pennies, ~$0.12/ACU-hr only while queried, ~15s resume) — the only AWS-native Postgres whose cost matches this project's occasional-use curation pattern. Neon/Supabase free tiers were the out-of-AWS alternative; keeping it in-account was Michel's call.
+**Status:** ⚠️ Partial — infra scaffolding committed (synth-only CI; deploys manual). The corpus DB was deployed, took a full schema+corpus restore (220 routes, 181 areas), and was then **torn down the same morning at Michel's call ("keep all local with docker for the moment")** — the stack/script are proven and re-deployable in one command (`cdk deploy ClimbingAgentCorpusDb` + `db/cloud-apply.sh`, ~35 min end to end). Nothing app-facing is deployed; M1 (Cognito auth) awaits an explicit go (Google IdP also needs a Google-Cloud OAuth client only Michel can create).
+
 *Template for new entries:*
 ```
 ### #N — Title (date)
