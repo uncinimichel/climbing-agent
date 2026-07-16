@@ -738,7 +738,8 @@ svg.topo .dseg{pointer-events:stroke}
    day columns above — no label, no box, no line: the same widget continuing.
    Hour columns use the same hairlines as the day columns; the strip is a
    slider with paging arrows that opens scrolled to 06:00 local. */
-.wxd-hours{margin:-13px -16px 12px}
+.wxd-hours{margin:-13px -16px 12px;background:#2B313B}
+.wxd-hours.trip{background:rgba(87,166,100,.26)}
 .wxhrs-wrap{position:relative}
 .wxhrs{position:relative;display:flex;overflow-x:auto;scrollbar-width:thin;scrollbar-color:var(--line2) transparent}
 .wxh{flex:1 0 54px;min-width:54px;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 3px 9px;border-left:1px solid var(--line)}
@@ -1307,7 +1308,7 @@ function wxHoursHtml(d,v){
       +'<span class="hw">'+(wind!=null?num(wind):'')+'</span>'
       +'</div>';
   }).join('');
-  return '<div class="wxd-hours">'
+  return '<div class="wxd-hours'+(d.trip?' trip':'')+'">'
     +'<div class="wxhrs-wrap"><button class="hnav prev" type="button" aria-label="Earlier hours">‹</button>'
     +'<div class="wxhrs" tabindex="0" role="group" aria-label="Hour by hour, local crag time">'+cells+'</div>'
     +'<button class="hnav next" type="button" aria-label="Later hours">›</button></div></div>';
