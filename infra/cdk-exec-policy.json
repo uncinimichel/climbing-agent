@@ -40,6 +40,12 @@
       "Effect": "Allow",
       "Action": ["s3:GetObject*", "s3:GetBucket*", "s3:List*"],
       "Resource": "*"
+    },
+    {
+      "Sid": "CdkBootstrapVersionCheckOnly",
+      "Effect": "Allow",
+      "Action": ["ssm:GetParameter", "ssm:GetParameters"],
+      "Resource": "arn:aws:ssm:eu-west-2:166832185275:parameter/cdk-bootstrap/*"
     }
   ]
 }
