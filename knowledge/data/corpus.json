@@ -1,16 +1,16 @@
 {
   "schemaVersion": "2.0",
-  "generated": "2026-07-14",
+  "generated": "2026-07-15",
   "note": "EXPORT of the Postgres corpus DB (decision #34: Postgres-first — edit via the Curation Studio, not this file; restore via db/tools/ingest_corpus.py). Governance (#32): suggestions/ranking may only use status:publish + taggedBy:human rows.",
   "taxonomyRef": "knowledge/data/tag-spec.json",
   "counts": {
     "areas": 181,
-    "areasCurated": 23,
+    "areasCurated": 113,
     "routes": 220,
-    "routesCurated": 8,
-    "routesSeeded": 212,
+    "routesCurated": 57,
+    "routesSeeded": 163,
     "routesQuarantined": 0,
-    "routesLlmTagged": 50,
+    "routesLlmTagged": 1,
     "routesFieldCheck": 0
   },
   "areas": [
@@ -90,8 +90,8 @@
       "rock": null,
       "aspect": null,
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "wallonia",
@@ -104,8 +104,8 @@
       "rock": null,
       "aspect": null,
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "freyr",
@@ -121,8 +121,8 @@
       "rock": "limestone",
       "aspect": "W",
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "bulgaria",
@@ -135,8 +135,8 @@
       "rock": null,
       "aspect": null,
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "vratsa",
@@ -152,8 +152,8 @@
       "rock": "limestone",
       "aspect": "S",
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "calanques",
@@ -200,8 +200,8 @@
       "rock": null,
       "aspect": null,
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "alberta",
@@ -214,8 +214,8 @@
       "rock": null,
       "aspect": null,
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "mount-indefatigable",
@@ -231,8 +231,8 @@
       "rock": "limestone",
       "aspect": null,
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "carcassonne",
@@ -372,8 +372,8 @@
       "rock": null,
       "aspect": null,
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "avon-gorge",
@@ -389,8 +389,8 @@
       "rock": "limestone",
       "aspect": null,
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "cornwall",
@@ -403,8 +403,8 @@
       "rock": null,
       "aspect": null,
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "bosigran",
@@ -420,8 +420,8 @@
       "rock": "granite",
       "aspect": "W",
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "chair-ladder",
@@ -437,8 +437,8 @@
       "rock": "granite",
       "aspect": "SW",
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "cornakey-cliff",
@@ -454,8 +454,8 @@
       "rock": "sandstone",
       "aspect": "S",
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "cumbria",
@@ -468,8 +468,8 @@
       "rock": null,
       "aspect": null,
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "scafell",
@@ -485,8 +485,8 @@
       "rock": "rhyolite",
       "aspect": "N",
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "gloucestershire",
@@ -499,8 +499,8 @@
       "rock": null,
       "aspect": null,
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "wintours-leap",
@@ -516,8 +516,8 @@
       "rock": "limestone",
       "aspect": null,
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "lake-district",
@@ -581,8 +581,8 @@
       "rock": "granite",
       "aspect": "W",
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "west-cornwall-bosigran",
@@ -705,8 +705,8 @@
       "rock": null,
       "aspect": null,
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "meteora",
@@ -722,8 +722,8 @@
       "rock": "conglomerate",
       "aspect": null,
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "heiliger-geist",
@@ -739,8 +739,8 @@
       "rock": "conglomerate",
       "aspect": "E",
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "hong-kong",
@@ -753,8 +753,8 @@
       "rock": null,
       "aspect": null,
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "kowloon",
@@ -767,8 +767,8 @@
       "rock": null,
       "aspect": null,
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "lion-rock",
@@ -784,8 +784,8 @@
       "rock": "granite",
       "aspect": "W",
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "hoy",
@@ -815,8 +815,8 @@
       "rock": null,
       "aspect": null,
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "co-donegal",
@@ -829,8 +829,8 @@
       "rock": null,
       "aspect": null,
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "sail-rock",
@@ -846,8 +846,8 @@
       "rock": "quartzite",
       "aspect": null,
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "donegal",
@@ -860,8 +860,8 @@
       "rock": null,
       "aspect": null,
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "tormore-group",
@@ -877,8 +877,8 @@
       "rock": "quartzite",
       "aspect": "E",
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "donegal-sail-rock",
@@ -925,8 +925,8 @@
       "rock": null,
       "aspect": null,
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "bolzano",
@@ -939,8 +939,8 @@
       "rock": null,
       "aspect": null,
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "vajolet-towers",
@@ -956,8 +956,8 @@
       "rock": "dolomite",
       "aspect": "SW",
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "dolomites",
@@ -970,8 +970,8 @@
       "rock": null,
       "aspect": null,
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "sass-pordoi",
@@ -987,8 +987,8 @@
       "rock": "dolomite",
       "aspect": "NW",
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "dolomites-cortina",
@@ -1018,8 +1018,8 @@
       "rock": null,
       "aspect": null,
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "grande-fermeda",
@@ -1035,8 +1035,8 @@
       "rock": "dolomite",
       "aspect": "S",
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "sass-pordoi-south-face",
@@ -1052,8 +1052,8 @@
       "rock": "dolomite",
       "aspect": "S",
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "sella-towers",
@@ -1069,8 +1069,8 @@
       "rock": "dolomite",
       "aspect": "SW",
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "loften",
@@ -1168,8 +1168,8 @@
       "rock": null,
       "aspect": null,
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "jebel-el-kest",
@@ -1182,8 +1182,8 @@
       "rock": null,
       "aspect": null,
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "amzkhssan-wall",
@@ -1199,8 +1199,8 @@
       "rock": "quartzite",
       "aspect": "S",
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "lower-eagle-crag",
@@ -1216,8 +1216,8 @@
       "rock": "quartzite",
       "aspect": "NE",
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "souss-massa",
@@ -1230,8 +1230,8 @@
       "rock": null,
       "aspect": null,
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "ksar-rock",
@@ -1247,8 +1247,8 @@
       "rock": "quartzite",
       "aspect": "SE",
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "tafraout",
@@ -1261,8 +1261,8 @@
       "rock": null,
       "aspect": null,
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "high-sierra-dome",
@@ -1278,8 +1278,8 @@
       "rock": "granite",
       "aspect": "S",
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "northern-ireland",
@@ -1757,8 +1757,8 @@
       "rock": null,
       "aspect": null,
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "slieve-beg",
@@ -1774,8 +1774,8 @@
       "rock": "granite",
       "aspect": "SW",
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "fair-head-ni",
@@ -1805,8 +1805,8 @@
       "rock": null,
       "aspect": null,
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "buzzards-roost",
@@ -1822,8 +1822,8 @@
       "rock": "granite",
       "aspect": "SE",
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "eagle-mountain",
@@ -1839,8 +1839,8 @@
       "rock": "granite",
       "aspect": "NE",
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "pigeon-rock",
@@ -1856,8 +1856,8 @@
       "rock": "granite",
       "aspect": "E",
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "slieve-lamagan",
@@ -1873,8 +1873,8 @@
       "rock": "granite",
       "aspect": "SE",
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "mournes-ni",
@@ -1904,8 +1904,8 @@
       "rock": null,
       "aspect": null,
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "nordland",
@@ -1918,8 +1918,8 @@
       "rock": null,
       "aspect": null,
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "stetind",
@@ -1935,8 +1935,8 @@
       "rock": "granite",
       "aspect": null,
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "stetind-norway",
@@ -1966,8 +1966,8 @@
       "rock": null,
       "aspect": null,
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "regiao-do-norte",
@@ -1980,8 +1980,8 @@
       "rock": null,
       "aspect": null,
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "meadinha",
@@ -1997,8 +1997,8 @@
       "rock": "granite",
       "aspect": "SE",
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "riglos",
@@ -2042,8 +2042,8 @@
       "rock": null,
       "aspect": null,
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "cir-mhor",
@@ -2059,8 +2059,8 @@
       "rock": "granite",
       "aspect": "S",
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "assynt",
@@ -2121,8 +2121,8 @@
       "rock": null,
       "aspect": null,
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "old-man-of-hoy",
@@ -2138,8 +2138,8 @@
       "rock": "sandstone",
       "aspect": "E",
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "setesdal",
@@ -2191,7 +2191,7 @@
     },
     {
       "id": "alicante",
-      "name": " Alicante",
+      "name": "Alicante",
       "kind": "region",
       "parent": "spain",
       "country": "Spain",
@@ -2200,8 +2200,8 @@
       "rock": null,
       "aspect": null,
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "el-castellet",
@@ -2209,7 +2209,7 @@
       "kind": "crag",
       "parent": "alicante",
       "country": "Spain",
-      "region": " Alicante",
+      "region": "Alicante",
       "geoLocation": [
         38.6275,
         -0.1563
@@ -2217,8 +2217,8 @@
       "rock": "limestone",
       "aspect": "S",
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "catalan",
@@ -2231,8 +2231,8 @@
       "rock": null,
       "aspect": null,
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "roca-gris",
@@ -2248,8 +2248,8 @@
       "rock": "conglomerate",
       "aspect": "S",
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "costa-blanca",
@@ -2265,8 +2265,8 @@
       "rock": "limestone",
       "aspect": "S",
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "penon-de-ifach",
@@ -2282,8 +2282,8 @@
       "rock": "limestone",
       "aspect": "S",
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "penya-roc",
@@ -2299,8 +2299,8 @@
       "rock": "limestone",
       "aspect": "NE",
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "picos-de-europa",
@@ -2361,8 +2361,8 @@
       "rock": null,
       "aspect": null,
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "cathedral-rock",
@@ -2378,8 +2378,8 @@
       "rock": "basalt",
       "aspect": "E",
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "valencia",
@@ -2392,8 +2392,8 @@
       "rock": null,
       "aspect": null,
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "puig-campana",
@@ -2409,8 +2409,8 @@
       "rock": "limestone",
       "aspect": "S",
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "spitzkoppe",
@@ -2440,8 +2440,8 @@
       "rock": null,
       "aspect": null,
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "canton-of-glarus",
@@ -2454,8 +2454,8 @@
       "rock": null,
       "aspect": null,
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "bruggler",
@@ -2471,8 +2471,8 @@
       "rock": "limestone",
       "aspect": "S",
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "tenerife",
@@ -2519,8 +2519,8 @@
       "rock": null,
       "aspect": null,
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "wyoming",
@@ -2533,8 +2533,8 @@
       "rock": null,
       "aspect": null,
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "the-devils-tower",
@@ -2550,8 +2550,8 @@
       "rock": "volcanic",
       "aspect": "S",
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "wadi-rum",
@@ -2595,8 +2595,8 @@
       "rock": null,
       "aspect": null,
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "cwm-cneifion",
@@ -2612,8 +2612,8 @@
       "rock": "rhyolite",
       "aspect": "SW",
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "tryfan",
@@ -2629,8 +2629,8 @@
       "rock": "rhyolite",
       "aspect": "E",
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "gower",
@@ -2660,8 +2660,8 @@
       "rock": "limestone",
       "aspect": "SE",
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "three-cliffs-bay",
@@ -2691,8 +2691,8 @@
       "rock": null,
       "aspect": null,
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "clogwyn-dur-arddu",
@@ -2708,8 +2708,8 @@
       "rock": "rhyolite",
       "aspect": "N",
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "cwm-idwal",
@@ -2725,8 +2725,8 @@
       "rock": "rhyolite",
       "aspect": "NW",
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "dinorwic-quarry",
@@ -2742,8 +2742,8 @@
       "rock": "slate",
       "aspect": "SE",
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "lliwedd",
@@ -2759,8 +2759,8 @@
       "rock": "rhyolite",
       "aspect": "N",
       "gradeContext": null,
-      "status": "draft",
-      "source": "postgres"
+      "status": "publish",
+      "source": "curated"
     },
     {
       "id": "snowdonia",
@@ -2834,9 +2834,9 @@
       "pgId": 257,
       "area": "freyr",
       "name": "Le Merinos",
-      "status": "draft",
-      "taggedBy": "llm",
-      "source": "multi-pitch.com",
+      "status": "publish",
+      "taggedBy": "human",
+      "source": "curated",
       "dataGrade": 3,
       "originalGrade": "f4c",
       "gradeSys": "FS",
@@ -2878,8 +2878,8 @@
       ],
       "hazardEvidence": {
         "polished": {
-          "span": "curator verified (Curation Studio)",
-          "url": "https://multi-pitch.com/data/data.json"
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/le-merinos-on-freÿr/"
         }
       },
       "climatology": [
@@ -2969,7 +2969,7 @@
         {
           "source": "multipitch",
           "id": "32",
-          "url": "https://multi-pitch.com/"
+          "url": "https://multi-pitch.com/climbs/le-merinos-on-freÿr/"
         }
       ],
       "tagProv": {
@@ -2982,9 +2982,9 @@
       "pgId": 264,
       "area": "vratsa",
       "name": "Bulgaria 1300",
-      "status": "draft",
-      "taggedBy": "llm",
-      "source": "multi-pitch.com",
+      "status": "publish",
+      "taggedBy": "human",
+      "source": "curated",
       "dataGrade": 7,
       "originalGrade": "VI+",
       "gradeSys": "UIAA",
@@ -3109,7 +3109,7 @@
         {
           "source": "multipitch",
           "id": "4",
-          "url": "https://multi-pitch.com/"
+          "url": "https://multi-pitch.com/climbs/bulgaria-1300-on-vratsa/"
         }
       ],
       "tagProv": {
@@ -3122,9 +3122,9 @@
       "pgId": 223,
       "area": "mount-indefatigable",
       "name": "Joy",
-      "status": "draft",
-      "taggedBy": "llm",
-      "source": "multi-pitch.com",
+      "status": "publish",
+      "taggedBy": "human",
+      "source": "curated",
       "dataGrade": 3,
       "originalGrade": "5.7",
       "gradeSys": "YDS",
@@ -3165,8 +3165,8 @@
       ],
       "hazardEvidence": {
         "loose": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/joy-on-mount-indefatigable/"
         }
       },
       "climatology": [
@@ -3256,7 +3256,7 @@
         {
           "source": "multipitch",
           "id": "19",
-          "url": "https://multi-pitch.com/"
+          "url": "https://multi-pitch.com/climbs/joy-on-mount-indefatigable/"
         }
       ],
       "tagProv": {
@@ -3361,9 +3361,9 @@
       "pgId": 256,
       "area": "avon-gorge",
       "name": "Morpheus",
-      "status": "draft",
-      "taggedBy": "llm",
-      "source": "multi-pitch.com",
+      "status": "publish",
+      "taggedBy": "human",
+      "source": "curated",
       "dataGrade": 3,
       "originalGrade": "S 4a",
       "gradeSys": "BAS",
@@ -3409,8 +3409,8 @@
       ],
       "hazardEvidence": {
         "polished": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/morpheus-on-avon-gorge/"
         }
       },
       "climatology": [
@@ -3529,7 +3529,7 @@
         {
           "source": "multipitch",
           "id": "30",
-          "url": "https://multi-pitch.com/"
+          "url": "https://multi-pitch.com/climbs/morpheus-on-avon-gorge/"
         }
       ],
       "tagProv": {
@@ -3542,9 +3542,9 @@
       "pgId": 224,
       "area": "bosigran",
       "name": "Doorpost",
-      "status": "draft",
-      "taggedBy": "llm",
-      "source": "multi-pitch.com",
+      "status": "publish",
+      "taggedBy": "human",
+      "source": "curated",
       "dataGrade": 4,
       "originalGrade": "HS 4b",
       "gradeSys": "BAS",
@@ -3588,8 +3588,8 @@
       ],
       "hazardEvidence": {
         "seepage": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/doorpost-on-bosigran/"
         }
       },
       "climatology": [
@@ -3701,7 +3701,7 @@
         {
           "source": "multipitch",
           "id": "2",
-          "url": "https://multi-pitch.com/"
+          "url": "https://multi-pitch.com/climbs/doorpost-on-bosigran/"
         }
       ],
       "tagProv": {
@@ -3714,9 +3714,9 @@
       "pgId": 218,
       "area": "chair-ladder",
       "name": "Pegasus",
-      "status": "draft",
-      "taggedBy": "llm",
-      "source": "multi-pitch.com",
+      "status": "publish",
+      "taggedBy": "human",
+      "source": "curated",
       "dataGrade": 4,
       "originalGrade": "HS 4b",
       "gradeSys": "BAS",
@@ -3759,8 +3759,8 @@
       ],
       "hazardEvidence": {
         "tidal": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/pegasus-on-chair-ladder/"
         }
       },
       "climatology": [
@@ -3872,7 +3872,7 @@
         {
           "source": "multipitch",
           "id": "14",
-          "url": "https://multi-pitch.com/"
+          "url": "https://multi-pitch.com/climbs/pegasus-on-chair-ladder/"
         }
       ],
       "tagProv": {
@@ -3885,9 +3885,9 @@
       "pgId": 214,
       "area": "cornakey-cliff",
       "name": "Wreakers Slab",
-      "status": "draft",
-      "taggedBy": "llm",
-      "source": "multi-pitch.com",
+      "status": "publish",
+      "taggedBy": "human",
+      "source": "curated",
       "dataGrade": 5,
       "originalGrade": "VS 4b",
       "gradeSys": "BAS",
@@ -3933,13 +3933,13 @@
         "tidal"
       ],
       "hazardEvidence": {
-        "loose": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
-        },
         "tidal": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/wreakers-slab-on-cornakey-cliff/"
+        },
+        "loose": {
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/wreakers-slab-on-cornakey-cliff/"
         }
       },
       "climatology": [
@@ -4062,7 +4062,7 @@
         {
           "source": "multipitch",
           "id": "10",
-          "url": "https://multi-pitch.com/"
+          "url": "https://multi-pitch.com/climbs/wreakers-slab-on-cornakey-cliff/"
         }
       ],
       "tagProv": {
@@ -4075,9 +4075,9 @@
       "pgId": 222,
       "area": "scafell",
       "name": "Keswick Brother's Climb",
-      "status": "draft",
-      "taggedBy": "llm",
-      "source": "multi-pitch.com",
+      "status": "publish",
+      "taggedBy": "human",
+      "source": "curated",
       "dataGrade": 2,
       "originalGrade": "VD 3c",
       "gradeSys": "BAS",
@@ -4118,8 +4118,8 @@
       ],
       "hazardEvidence": {
         "seepage": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/keswick-brothers-climb-on-scafell/"
         }
       },
       "climatology": [
@@ -4209,7 +4209,7 @@
         {
           "source": "multipitch",
           "id": "18",
-          "url": "https://multi-pitch.com/"
+          "url": "https://multi-pitch.com/climbs/keswick-brothers-climb-on-scafell/"
         }
       ],
       "tagProv": {
@@ -4222,9 +4222,9 @@
       "pgId": 254,
       "area": "wintours-leap",
       "name": "Right Hand Route",
-      "status": "draft",
-      "taggedBy": "llm",
-      "source": "multi-pitch.com",
+      "status": "publish",
+      "taggedBy": "human",
+      "source": "curated",
       "dataGrade": 4,
       "originalGrade": "HS 4b",
       "gradeSys": "BAS",
@@ -4270,8 +4270,8 @@
       ],
       "hazardEvidence": {
         "abseil": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/right-hand-route-on-wintours-leap/"
         }
       },
       "climatology": [
@@ -4390,7 +4390,7 @@
         {
           "source": "multipitch",
           "id": "29",
-          "url": "https://multi-pitch.com/"
+          "url": "https://multi-pitch.com/climbs/right-hand-route-on-wintours-leap/"
         }
       ],
       "tagProv": {
@@ -4471,9 +4471,9 @@
       "pgId": 283,
       "area": "lundy",
       "name": "The Devils Slide",
-      "status": "draft",
-      "taggedBy": "llm",
-      "source": "multi-pitch.com",
+      "status": "publish",
+      "taggedBy": "human",
+      "source": "curated",
       "dataGrade": 4,
       "originalGrade": "HS 4a",
       "gradeSys": "BAS",
@@ -4516,8 +4516,8 @@
       ],
       "hazardEvidence": {
         "abseil": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/the-devils-slide-on-lundy/"
         }
       },
       "climatology": [
@@ -4607,7 +4607,7 @@
         {
           "source": "multipitch",
           "id": "8",
-          "url": "https://multi-pitch.com/"
+          "url": "https://multi-pitch.com/climbs/the-devils-slide-on-lundy/"
         }
       ],
       "tagProv": {
@@ -4620,9 +4620,9 @@
       "pgId": 250,
       "area": "aiguille-dibona",
       "name": "Visite Obligatoire",
-      "status": "draft",
-      "taggedBy": "llm",
-      "source": "multi-pitch.com",
+      "status": "publish",
+      "taggedBy": "human",
+      "source": "curated",
       "dataGrade": 7,
       "originalGrade": "TD (f6a+)",
       "gradeSys": "ALP",
@@ -4665,8 +4665,8 @@
       ],
       "hazardEvidence": {
         "abseil": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/visite-obligatoire-on-aiguille-dibona/"
         }
       },
       "climatology": [
@@ -4756,7 +4756,7 @@
         {
           "source": "multipitch",
           "id": "24",
-          "url": "https://multi-pitch.com/"
+          "url": "https://multi-pitch.com/climbs/visite-obligatoire-on-aiguille-dibona/"
         }
       ],
       "tagProv": {
@@ -4860,9 +4860,9 @@
       "pgId": 249,
       "area": "heiliger-geist",
       "name": "Traumpfeiler",
-      "status": "draft",
-      "taggedBy": "llm",
-      "source": "multi-pitch.com",
+      "status": "publish",
+      "taggedBy": "human",
+      "source": "curated",
       "dataGrade": 5,
       "originalGrade": "V+",
       "gradeSys": "UIAA",
@@ -4905,8 +4905,8 @@
       ],
       "hazardEvidence": {
         "abseil": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/traumpfeiler-on-heiliger-geist/"
         }
       },
       "climatology": [
@@ -4996,7 +4996,7 @@
         {
           "source": "multipitch",
           "id": "23",
-          "url": "https://multi-pitch.com/"
+          "url": "https://multi-pitch.com/climbs/traumpfeiler-on-heiliger-geist/"
         }
       ],
       "tagProv": {
@@ -5009,9 +5009,9 @@
       "pgId": 247,
       "area": "lion-rock",
       "name": "Gweilo via Topcat",
-      "status": "draft",
-      "taggedBy": "llm",
-      "source": "multi-pitch.com",
+      "status": "publish",
+      "taggedBy": "human",
+      "source": "curated",
       "dataGrade": 6,
       "originalGrade": "HVS 5b",
       "gradeSys": "BAS",
@@ -5019,7 +5019,7 @@
       "techGrade": "5b",
       "length": 80,
       "pitches": 4,
-      "incline": null,
+      "incline": "Slab, Vertical & Overhanging",
       "protection": "PG",
       "protectionStyle": null,
       "belays": null,
@@ -5133,7 +5133,7 @@
         {
           "source": "multipitch",
           "id": "21",
-          "url": "https://multi-pitch.com/"
+          "url": "https://multi-pitch.com/climbs/gweilo-via-topcat-on-lion-rock/"
         }
       ],
       "tagProv": {
@@ -5146,9 +5146,9 @@
       "pgId": 217,
       "area": "sail-rock",
       "name": "Roaring Forties",
-      "status": "draft",
-      "taggedBy": "llm",
-      "source": "multi-pitch.com",
+      "status": "publish",
+      "taggedBy": "human",
+      "source": "curated",
       "dataGrade": 5,
       "originalGrade": "VS 4c",
       "gradeSys": "BAS",
@@ -5188,8 +5188,8 @@
       ],
       "hazardEvidence": {
         "abseil": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/roaring-forties-on-sail-rock/"
         }
       },
       "climatology": [
@@ -5279,7 +5279,7 @@
         {
           "source": "multipitch",
           "id": "13",
-          "url": "https://multi-pitch.com/"
+          "url": "https://multi-pitch.com/climbs/roaring-forties-on-sail-rock/"
         }
       ],
       "tagProv": {
@@ -5292,9 +5292,9 @@
       "pgId": 275,
       "area": "tormore-group",
       "name": "Cnoc Na Mara",
-      "status": "draft",
-      "taggedBy": "llm",
-      "source": "multi-pitch.com",
+      "status": "publish",
+      "taggedBy": "human",
+      "source": "curated",
       "dataGrade": 5,
       "originalGrade": "VS 4b",
       "gradeSys": "BAS",
@@ -5337,20 +5337,20 @@
       ],
       "hazardEvidence": {
         "abseil": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/cnoc-na-mara-on-tormore-group/"
         },
         "boat": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
-        },
-        "loose": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/cnoc-na-mara-on-tormore-group/"
         },
         "tidal": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/cnoc-na-mara-on-tormore-group/"
+        },
+        "loose": {
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/cnoc-na-mara-on-tormore-group/"
         }
       },
       "climatology": [
@@ -5440,7 +5440,7 @@
         {
           "source": "multipitch",
           "id": "5",
-          "url": "https://multi-pitch.com/"
+          "url": "https://multi-pitch.com/climbs/cnoc-na-mara-on-tormore-group/"
         }
       ],
       "tagProv": {
@@ -5453,9 +5453,9 @@
       "pgId": 252,
       "area": "vajolet-towers",
       "name": "Piaz Arete Delagokante",
-      "status": "draft",
-      "taggedBy": "llm",
-      "source": "multi-pitch.com",
+      "status": "publish",
+      "taggedBy": "human",
+      "source": "curated",
       "dataGrade": 4,
       "originalGrade": "IV+",
       "gradeSys": "UIAA",
@@ -5504,16 +5504,16 @@
       ],
       "hazardEvidence": {
         "abseil": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
-        },
-        "polished": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/piaz-arete-delagokante-on-vajolet-towers/"
         },
         "traverse": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/piaz-arete-delagokante-on-vajolet-towers/"
+        },
+        "polished": {
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/piaz-arete-delagokante-on-vajolet-towers/"
         }
       },
       "climatology": [
@@ -5611,7 +5611,7 @@
         {
           "source": "multipitch",
           "id": "26",
-          "url": "https://multi-pitch.com/"
+          "url": "https://multi-pitch.com/climbs/piaz-arete-delagokante-on-vajolet-towers/"
         }
       ],
       "tagProv": {
@@ -5624,9 +5624,9 @@
       "pgId": 281,
       "area": "sass-pordoi",
       "name": "Fedele",
-      "status": "draft",
-      "taggedBy": "llm",
-      "source": "multi-pitch.com",
+      "status": "publish",
+      "taggedBy": "human",
+      "source": "curated",
       "dataGrade": 4,
       "originalGrade": "IV+",
       "gradeSys": "UIAA",
@@ -5751,7 +5751,7 @@
         {
           "source": "multipitch",
           "id": "6",
-          "url": "https://multi-pitch.com/"
+          "url": "https://multi-pitch.com/climbs/fedele-on-sass-pordoi/"
         }
       ],
       "tagProv": {
@@ -5764,9 +5764,9 @@
       "pgId": 258,
       "area": "grande-fermeda",
       "name": "Normal Route",
-      "status": "draft",
-      "taggedBy": "llm",
-      "source": "multi-pitch.com",
+      "status": "publish",
+      "taggedBy": "human",
+      "source": "curated",
       "dataGrade": 2,
       "originalGrade": "IV-",
       "gradeSys": "UIAA",
@@ -5808,8 +5808,8 @@
       ],
       "hazardEvidence": {
         "abseil": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/normal-route-on-grande-fermeda/"
         }
       },
       "climatology": [
@@ -5899,7 +5899,7 @@
         {
           "source": "multipitch",
           "id": "33",
-          "url": "https://multi-pitch.com/"
+          "url": "https://multi-pitch.com/climbs/normal-route-on-grande-fermeda/"
         }
       ],
       "tagProv": {
@@ -5912,9 +5912,9 @@
       "pgId": 267,
       "area": "sass-pordoi-south-face",
       "name": "Via Maria",
-      "status": "draft",
-      "taggedBy": "llm",
-      "source": "multi-pitch.com",
+      "status": "publish",
+      "taggedBy": "human",
+      "source": "curated",
       "dataGrade": 4,
       "originalGrade": "IV+",
       "gradeSys": "UIAA",
@@ -5963,8 +5963,8 @@
       ],
       "hazardEvidence": {
         "traverse": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/via-maria-on-sass-pordoi-south-face/"
         }
       },
       "climatology": [
@@ -6104,7 +6104,7 @@
         {
           "source": "multipitch",
           "id": "42",
-          "url": "https://multi-pitch.com/"
+          "url": "https://multi-pitch.com/climbs/via-maria-on-sass-pordoi-south-face/"
         }
       ],
       "tagProv": {
@@ -6117,9 +6117,9 @@
       "pgId": 268,
       "area": "sella-towers",
       "name": "Via Steger",
-      "status": "draft",
-      "taggedBy": "llm",
-      "source": "multi-pitch.com",
+      "status": "publish",
+      "taggedBy": "human",
+      "source": "curated",
       "dataGrade": 4,
       "originalGrade": "IV+",
       "gradeSys": "UIAA",
@@ -6166,12 +6166,12 @@
       ],
       "hazardEvidence": {
         "abseil": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/via-steger-on-sella-towers/"
         },
         "polished": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/via-steger-on-sella-towers/"
         }
       },
       "climatology": [
@@ -6276,7 +6276,7 @@
         {
           "source": "multipitch",
           "id": "43",
-          "url": "https://multi-pitch.com/"
+          "url": "https://multi-pitch.com/climbs/via-steger-on-sella-towers/"
         }
       ],
       "tagProv": {
@@ -6289,9 +6289,9 @@
       "pgId": 262,
       "area": "amzkhssan-wall",
       "name": "Pinnacle Slab",
-      "status": "draft",
-      "taggedBy": "llm",
-      "source": "multi-pitch.com",
+      "status": "publish",
+      "taggedBy": "human",
+      "source": "curated",
       "dataGrade": 1,
       "originalGrade": "D 3b",
       "gradeSys": "BAS",
@@ -6440,7 +6440,7 @@
         {
           "source": "multipitch",
           "id": "38",
-          "url": "https://multi-pitch.com/"
+          "url": "https://multi-pitch.com/climbs/pinnacle-slab-on-amzkhssan-wall/"
         }
       ],
       "tagProv": {
@@ -6453,9 +6453,9 @@
       "pgId": 263,
       "area": "lower-eagle-crag",
       "name": "Donkey Serenades",
-      "status": "draft",
-      "taggedBy": "llm",
-      "source": "multi-pitch.com",
+      "status": "publish",
+      "taggedBy": "human",
+      "source": "curated",
       "dataGrade": 2,
       "originalGrade": "VD 3c",
       "gradeSys": "BAS",
@@ -6642,7 +6642,7 @@
         {
           "source": "multipitch",
           "id": "39",
-          "url": "https://multi-pitch.com/"
+          "url": "https://multi-pitch.com/climbs/donkey-serenades-on-lower-eagle-crag/"
         }
       ],
       "tagProv": {
@@ -6655,9 +6655,9 @@
       "pgId": 260,
       "area": "ksar-rock",
       "name": "East Buttress",
-      "status": "draft",
-      "taggedBy": "llm",
-      "source": "multi-pitch.com",
+      "status": "publish",
+      "taggedBy": "human",
+      "source": "curated",
       "dataGrade": 4,
       "originalGrade": "HS 4b",
       "gradeSys": "BAS",
@@ -6830,7 +6830,7 @@
         {
           "source": "multipitch",
           "id": "35",
-          "url": "https://multi-pitch.com/"
+          "url": "https://multi-pitch.com/climbs/east-buttress-on-ksar-rock/"
         }
       ],
       "tagProv": {
@@ -6843,9 +6843,9 @@
       "pgId": 261,
       "area": "high-sierra-dome",
       "name": "High Sierra",
-      "status": "draft",
-      "taggedBy": "llm",
-      "source": "multi-pitch.com",
+      "status": "publish",
+      "taggedBy": "human",
+      "source": "curated",
       "dataGrade": 5,
       "originalGrade": "VS 5a",
       "gradeSys": "BAS",
@@ -6891,8 +6891,8 @@
       ],
       "hazardEvidence": {
         "abseil": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/high-sierra-on-high-sierra-dome/"
         }
       },
       "climatology": [
@@ -7011,7 +7011,7 @@
         {
           "source": "multipitch",
           "id": "37",
-          "url": "https://multi-pitch.com/"
+          "url": "https://multi-pitch.com/climbs/high-sierra-on-high-sierra-dome/"
         }
       ],
       "tagProv": {
@@ -16874,9 +16874,9 @@
       "pgId": 225,
       "area": "slieve-beg",
       "name": "Poetic Justice",
-      "status": "draft",
-      "taggedBy": "llm",
-      "source": "multi-pitch.com",
+      "status": "publish",
+      "taggedBy": "human",
+      "source": "curated",
       "dataGrade": 5,
       "originalGrade": "VS 4b",
       "gradeSys": "BAS",
@@ -16921,8 +16921,8 @@
       ],
       "hazardEvidence": {
         "seepage": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/poetic-justice-on-slieve-beg/"
         }
       },
       "climatology": [
@@ -17012,7 +17012,7 @@
         {
           "source": "multipitch",
           "id": "20",
-          "url": "https://multi-pitch.com/"
+          "url": "https://multi-pitch.com/climbs/poetic-justice-on-slieve-beg/"
         }
       ],
       "tagProv": {
@@ -17025,9 +17025,9 @@
       "pgId": 274,
       "area": "buzzards-roost",
       "name": "The Sheugh",
-      "status": "draft",
-      "taggedBy": "llm",
-      "source": "multi-pitch.com",
+      "status": "publish",
+      "taggedBy": "human",
+      "source": "curated",
       "dataGrade": 3,
       "originalGrade": "Severe",
       "gradeSys": "BAS",
@@ -17071,13 +17071,13 @@
         "traverse"
       ],
       "hazardEvidence": {
-        "seepage": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
-        },
         "traverse": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/the-sheugh-on-buzzards-roost/"
+        },
+        "seepage": {
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/the-sheugh-on-buzzards-roost/"
         }
       },
       "climatology": [
@@ -17167,7 +17167,7 @@
         {
           "source": "multipitch",
           "id": "49",
-          "url": "https://multi-pitch.com/"
+          "url": "https://multi-pitch.com/climbs/the-sheugh-on-buzzards-roost/"
         }
       ],
       "tagProv": {
@@ -17180,9 +17180,9 @@
       "pgId": 280,
       "area": "eagle-mountain",
       "name": "Sammy Higgins",
-      "status": "draft",
-      "taggedBy": "llm",
-      "source": "multi-pitch.com",
+      "status": "publish",
+      "taggedBy": "human",
+      "source": "curated",
       "dataGrade": 5,
       "originalGrade": "VS 4C",
       "gradeSys": "BAS",
@@ -17232,16 +17232,16 @@
       ],
       "hazardEvidence": {
         "abseil": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
-        },
-        "grassLedges": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/sammy-higgins-on-eagle-mountain/"
         },
         "seepage": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/sammy-higgins-on-eagle-mountain/"
+        },
+        "grassLedges": {
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/sammy-higgins-on-eagle-mountain/"
         }
       },
       "climatology": [
@@ -17353,7 +17353,7 @@
         {
           "source": "multipitch",
           "id": "54",
-          "url": "https://multi-pitch.com/"
+          "url": "https://multi-pitch.com/climbs/sammy-higgins-on-eagle-mountain/"
         }
       ],
       "tagProv": {
@@ -17366,9 +17366,9 @@
       "pgId": 276,
       "area": "pigeon-rock",
       "name": "Virgo",
-      "status": "draft",
-      "taggedBy": "llm",
-      "source": "multi-pitch.com",
+      "status": "publish",
+      "taggedBy": "human",
+      "source": "curated",
       "dataGrade": 5,
       "originalGrade": "VS 4c",
       "gradeSys": "BAS",
@@ -17416,17 +17416,17 @@
         "traverse"
       ],
       "hazardEvidence": {
-        "grassLedges": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
+        "traverse": {
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/virgo-on-pigeon-rock/"
         },
         "seepage": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/virgo-on-pigeon-rock/"
         },
-        "traverse": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
+        "grassLedges": {
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/virgo-on-pigeon-rock/"
         }
       },
       "climatology": [
@@ -17545,7 +17545,7 @@
         {
           "source": "multipitch",
           "id": "50",
-          "url": "https://multi-pitch.com/"
+          "url": "https://multi-pitch.com/climbs/virgo-on-pigeon-rock/"
         }
       ],
       "tagProv": {
@@ -17558,9 +17558,9 @@
       "pgId": 266,
       "area": "slieve-lamagan",
       "name": "FM",
-      "status": "draft",
-      "taggedBy": "llm",
-      "source": "multi-pitch.com",
+      "status": "publish",
+      "taggedBy": "human",
+      "source": "curated",
       "dataGrade": 2,
       "originalGrade": "VDiff",
       "gradeSys": "BAS",
@@ -17726,7 +17726,7 @@
         {
           "source": "multipitch",
           "id": "41",
-          "url": "https://multi-pitch.com/"
+          "url": "https://multi-pitch.com/climbs/fm-on-slieve-lamagan/"
         }
       ],
       "tagProv": {
@@ -17739,9 +17739,9 @@
       "pgId": 221,
       "area": "stetind",
       "name": "Sydpillaren",
-      "status": "draft",
-      "taggedBy": "llm",
-      "source": "multi-pitch.com",
+      "status": "publish",
+      "taggedBy": "human",
+      "source": "curated",
       "dataGrade": 7,
       "originalGrade": "N6-",
       "gradeSys": "N",
@@ -17786,8 +17786,8 @@
       ],
       "hazardEvidence": {
         "abseil": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/sydpillaren-on-stetind/"
         }
       },
       "climatology": [
@@ -17877,7 +17877,7 @@
         {
           "source": "multipitch",
           "id": "17",
-          "url": "https://multi-pitch.com/"
+          "url": "https://multi-pitch.com/climbs/sydpillaren-on-stetind/"
         }
       ],
       "tagProv": {
@@ -17890,9 +17890,9 @@
       "pgId": 284,
       "area": "meadinha",
       "name": "Queles",
-      "status": "draft",
-      "taggedBy": "llm",
-      "source": "multi-pitch.com",
+      "status": "publish",
+      "taggedBy": "human",
+      "source": "curated",
       "dataGrade": 7,
       "originalGrade": "VI+ (f6b)",
       "gradeSys": "UIAA",
@@ -18020,7 +18020,7 @@
         {
           "source": "multipitch",
           "id": "9",
-          "url": "https://multi-pitch.com/"
+          "url": "https://multi-pitch.com/climbs/queles-on-meadinha/"
         }
       ],
       "tagProv": {
@@ -18033,9 +18033,9 @@
       "pgId": 215,
       "area": "cir-mhor",
       "name": "South Ridge",
-      "status": "draft",
-      "taggedBy": "llm",
-      "source": "multi-pitch.com",
+      "status": "publish",
+      "taggedBy": "human",
+      "source": "curated",
       "dataGrade": 5,
       "originalGrade": "VS 5a",
       "gradeSys": "BAS",
@@ -18159,7 +18159,7 @@
         {
           "source": "multipitch",
           "id": "11",
-          "url": "https://multi-pitch.com/"
+          "url": "https://multi-pitch.com/climbs/south-ridge-on-cir-mhor/"
         }
       ],
       "tagProv": {
@@ -18168,7 +18168,7 @@
       }
     },
     {
-      "id": 1,
+      "id": "mp-1",
       "pgId": 1,
       "area": "old-man-of-stoer",
       "name": "Original Route",
@@ -18196,7 +18196,7 @@
       "escapable": null,
       "commitment": null,
       "windExposed": null,
-      "timezone": null,
+      "timezone": "Europe/London",
       "elevation": 60,
       "sunWindow": "morning",
       "bestSeason": [
@@ -18221,49 +18221,104 @@
       ],
       "hazards": [
         "abseil",
-        "boat",
         "tidal",
         "traverse"
       ],
       "hazardEvidence": {
-        "tidal": {
-          "span": "sea stack; base only accessible at low tide",
-          "url": "https://example.dev/fixture"
-        },
         "abseil": {
-          "span": null,
-          "url": null
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/original-route-on-old-man-of-stoer/"
         },
         "traverse": {
-          "span": null,
-          "url": null
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/original-route-on-old-man-of-stoer/"
         },
-        "boat": {
-          "span": null,
-          "url": null
+        "tidal": {
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/original-route-on-old-man-of-stoer/"
         }
       },
       "climatology": [
         {
+          "month": 1,
+          "rainyDays": 20,
+          "tempHigh": 8,
+          "tempLow": 5
+        },
+        {
+          "month": 2,
+          "rainyDays": 17,
+          "tempHigh": 7,
+          "tempLow": 5
+        },
+        {
+          "month": 3,
+          "rainyDays": 20,
+          "tempHigh": 8,
+          "tempLow": 5
+        },
+        {
+          "month": 4,
+          "rainyDays": 16,
+          "tempHigh": 9,
+          "tempLow": 6
+        },
+        {
+          "month": 5,
+          "rainyDays": 15,
+          "tempHigh": 11,
+          "tempLow": 8
+        },
+        {
+          "month": 6,
+          "rainyDays": 14,
+          "tempHigh": 13,
+          "tempLow": 10
+        },
+        {
           "month": 7,
-          "rainyDays": 13,
-          "tempHigh": 16,
-          "tempLow": 11
+          "rainyDays": 15,
+          "tempHigh": 15,
+          "tempLow": 12
         },
         {
           "month": 8,
-          "rainyDays": 14,
-          "tempHigh": 16,
+          "rainyDays": 17,
+          "tempHigh": 15,
+          "tempLow": 13
+        },
+        {
+          "month": 9,
+          "rainyDays": 17,
+          "tempHigh": 14,
           "tempLow": 11
+        },
+        {
+          "month": 10,
+          "rainyDays": 20,
+          "tempHigh": 12,
+          "tempLow": 9
+        },
+        {
+          "month": 11,
+          "rainyDays": 19,
+          "tempHigh": 10,
+          "tempLow": 7
+        },
+        {
+          "month": 12,
+          "rainyDays": 17,
+          "tempHigh": 8,
+          "tempLow": 6
         }
       ],
-      "description": null,
-      "approach": null,
-      "pitchInfo": null,
+      "description": "Arguably one of the best sea stacks in \nthe United Kingdom, The Old Man of Stoer (Stake), makes for an \nadventurous day out and an all round exceptional climb. The rock is \nTorridonian sandstone, meaning it was formed before any significant life\n on earth existed. The approach is either some wet rock hopping 100m \nnorth of the stack at the lowest tide or the more classic Tyrolean \ntraverse which may need to be set up by swimming the 8 meter channel if \nthere is not one left in place when you arrive. The route itself, \nOriginal Route, meanders the landward face, following cracks and ledges \nto the top. Larger cams can be helpful. Be wary of nesting sea birds <span><span data-dobid=\"hdw\">whose </span></span>first line of defence is usually to attack by projecting the last meal they ate at nearby unsuspecting climbers.",
+      "approach": "<strong>Approach</strong>: Park at the car park near the Stoer Light house (58.237948, -5.400902). From there take the coastal path heading 3Km northwards to the sea stack, going over the hill of Sidhean Mor. It will take roughly an hour to reach the Old Man of Stoer. Standing on the mainland at the first point you reach across from the stack, there is a small steep path down, requiring some scramble that can be damp from run-off in places. There is usually a Tyrolean traverse in situ that can be used to get to the stack (in July 2022 it was tied around a boulder on the mainland with a 4-point traditional anchor on the stack). Swimming the channel (and setting up a rope traverse) is the alternative if there is no rope in place. It is possible to rock hop and wade across, around 100m north of the stack if there is a very low tide.<br><br><strong>Descent</strong>: Make a single abseil off using a pair of 60m \nropes. The intermediate belay station at 40m is hard to reach due to the\n overhang and very poorly equipped (rusting / rotting in July 2022), so \nnot recommended.",
+      "pitchInfo": "The Original Route on the Old Man of Stoer is one of a handful of so called 4 star climbs (4 stars out of 3). The route certainly has variety, exposure, a beautiful setting and an incredible abseil finish. In terms of protection, medium, large and even very large cams can be helpful for protecting parts of the route. Route finding on pitches 3 and 4 can be tricky and these are arguably the hardest parts of the climb despite the traverse on pitch one getting the hardest technical grade in guidebooks. <br><strong class=\"pitch-title\">Pitch 1 –<span class=\"length\">15m</span> <span class=\"pitchGrade brit\">5a</span></strong><br>Climb up a couple of moves and then traverse left around the base of the stack using one small horizontal break for feet and a bigger horizontal break for hands. Reach a comfortable ledge just out of sight of the start of the route, a belay can be set up here at the base of the slab. <br><strong class=\"pitch-title\">Pitch 2 –<span class=\"length\">12m</span> <span class=\"pitchGrade brit\">4a</span></strong><br>Climb up the slab, trending right at the top to create a belay on the next large ledge. <br><strong class=\"pitch-title\">Pitch 3 –<span class=\"length\">15m</span> <span class=\"pitchGrade brit\">4b</span></strong><br> Make bold moves up steep ground either directly above the belay point or using the right trending grove, then moving left again at the break. After this move up and left to another ledge. This is the belay point for the Diamond Face Route. From here there is a wedged boulder above, pass this on the right side to make a belay in the cave on top of the wedged boulder. <br><strong class=\"pitch-title\">Pitch 4 –<span class=\"length\">10m</span> <span class=\"pitchGrade brit\">4c</span></strong><br> Start the pitch traversing easily right around the corner before trending up and right. From a small ledge make some hard moves to gain a bigger ledge / niche where the final belay can be made. Guidebooks seem to suggest traversing further right to create a belay on a smaller ledge. This would mean the final pitch climbs the chimney directly above the small belay ledge.  <br><strong class=\"pitch-title\">Pitch 5 –<span class=\"length\">15m</span> <span class=\"pitchGrade brit\">3c</span></strong><br> Move up and diagonally right to one large edge, then up onto another. From here take the left slanting slab to the summit plateau.",
       "pitchRows": [],
       "geoLocation": [
-        58.258,
-        -5.361
+        58.2609,
+        -5.3827
       ],
       "parkings": [],
       "refs": [
@@ -18271,6 +18326,11 @@
           "source": "dev-fixtures",
           "id": "route:Original Route",
           "url": null
+        },
+        {
+          "source": "multipitch",
+          "id": "1",
+          "url": "https://multi-pitch.com/climbs/original-route-on-old-man-of-stoer/"
         }
       ]
     },
@@ -18279,9 +18339,9 @@
       "pgId": 259,
       "area": "old-man-of-hoy",
       "name": "Original Route",
-      "status": "draft",
-      "taggedBy": "llm",
-      "source": "multi-pitch.com",
+      "status": "publish",
+      "taggedBy": "human",
+      "source": "curated",
       "dataGrade": 7,
       "originalGrade": "E1 5b",
       "gradeSys": "BAS",
@@ -18327,16 +18387,16 @@
       ],
       "hazardEvidence": {
         "abseil": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
-        },
-        "tidal": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/original-route-on-old-man-of-hoy/"
         },
         "traverse": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/original-route-on-old-man-of-hoy/"
+        },
+        "tidal": {
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/original-route-on-old-man-of-hoy/"
         }
       },
       "climatology": [
@@ -18426,7 +18486,7 @@
         {
           "source": "multipitch",
           "id": "34",
-          "url": "https://multi-pitch.com/"
+          "url": "https://multi-pitch.com/climbs/original-route-on-old-man-of-hoy/"
         }
       ],
       "tagProv": {
@@ -18439,9 +18499,9 @@
       "pgId": 277,
       "area": "el-castellet",
       "name": "Rincón de Placa",
-      "status": "draft",
-      "taggedBy": "llm",
-      "source": "multi-pitch.com",
+      "status": "publish",
+      "taggedBy": "human",
+      "source": "curated",
       "dataGrade": 5,
       "originalGrade": "V+",
       "gradeSys": "UIAA",
@@ -18487,12 +18547,12 @@
       ],
       "hazardEvidence": {
         "abseil": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/rincón-de-placa-on-el-castellet/"
         },
         "traverse": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/rincón-de-placa-on-el-castellet/"
         }
       },
       "climatology": [
@@ -18582,7 +18642,7 @@
         {
           "source": "multipitch",
           "id": "51",
-          "url": "https://multi-pitch.com/"
+          "url": "https://multi-pitch.com/climbs/rincón-de-placa-on-el-castellet/"
         }
       ],
       "tagProv": {
@@ -18595,9 +18655,9 @@
       "pgId": 216,
       "area": "roca-gris",
       "name": "Esparraguera",
-      "status": "draft",
-      "taggedBy": "llm",
-      "source": "multi-pitch.com",
+      "status": "publish",
+      "taggedBy": "human",
+      "source": "curated",
       "dataGrade": 5,
       "originalGrade": "V+ (f5c)",
       "gradeSys": "UIAA",
@@ -18649,16 +18709,16 @@
       ],
       "hazardEvidence": {
         "abseil": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
-        },
-        "loose": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/esparraguera-on-roca-gris/"
         },
         "traverse": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/esparraguera-on-roca-gris/"
+        },
+        "loose": {
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/esparraguera-on-roca-gris/"
         }
       },
       "climatology": [
@@ -18791,7 +18851,7 @@
         {
           "source": "multipitch",
           "id": "12",
-          "url": "https://multi-pitch.com/"
+          "url": "https://multi-pitch.com/climbs/esparraguera-on-roca-gris/"
         }
       ],
       "tagProv": {
@@ -18804,9 +18864,9 @@
       "pgId": 248,
       "area": "penon-de-ifach",
       "name": "Diedro UBSA",
-      "status": "draft",
-      "taggedBy": "llm",
-      "source": "multi-pitch.com",
+      "status": "publish",
+      "taggedBy": "human",
+      "source": "curated",
       "dataGrade": 6,
       "originalGrade": "V+",
       "gradeSys": "UIAA",
@@ -18858,16 +18918,16 @@
       ],
       "hazardEvidence": {
         "abseil": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
-        },
-        "loose": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/diedro-ubsa-on-peñón-de-ifach/"
         },
         "polished": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/diedro-ubsa-on-peñón-de-ifach/"
+        },
+        "loose": {
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/diedro-ubsa-on-peñón-de-ifach/"
         }
       },
       "climatology": [
@@ -19021,7 +19081,7 @@
         {
           "source": "multipitch",
           "id": "22",
-          "url": "https://multi-pitch.com/"
+          "url": "https://multi-pitch.com/climbs/diedro-ubsa-on-peñón-de-ifach/"
         }
       ],
       "tagProv": {
@@ -19085,17 +19145,17 @@
         "traverse"
       ],
       "hazardEvidence": {
-        "grassLedges": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
+        "traverse": {
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/via-pany-on-peñón-de-ifach/"
         },
         "polished": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/via-pany-on-peñón-de-ifach/"
         },
-        "traverse": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
+        "grassLedges": {
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/via-pany-on-peñón-de-ifach/"
         }
       },
       "climatology": [
@@ -19221,7 +19281,7 @@
         {
           "source": "multipitch",
           "id": "48",
-          "url": "https://multi-pitch.com/"
+          "url": "https://multi-pitch.com/climbs/via-pany-on-peñón-de-ifach/"
         }
       ],
       "tagProv": {
@@ -19234,9 +19294,9 @@
       "pgId": 272,
       "area": "penya-roc",
       "name": "Dos Hermanos",
-      "status": "draft",
-      "taggedBy": "llm",
-      "source": "multi-pitch.com",
+      "status": "publish",
+      "taggedBy": "human",
+      "source": "curated",
       "dataGrade": 5,
       "originalGrade": "V",
       "gradeSys": "BAS",
@@ -19285,20 +19345,20 @@
       ],
       "hazardEvidence": {
         "abseil": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
-        },
-        "grassLedges": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
-        },
-        "loose": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/dos-hermanos-on-penya-roc/"
         },
         "traverse": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/dos-hermanos-on-penya-roc/"
+        },
+        "loose": {
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/dos-hermanos-on-penya-roc/"
+        },
+        "grassLedges": {
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/dos-hermanos-on-penya-roc/"
         }
       },
       "climatology": [
@@ -19388,7 +19448,7 @@
         {
           "source": "multipitch",
           "id": "47",
-          "url": "https://multi-pitch.com/"
+          "url": "https://multi-pitch.com/climbs/dos-hermanos-on-penya-roc/"
         }
       ],
       "tagProv": {
@@ -19479,9 +19539,9 @@
       "pgId": 253,
       "area": "cathedral-rock",
       "name": "Mendez and Guillermo",
-      "status": "draft",
-      "taggedBy": "llm",
-      "source": "multi-pitch.com",
+      "status": "publish",
+      "taggedBy": "human",
+      "source": "curated",
       "dataGrade": 5,
       "originalGrade": "V+",
       "gradeSys": "UIAA",
@@ -19530,17 +19590,17 @@
         "traverse"
       ],
       "hazardEvidence": {
-        "loose": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
+        "abseil": {
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/mendez-and-guillermo-on-cathedral-rock/"
         },
         "traverse": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/mendez-and-guillermo-on-cathedral-rock/"
         },
-        "abseil": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
+        "loose": {
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/mendez-and-guillermo-on-cathedral-rock/"
         }
       },
       "climatology": [
@@ -19652,7 +19712,7 @@
         {
           "source": "multipitch",
           "id": "28",
-          "url": "https://multi-pitch.com/"
+          "url": "https://multi-pitch.com/climbs/mendez-and-guillermo-on-cathedral-rock/"
         }
       ],
       "tagProv": {
@@ -19665,9 +19725,9 @@
       "pgId": 279,
       "area": "puig-campana",
       "name": "Aristotles",
-      "status": "draft",
-      "taggedBy": "llm",
-      "source": "multi-pitch.com",
+      "status": "publish",
+      "taggedBy": "human",
+      "source": "curated",
       "dataGrade": 4,
       "originalGrade": "V",
       "gradeSys": "UIAA",
@@ -19712,12 +19772,12 @@
       ],
       "hazardEvidence": {
         "abseil": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/aristotles-on-puig-campana/"
         },
         "traverse": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/aristotles-on-puig-campana/"
         }
       },
       "climatology": [
@@ -19871,7 +19931,7 @@
         {
           "source": "multipitch",
           "id": "53",
-          "url": "https://multi-pitch.com/"
+          "url": "https://multi-pitch.com/climbs/aristotles-on-puig-campana/"
         }
       ],
       "tagProv": {
@@ -19884,9 +19944,9 @@
       "pgId": 269,
       "area": "puig-campana",
       "name": "Espolón Central",
-      "status": "draft",
-      "taggedBy": "llm",
-      "source": "multi-pitch.com",
+      "status": "publish",
+      "taggedBy": "human",
+      "source": "curated",
       "dataGrade": 4,
       "originalGrade": "IV+",
       "gradeSys": "UIAA",
@@ -20066,7 +20126,7 @@
         {
           "source": "multipitch",
           "id": "44",
-          "url": "https://multi-pitch.com/"
+          "url": "https://multi-pitch.com/climbs/espolón-central-on-puig-campana/"
         }
       ],
       "tagProv": {
@@ -20079,9 +20139,9 @@
       "pgId": 251,
       "area": "bruggler",
       "name": "Direkte Plattenwand",
-      "status": "draft",
-      "taggedBy": "llm",
-      "source": "multi-pitch.com",
+      "status": "publish",
+      "taggedBy": "human",
+      "source": "curated",
       "dataGrade": 5,
       "originalGrade": "f5a",
       "gradeSys": "FS",
@@ -20123,8 +20183,8 @@
       ],
       "hazardEvidence": {
         "loose": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/direkte-plattenwand-on-brüggler/"
         }
       },
       "climatology": [
@@ -20214,7 +20274,7 @@
         {
           "source": "multipitch",
           "id": "25",
-          "url": "https://multi-pitch.com/"
+          "url": "https://multi-pitch.com/climbs/direkte-plattenwand-on-brüggler/"
         }
       ],
       "tagProv": {
@@ -20227,9 +20287,9 @@
       "pgId": 219,
       "area": "the-devils-tower",
       "name": "Durance",
-      "status": "draft",
-      "taggedBy": "llm",
-      "source": "multi-pitch.com",
+      "status": "publish",
+      "taggedBy": "human",
+      "source": "curated",
       "dataGrade": 5,
       "originalGrade": "5.8",
       "gradeSys": "YDS",
@@ -20273,8 +20333,8 @@
       ],
       "hazardEvidence": {
         "abseil": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/durance-on-the-devils-tower/"
         }
       },
       "climatology": [
@@ -20364,7 +20424,7 @@
         {
           "source": "multipitch",
           "id": "15",
-          "url": "https://multi-pitch.com/"
+          "url": "https://multi-pitch.com/climbs/durance-on-the-devils-tower/"
         }
       ],
       "tagProv": {
@@ -20377,9 +20437,9 @@
       "pgId": 271,
       "area": "cwm-cneifion",
       "name": "Cneifion Arete",
-      "status": "draft",
-      "taggedBy": "llm",
-      "source": "multi-pitch.com",
+      "status": "publish",
+      "taggedBy": "human",
+      "source": "curated",
       "dataGrade": null,
       "originalGrade": "Diff 3a",
       "gradeSys": "BAS",
@@ -20425,8 +20485,8 @@
       ],
       "hazardEvidence": {
         "polished": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/cneifion-arete-on-cwm-cneifion/"
         }
       },
       "climatology": [
@@ -20531,7 +20591,7 @@
         {
           "source": "multipitch",
           "id": "46",
-          "url": "https://multi-pitch.com/"
+          "url": "https://multi-pitch.com/climbs/cneifion-arete-on-cwm-cneifion/"
         }
       ],
       "tagProv": {
@@ -20544,9 +20604,9 @@
       "pgId": 278,
       "area": "tryfan",
       "name": "Grooved Arete",
-      "status": "draft",
-      "taggedBy": "llm",
-      "source": "multi-pitch.com",
+      "status": "publish",
+      "taggedBy": "human",
+      "source": "curated",
       "dataGrade": 3,
       "originalGrade": "HVD 4a",
       "gradeSys": "BAS",
@@ -20594,8 +20654,8 @@
       ],
       "hazardEvidence": {
         "polished": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/grooved-arete-on-tryfan/"
         }
       },
       "climatology": [
@@ -20735,7 +20795,7 @@
         {
           "source": "multipitch",
           "id": "52",
-          "url": "https://multi-pitch.com/"
+          "url": "https://multi-pitch.com/climbs/grooved-arete-on-tryfan/"
         }
       ],
       "tagProv": {
@@ -20748,9 +20808,9 @@
       "pgId": 265,
       "area": "great-tor",
       "name": "East Ridge",
-      "status": "draft",
-      "taggedBy": "llm",
-      "source": "multi-pitch.com",
+      "status": "publish",
+      "taggedBy": "human",
+      "source": "curated",
       "dataGrade": 3,
       "originalGrade": "S 3c",
       "gradeSys": "BAS",
@@ -20908,7 +20968,7 @@
         {
           "source": "multipitch",
           "id": "40",
-          "url": "https://multi-pitch.com/"
+          "url": "https://multi-pitch.com/climbs/east-ridge-on-great-tor/"
         }
       ],
       "tagProv": {
@@ -21002,9 +21062,9 @@
       "pgId": 255,
       "area": "clogwyn-dur-arddu",
       "name": "Great Slab",
-      "status": "draft",
-      "taggedBy": "llm",
-      "source": "multi-pitch.com",
+      "status": "publish",
+      "taggedBy": "human",
+      "source": "curated",
       "dataGrade": 5,
       "originalGrade": "VS 4c",
       "gradeSys": "BAS",
@@ -21047,8 +21107,8 @@
       ],
       "hazardEvidence": {
         "seepage": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/great-slab-on-clogwyn-dur-arddu/"
         }
       },
       "climatology": [
@@ -21138,7 +21198,7 @@
         {
           "source": "multipitch",
           "id": "3",
-          "url": "https://multi-pitch.com/"
+          "url": "https://multi-pitch.com/climbs/great-slab-on-clogwyn-dur-arddu/"
         }
       ],
       "tagProv": {
@@ -21151,9 +21211,9 @@
       "pgId": 282,
       "area": "cwm-idwal",
       "name": "Ordinary Route",
-      "status": "draft",
-      "taggedBy": "llm",
-      "source": "multi-pitch.com",
+      "status": "publish",
+      "taggedBy": "human",
+      "source": "curated",
       "dataGrade": 1,
       "originalGrade": "D 3a",
       "gradeSys": "BAS",
@@ -21312,7 +21372,7 @@
         {
           "source": "multipitch",
           "id": "7",
-          "url": "https://multi-pitch.com/"
+          "url": "https://multi-pitch.com/climbs/ordinary-route-on-cwm-idwal/"
         }
       ],
       "tagProv": {
@@ -21325,9 +21385,9 @@
       "pgId": 270,
       "area": "dinorwic-quarry",
       "name": "Australia West Face",
-      "status": "draft",
-      "taggedBy": "llm",
-      "source": "multi-pitch.com",
+      "status": "publish",
+      "taggedBy": "human",
+      "source": "curated",
       "dataGrade": 7,
       "originalGrade": "E1 5b",
       "gradeSys": "BAS",
@@ -21374,13 +21434,13 @@
         "traverse"
       ],
       "hazardEvidence": {
-        "grassLedges": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
-        },
         "traverse": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/australia-west-face-on-dinorwic-quarry/"
+        },
+        "grassLedges": {
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/australia-west-face-on-dinorwic-quarry/"
         }
       },
       "climatology": [
@@ -21470,7 +21530,7 @@
         {
           "source": "multipitch",
           "id": "45",
-          "url": "https://multi-pitch.com/"
+          "url": "https://multi-pitch.com/climbs/australia-west-face-on-dinorwic-quarry/"
         }
       ],
       "tagProv": {
@@ -21483,9 +21543,9 @@
       "pgId": 220,
       "area": "lliwedd",
       "name": "Longlands Continuation",
-      "status": "draft",
-      "taggedBy": "llm",
-      "source": "multi-pitch.com",
+      "status": "publish",
+      "taggedBy": "human",
+      "source": "curated",
       "dataGrade": 3,
       "originalGrade": "S 4b",
       "gradeSys": "BAS",
@@ -21529,8 +21589,8 @@
       ],
       "hazardEvidence": {
         "seepage": {
-          "span": "multi-pitch.com source flag",
-          "url": "https://multi-pitch.com/data/data.json"
+          "span": "multi-pitch.com curated flag",
+          "url": "https://multi-pitch.com/climbs/longlands-continuation-on-lliwedd/"
         }
       },
       "climatology": [
@@ -21705,7 +21765,7 @@
         {
           "source": "multipitch",
           "id": "16",
-          "url": "https://multi-pitch.com/"
+          "url": "https://multi-pitch.com/climbs/longlands-continuation-on-lliwedd/"
         }
       ],
       "tagProv": {

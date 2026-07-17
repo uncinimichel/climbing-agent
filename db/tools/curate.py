@@ -22,17 +22,21 @@ import threading
 from pathlib import Path
 
 import psycopg
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
 from psycopg.rows import dict_row
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 UI = HERE / "curate_ui.html"
 ENRICH_CACHE = ROOT / "db" / "enrichment-cache.json"
+UPLOAD_DIR = ROOT / "db" / "uploads"          # staging area; the site build copies these out
 DSN = os.environ.get("DATABASE_URL", "postgresql://climbing:climbing@localhost:5432/climbing")
 
 app = FastAPI(title="Curation Studio")
+UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
 
 _enrich = {"mtime": None, "data": {}}
 
@@ -182,9 +186,13 @@ def enums():
 
 @app.get("/api/queue")
 def queue(status: str = "draft", q: str = "", crag: str = ""):
-    where, params = ["r.status = %s"], [status]
+    where, params = ["TRUE"], []
+    if status != "all":
+        where, params = ["r.status = %s"], [status]
     if q:
-        where.append("(r.name ILIKE %s OR ar.path_tokens[3] ILIKE %s)")
+        # match the route name or ANY level of the location path (country,
+        # region, crag, sector) — token[3] alone missed "Antrim" or "Italy"
+        where.append("(r.name ILIKE %s OR array_to_string(ar.path_tokens, ' ') ILIKE %s)")
         params += [f"%{q}%", f"%{q}%"]
     if crag:
         where.append("ar.path_tokens[3] = %s")
@@ -206,6 +214,33 @@ def queue(status: str = "draft", q: str = "", crag: str = ""):
         cur.execute("SELECT count(*) AS n FROM route WHERE needs_field_check")
         counts["field_check"] = cur.fetchone()["n"]
     return {"rows": rows, "counts": counts}
+
+
+@app.get("/api/map")
+def map_points():
+    """Every route with its location path and status — feeds the drill-down
+    aggregates AND the map. Routes without their own coordinates fall back to
+    the nearest ancestor area that has one (approx=true); lat/lon may be NULL."""
+    with db() as conn, conn.cursor() as cur:
+        cur.execute("""
+            WITH RECURSIVE up AS (
+                SELECT id AS start_id, id, parent_id, geom, 0 AS d FROM area
+                UNION ALL
+                SELECT up.start_id, a.id, a.parent_id, a.geom, up.d + 1
+                FROM area a JOIN up ON a.id = up.parent_id
+                WHERE up.geom IS NULL
+            ), area_geo AS (
+                SELECT DISTINCT ON (start_id) start_id, geom
+                FROM up WHERE geom IS NOT NULL ORDER BY start_id, d
+            )
+            SELECT r.id, r.name, r.status, r.original_grade, ar.path_tokens,
+                   ST_Y(COALESCE(r.geom, g.geom)::geometry) AS lat,
+                   ST_X(COALESCE(r.geom, g.geom)::geometry) AS lon,
+                   (r.geom IS NULL) AS approx
+            FROM route r
+            JOIN area_resolved ar ON ar.id = r.area_id
+            LEFT JOIN area_geo g ON g.start_id = r.area_id""")
+        return cur.fetchall()
 
 
 @app.get("/api/route/{rid}")
@@ -231,6 +266,14 @@ def route_detail(rid: int):
         cur.execute("SELECT source_id, external_id, url FROM external_ref "
                     "WHERE entity_type = 'route' AND entity_id = %s", (rid,))
         r["refs"] = cur.fetchall()
+        cur.execute("""SELECT g.id, g.isbn, g.title, g.rrp, g.img_url, g.link, g.kind,
+                              rg.page, rg.description
+                       FROM route_guidebook rg JOIN guidebook g ON g.id = rg.guidebook_id
+                       WHERE rg.route_id = %s ORDER BY g.title""", (rid,))
+        r["guidebooks"] = cur.fetchall()
+        cur.execute("SELECT id, prefix, text, url FROM route_reference "
+                    "WHERE route_id = %s ORDER BY id", (rid,))
+        r["references"] = cur.fetchall()
         cur.execute("SELECT month, rainy_days, temp_high, temp_low FROM route_climatology "
                     "WHERE route_id = %s ORDER BY month", (rid,))
         r["climatology"] = cur.fetchall()
@@ -321,6 +364,140 @@ def put_pitches(rid: int, body: list[dict]):
                     (len(body) or None, rid))
         conn.commit()
     return {"ok": True, "pitches": len(body)}
+
+
+IMAGE_KINDS = {"tile_image", "map_img", "topo"}
+IMAGE_EXTS = {".jpg", ".jpeg", ".png", ".webp", ".gif"}
+
+
+@app.post("/api/route/{rid}/image/{kind}")
+async def upload_image(rid: int, kind: str, file: UploadFile = File(...)):
+    """Store an image in db/uploads/ and point the route's jsonb blob at it.
+    Existing keys (alt, attribution…) are preserved; only url changes."""
+    if kind not in IMAGE_KINDS:
+        raise HTTPException(422, f"kind must be one of {sorted(IMAGE_KINDS)}")
+    ext = Path(file.filename or "").suffix.lower()
+    if ext not in IMAGE_EXTS:
+        raise HTTPException(422, f"image files only ({', '.join(sorted(IMAGE_EXTS))})")
+    dest = UPLOAD_DIR / f"route-{rid}"
+    dest.mkdir(parents=True, exist_ok=True)
+    path = dest / f"{kind}{ext}"
+    path.write_bytes(await file.read())
+    url = f"/uploads/route-{rid}/{kind}{ext}"
+    with db() as conn, conn.cursor() as cur:
+        cur.execute(
+            f"""UPDATE route SET {kind} = COALESCE({kind}, '{{}}'::jsonb) || %s::jsonb,
+                last_update = now() WHERE id = %s RETURNING id""",
+            (json.dumps({"url": url}), rid))
+        if not cur.fetchone():
+            raise HTTPException(404)
+        conn.commit()
+    return {"ok": True, "url": url}
+
+
+@app.get("/api/sources")
+def sources():
+    with db() as conn, conn.cursor() as cur:
+        cur.execute("SELECT id, name FROM source ORDER BY id")
+        return cur.fetchall()
+
+
+@app.post("/api/route/{rid}/refs")
+def add_ref(rid: int, body: dict):
+    """Attach a source link (external_ref) to a route — one per source."""
+    sid, url = (body.get("source_id") or "").strip(), (body.get("url") or "").strip()
+    if not sid or not url:
+        raise HTTPException(422, "source_id and url are both required")
+    ext = (body.get("external_id") or url).strip()
+    with db() as conn, conn.cursor() as cur:
+        try:
+            cur.execute(
+                """INSERT INTO external_ref (entity_type, entity_id, source_id, external_id, url)
+                   VALUES ('route', %s, %s, %s, %s)
+                   ON CONFLICT (entity_type, entity_id, source_id)
+                   DO UPDATE SET external_id = EXCLUDED.external_id, url = EXCLUDED.url""",
+                (rid, sid, ext, url))
+        except psycopg.errors.UniqueViolation:
+            raise HTTPException(409, f"that {sid} page is already linked to another route")
+        except psycopg.errors.ForeignKeyViolation:
+            raise HTTPException(422, f"unknown source '{sid}'")
+        conn.commit()
+    return {"ok": True}
+
+
+@app.delete("/api/route/{rid}/refs/{source_id}")
+def del_ref(rid: int, source_id: str):
+    with db() as conn, conn.cursor() as cur:
+        cur.execute("""DELETE FROM external_ref WHERE entity_type = 'route'
+                       AND entity_id = %s AND source_id = %s RETURNING source_id""",
+                    (rid, source_id))
+        if not cur.fetchone():
+            raise HTTPException(404)
+        conn.commit()
+    return {"ok": True}
+
+
+REF_PREFIXES = {"Video", "Travel", "Article", "Info", "Tides", "Access", "Accommodation"}
+
+
+@app.put("/api/route/{rid}/references")
+def put_references(rid: int, body: list[dict]):
+    """Replace the route's outbound reference links. Text is stored verbatim;
+    the prefix is parsed metadata (mp-field-mapping.md) — never invented."""
+    with db() as conn, conn.cursor() as cur:
+        cur.execute("DELETE FROM route_reference WHERE route_id = %s", (rid,))
+        n = 0
+        for ref in body:
+            text, url = (ref.get("text") or "").strip(), (ref.get("url") or "").strip()
+            if not text or not url:
+                continue
+            head = text.split(":", 1)[0].strip() if ":" in text else ""
+            cur.execute(
+                "INSERT INTO route_reference (route_id, prefix, text, url) VALUES (%s, %s, %s, %s)",
+                (rid, head if head in REF_PREFIXES else None, text, url))
+            n += 1
+        cur.execute("UPDATE route SET last_update = now() WHERE id = %s", (rid,))
+        conn.commit()
+    return {"ok": True, "references": n}
+
+
+@app.put("/api/route/{rid}/guidebooks")
+def put_guidebooks(rid: int, body: list[dict]):
+    """Replace the route's guidebook links; the guidebook rows themselves are
+    shared across routes and deduped on isbn (else title)."""
+    with db() as conn, conn.cursor() as cur:
+        cur.execute("DELETE FROM route_guidebook WHERE route_id = %s", (rid,))
+        n = 0
+        for g in body:
+            title = (g.get("title") or "").strip()
+            if not title:
+                continue
+            isbn = (str(g["isbn"]).strip() or None) if g.get("isbn") else None
+            kind = "pdf" if (g.get("kind") or "").lower() == "pdf" else "guidebook"
+            if isbn:
+                cur.execute("SELECT id FROM guidebook WHERE isbn = %s", (isbn,))
+            else:
+                cur.execute("SELECT id FROM guidebook WHERE title = %s", (title,))
+            hit = cur.fetchone()
+            if hit:
+                gid = hit["id"]
+                cur.execute("""UPDATE guidebook SET title = %s, rrp = %s, img_url = %s,
+                                                    link = %s, kind = %s WHERE id = %s""",
+                            (title, g.get("rrp") or None, g.get("img_url") or None,
+                             g.get("link") or None, kind, gid))
+            else:
+                cur.execute("""INSERT INTO guidebook (isbn, title, rrp, img_url, link, kind)
+                               VALUES (%s, %s, %s, %s, %s, %s) RETURNING id""",
+                            (isbn, title, g.get("rrp") or None, g.get("img_url") or None,
+                             g.get("link") or None, kind))
+                gid = cur.fetchone()["id"]
+            cur.execute("""INSERT INTO route_guidebook (route_id, guidebook_id, page, description)
+                           VALUES (%s, %s, %s, %s) ON CONFLICT DO NOTHING""",
+                        (rid, gid, g.get("page") or None, g.get("description") or None))
+            n += 1
+        cur.execute("UPDATE route SET last_update = now() WHERE id = %s", (rid,))
+        conn.commit()
+    return {"ok": True, "guidebooks": n}
 
 
 @app.post("/api/route/{rid}/publish")

@@ -1,7 +1,7 @@
 -- 105 — GENERATED taxonomy re-seed (decision #35). Do not edit by hand:
 -- values are managed in Postgres via the Curation Studio's Taxonomy page and
 -- exported here by db/tools/export_taxonomy.py so apply.sh reproduces the live
--- vocabulary. Exported 2026-07-14.
+-- vocabulary. Exported 2026-07-16.
 SET search_path = climbing, public;
 
 -- discipline (15 values)
@@ -84,8 +84,8 @@ INSERT INTO hazard (code, kind, meaning, safety_critical, feeds) VALUES
     ('vegetated', 'route', 'Dirty or vegetated rock — needs traffic or a dry spell; slower to dry after rain.', false, 'drying-time model')
 ON CONFLICT (code) DO UPDATE SET kind = EXCLUDED.kind, meaning = EXCLUDED.meaning, safety_critical = EXCLUDED.safety_critical, feeds = EXCLUDED.feeds;
 
--- rock (17 values)
-DELETE FROM rock_type WHERE code NOT IN ('andesite', 'basalt', 'chalk', 'conglomerate', 'dolerite', 'dolomite', 'gabbro', 'gneiss', 'granite', 'gritstone', 'limestone', 'quartzite', 'rhyolite', 'sandstone', 'schist', 'slate', 'volcanic');
+-- rock (18 values)
+DELETE FROM rock_type WHERE code NOT IN ('andesite', 'basalt', 'chalk', 'conglomerate', 'dolerite', 'dolomite', 'gabbro', 'gneiss', 'granite', 'gritstone', 'limestone', 'phonolite', 'quartzite', 'rhyolite', 'sandstone', 'schist', 'slate', 'volcanic');
 INSERT INTO rock_type (code, friction_dry, seeps, fragile_when_wet, notes) VALUES
     ('andesite', NULL, false, false, 'Volcanic; blocky, variable quality.'),
     ('basalt', NULL, false, false, 'Columnar jointing gives parallel crack systems; moderate drying.'),
@@ -98,6 +98,7 @@ INSERT INTO rock_type (code, friction_dry, seeps, fragile_when_wet, notes) VALUE
     ('granite', NULL, false, false, 'Dries fast; low seepage; good friction when cool. Poorly-cemented grades shed grains.'),
     ('gritstone', NULL, false, true, 'Coarse UK sandstone — superb friction, rounded breaks; dries fast, greasy in humidity; avoid when wet.'),
     ('limestone', 0.64, true, false, 'Seeps for days; overhangs stay wet; slick when humid.'),
+    ('phonolite', NULL, false, false, 'Sound, fine-grained volcanic (Canaries/Teide); climbs like fine rhyolite; dries fast.'),
     ('quartzite', NULL, false, false, 'Hard, can be polished; variable drying.'),
     ('rhyolite', NULL, false, false, 'Welsh mountain rock; lichenous, slow to dry high up.'),
     ('sandstone', 0.74, false, true, 'Fragile when wet — do not climb wet (holds break). Highest dry friction.'),

@@ -1,5 +1,5 @@
 {
- "generated": "2026-07-14",
+ "generated": "2026-07-16",
  "note": "Live enum values exported from Postgres (decision #35). Semantic definitions & tagging rules: taxonomy.md. Managed via the Curation Studio; regenerate with db/tools/export_taxonomy.py.",
  "families": {
   "discipline": [
@@ -108,7 +108,7 @@
    {
     "code": "face",
     "meaning": "An open wall climbed on holds rather than a crack line.",
-    "usage": 19
+    "usage": 20
    },
    {
     "code": "flake",
@@ -254,7 +254,7 @@
     "meaning": "Reached by boat or swim.",
     "safety_critical": false,
     "feeds": "logistics",
-    "usage": 2
+    "usage": 1
    },
    {
     "code": "cornice",
@@ -376,7 +376,7 @@
     "seeps": false,
     "fragile_when_wet": false,
     "notes": "Columnar jointing gives parallel crack systems; moderate drying.",
-    "usage": 0
+    "usage": 1
    },
    {
     "code": "chalk",
@@ -392,7 +392,7 @@
     "seeps": false,
     "fragile_when_wet": false,
     "notes": "Cobbles in matrix (Montserrat, Meteora, Riglos); pockety; protection often spaced.",
-    "usage": 0
+    "usage": 2
    },
    {
     "code": "dolerite",
@@ -408,7 +408,7 @@
     "seeps": false,
     "fragile_when_wet": false,
     "notes": "Alpine; afternoon convection risk.",
-    "usage": 0
+    "usage": 5
    },
    {
     "code": "gabbro",
@@ -432,7 +432,7 @@
     "seeps": false,
     "fragile_when_wet": false,
     "notes": "Dries fast; low seepage; good friction when cool. Poorly-cemented grades shed grains.",
-    "usage": 0
+    "usage": 14
    },
    {
     "code": "gritstone",
@@ -448,7 +448,15 @@
     "seeps": true,
     "fragile_when_wet": false,
     "notes": "Seeps for days; overhangs stay wet; slick when humid.",
-    "usage": 0
+    "usage": 13
+   },
+   {
+    "code": "phonolite",
+    "friction_dry": null,
+    "seeps": false,
+    "fragile_when_wet": false,
+    "notes": "Sound, fine-grained volcanic (Canaries/Teide); climbs like fine rhyolite; dries fast.",
+    "usage": 1
    },
    {
     "code": "quartzite",
@@ -456,7 +464,7 @@
     "seeps": false,
     "fragile_when_wet": false,
     "notes": "Hard, can be polished; variable drying.",
-    "usage": 0
+    "usage": 5
    },
    {
     "code": "rhyolite",
@@ -464,7 +472,7 @@
     "seeps": false,
     "fragile_when_wet": false,
     "notes": "Welsh mountain rock; lichenous, slow to dry high up.",
-    "usage": 0
+    "usage": 6
    },
    {
     "code": "sandstone",
@@ -472,7 +480,7 @@
     "seeps": false,
     "fragile_when_wet": true,
     "notes": "Fragile when wet — do not climb wet (holds break). Highest dry friction.",
-    "usage": 0
+    "usage": 3
    },
    {
     "code": "schist",
@@ -488,7 +496,7 @@
     "seeps": false,
     "fragile_when_wet": false,
     "notes": "Non-porous — drains instantly but slick when wet; positive edges; quarried faces.",
-    "usage": 0
+    "usage": 1
    },
    {
     "code": "volcanic",

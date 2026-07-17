@@ -38,7 +38,20 @@
   .views button.on{background:var(--accent);color:#fff}
   input.search{border:1px solid var(--line-2);border-radius:8px;background:var(--panel);color:var(--ink);padding:7px 10px;font:12.5px var(--sans);width:170px}
 
-  .queue{display:grid;grid-template-columns:1fr 330px;gap:14px;align-items:start}
+  .queue{display:grid;grid-template-columns:246px minmax(0,1fr) 330px;gap:14px;align-items:start}
+  .qlistwrap{position:sticky;top:12px;max-height:calc(100vh - 160px);overflow:auto;padding:12px 12px}
+  .qrow{display:flex;gap:8px;padding:7px 8px;border-radius:8px;cursor:pointer;align-items:flex-start}
+  .qrow:hover{background:var(--panel-2)}
+  .qrow.on{background:var(--accent-soft);outline:1px solid var(--accent)}
+  .qrow b{font-size:12.5px;font-weight:600;display:block;line-height:1.25}
+  .qrow small{font-size:10.5px;color:var(--faint)}
+  .qtxt{min-width:0}
+  .dot{width:8px;height:8px;border-radius:50%;margin-top:5px;flex:0 0 8px}
+  .dot.p{background:var(--accent)} .dot.d{background:var(--amber)} .dot.x{background:var(--red)}
+  .views em{font-style:normal;font-weight:400;opacity:.75;font-size:10.5px;margin-left:4px}
+  .flash{animation:flashbg 1.8s ease-out}
+  @keyframes flashbg{from{background:var(--accent-soft)}to{background:transparent}}
+  @media (max-width:1120px){.queue{grid-template-columns:minmax(0,1fr) 300px}.qlistwrap{display:none}}
   .card{background:var(--panel);border:1px solid var(--line-2);border-radius:14px;box-shadow:var(--shadow);padding:18px 20px;margin-bottom:12px}
   .rt-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
   .rt-head h2{font-family:var(--serif);font-size:21px;margin:0;font-weight:600}
@@ -64,17 +77,38 @@
   .chip.haz{border-color:var(--red);background:var(--red-soft)}
   .chip:hover{text-decoration:line-through}
   .chips select{font-size:11.5px;border:1.5px dashed var(--line-2);border-radius:99px;background:var(--panel);color:var(--faint);padding:3px 6px}
-  .gaps{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
-  .stars{font-size:18px;letter-spacing:2px;cursor:pointer;color:var(--faint);user-select:none}
+  .gaps{display:flex;gap:30px;flex-wrap:wrap;align-items:flex-start;margin-top:14px}
+  .glabel{display:block;font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);font-weight:700;margin-bottom:4px}
+  .glabel small{font-weight:400;text-transform:none;letter-spacing:0}
+  .stars{font-size:19px;letter-spacing:2px;cursor:pointer;color:var(--faint);user-select:none}
   .stars .lit{color:var(--amber)}
-  .season{display:flex;gap:2px;align-items:flex-end;height:26px}
-  .season i{width:14px;background:var(--panel-2);border:1px solid var(--line);border-radius:2px 2px 0 0;display:block;height:8px;cursor:pointer;font-size:0}
-  .season i.on{background:var(--accent);border-color:var(--accent);height:20px}
+  .season{display:flex;gap:3px}
+  .season i{width:19px;height:22px;background:var(--panel-2);border:1px solid var(--line);border-radius:4px;
+    cursor:pointer;font:600 9.5px var(--sans);font-style:normal;color:var(--faint);
+    display:flex;align-items:center;justify-content:center;user-select:none}
+  .season i.on{background:var(--accent);border-color:var(--accent);color:#fff}
   textarea{width:100%;background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:8px 10px;color:var(--ink);font:12.5px/1.5 var(--sans);resize:vertical}
-  .pitchrow{display:grid;grid-template-columns:34px 54px 64px 1fr 26px;gap:6px;margin-bottom:6px;align-items:start}
+  .ptools{display:flex;gap:5px;margin-bottom:5px}
+  .ptools button{border:1px solid var(--line-2);background:var(--panel-2);color:var(--muted);border-radius:6px;
+    padding:2px 9px;font:11.5px var(--sans);cursor:pointer}
+  .ptools button:hover{border-color:var(--accent);color:var(--ink)}
+  .tapv{background:var(--panel-2);border:1px dashed var(--accent);border-radius:8px;padding:10px 12px;
+    font-size:13px;line-height:1.6;cursor:pointer}
+  .tapv a{color:var(--blue)}
+  .pitchhead{display:grid;grid-template-columns:34px 64px 70px 1fr 26px;gap:6px;margin-bottom:3px;
+    font-size:9px;letter-spacing:.07em;text-transform:uppercase;color:var(--faint);font-weight:700}
+  .pitchrow{display:grid;grid-template-columns:34px 64px 70px 1fr 26px;gap:6px;margin-bottom:6px;align-items:start}
   .pitchrow input,.pitchrow textarea{border:1px solid var(--line);border-radius:6px;background:var(--panel-2);color:var(--ink);padding:5px 7px;font:12px var(--sans)}
-  .pitchrow textarea{min-height:34px}
+  .pitchrow textarea{min-height:58px}
   .pitchrow button{border:0;background:none;color:var(--red);cursor:pointer;font-size:14px;padding-top:6px}
+  .imgs{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .imgcell b{display:block;font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);font-weight:700;margin-bottom:5px}
+  .imgcell img{max-width:100%;border-radius:8px;border:1px solid var(--line-2);display:block;margin-bottom:6px}
+  .imgcell .btn{display:inline-block;cursor:pointer;margin-top:5px}
+  .srcwrap{display:inline-flex;align-items:center;gap:3px}
+  .srcx{color:var(--red);cursor:pointer;font-size:11px}
+  .srcadd{display:grid;grid-template-columns:auto 1fr auto;gap:6px;margin-top:9px;align-items:center}
+  .srcadd select,.srcadd input{border:1px solid var(--line);border-radius:6px;background:var(--panel-2);color:var(--ink);padding:5px 7px;font:11.5px var(--sans)}
   .minor{font-size:11.5px;color:var(--faint)}
   .btn{border:1px solid var(--line-2);background:var(--panel-2);color:var(--ink);border-radius:9px;padding:8px 15px;font:600 13px var(--sans);cursor:pointer}
   .btn:hover{border-color:var(--accent)}
@@ -136,7 +170,55 @@
     color:var(--ink);padding:6px 8px;font:12.5px var(--sans)}
   .taxflags{font-size:10px;letter-spacing:.04em;text-transform:uppercase;font-weight:700}
   .taxflags .safe{color:var(--red)}
-  @media (max-width:900px){.queue{grid-template-columns:1fr}}
+  .gbrow{display:grid;grid-template-columns:1fr 108px 56px 56px 92px 26px;gap:6px;margin-bottom:10px;align-items:start;
+    border-bottom:1px dashed var(--line);padding-bottom:8px}
+  .gbrow input,.gbrow select,.gbrow textarea{border:1px solid var(--line);border-radius:6px;background:var(--panel-2);
+    color:var(--ink);padding:5px 7px;font:12px var(--sans);width:100%}
+  .gbrow label{display:flex;flex-direction:column;gap:3px;font-size:9px;letter-spacing:.07em;
+    text-transform:uppercase;color:var(--faint);font-weight:700;min-width:0}
+  .gbrow .wide{grid-column:1/-1}
+  .gbrow textarea{min-height:44px}
+  .gbrow button{border:0;background:none;color:var(--red);cursor:pointer;font-size:14px;padding-top:5px}
+  .refrow{display:grid;grid-template-columns:1fr 1fr 26px;gap:6px;margin-bottom:6px}
+  .refrow input{border:1px solid var(--line);border-radius:6px;background:var(--panel-2);color:var(--ink);padding:5px 7px;font:12px var(--sans)}
+  .refrow button{border:0;background:none;color:var(--red);cursor:pointer;font-size:14px}
+
+  /* page preview — deliberately light: it mimics multi-pitch.com, not the Studio theme */
+  .pvwrap{position:fixed;inset:0;background:rgba(20,22,20,.6);z-index:40;overflow:auto;padding:28px 14px}
+  .pv{max-width:760px;margin:0 auto;background:#FDFDFB;color:#2b2b2b;border-radius:12px;padding:32px 42px 40px;
+    font-family:Roboto,var(--sans);font-weight:300;box-shadow:0 14px 44px rgba(0,0,0,.45)}
+  .pv h1{font-size:27px;font-weight:300;margin:4px 0 2px;font-family:Roboto,var(--sans)}
+  .pv .pv-crag{color:#7a7a74;font-size:13px;margin-bottom:14px}
+  .pv h3{font-size:17px;font-weight:400;margin:24px 0 8px;border-bottom:1px solid #e6e4dd;padding-bottom:4px}
+  .pv p,.pv li{font-size:13.5px;line-height:1.65}
+  .pv a{color:#2F6076}
+  .pv .pv-rings{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0 8px}
+  .pv .ring{border:3px solid #5f1430;border-radius:50%;width:72px;height:72px;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;text-align:center;background:#fff}
+  .pv .ring b{font-size:13px;font-weight:500;max-width:60px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .pv .ring small{font-size:8.5px;letter-spacing:.06em;text-transform:uppercase;color:#8a8a84}
+  .pv .pv-haz{display:inline-block;border:1px solid #8C3B2E;color:#8C3B2E;border-radius:99px;padding:2px 10px;font-size:11px;margin:2px 3px 2px 0}
+  .pv .pv-len{color:#7a7a74;font-weight:400}
+  .pv .pv-pg{background:#5f1430;color:#fff;border-radius:4px;padding:0 6px;font-size:11.5px;font-weight:400}
+  .pv .wx{display:flex;gap:3px;align-items:flex-end;height:60px;max-width:420px}
+  .pv .wx i{flex:1;background:#79B0C6;display:block;border-radius:2px 2px 0 0}
+  /* location drill-down — each chip is a tiny progress bar (fill = curated share) */
+  .drillbar{display:flex;gap:7px;flex-wrap:wrap;align-items:center;background:var(--panel);
+    border:1px solid var(--line-2);border-radius:12px;box-shadow:var(--shadow);padding:9px 14px;margin-bottom:12px}
+  .loc{position:relative;overflow:hidden;font-size:12px;padding:4px 11px;border-radius:99px;
+    border:1px solid var(--line-2);background:var(--panel-2);cursor:pointer;user-select:none;white-space:nowrap}
+  .loc i{position:absolute;left:0;top:0;bottom:0;background:var(--accent-soft);font-style:normal}
+  .loc b,.loc small{position:relative;font-weight:600}
+  .loc small{color:var(--muted);font-size:10px;margin-left:5px}
+  .loc:hover{border-color:var(--accent)}
+  .loc.crumb{border-style:solid;border-color:var(--accent);background:var(--accent-soft);color:var(--accent-ink)}
+  #bigmap{width:100%;height:calc(100vh - 300px);min-height:420px;border:1px solid var(--line-2);border-radius:10px;z-index:1}
+  .ring-ico{border-radius:50%;display:flex;align-items:center;justify-content:center;
+    border:2px solid #fff;box-shadow:0 1px 6px rgba(0,0,0,.35);cursor:pointer}
+  .ring-ico span{background:var(--panel);color:var(--ink);border-radius:50%;width:calc(100% - 12px);height:calc(100% - 12px);
+    display:flex;align-items:center;justify-content:center;font:700 12px var(--sans)}
+  .dotkey{display:inline-block;width:9px;height:9px;border-radius:50%;margin:0 2px 0 8px}
+  @media (max-width:900px){.queue{grid-template-columns:1fr}.qlistwrap{display:none}}
 
   /* shared multi-pitch Live header — same bar as every built knowledge page */
   .mp-top{position:relative;top:0;z-index:50;height:48px;background:#12141B;border-bottom:1px solid #252840;
@@ -153,23 +235,43 @@
   <header class="app">
     <h1>🧗 Curation Studio</h1>
     <div class="progress"><div class="pbar"><i id="pfill"></i></div><div class="plabel" id="plabel">loading…</div></div>
-    <input class="search" id="q" placeholder="filter name / crag…">
-    <select class="search" id="statusFilter" style="width:auto">
-      <option value="draft">drafts</option><option value="publish">published</option><option value="quarantined">quarantined</option>
-    </select>
+    <input class="search" id="q" placeholder="filter name / place…">
+    <div class="views" id="statusSeg">
+      <button id="sf-all" onclick="setStatus('all')">all</button>
+      <button id="sf-draft" class="on" onclick="setStatus('draft')">drafts</button>
+      <button id="sf-publish" onclick="setStatus('publish')">published</button>
+      <button id="sf-quarantined" onclick="setStatus('quarantined')">quarantined</button>
+    </div>
     <div class="views">
       <button id="vq" class="on" onclick="setView('q')">Queue</button>
       <button id="vg" onclick="setView('g')">Grid</button>
+      <button id="vm" onclick="setView('m')">Map</button>
       <button id="vt" onclick="setView('t')">Taxonomy</button>
     </div>
   </header>
 
+  <div class="drillbar" id="drillbar"></div>
+
   <div class="queue" id="queueview">
+    <div class="qlistwrap card">
+      <div class="minor" id="qcount">loading…</div>
+      <div id="qlist"></div>
+    </div>
     <div id="main"><div class="card">loading…</div></div>
     <div class="rail" id="rail"></div>
   </div>
 
   <div class="taxview" id="taxview" style="display:none"></div>
+
+  <div id="mapview" style="display:none">
+    <div class="card" style="padding:12px">
+      <div id="bigmap"></div>
+      <div class="minor" style="margin-top:7px">rings = one area per circle, green share is curated — click a ring to
+        drill in · dots = routes (<span class="dotkey" style="background:var(--accent)"></span> published
+        <span class="dotkey" style="background:var(--amber)"></span> draft
+        <span class="dotkey" style="background:var(--red)"></span> quarantined) · a hollow dot borrowed its crag's pin</div>
+    </div>
+  </div>
 
   <div class="gridview" id="gridview">
     <div class="bulk">
@@ -198,40 +300,120 @@
 <div id="toast"></div>
 
 <script>
-let ENUMS={}, QUEUE=[], COUNTS={}, cur=0, R=null, saveTimers={};
+let ENUMS={}, QUEUE=[], ALLROWS=[], TREE=[], DRILL=[], COUNTS={}, STATUS='draft', curId=null, R=null, saveTimers={};
 const $=id=>document.getElementById(id);
 const api=(p,opt)=>fetch('/api'+p,opt).then(r=>{if(!r.ok)return r.json().then(e=>{throw e.detail||r.status});return r.json()});
-const toast=m=>{const t=$('toast');t.textContent=m;t.style.opacity=1;setTimeout(()=>t.style.opacity=0,1400)};
+const toast=(m,ms)=>{const t=$('toast');t.textContent=m;t.style.opacity=1;
+  clearTimeout(saveTimers._toast);
+  saveTimers._toast=setTimeout(()=>t.style.opacity=0,ms||(String(m).startsWith('⚠')?4200:1500))};
 
+let SOURCES=[];
+async function addSource(){
+  const sid=$('srcSel').value,url=$('srcUrl').value.trim();
+  if(!url){toast('⚠ paste the URL first');$('srcUrl').focus();return}
+  try{
+    await api(`/route/${R.id}/refs`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({source_id:sid,url})});
+    R.refs=[...(R.refs||[]).filter(x=>x.source_id!==sid),{source_id:sid,url,external_id:url}];
+    toast('linked '+sid);renderRail();
+  }catch(e){toast('⚠ '+e)}
+}
+async function delSource(sid){
+  try{
+    await api(`/route/${R.id}/refs/${sid}`,{method:'DELETE'});
+    R.refs=(R.refs||[]).filter(x=>x.source_id!==sid);
+    toast('unlinked '+sid);renderRail();
+  }catch(e){toast('⚠ '+e)}
+}
 async function boot(){
-  ENUMS=await api('/enums');
+  [ENUMS,SOURCES]=await Promise.all([api('/enums'),api('/sources')]);
   bulkFieldChanged();
-  await loadQueue();
+  await Promise.all([loadQueue(),loadTree()]);
+  if(QUEUE.length)openRoute(QUEUE[0].id);
   if(location.hash==='#taxonomy')setView('t');
   if(location.hash==='#grid')setView('g');
 }
+async function loadTree(){        // all routes + status: drill counts & map (refresh after status flips)
+  TREE=await api('/map');
+  renderDrill();updateMapLayer();
+}
+let qseq=0;
+// The list is the ONLY thing a filter changes — the open editor never jumps.
 async function loadQueue(keepId){
-  const q=$('q').value, st=$('statusFilter').value;
-  const d=await api(`/queue?status=${st}&q=${encodeURIComponent(q)}`);
-  QUEUE=d.rows; COUNTS=d.counts;
+  const my=++qseq, q=$('q').value;
+  const d=await api(`/queue?status=${STATUS}&q=${encodeURIComponent(q)}`);
+  if(my!==qseq)return;            // superseded by a newer request — drop stale result
+  ALLROWS=d.rows; COUNTS=d.counts;
+  QUEUE=drillFilter(ALLROWS);
+  updateCounts();
+  renderList();renderGrid();renderDrill();
+  if(keepId)openRoute(keepId);
+  else if(!R&&QUEUE.length)openRoute(QUEUE[0].id);
+}
+function updateCounts(){
   const total=(COUNTS.draft||0)+(COUNTS.publish||0)+(COUNTS.quarantined||0);
   $('pfill').style.width=(100*(COUNTS.publish||0)/Math.max(1,total))+'%';
   $('plabel').textContent=`${COUNTS.publish||0} curated · ${COUNTS.draft||0} drafts · ${COUNTS.quarantined||0} quarantined · ${COUNTS.field_check||0} 🥾 field-check`;
-  if(keepId){const i=QUEUE.findIndex(r=>r.id===keepId); cur=i>=0?i:Math.min(cur,QUEUE.length-1);}
-  cur=Math.max(0,Math.min(cur,QUEUE.length-1));
-  renderGrid();
-  if(QUEUE.length)await openRoute(QUEUE[cur].id);
-  else {R=null;$('main').innerHTML='<div class="card">queue empty 🎉</div>';$('rail').innerHTML='';$('nexthint').textContent='';}
+  const lbl={all:['all',total],draft:['drafts',COUNTS.draft||0],
+             publish:['published',COUNTS.publish||0],quarantined:['quarantined',COUNTS.quarantined||0]};
+  Object.entries(lbl).forEach(([k,[name,n]])=>{$('sf-'+k).innerHTML=`${name} <em>${n}</em>`});
 }
+function syncSeg(){['all','draft','publish','quarantined'].forEach(x=>$('sf-'+x).classList.toggle('on',x===STATUS))}
+function setStatus(s){STATUS=s;syncSeg();loadQueue()}
+function renderList(){
+  const n=QUEUE.length;
+  $('qcount').textContent=n?`${n} route${n===1?'':'s'} in scope`:'';
+  $('qlist').innerHTML=n?QUEUE.map(r=>`
+    <div class="qrow ${r.id===curId?'on':''}" onclick="openRoute(${r.id})">
+      <span class="dot ${r.status==='publish'?'p':r.status==='quarantined'?'x':'d'}"></span>
+      <div class="qtxt"><b>${esc(r.name)}</b>
+        <small>${esc((r.path_tokens||[]).slice(-1)[0]||'')} · ${esc(r.original_grade)||'—'}</small></div>
+    </div>`).join('')
+   :'<div class="minor" style="padding:8px 2px">no matches here — clear the filter, pick another place, or switch status</div>';
+}
+
+// ── location drill-down — country › region › crag, guidebook-index style ──
+const tok=(r,i)=>((r.path_tokens||[])[i]||'');
+function drillFilter(rows){return rows.filter(r=>DRILL.every((t,i)=>tok(r,i)===t))}
+function renderDrill(){
+  const scope=drillFilter(TREE), lvl=DRILL.length;
+  const groups={};
+  scope.forEach(r=>{const t=tok(r,lvl);if(!t)return;
+    const g=groups[t]=groups[t]||{n:0,pub:0};g.n++;if(r.status==='publish')g.pub++;});
+  const crumbs=DRILL.map((t,i)=>
+    `<span class="loc crumb" onclick="drillTo(${i})" title="back to ${esc(t)}">${esc(t)} ✕</span>`)
+    .join('<span class="minor">›</span>');
+  const chips=Object.entries(groups).sort((a,b)=>b[1].n-a[1].n).map(([t,g])=>
+    `<span class="loc" onclick="drillDown(decodeURIComponent('${encodeURIComponent(t)}'))"
+       title="${g.pub} of ${g.n} curated — click to focus here">
+       <i style="width:${Math.round(100*g.pub/g.n)}%"></i><b>${esc(t)}</b><small>${g.pub}/${g.n}✓</small></span>`).join('');
+  $('drillbar').innerHTML=`<span class="minor">📍</span>${crumbs}${crumbs&&chips?'<span class="minor">›</span>':''}${chips}`
+    +(DRILL.length?`<span class="loc crumb" style="margin-left:auto" onclick="drillTo(0)">show everywhere</span>`:'');
+}
+function drillDown(t){DRILL.push(t);refreshDrill()}
+function drillTo(i){DRILL=DRILL.slice(0,i);refreshDrill()}
+function refreshDrill(){
+  QUEUE=drillFilter(ALLROWS);
+  renderDrill();renderList();renderGrid();updateMapLayer();
+  if(!R&&QUEUE.length)openRoute(QUEUE[0].id);   // never replace an open editor uninvited
+}
+let oseq=0;
 async function openRoute(id){
-  R=await api('/route/'+id);
-  renderCard(); renderRail();
-  $('nexthint').textContent=`route ${cur+1}/${QUEUE.length}${QUEUE[cur+1]?' — next: '+QUEUE[cur+1].name:''}`;  // textContent — safe
+  const my=++oseq;
+  const r=await api('/route/'+id);
+  if(my!==oseq)return;            // a newer open superseded this one
+  R=r;curId=id;
+  renderCard(); renderRail(); renderList();
+  const i=QUEUE.findIndex(x=>x.id===curId);
+  $('nexthint').textContent=i<0?'':`route ${i+1}/${QUEUE.length}${QUEUE[i+1]?' — next: '+QUEUE[i+1].name:''}`;  // textContent — safe
+  const row=document.querySelector('.qrow.on');
+  if(row)row.scrollIntoView({block:'nearest'});
 }
 function move(d){
   if(!QUEUE.length)return;
   commitFocus();
-  cur=Math.max(0,Math.min(QUEUE.length-1,cur+d));openRoute(QUEUE[cur].id);
+  const i=QUEUE.findIndex(x=>x.id===curId);
+  const next=QUEUE[Math.max(0,Math.min(QUEUE.length-1,(i<0?0:i)+d))];
+  if(next&&next.id!==curId)openRoute(next.id);
 }
 
 // ── autosave helpers ─────────────────────────────
@@ -271,7 +453,10 @@ function renderCard(){
     <div class="rt-head"><h2>${esc(r.name)}</h2><span class="grade">${esc(r.original_grade)||'—'}</span>
       <span class="statuschip ${s==='publish'?'pub':s==='quarantined'?'quar':r.needs_field_check?'field':''}">
         ${s==='publish'?'✓ published':s==='quarantined'?'✕ quarantined':(r.needs_field_check?'🥾 field check':'draft · '+r.tagged_by+'-tagged')}</span>
-      <span class="crag">${esc((r.path_tokens||[]).join(' › '))} · ${r.eff_rock_code||'rock?'} · ${r.eff_aspect||'aspect?'} · <span style="font-family:var(--mono)">#${r.id}</span></span></div>
+      <span class="crag">${esc((r.path_tokens||[]).join(' › '))} · ${r.eff_rock_code||'rock?'} · ${r.eff_aspect||'aspect?'} · <span style="font-family:var(--mono)">#${r.id}</span>
+        <button class="btn sm" style="float:right" onclick="previewPage()" title="see this record as the climb page will show it">👁 page preview</button></span></div>
+    ${proseBlock('ta-intro','① intro','— opens the page: why climb it, crux, character','intro_html',r.intro_html,5)}
+    <div class="sec">② the info rings <small>— grade · length · approach · attributes, the ring row under the intro</small></div>
     <div class="facts">
       <div class="fact${!r.grade_system_code?' miss':''}" style="grid-column:span 2"><b>grade system — the scale this grade is in</b>
         <select onchange="save('grade_system_code',this.value||null);R.grade_system_code=this.value||null;renderCard()"><option value="">pick the scale…</option>
@@ -305,34 +490,106 @@ function renderCard(){
         <select onchange="addTag('${f}',this.value);this.value=''"><option value="">+ add</option>
           ${(ENUMS[f]||[]).filter(v=>!(r.tags[f]||[]).includes(v)).map(v=>`<option>${v}</option>`).join('')}</select>
       </div>`).join('')}
-    <div class="sec">fill the gaps</div>
     <div class="gaps">
-      <span class="stars" title="stars">${[1,2,3].map(i=>`<span class="${(r.stars||0)>=i?'lit':''}" onclick="setStars(${i})">★</span>`).join('')}</span>
-      <span class="season" title="bestSeason — click months">${[...Array(12)].map((_,i)=>`<i class="${seasonSet.has(i+1)?'on':''}" onclick="toggleMonth(${i+1})">${i+1}</i>`).join('')}</span>
-      <span class="minor">← stars &amp; best months</span>
+      <div><b class="glabel">quality <small>— 0–3 stars, Rockfax-style</small></b>
+        <span class="stars">${[1,2,3].map(i=>`<span class="${(r.stars||0)>=i?'lit':''}" onclick="setStars(${i})" title="${i} star${i>1?'s':''} — click again to clear">★</span>`).join('')}</span></div>
+      <div><b class="glabel">best months <small>— click to toggle the good season</small></b>
+        <span class="season">${[...Array(12)].map((_,i)=>`<i class="${seasonSet.has(i+1)?'on':''}" onclick="toggleMonth(${i+1})" title="${['January','February','March','April','May','June','July','August','September','October','November','December'][i]}">${'JFMAMJJASOND'[i]}</i>`).join('')}</span></div>
     </div>
   </div>
   <div class="card">
-    <div class="sec">intro <small>— why climb it, crux, character, caveats (your house style)</small></div>
-    <textarea rows="4" onchange="save('intro_html',this.value||null)">${esc(r.intro_html)}</textarea>
-    <div class="sec">approach &amp; descent <small>— parking coords, timings, hazards</small></div>
-    <textarea rows="4" onchange="save('approach_html',this.value||null)">${esc(r.approach_html)}</textarea>
-    <div class="sec">pitch by pitch <small>— structured; the site's pitchInfo renders from these</small></div>
+    ${proseBlock('ta-appr','③ approach & descent','— parking coords, timings, hazards','approach_html',r.approach_html,7)}
+    <div class="sec">④ pitch by pitch <small>— one row per pitch; the site's pitchInfo renders from these</small></div>
+    <div class="pitchhead"><span>#</span><span>length m</span><span>grade</span><span>the pitch — moves, crux, where to belay</span><span></span></div>
     <div id="pitches">${(r.pitch_rows||[]).map(pitchRowHtml).join('')}</div>
     <button class="btn sm" onclick="addPitch()">+ pitch</button>
-    <button class="btn sm" onclick="savePitches()">save pitches</button>
-    <div class="sec">curator note <small>— travels with the row (also what a field check should do)</small></div>
+    <button class="btn sm primary" onclick="savePitches()">save pitches</button>
+  </div>
+  <div class="card">
+    <div class="sec" style="margin-top:0">⑤ images <small>— tile = the card thumbnail · map &amp; topo feed the page's topography section</small></div>
+    <div class="imgs">
+      ${imgCell('tile_image','tile — card thumbnail',r.tile_image)}
+      ${imgCell('map_img','map image',r.map_img)}
+      ${imgCell('topo','topo image',r.topo)}
+    </div>
+  </div>
+  <div class="card">
+    <div class="sec" style="margin-top:0">⑥ guidebooks <small>— shared across routes, deduped on ISBN · weather ⑦ sits in the rail →</small></div>
+    <div id="gbooks">${(r.guidebooks||[]).map(gbRowHtml).join('')}</div>
+    <button class="btn sm" onclick="addGuidebook()">+ guidebook</button>
+    <button class="btn sm" onclick="saveGuidebooks()">save guidebooks</button>
+    <div class="sec">⑧ references &amp; links <small>— text shown verbatim; a leading 'Video:' / 'Access:' label is understood</small></div>
+    <div id="refsEd">${(r.references||[]).map(refRowHtml).join('')}</div>
+    <button class="btn sm" onclick="addRef()">+ reference</button>
+    <button class="btn sm" onclick="saveReferences()">save references</button>
+    <div class="sec">curator note <small>— Studio-only; never rendered on the page</small></div>
     <textarea rows="2" onchange="save('curation_notes',this.value||null)">${esc(r.curation_notes)}</textarea>
   </div>`;
 }
 const esc=s=>String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 function pitchRowHtml(p,i){
   return `<div class="pitchrow" data-i="${i}">
-    <input value="${p.number||i+1}" title="No.">
-    <input value="${esc(p.length_m)}" placeholder="m" title="length m">
-    <input value="${esc(p.original_grade)}" placeholder="grade" title="grade">
-    <textarea placeholder="moves, crux, belay…">${esc(p.description)}</textarea>
-    <button onclick="this.parentNode.remove()" title="remove">✕</button></div>`;
+    <input value="${p.number||i+1}" title="pitch number">
+    <input value="${esc(p.length_m)}" placeholder="25" title="length in metres">
+    <input value="${esc(p.original_grade)}" placeholder="4c" title="pitch grade (${R?.grade_system_code||'route system'})">
+    <textarea placeholder="moves, crux, where to belay…">${esc(p.description)}</textarea>
+    <button onclick="this.parentNode.remove()" title="remove this pitch">✕</button></div>`;
+}
+
+// ── prose editing: small toolbar + rendered preview over plain HTML fields ──
+function proseBlock(id,num,hint,field,val,rows){
+  return `<div class="sec">${num} <small>${hint}</small></div>
+  <div class="ptools">
+    <button onclick="wrapSel('${id}','<strong>','</strong>')" title="bold the selection"><b>B</b></button>
+    <button onclick="wrapSel('${id}','<em>','</em>')" title="italicise the selection"><i>i</i></button>
+    <button onclick="insLink('${id}')" title="turn the selection into a link">🔗 link</button>
+    <button onclick="insSel('${id}','<br />')" title="insert a line break">↵ break</button>
+    <button onclick="togglePv('${id}')" title="toggle between editing and how it reads">👁 preview</button>
+  </div>
+  <textarea id="${id}" rows="${rows}" onchange="save('${field}',this.value||null)">${esc(val)}</textarea>
+  <div class="tapv" id="${id}-pv" style="display:none" onclick="togglePv('${id}')" title="click anywhere to edit again"></div>`;
+}
+function wrapSel(id,open,close){
+  const ta=$(id),s=ta.selectionStart,e=ta.selectionEnd;
+  ta.value=ta.value.slice(0,s)+open+ta.value.slice(s,e)+close+ta.value.slice(e);
+  ta.focus();ta.setSelectionRange(s+open.length,e+open.length);
+  ta.dispatchEvent(new Event('change'));
+}
+function insSel(id,text){
+  const ta=$(id),s=ta.selectionStart;
+  ta.value=ta.value.slice(0,s)+text+ta.value.slice(s);
+  ta.focus();ta.setSelectionRange(s+text.length,s+text.length);
+  ta.dispatchEvent(new Event('change'));
+}
+function insLink(id){
+  const url=prompt('Link URL:','https://');
+  if(!url)return;
+  wrapSel(id,`<a href="${url}" target="blank" rel="noopener">`,'</a>');
+}
+function togglePv(id){
+  const ta=$(id),pv=$(id+'-pv'),show=pv.style.display==='none';
+  pv.innerHTML=ta.value||'<span class="minor">nothing yet</span>';
+  pv.style.display=show?'block':'none';ta.style.display=show?'none':'';
+}
+
+// ── images ──────────────────────────────────────────────────────────────────
+function imgCell(kind,label,obj){
+  const url=(obj||{}).url||'';
+  const showable=url&&(url.startsWith('/uploads')||url.startsWith('http'));
+  return `<div class="imgcell"><b>${label}</b>
+    ${showable?`<img src="${esc(url)}" alt="">`
+      :url?`<div class="minor" style="word-break:break-all">📁 ${esc(url)}<br><small>file lives in the multi-pitch repo — upload to replace</small></div>`
+      :'<div class="minor">no image yet</div>'}
+    <label class="btn sm">⬆ upload image<input type="file" accept="image/*" style="display:none" onchange="uploadImg('${kind}',this)"></label></div>`;
+}
+async function uploadImg(kind,inp){
+  const f=inp.files[0];if(!f)return;
+  const fd=new FormData();fd.append('file',f);
+  try{
+    const d=await api(`/route/${R.id}/image/${kind}`,{method:'POST',body:fd});
+    R[kind]={...(R[kind]||{}),url:d.url};
+    toast('image saved');renderCard();
+  }catch(e){toast('⚠ '+e)}
 }
 function addPitch(){const d=document.createElement('div');d.innerHTML=pitchRowHtml({number:document.querySelectorAll('.pitchrow').length+1},99);$('pitches').appendChild(d.firstChild)}
 async function savePitches(){
@@ -342,6 +599,81 @@ async function savePitches(){
             grade_system_code:R.grade_system_code||null,description:el.querySelector('textarea').value||null};
   }).filter(p=>p.number);
   try{await api('/route/'+R.id+'/pitches',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(rows)});toast(rows.length+' pitches saved')}catch(e){toast('⚠ '+e)}
+}
+function gbRowHtml(g){
+  return `<div class="gbrow">
+    <label>title<input value="${esc(g.title)}" placeholder="Costa Blanca Rock"></label>
+    <label>isbn<input value="${esc(g.isbn)}" placeholder="9781873341..."></label>
+    <label>page<input value="${esc(g.page)}" placeholder="176"></label>
+    <label>rrp<input value="${esc(g.rrp)}" placeholder="29.95"></label>
+    <label>type<select title="a real book or a free PDF topo">${['guidebook','pdf'].map(k=>`<option ${k===(g.kind||'guidebook')?'selected':''}>${k}</option>`).join('')}</select></label>
+    <button onclick="this.parentNode.remove()" title="remove this guidebook link">✕</button>
+    <label class="wide">shop / pdf link<input value="${esc(g.link)}" placeholder="https://…"></label>
+    <label class="wide">cover image url<input value="${esc(g.img_url)}" placeholder="img/guidebooks/…jpg"></label>
+    <label class="wide">description shown on the page<textarea>${esc(g.description)}</textarea></label></div>`;
+}
+function addGuidebook(){const d=document.createElement('div');d.innerHTML=gbRowHtml({});$('gbooks').appendChild(d.firstChild)}
+async function saveGuidebooks(){
+  const rows=[...document.querySelectorAll('.gbrow')].map(el=>{
+    const [title,isbn,page,rrp,link,img]=el.querySelectorAll('input');
+    return {title:title.value||null,isbn:isbn.value||null,page:page.value||null,rrp:rrp.value||null,
+            kind:el.querySelector('select').value,link:link.value||null,img_url:img.value||null,
+            description:el.querySelector('textarea').value||null};
+  }).filter(g=>g.title);
+  try{const d=await api('/route/'+R.id+'/guidebooks',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(rows)});
+    toast(d.guidebooks+' guidebooks saved')}catch(e){toast('⚠ '+e)}
+}
+function refRowHtml(ref){
+  return `<div class="refrow">
+    <input value="${esc(ref.text)}" placeholder="link text (optionally 'Video: …')">
+    <input value="${esc(ref.url)}" placeholder="https://…">
+    <button onclick="this.parentNode.remove()" title="remove">✕</button></div>`;
+}
+function addRef(){const d=document.createElement('div');d.innerHTML=refRowHtml({});$('refsEd').appendChild(d.firstChild)}
+async function saveReferences(){
+  const rows=[...document.querySelectorAll('.refrow')].map(el=>{
+    const [text,url]=el.querySelectorAll('input');
+    return {text:text.value||null,url:url.value||null};
+  }).filter(x=>x.text&&x.url);
+  try{const d=await api('/route/'+R.id+'/references',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(rows)});
+    toast(d.references+' references saved')}catch(e){toast('⚠ '+e)}
+}
+function previewPage(){
+  const r=R; if(!r)return;
+  const ring=(v,l)=>v?`<span class="ring"><b>${esc(v)}</b><small>${l}</small></span>`:'';
+  const hazChips=(r.tags.hazards||[]).map(h=>`<span class="pv-haz">${esc(h)}</span>`).join('');
+  const pitches=(r.pitch_rows&&r.pitch_rows.length)
+    ? '<p>'+r.pitch_rows.map(p=>`<strong>Pitch ${p.number} — <span class="pv-len">${p.length_m?p.length_m+'m':''}</span>
+        <span class="pv-pg">${esc(p.original_grade)||''}</span></strong> ${esc(p.description)||''}<br><br>`).join('')+'</p>'
+    : (r.pitch_info_html||'<p class="minor">no pitch info yet</p>');
+  const gbs=(r.guidebooks||[]).map(g=>`<li><b>${esc(g.title)}</b>${g.page?' · p.'+esc(g.page):''}${g.kind==='pdf'?' · PDF':''}
+      ${g.description?'<br><span>'+esc(g.description)+'</span>':''}</li>`).join('');
+  const refs=(r.references||[]).map(x=>`<li><a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.text)}</a></li>`).join('');
+  const wx=(r.climatology||[]).length?`<div class="wx">${r.climatology.map(m=>
+      `<i title="month ${m.month}: ${m.temp_high}°/${m.temp_low}° · ${m.rainy_days} rainy days"
+          style="height:${Math.max(4,Math.min(58,(m.temp_high||0)*1.8))}px"></i>`).join('')}</div>
+      <div class="minor">monthly high temp — hover for rain/lows</div>`:'<p class="minor">no climatology yet</p>';
+  let ov=document.getElementById('pv');
+  if(!ov){ov=document.createElement('div');ov.id='pv';ov.className='pvwrap';
+    ov.onclick=e=>{if(e.target===ov)ov.remove()};document.body.appendChild(ov);}
+  ov.innerHTML=`<div class="pv">
+    <button class="btn sm" style="float:right" onclick="document.getElementById('pv').remove()">✕ close</button>
+    <div class="minor" style="margin-bottom:10px">how this record reads as a climb page — edits land after a save</div>
+    <h1>${esc(r.name)}</h1>
+    <div class="pv-crag">${esc((r.path_tokens||[]).join(' · '))}</div>
+    ${r.intro_html||'<p class="minor">no intro yet</p>'}
+    <div class="pv-rings">
+      ${ring(r.original_grade,'grade')}${ring(r.length_m&&r.length_m+'m','length')}
+      ${ring(r.pitches_count,'pitches')}${ring(r.approach_time_min&&r.approach_time_min+'min','approach')}
+      ${ring(r.eff_aspect,'face')}${ring(r.eff_rock_code,'rock')}${ring(r.incline_code,'incline')}
+    </div>
+    <div>${hazChips}</div>
+    <h3>Approach &amp; Descent</h3>${r.approach_html||'<p class="minor">no approach yet</p>'}
+    <h3>Pitch by Pitch</h3>${pitches}
+    <h3>Guidebooks</h3>${gbs?'<ul>'+gbs+'</ul>':'<p class="minor">none</p>'}
+    <h3>Weather &amp; Conditions</h3>${wx}
+    <h3>References &amp; additional links</h3>${refs?'<ul>'+refs+'</ul>':'<p class="minor">none</p>'}
+  </div>`;
 }
 function dropTag(f,t){R.tags[f]=R.tags[f].filter(x=>x!==t);saveTags();renderCard()}
 function addTag(f,t){if(!t)return;R.tags[f]=[...(R.tags[f]||[]),t];saveTags();renderCard()}
@@ -386,9 +718,14 @@ function renderRail(){
   const mp=(r.refs||[]).find(x=>x.source_id==='multipitch');
   const links=[
     mp?`<a class="src" target="_blank" href="https://www.multi-pitch.com/">multi-pitch #${mp.external_id} ↗</a>`:'',
-    ...(r.refs||[]).filter(x=>x.source_id!=='multipitch'&&x.url).map(x=>`<a class="src" target="_blank" href="${x.url}">${x.source_id} ↗</a>`),
+    ...(r.refs||[]).filter(x=>x.source_id!=='multipitch'&&x.url).map(x=>
+      `<span class="srcwrap"><a class="src" target="_blank" href="${x.url}">${x.source_id} ↗</a><span class="srcx" onclick="delSource('${x.source_id}')" title="unlink this source">✕</span></span>`),
     `<a class="src" target="_blank" href="https://www.ukclimbing.com/logbook/search/?query=${name}">UKC search ↗</a>`,
     `<a class="src" target="_blank" href="https://www.google.com/search?q=${name}+${crag}+climb">Google ↗</a>`].join('');
+  const srcAdd=`<div class="srcadd">
+    <select id="srcSel">${SOURCES.filter(s=>s.id!=='multipitch'&&s.id!=='dev-fixtures').map(s=>`<option value="${s.id}">${s.id}</option>`).join('')}</select>
+    <input id="srcUrl" placeholder="paste this route's page URL" onkeydown="if(event.key==='Enter')addSource()">
+    <button class="btn sm" onclick="addSource()">+ link</button></div>`;
   const rec=r.receipt?`<div class="receipt">model <code>${r.receipt._prov?.model||'?'}</code> on <code>${r.receipt._prov?.date||'?'}</code> inferred:
       ${['features','character','protection','discipline'].filter(k=>r.receipt[k]).map(k=>`<br>· <b>${k}</b>: ${[].concat(r.receipt[k]).join(', ')}`).join('')}
       <br><span class="minor">accept = leave the chip; wrong = click it off</span></div>`
@@ -399,7 +736,7 @@ function renderRail(){
       <span class="ll">${(+pk.lat).toFixed(5)}, ${(+pk.lon).toFixed(5)}</span>
       <span class="x" onclick="R.parkings.splice(${i},1);saveParkings();renderRail()">✕</span></div>`).join('');
   $('rail').innerHTML=`
-    <div class="card"><h3>Sources</h3><div class="srcs">${links}</div></div>
+    <div class="card"><h3>Sources</h3><div class="srcs">${links}</div>${srcAdd}</div>
     <div class="card"><h3>AI tag receipt</h3>${rec}</div>
     <div class="card"><h3>Map — route pin + parking</h3>
       ${r.lat?'<div id="livemap"></div>':'<div class="minor">⚠ no route coordinates — fix before publish</div>'}
@@ -440,18 +777,20 @@ function saveParkings(){
 }
 
 // ── actions ─────────────────────────────
-async function publish(){
+async function statusFlip(call,msg){       // publish/quarantine: advance to the next route in place
   if(!R)return;
   commitFocus();
-  try{await api('/route/'+R.id+'/publish',{method:'POST'});toast('✓ published — tags now human');await loadQueue();}
-  catch(e){toast('⚠ '+e)}
+  const i=QUEUE.findIndex(x=>x.id===curId);
+  try{await api(call,{method:'POST'});toast(msg);}
+  catch(e){toast('⚠ '+e);return}
+  R=null;curId=null;
+  await Promise.all([loadQueue(),loadTree()]);
+  const next=QUEUE[Math.min(Math.max(i,0),QUEUE.length-1)];
+  if(next)openRoute(next.id);
+  else{$('main').innerHTML='<div class="card">all done here 🎉 — pick another place or status</div>';$('rail').innerHTML='';$('nexthint').textContent='';renderList();}
 }
-async function quarantine(){
-  if(!R)return;
-  commitFocus();
-  try{await api('/route/'+R.id+'/status/quarantined',{method:'POST'});toast('quarantined');await loadQueue();}
-  catch(e){toast('⚠ '+e)}
-}
+const publish=()=>R&&statusFlip('/route/'+R.id+'/publish','✓ published — tags now human');
+const quarantine=()=>R&&statusFlip('/route/'+R.id+'/status/quarantined','quarantined');
 async function fieldcheck(){
   if(!R)return;
   commitFocus();
@@ -466,7 +805,7 @@ async function exportCorpus(){
 // ── grid ─────────────────────────────
 function renderGrid(){
   $('gbody').innerHTML=QUEUE.map((r,i)=>`
-   <tr onclick="cur=${i};setView('q');openRoute(${r.id})" style="cursor:pointer">
+   <tr onclick="setView('q');openRoute(${r.id})" style="cursor:pointer">
     <td><input type="checkbox" data-id="${r.id}" onclick="event.stopPropagation();selCount()"></td>
     <td><b>${esc(r.name)}</b></td><td>${esc((r.path_tokens||[]).slice(2).join(' › ')||(r.path_tokens||[]).join(' › '))}</td>
     <td class="mono">${esc(r.original_grade)||'—'}</td><td class="mono">${r.length_m||''}</td><td class="mono">${r.pitches_count||''}</td>
@@ -503,7 +842,7 @@ async function renderTax(){
    <div class="card taxfam">
     <h2>${fam} <span class="minor">· ${rows.length} values</span></h2>
     <div class="purpose">${TAX_PURPOSE[fam]||''}</div>
-    ${rows.map(r=>`<div class="taxrow">
+    ${rows.map(r=>`<div class="taxrow" id="tax-${fam}-${esc(r.code)}">
        <span class="code">${esc(r.code)}${fam==='hazard'?` <span class="taxflags">${r.kind==='objective'?'⛰':''}${r.safety_critical?' <span class=safe>⚠evidence</span>':''}</span>`:''}</span>
        <input value="${esc(r.meaning??r.notes)}" placeholder="meaning — feeds the AI tagger"
          onchange="taxEdit('${fam}',decodeURIComponent('${encodeURIComponent(r.code)}'),'${fam==='rock'?'notes':'meaning'}',this.value)">
@@ -511,22 +850,38 @@ async function renderTax(){
        <span class="del">${r.usage?'':`<span onclick="taxDel('${fam}',decodeURIComponent('${encodeURIComponent(r.code)}'))" title="remove (unused)">✕</span>`}</span>
      </div>`).join('')}
     <div class="taxadd">
-      <input id="nc-${fam}" placeholder="new code (kebab-case)">
-      <input id="nm-${fam}" placeholder="meaning — required, one line, the AI reads this">
+      <input id="nc-${fam}" placeholder="new code — e.g. ${TAX_EG[fam]||'one-word'}"
+        onkeydown="if(event.key==='Enter')taxAdd('${fam}')">
+      <input id="nm-${fam}" placeholder="meaning — one plain sentence; the AI tagger reads it"
+        onkeydown="if(event.key==='Enter')taxAdd('${fam}')">
       <span>${fam==='hazard'?`<select id="nk-${fam}"><option value="route">route</option><option value="objective">objective</option></select>
         <label class="minor"><input type="checkbox" id="ns-${fam}"> safety-critical</label>`:''}
-        <button class="btn sm" onclick="taxAdd('${fam}')">+ add to ${fam}</button></span>
+        <button class="btn sm primary" onclick="taxAdd('${fam}')">+ add</button></span>
     </div>
+    <div class="minor" style="margin-top:4px">type both fields, press <kbd>Enter</kbd> — the new value appears highlighted and is instantly available in the route editor's “+ add” menus</div>
    </div>`).join('')+
    `<div class="minor" style="margin:6px 4px 40px">Every change writes Postgres, then regenerates <code>db/sql/105_taxonomy_extensions.sql</code> + <code>knowledge/data/taxonomy-values.json</code> — the queue's “+ add” dropdowns and the AI tagger (<code>ai_tag.py</code>) read the live set. Semantics &amp; tagging rules: <a href="https://uncinimichel.github.io/climbing-agent/knowledge/data/taxonomy.html" target="_blank">taxonomy.md</a>. Values in use can't be deleted.</div>`;
 }
+const TAX_EG={discipline:'ski-mountaineering',feature:'chickenheads',character:'juggy',
+  hazard:'nesting-birds',rock:'serpentinite',sun_window:'evening',protection:'PG-R'};
 async function taxAdd(fam){
-  const body={code:$('nc-'+fam).value.trim(),meaning:$('nm-'+fam).value.trim()};
-  if(fam==='rock'){body.notes=body.meaning;delete body.meaning}
+  const code=$('nc-'+fam).value.trim(), meaning=$('nm-'+fam).value.trim();
+  if(!/^[A-Za-z][A-Za-z0-9-]{0,39}$/.test(code)){
+    toast(`⚠ code must be one word — letters, digits, dashes (e.g. ${TAX_EG[fam]||'my-code'})`);$('nc-'+fam).focus();return}
+  if(!meaning){toast('⚠ give it a one-line meaning — the AI tagger reads it');$('nm-'+fam).focus();return}
+  const body={code,meaning};
+  if(fam==='rock'){body.notes=meaning;delete body.meaning}
   if(fam==='hazard'){body.kind=$('nk-'+fam).value;body.safety_critical=$('ns-'+fam).checked}
-  try{await api('/taxonomy/'+fam,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-    toast('added '+body.code+' to '+fam);ENUMS=await api('/enums');renderTax()}
-  catch(e){toast('⚠ '+e)}
+  try{
+    await api('/taxonomy/'+fam,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    ENUMS=await api('/enums');
+    const y=window.scrollY;
+    await renderTax();
+    window.scrollTo(0,y);                       // don't lose your place in the long page
+    const row=document.getElementById(`tax-${fam}-${code}`);
+    if(row){row.classList.add('flash');row.scrollIntoView({block:'center',behavior:'smooth'})}
+    toast(`added ${code} to ${fam} ✓`);
+  }catch(e){toast('⚠ '+e)}
 }
 async function taxEdit(fam,code,field,val){
   try{await api(`/taxonomy/${fam}/${encodeURIComponent(code)}`,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({[field]:val||null})});toast('saved '+code)}
@@ -540,20 +895,75 @@ function setView(v){
   $('queueview').style.display=v==='q'?'grid':'none';
   $('gridview').style.display=v==='g'?'block':'none';
   $('taxview').style.display=v==='t'?'block':'none';
-  document.querySelector('.actions').style.display=v==='t'?'none':'block';
-  $('vq').classList.toggle('on',v==='q');$('vg').classList.toggle('on',v==='g');$('vt').classList.toggle('on',v==='t');
+  $('mapview').style.display=v==='m'?'block':'none';
+  $('drillbar').style.display=(v==='q'||v==='g'||v==='m')?'flex':'none';
+  document.querySelector('.actions').style.display=(v==='t'||v==='m')?'none':'block';
+  ['q','g','m','t'].forEach(x=>$('v'+x).classList.toggle('on',v===x));
   if(v==='t')renderTax();
+  if(v==='m')initBigMap();
   if(v==='q'&&R)openRoute(R.id);  // re-render with possibly grown ENUMS
+}
+
+// ── the map: progress rings per area, route dots when focused ──────────────
+let BIGMAP=null, MAPLAYER=null;
+function initBigMap(){
+  if(!BIGMAP){
+    BIGMAP=L.map('bigmap').setView([47,5],5);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OSM'}).addTo(BIGMAP);
+  }
+  setTimeout(()=>BIGMAP.invalidateSize(),60);
+  updateMapLayer();
+}
+function updateMapLayer(){
+  if(!BIGMAP)return;
+  if(MAPLAYER){MAPLAYER.remove();MAPLAYER=null}
+  MAPLAYER=L.layerGroup().addTo(BIGMAP);
+  const pts=drillFilter(TREE).filter(p=>p.lat!=null), lvl=DRILL.length, bounds=[];
+  const col={publish:'#5E6B14',draft:'#C08A1E',quarantined:'#8C3B2E'};
+  if(lvl>=2){                                   // focused on a crag → individual routes
+    pts.forEach(p=>{
+      L.circleMarker([p.lat,p.lon],{radius:7,weight:2,color:col[p.status]||'#666',
+          fillColor:col[p.status]||'#666',fillOpacity:p.approx?0.15:0.8})
+        .addTo(MAPLAYER)
+        .bindPopup(`<b>${esc(p.name)}</b> ${esc(p.original_grade)||''}<br>
+          <span style="font-size:11px">${esc((p.path_tokens||[]).join(' › '))} · ${p.status}${p.approx?' · pin borrowed from the crag':''}</span><br>
+          <a href="#" onclick="jumpTo(${p.id},'${p.status}');return false">✏ open in queue</a>`);
+      bounds.push([p.lat,p.lon]);
+    });
+  } else {                                      // one progress ring per next level down
+    const groups={};
+    pts.forEach(p=>{const t=tok(p,lvl);if(!t)return;(groups[t]=groups[t]||[]).push(p)});
+    Object.entries(groups).forEach(([t,g])=>{
+      const lat=g.reduce((s,p)=>s+p.lat,0)/g.length, lon=g.reduce((s,p)=>s+p.lon,0)/g.length;
+      const n=g.length, pub=g.filter(p=>p.status==='publish').length;
+      const size=Math.round(Math.max(36,Math.min(64,20+Math.sqrt(n)*6)));
+      const icon=L.divIcon({className:'',iconSize:[size,size],
+        html:`<div class="ring-ico" style="width:${size}px;height:${size}px;
+          background:conic-gradient(#5E6B14 ${Math.round(360*pub/n)}deg,#C08A1E 0)"><span>${n}</span></div>`});
+      L.marker([lat,lon],{icon}).addTo(MAPLAYER)
+        .on('click',()=>{DRILL.push(t);refreshDrill()})
+        .bindTooltip(`${t} — ${pub}/${n} curated · click to drill in`);
+      bounds.push([lat,lon]);
+    });
+  }
+  if(bounds.length)BIGMAP.fitBounds(bounds,{padding:[40,40],maxZoom:lvl>=2?13:7});
+}
+async function jumpTo(id,status){
+  STATUS=status;syncSeg();
+  $('q').value='';
+  await loadQueue(id);
+  setView('q');
 }
 document.addEventListener('keydown',e=>{
   if(!(e.metaKey||e.ctrlKey))return;
+  const typing=['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName);
+  if(typing&&(e.key==='ArrowRight'||e.key==='ArrowLeft'))return;  // ⌘←/→ = cursor moves while editing
   if(e.key==='Enter'){e.preventDefault();publish()}
   if(e.key==='ArrowRight'){e.preventDefault();move(1)}
   if(e.key==='ArrowLeft'){e.preventDefault();move(-1)}
   if(e.key.toLowerCase()==='f'){e.preventDefault();fieldcheck()}
 });
 $('q').addEventListener('input',()=>{clearTimeout(saveTimers._q);saveTimers._q=setTimeout(()=>loadQueue(),350)});
-$('statusFilter').onchange=()=>{cur=0;loadQueue()};
 boot();
 </script>
 </html>

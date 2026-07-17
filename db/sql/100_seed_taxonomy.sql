@@ -87,11 +87,12 @@ INSERT INTO character (code, meaning) VALUES
     ('fluttery',  'Bold — big fall potential and scary run-outs (Rockfax "h").');
 
 INSERT INTO incline (code, sort_order) VALUES
-    ('Slab',                    1),
-    ('Slab & Vertical',         2),
-    ('Vertical',                3),
-    ('Vertical & Overhanging',  4),
-    ('Overhanging',             5);
+    ('Slab',                            1),
+    ('Slab & Vertical',                 2),
+    ('Vertical',                        3),
+    ('Slab, Vertical & Overhanging',    4),  -- full-range composite (multi-pitch.com)
+    ('Vertical & Overhanging',          5),
+    ('Overhanging',                     6);
 
 INSERT INTO sun_window (code) VALUES
     ('morning'), ('afternoon'), ('all-day'), ('shade');

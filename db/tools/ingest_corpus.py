@@ -58,7 +58,8 @@ PITCH_RE = re.compile(
 )
 TAG_STRIP = re.compile(r"<[^>]+>")
 
-INCLINES = {"Slab", "Slab & Vertical", "Vertical", "Vertical & Overhanging", "Overhanging"}
+INCLINES = {"Slab", "Slab & Vertical", "Vertical", "Slab, Vertical & Overhanging",
+            "Vertical & Overhanging", "Overhanging"}
 
 
 def canon_incline(v: str | None) -> str | None:
