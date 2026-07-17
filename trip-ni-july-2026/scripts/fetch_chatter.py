@@ -29,6 +29,7 @@ TOP_N = 10
 REFRESH_DAYS = 6.5          # weekly cadence, with slack for the daily cron
 MIN_QUOTA_LEFT = 180        # never starve the flight monitor
 MAX_ITEMS_PER_VENUE = 8
+MAX_SOCIAL_PER_VENUE = 3   # login-walled, undated, prone to snippet bleed
 WINDOW = "qdr:w2"           # past two weeks
 
 UK_IE = {"england", "wales", "scotland", "northern ireland", "n. ireland", "ireland", "uk"}
@@ -54,6 +55,40 @@ FORUMS_SITES = "(site:ukclimbing.com OR site:reddit.com OR site:ukbouldering.com
 
 SOCIAL_DOMAINS = ("instagram.", "facebook.", "tiktok.", "youtube.", "youtu.be", "x.com", "twitter.")
 FORUM_DOMAINS = ("ukclimbing.", "reddit.", "ukbouldering.", "camptocamp.", "forum")
+
+# --- relevance filters, from the 2026-07-17 independent audit of live items ---
+# (80 items audited by 3 agents: 33% relevant, 43% marginal, 24% wrong)
+
+# Tourism aggregators / shops / known homonym domains: 0 RELEVANT across every
+# audited venue. threads.com matched via an embedded video transcript.
+BLOCK_DOMAINS = {
+    "trip.com", "getyourguide.com", "komoot.com", "alltrails.com",
+    "tripadvisor.com", "mountainproject.com", "hooperlundy.com",
+    "climbfinder.com", "bananafingers.com", "epictv.com", "8a.nu",
+    "threads.com", "bocaexpresstravel.com",
+    # generic kids-attractions / indoor-gym / running-event sites (round-2 audit)
+    "dayoutwiththekids.co.uk", "rise-climbing.com", "riseandsummit.co.uk",
+    "born2runevents.com",
+}
+BLOCK_SUFFIXES = (".sch.uk",)  # school websites
+# ukclimbing.com: forums + news carried every real UKC hit; logbook DB pages,
+# personal archives (showlog.php) and profiles carried none and surface with
+# crawl dates masquerading as fresh ("1979 ascents, 9 days ago").
+UKC_ALLOWED_PATHS = ("/forums/", "/news/")
+# Trusted climbing sources: bypass the keyword filter (e.g. a federation's
+# park-water notice never says "climbing") and get a ranking boost.
+GOOD_DOMAINS = {
+    "services.thebmc.co.uk", "thebmc.co.uk", "camptocamp.org", "gulliver.it",
+    "ukbouldering.com", "fempa.net", "fedme.es", "fdmcm.com",
+    "planetmountain.com", "mountaineering.ie",
+}
+# Anything else must mention the sport somewhere in title+snippet (multilingual).
+CLIMB_WORDS = ("climb", "boulder", "crag", "trad", "belay", "pitch", "topo",
+               "escalada", "escalade", "grimpe", "arrampicata", "penjanje",
+               "kletter", "klatring", "alpinis", "mountaineer", "refuge", "refugio")
+# Homonym venues get a disambiguator appended to the broad query
+# ("Lundy" alone → a Californian canyon and a US law firm).
+SEARCH_HINTS = {"Lundy": "island"}
 
 # Google localizes relative dates per hl= ("hace 2 días", "il y a 8 jours", ...).
 REL_DATE = re.compile(
@@ -133,7 +168,8 @@ def search_name(short_name: str) -> str:
 def queries_for(short_name: str, country: str):
     """Yield (tag, query, params) per the shoot-out recipe."""
     name = search_name(short_name)
-    yield ("broad", f'"{name}" climbing', UK_PARAMS)
+    hint = SEARCH_HINTS.get(name, "")
+    yield ("broad", f'"{name}" climbing{" " + hint if hint else ""}', UK_PARAMS)
     c = (country or "").strip().lower()
     if c in UK_IE or not c:
         yield ("forums", f'"{name}" climbing {FORUMS_SITES}', UK_PARAMS)
@@ -174,6 +210,34 @@ def classify(domain: str) -> str:
     return "web"
 
 
+def keep_item(domain: str, link: str, title: str, snippet: str, place: str) -> bool:
+    d = domain.lower()
+    if d in BLOCK_DOMAINS or d.removeprefix("www.") in BLOCK_DOMAINS:
+        return False
+    if d.endswith(BLOCK_SUFFIXES):
+        return False
+    if "ukclimbing." in d:
+        path = urllib.parse.urlparse(link).path
+        return any(p in path for p in UKC_ALLOWED_PATHS)
+    if d in GOOD_DOMAINS or any(d.endswith("." + g) for g in GOOD_DOMAINS):
+        return True
+    text = _norm(f"{title} {snippet}")
+    # Social/web snippets bleed recommended content from other places (audit:
+    # a Mournes post surfacing under Bosigran) — the place name itself must
+    # appear in the visible text, plus a climbing word.
+    if _norm(place) not in text:
+        return False
+    return any(w in text for w in CLIMB_WORDS)
+
+
+def rank_key(item: dict):
+    """Trusted sources and forums first, then freshness; undated last."""
+    d = item["domain"].lower()
+    trusted = d in GOOD_DOMAINS or any(d.endswith("." + g) for g in GOOD_DOMAINS)
+    boost = 0 if (trusted or item["src"] == "forum") else 1
+    return (boost, item["days_ago"] is None, item["days_ago"] or 0)
+
+
 def fetch_venue(key: str, short_name: str, country: str):
     items, inputs, seen = [], [], set()
     for tag, q, params in queries_for(short_name, country):
@@ -189,20 +253,30 @@ def fetch_venue(key: str, short_name: str, country: str):
                 continue
             seen.add(link)
             domain = urllib.parse.urlparse(link).netloc.replace("www.", "")
+            title = (r.get("title") or "")[:140]
+            snippet = (r.get("snippet") or "")[:220]
+            if not keep_item(domain, link, title, snippet, search_name(short_name)):
+                continue
             items.append({
-                "title": (r.get("title") or "")[:140],
+                "title": title,
                 "link": link,
                 "domain": domain,
                 "src": classify(domain),
                 "date": r.get("date"),
                 "days_ago": days_ago(r.get("date")),
-                "snippet": (r.get("snippet") or "")[:220],
+                "snippet": snippet,
                 "via": tag,
             })
         time.sleep(1.5)
-    # freshest first (undated results are still inside the 2-week window: last)
-    items.sort(key=lambda x: (x["days_ago"] is None, x["days_ago"] or 0))
-    return items[:MAX_ITEMS_PER_VENUE], inputs
+    items.sort(key=rank_key)
+    kept, social_n = [], 0
+    for i in items:
+        if i["src"] == "social":
+            if social_n >= MAX_SOCIAL_PER_VENUE:
+                continue
+            social_n += 1
+        kept.append(i)
+    return kept[:MAX_ITEMS_PER_VENUE], inputs
 
 
 def main():
@@ -272,6 +346,19 @@ def main():
         }
         print(f"chatter: {name}: {len(items)} items "
               f"({sum(1 for i in items if i['days_ago'] is not None)} dated)")
+
+    # Cross-venue dedupe: the audit found index pages (UKC personal logbooks,
+    # aggregator guides) surfacing under 2-3 venues at once — a reliable sign
+    # the page is about neither. Drop any link that appears in >1 venue.
+    link_count = {}
+    for ent in venues_cache.values():
+        for i in ent.get("items", []):
+            link_count[i["link"]] = link_count.get(i["link"], 0) + 1
+    dupes = {l for l, n in link_count.items() if n > 1}
+    if dupes:
+        for ent in venues_cache.values():
+            ent["items"] = [i for i in ent.get("items", []) if i["link"] not in dupes]
+        print(f"chatter: dropped {len(dupes)} cross-venue duplicate link(s)")
 
     cache = {"generated": now.isoformat(timespec="seconds"),
              "window": "past 2 weeks (tbs=qdr:w2)",
