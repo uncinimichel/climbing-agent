@@ -978,6 +978,17 @@
       "month_usage": 803,
       "hour": 2,
       "hour_limit": 200
+    },
+    {
+      "at": "2026-07-17 13:17 UTC",
+      "ok": true,
+      "plan": "Starter Plan",
+      "per_month": 1000,
+      "left": 172,
+      "total_left": 172,
+      "month_usage": 828,
+      "hour": 24,
+      "hour_limit": 200
     }
   ]
 }
