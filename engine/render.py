@@ -909,12 +909,14 @@ a.sample:hover{color:var(--ink);border-color:var(--muted)}
 .srcchip{font-family:var(--mono);font-size:9px;letter-spacing:.07em;text-transform:uppercase;padding:1px 6px;border-radius:4px;border:1px solid var(--line2);color:var(--muted);white-space:nowrap}
 .srcchip.src-forum{color:var(--rain);border-color:rgba(57,135,229,.4)}
 .srcchip.src-social{color:var(--temp);border-color:rgba(217,89,38,.4)}
-/* Deep-linkable sections: #<venue-slug>/<section> — § appears on hover */
+/* Deep-linkable sections: #<venue-slug>/<section> — 🔗 in the left gutter
+   of the section title, GitHub-style, revealed on hover */
 .deep{position:relative}
-.deep .secanchor{position:absolute;top:2px;right:0;font-family:var(--mono);font-size:12px;color:var(--faint);text-decoration:none;opacity:0;transition:opacity .15s;padding:2px 6px}
-.deep:hover .secanchor,.deep .secanchor:focus-visible{opacity:1}
-.deep .secanchor:hover{color:var(--ink)}
-@media (hover:none){.deep .secanchor{opacity:.45}}
+.deep .secanchor{position:absolute;left:8px;top:20px;font-size:11px;line-height:1;text-decoration:none;opacity:0;transition:opacity .15s;padding:3px;filter:grayscale(1) brightness(1.4)}
+.deep:hover .secanchor,.deep .secanchor:focus-visible{opacity:.85}
+.deep .secanchor:hover{opacity:1;filter:none}
+@media (hover:none){.deep .secanchor{opacity:.5}}
+@media (max-width:720px){.deep .secanchor{left:0;top:16px}}
 .xlinks{display:flex;flex-direction:column;gap:8px;max-width:640px}
 a.xlink{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;text-decoration:none;border:1px solid var(--line2);border-radius:9px;padding:9px 13px;background:var(--card)}
 a.xlink:hover{border-color:var(--muted)}
@@ -1858,7 +1860,7 @@ function chatterHtml(v){
 // (#<slug>/<section> routes to it) and a hover § link for sharing.
 function secWrap(sec,v,inner){
   if(!inner)return '';
-  return '<div class="deep" id="s-'+sec+'"><a class="secanchor" href="#'+slugify(v.shortName)+'/'+sec+'" title="Link to this section">§</a>'+inner+'</div>';
+  return '<div class="deep" id="s-'+sec+'"><a class="secanchor" href="#'+slugify(v.shortName)+'/'+sec+'" title="Link to this section">🔗</a>'+inner+'</div>';
 }
 function detailHtml(v){
   var chips=(v.facts||[]).map(function(f){
@@ -2143,6 +2145,8 @@ footer{{margin-top:34px;color:var(--faint);font-size:12px;border-top:1px solid v
 .areas a{{color:var(--muted);text-decoration:none;white-space:nowrap}}
 .areas a:hover{{color:var(--ink);text-decoration:underline}}
 .areas b{{color:var(--ink);white-space:nowrap}}
+.hanchor{{font-size:12px;text-decoration:none;margin-right:7px;opacity:.35;filter:grayscale(1) brightness(1.4);vertical-align:1px}}
+h2:hover .hanchor,.hanchor:focus-visible{{opacity:1;filter:none}}
 .overheard{{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}}
 .oh-card{{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:13px 15px 11px;position:relative;display:flex;flex-direction:column;gap:8px}}
 .oh-card:before{{content:"“";font-family:var(--disp);font-weight:800;font-size:34px;line-height:0;color:var(--line2);position:absolute;top:20px;left:12px}}
@@ -2169,16 +2173,16 @@ footer{{margin-top:34px;color:var(--faint);font-size:12px;border-top:1px solid v
 <p class="meta">{_esc(v.get('country',''))} · {_esc(v.get('rock',''))} · {_esc(v.get('style',''))}{(' · grades ' + _esc(v['grades'])) if v.get('grades') else ''}{' · tidal access — plan around low water' if v.get('tidal') else ''}</p>
 {f'<p>{_esc(why)}</p>' if why else ''}
 {venue_tag_section(v, tag_spec)}
-<h2 id="weather">Weather — typical {_esc(period)} vs current outlook</h2>
+<h2 id="weather"><a class="hanchor" href="#weather" title="Link to this section">🔗</a>Weather — typical {_esc(period)} vs current outlook</h2>
 <div class="twrap"><table>
 <tr><th>Day</th><th>Sky</th><th>Outlook high</th><th>Typical high</th><th>Rain mm</th><th>Wind km/h</th><th>Sunrise</th><th>Sunset</th><th>Daylight</th><th>UV</th>{'<th>Low water</th>' if has_tide else ''}</tr>
 {''.join(rows)}
 </table></div>
 <p class="meta">Updated {_esc(trip.get('updated',''))} · typical = 2021–2024 average · outlook = 45-day ensemble, replaced by the live 16-day forecast as the window approaches.</p>
-{f'<h2 id="chatter">Overheard — recent chatter</h2><div class="overheard">{chat_cards}</div><p class="src">Found via Google search (past 2 weeks), updated {_esc(chat.get("fetched", ""))} — not verified; conditions &amp; access can change. Check before you travel.</p>' if chat_cards else ''}
-{f'<h2 id="climbs">Classic routes</h2><ul>{climbs}</ul>' if climbs else ''}
+{f'<h2 id="chatter"><a class="hanchor" href="#chatter" title="Link to this section">🔗</a>Overheard — recent chatter</h2><div class="overheard">{chat_cards}</div><p class="src">Found via Google search (past 2 weeks), updated {_esc(chat.get("fetched", ""))} — not verified; conditions &amp; access can change. Check before you travel.</p>' if chat_cards else ''}
+{f'<h2 id="climbs"><a class="hanchor" href="#climbs" title="Link to this section">🔗</a>Classic routes</h2><ul>{climbs}</ul>' if climbs else ''}
 {f'<h2>More climbing &amp; guidebook resources</h2><ul>{extras}</ul>' if extras else ''}
-{f'<h2 id="travel">Getting there</h2><p>{_esc(" · ".join(fl))}</p>' if fl else ''}
+{f'<h2 id="travel"><a class="hanchor" href="#travel" title="Link to this section">🔗</a>Getting there</h2><p>{_esc(" · ".join(fl))}</p>' if fl else ''}
 <a class="cta" href="../#{slug}">Open {_esc(v.get('shortName',name))} in the live planner →</a>
 <footer>{all_areas_nav(v, all_venues)}Part of the <a href="{PAGES_BASE}">multi-pitch climbing trip planner</a> — 40+ European venues ranked daily by weather.
 Data: <a href="https://open-meteo.com/" rel="noopener">Open-Meteo</a> · routes: <a href="{SITE_URL}" rel="noopener">multi-pitch.com</a>.</footer>
