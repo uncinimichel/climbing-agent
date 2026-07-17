@@ -17,10 +17,12 @@ from aws_cdk import aws_ec2 as ec2
 from aws_cdk import aws_rds as rds
 from constructs import Construct
 
-# 16.13 = the newest PG16 in eu-west-2 (checked 16 Jul 2026; 16.3+ needed for
-# scale-to-zero). Major pinned to 16 to match the local Colima postgis:16 DB.
+# 18.3 = the newest Aurora PostgreSQL in eu-west-2 (checked 17 Jul 2026;
+# ServerlessV2FeaturesSupport.MinCapacity=0 verified, so scale-to-zero — the
+# ~£0-idle property — survives). Major pinned in LOCKSTEP with the local
+# Colima postgis:18 DB: keep the two majors matched when upgrading either.
 ENGINE = rds.DatabaseClusterEngine.aurora_postgres(
-    version=rds.AuroraPostgresEngineVersion.of("16.13", "16"))
+    version=rds.AuroraPostgresEngineVersion.of("18.3", "18"))
 
 
 class CorpusDbStack(cdk.Stack):

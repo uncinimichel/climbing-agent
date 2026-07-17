@@ -34,7 +34,16 @@ export PATH="$PWD/.venv/bin:$PATH"
 IP=$(curl -s https://checkip.amazonaws.com)
 echo "== allowing Postgres access from $IP only"
 
-npx --yes aws-cdk@2 bootstrap "aws://$ACCOUNT/$REGION"
+# bootstrap with the SCOPED CloudFormation execution policy — never the
+# default AdministratorAccess (fixed 17 Jul 2026; omitting the flag on a
+# re-bootstrap would silently revert the executor to admin)
+EXEC_POLICY="arn:aws:iam::$ACCOUNT:policy/ClimbingAgentCdkExec"
+aws iam get-policy --policy-arn "$EXEC_POLICY" >/dev/null 2>&1 || \
+  aws iam create-policy --policy-name ClimbingAgentCdkExec \
+    --policy-document "file://$(dirname "$0")/cdk-exec-policy.json" \
+    --description "Scoped CloudFormation execution for climbing-agent CDK stacks" >/dev/null
+npx --yes aws-cdk@2 bootstrap "aws://$ACCOUNT/$REGION" \
+  --cloudformation-execution-policies "$EXEC_POLICY"
 npx --yes aws-cdk@2 deploy ClimbingAgentCorpusDb \
     -c "corpusDbAllowedCidr=$IP/32" \
     --require-approval never --outputs-file corpus-db-outputs.json

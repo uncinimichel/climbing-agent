@@ -35,7 +35,7 @@ Notes for a fresh clone:
 
 ```bash
 colima start && cd db
-docker-compose up -d db       # postgis/postgis:16-3.4; first boot auto-applies sql/
+docker-compose up -d db       # postgis/postgis:18-3.6; first boot auto-applies sql/
 ./smoke.sh                    # end-to-end smoke test (rolls back, leaves no data)
 docker exec -it climbing-db psql -U climbing   # interactive psql
 ../agent/.venv/bin/uvicorn curate:app --port 8890   # Studio from the host venv (from db/tools)
