@@ -909,6 +909,12 @@ a.sample:hover{color:var(--ink);border-color:var(--muted)}
 .srcchip{font-family:var(--mono);font-size:9px;letter-spacing:.07em;text-transform:uppercase;padding:1px 6px;border-radius:4px;border:1px solid var(--line2);color:var(--muted);white-space:nowrap}
 .srcchip.src-forum{color:var(--rain);border-color:rgba(57,135,229,.4)}
 .srcchip.src-social{color:var(--temp);border-color:rgba(217,89,38,.4)}
+/* Deep-linkable sections: #<venue-slug>/<section> — § appears on hover */
+.deep{position:relative}
+.deep .secanchor{position:absolute;top:2px;right:0;font-family:var(--mono);font-size:12px;color:var(--faint);text-decoration:none;opacity:0;transition:opacity .15s;padding:2px 6px}
+.deep:hover .secanchor,.deep .secanchor:focus-visible{opacity:1}
+.deep .secanchor:hover{color:var(--ink)}
+@media (hover:none){.deep .secanchor{opacity:.45}}
 .xlinks{display:flex;flex-direction:column;gap:8px;max-width:640px}
 a.xlink{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;text-decoration:none;border:1px solid var(--line2);border-radius:9px;padding:9px 13px;background:var(--card)}
 a.xlink:hover{border-color:var(--muted)}
@@ -1848,6 +1854,12 @@ function chatterHtml(v){
     +'<div class="xnote" style="margin-top:10px">⚠ found via Google search (past 2 weeks), not verified — conditions &amp; access can change; check before you travel.</div></div>';
 }
 
+// Deep-linkable section wrapper: gives each pane section a stable id
+// (#<slug>/<section> routes to it) and a hover § link for sharing.
+function secWrap(sec,v,inner){
+  if(!inner)return '';
+  return '<div class="deep" id="s-'+sec+'"><a class="secanchor" href="#'+slugify(v.shortName)+'/'+sec+'" title="Link to this section">§</a>'+inner+'</div>';
+}
 function detailHtml(v){
   var chips=(v.facts||[]).map(function(f){
     return '<div class="chip"><div class="chip-l">'+esc(f.lbl)+'</div><div class="chip-v">'+esc(f.val)+'</div><div class="chip-s">'+esc(f.sub)+'</div></div>';
@@ -1859,16 +1871,16 @@ function detailHtml(v){
     :(hl?'':'<div class="empty">multi-pitch.com has not indexed routes here yet — <a class="lk" target="_blank" rel="noopener" href="'+safeUrl(v.mpMap)+'">browse the map ↗</a></div>');
   return bandHtml(v)
     +tagsHtml(v)
-    +wxHtml(v)
+    +secWrap('weather',v,wxHtml(v))
     +hl
-    +verdictHtml(v)
-    +'<div class="sec"><div class="eyebrow">Getting there</div><div class="fgrid">'
-      +(D.trip.travellers||[]).map(function(t){return flightCard(t.name,t.from,v.flights&&v.flights[t.key])}).join('')+'</div></div>'
-    +chatterHtml(v)
-    +((climbs)?'<div class="sec"><div class="sec-hd"><div class="eyebrow">'+(hl?'More climbs':'Climbs')+' nearby · from multi-pitch.com</div>'
+    +secWrap('verdict',v,verdictHtml(v))
+    +secWrap('travel',v,'<div class="sec"><div class="eyebrow">Getting there</div><div class="fgrid">'
+      +(D.trip.travellers||[]).map(function(t){return flightCard(t.name,t.from,v.flights&&v.flights[t.key])}).join('')+'</div></div>')
+    +secWrap('chatter',v,chatterHtml(v))
+    +secWrap('climbs',v,(climbs)?'<div class="sec"><div class="sec-hd"><div class="eyebrow">'+(hl?'More climbs':'Climbs')+' nearby · from multi-pitch.com</div>'
       +(safeUrl(v.mpMap)?'<a class="lk sm" target="_blank" rel="noopener" href="'+safeUrl(v.mpMap)+'">Browse the map ↗</a>':'')+'</div>'+climbs+'</div>':'')
     +extraClimbingHtml(v)
-    +staysHtml(v)
+    +secWrap('stays',v,staysHtml(v))
     +'<div class="sec" style="display:flex;gap:8px;flex-wrap:wrap">'
       +(safeUrl(v.maps)?'<a class="tl" target="_blank" rel="noopener" href="'+safeUrl(v.maps)+'">📍 Google Maps</a>':'')
       +(safeUrl(v.weather)?'<a class="tl" target="_blank" rel="noopener" href="'+safeUrl(v.weather)+'">Detailed forecast — Windy ↗</a>':'')
@@ -1901,11 +1913,23 @@ function sel(i){
   if(_booted)try{history.replaceState(null,'','#'+slugify(V[i].shortName));}catch(e){}
   if(_booted&&window.innerWidth<900)document.getElementById('detail').scrollIntoView({behavior:'smooth',block:'start'});
 }
-var _h=location.hash.replace('#',''),_i0=0;
-if(_h)V.forEach(function(v,i){if(slugify(v.shortName)===_h)_i0=i;});
+// Hash routes: #<venue-slug> or #<venue-slug>/<section> (weather, verdict,
+// travel, chatter, climbs, stays) — both shareable.
+function parseHash(){var p=location.hash.replace('#','').split('/');return {slug:p[0]||'',sec:p[1]||''};}
+function gotoSec(sec){if(!sec)return;var el=document.getElementById('s-'+sec);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});}
+var _p0=parseHash(),_i0=0;
+if(_p0.slug)V.forEach(function(v,i){if(slugify(v.shortName)===_p0.slug)_i0=i;});
 sel(_i0);
 _booted=true;
-window.addEventListener('hashchange',function(){var h=location.hash.replace('#','');V.forEach(function(v,i){if(slugify(v.shortName)===h&&i!==_cur)sel(i);});});
+if(_p0.sec)setTimeout(function(){gotoSec(_p0.sec)},80);
+window.addEventListener('hashchange',function(){
+  var p=parseHash();
+  V.forEach(function(v,i){if(slugify(v.shortName)===p.slug&&i!==_cur)sel(i);});
+  if(p.sec){
+    try{history.replaceState(null,'','#'+p.slug+'/'+p.sec);}catch(e){}
+    setTimeout(function(){gotoSec(p.sec)},60);
+  }
+});
 """
 
 
@@ -2145,16 +2169,16 @@ footer{{margin-top:34px;color:var(--faint);font-size:12px;border-top:1px solid v
 <p class="meta">{_esc(v.get('country',''))} · {_esc(v.get('rock',''))} · {_esc(v.get('style',''))}{(' · grades ' + _esc(v['grades'])) if v.get('grades') else ''}{' · tidal access — plan around low water' if v.get('tidal') else ''}</p>
 {f'<p>{_esc(why)}</p>' if why else ''}
 {venue_tag_section(v, tag_spec)}
-<h2>Weather — typical {_esc(period)} vs current outlook</h2>
+<h2 id="weather">Weather — typical {_esc(period)} vs current outlook</h2>
 <div class="twrap"><table>
 <tr><th>Day</th><th>Sky</th><th>Outlook high</th><th>Typical high</th><th>Rain mm</th><th>Wind km/h</th><th>Sunrise</th><th>Sunset</th><th>Daylight</th><th>UV</th>{'<th>Low water</th>' if has_tide else ''}</tr>
 {''.join(rows)}
 </table></div>
 <p class="meta">Updated {_esc(trip.get('updated',''))} · typical = 2021–2024 average · outlook = 45-day ensemble, replaced by the live 16-day forecast as the window approaches.</p>
-{f'<h2>Overheard — recent chatter</h2><div class="overheard">{chat_cards}</div><p class="src">Found via Google search (past 2 weeks), updated {_esc(chat.get("fetched", ""))} — not verified; conditions &amp; access can change. Check before you travel.</p>' if chat_cards else ''}
-{f'<h2>Classic routes</h2><ul>{climbs}</ul>' if climbs else ''}
+{f'<h2 id="chatter">Overheard — recent chatter</h2><div class="overheard">{chat_cards}</div><p class="src">Found via Google search (past 2 weeks), updated {_esc(chat.get("fetched", ""))} — not verified; conditions &amp; access can change. Check before you travel.</p>' if chat_cards else ''}
+{f'<h2 id="climbs">Classic routes</h2><ul>{climbs}</ul>' if climbs else ''}
 {f'<h2>More climbing &amp; guidebook resources</h2><ul>{extras}</ul>' if extras else ''}
-{f'<h2>Getting there</h2><p>{_esc(" · ".join(fl))}</p>' if fl else ''}
+{f'<h2 id="travel">Getting there</h2><p>{_esc(" · ".join(fl))}</p>' if fl else ''}
 <a class="cta" href="../#{slug}">Open {_esc(v.get('shortName',name))} in the live planner →</a>
 <footer>{all_areas_nav(v, all_venues)}Part of the <a href="{PAGES_BASE}">multi-pitch climbing trip planner</a> — 40+ European venues ranked daily by weather.
 Data: <a href="https://open-meteo.com/" rel="noopener">Open-Meteo</a> · routes: <a href="{SITE_URL}" rel="noopener">multi-pitch.com</a>.</footer>
