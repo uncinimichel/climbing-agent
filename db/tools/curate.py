@@ -38,6 +38,9 @@ app = FastAPI(title="Curation Studio")
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
 
+from topo_api import router as _topo_router  # noqa: E402 — drawn-topo endpoints (decision #37)
+app.include_router(_topo_router)
+
 _enrich = {"mtime": None, "data": {}}
 
 

@@ -140,6 +140,22 @@
   .actions .in{max-width:1240px;margin:0 auto;padding:10px 20px;display:flex;gap:9px;align-items:center;flex-wrap:wrap}
   .nexthint{margin-left:auto;font-size:12px;color:var(--faint)}
   #toast{position:fixed;top:14px;right:14px;background:var(--accent);color:#fff;padding:8px 16px;border-radius:9px;font-size:12.5px;opacity:0;transition:opacity .25s;z-index:30;pointer-events:none}
+  /* ⑤b drawn topo (decision #37) — thumbnails in the card + a modal canvas editor */
+  .topothumb{display:inline-flex;flex-direction:column;gap:4px;width:132px;margin:0 10px 10px 0;cursor:pointer;vertical-align:top}
+  .topothumb img{width:100%;height:88px;object-fit:cover;border-radius:8px;border:1px solid var(--line-2)}
+  .topothumb.has img{outline:2px solid var(--accent)}
+  .topothumb span{font-size:11px;line-height:1.3}
+  .topothumb small{display:block;color:var(--faint);font-size:10px}
+  #topoModal{display:none;position:fixed;inset:0;background:rgba(20,24,22,.66);z-index:40;align-items:center;justify-content:center;padding:14px}
+  #topoModal.on{display:flex}
+  .tpbox{background:var(--panel);border:1px solid var(--line-2);border-radius:14px;box-shadow:var(--shadow);max-width:96vw;max-height:94vh;display:flex;flex-direction:column;overflow:hidden;min-width:min(760px,94vw)}
+  .tpbar{display:flex;gap:8px;align-items:center;padding:10px 14px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+  .tpbar b{font-family:var(--serif);font-size:15px;margin-right:auto}
+  .tpwrap{overflow:auto;flex:1;background:var(--panel-2);display:flex;justify-content:center}
+  .tpwrap canvas{display:block;cursor:crosshair}
+  .tppitches{display:flex;gap:6px;flex-wrap:wrap;align-items:center;padding:8px 14px;border-top:1px solid var(--line)}
+  .tppitch{display:flex;gap:4px;align-items:center;font:11px var(--mono);background:var(--panel-2);border:1px solid var(--line);border-radius:6px;padding:3px 7px}
+  .tppitch input{width:54px;border:1px solid var(--line);border-radius:5px;background:var(--panel);color:var(--ink);font:11px var(--mono);padding:2px 5px}
 
   .gridview{display:none}
   .bulk{display:flex;gap:8px;align-items:center;background:var(--accent-soft);border:1px solid var(--accent);border-radius:10px;padding:8px 12px;font-size:12px;color:var(--accent-ink);margin-bottom:10px;flex-wrap:wrap}
@@ -298,6 +314,27 @@
   <span class="nexthint" id="nexthint"></span>
 </div></div>
 <div id="toast"></div>
+<div id="topoModal">
+  <div class="tpbox">
+    <div class="tpbar">
+      <b id="tpTitle">topo</b>
+      <div class="views">
+        <button class="on" data-m="line" onclick="tpMode(this)">line</button>
+        <button data-m="belay" onclick="tpMode(this)">belays</button>
+        <button data-m="descent" onclick="tpMode(this)">descent</button>
+      </div>
+      <button class="btn sm" onclick="tpUndo()">undo point</button>
+      <button class="btn sm danger" onclick="tpClear()">clear</button>
+      <label class="minor">belay size <input id="tpBelaySize" type="number" min="8" max="80" style="width:52px" onchange="tpBelay(this.value)"></label>
+      <button class="btn sm" id="tpStatusBtn" onclick="tpStatus()">publish</button>
+      <button class="btn sm danger" onclick="tpDeleteLine()" title="remove this route's line from this topo">✕ line</button>
+      <button class="btn sm primary" onclick="tpSave()">💾 save</button>
+      <button class="btn sm" onclick="tpClose()">close</button>
+    </div>
+    <div class="tpwrap"><canvas id="tpCanvas" width="10" height="10"></canvas></div>
+    <div class="tppitches" id="tpPitches"></div>
+  </div>
+</div>
 
 <script>
 let ENUMS={}, QUEUE=[], ALLROWS=[], TREE=[], DRILL=[], COUNTS={}, STATUS='draft', curId=null, R=null, saveTimers={};
@@ -328,7 +365,13 @@ async function boot(){
   [ENUMS,SOURCES]=await Promise.all([api('/enums'),api('/sources')]);
   bulkFieldChanged();
   await Promise.all([loadQueue(),loadTree()]);
-  if(QUEUE.length)openRoute(QUEUE[0].id);
+  const rm=location.hash.match(/^#r=(\d+)/);   // deep link straight to a route's card
+  if(rm){
+    await openRoute(+rm[1]);
+    const tm=location.hash.match(/topo=(\d+)/); // …optionally straight into its topo editor
+    if(tm)openTopoEditor(+tm[1]);
+  }
+  else if(QUEUE.length)openRoute(QUEUE[0].id);
   if(location.hash==='#taxonomy')setView('t');
   if(location.hash==='#grid')setView('g');
 }
@@ -512,6 +555,8 @@ function renderCard(){
       ${imgCell('map_img','map image',r.map_img)}
       ${imgCell('topo','topo image',r.topo)}
     </div>
+    <div class="sec">⑤b drawn topo <small>— the route line as DATA over a crag photo (multi-pitch style); click a photo to draw this route on it</small></div>
+    <div id="topoSec" class="minor">loading topos…</div>
   </div>
   <div class="card">
     <div class="sec" style="margin-top:0">⑥ guidebooks <small>— shared across routes, deduped on ISBN · weather ⑦ sits in the rail →</small></div>
@@ -525,6 +570,7 @@ function renderCard(){
     <div class="sec">curator note <small>— Studio-only; never rendered on the page</small></div>
     <textarea rows="2" onchange="save('curation_notes',this.value||null)">${esc(r.curation_notes)}</textarea>
   </div>`;
+  refreshTopoSec();
 }
 const esc=s=>String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 function pitchRowHtml(p,i){
@@ -964,6 +1010,162 @@ document.addEventListener('keydown',e=>{
   if(e.key.toLowerCase()==='f'){e.preventDefault();fieldcheck()}
 });
 $('q').addEventListener('input',()=>{clearTimeout(saveTimers._q);saveTimers._q=setTimeout(()=>loadQueue(),350)});
+
+// ── ⑤b drawn topo (decision #37): route lines as data, multi-pitch's exact
+// visual constants so every topo — imported or drawn here — looks the same ──
+const TLINE="rgba(204,25,29,0.95)",TLINE_DIM="rgba(204,25,29,0.35)",TBELAY="rgba(236,142,140,0.9)",TDESC="rgba(1,70,181,0.95)";
+let TPtopo=null,TPimg=null,TPscale=1,TPline=[],TPpitch=[],TPdesc=[],TPothers=[],TPm='line';
+async function refreshTopoSec(){
+  const el=document.getElementById('topoSec');if(!el||!R)return;
+  try{
+    const info=await api('/route/'+R.id+'/topoinfo');
+    el.innerHTML=(info.topos.map(t=>`
+      <div class="topothumb${t.has_route?' has':''}" onclick="openTopoEditor(${t.id})" title="${esc(t.credit)} · ${esc(t.license)}">
+        <img src="/${esc(t.uri)}" loading="lazy">
+        <span>${esc(t.title||'untitled')}<small>${t.has_route?'✓ this route drawn':t.lines+' line'+(t.lines==1?'':'s')} · ${t.status}</small></span>
+      </div>`).join('')||'<span class="minor">no crag photos for this area yet — add one below.</span>')
+      +`<div class="srcadd" style="grid-template-columns:1fr 1fr auto;align-items:center">
+         <input type="file" id="tpFile" accept=".jpg,.jpeg,.png,.webp">
+         <input id="tpCredit" placeholder="credit — photographer / rights holder">
+         <select id="tpLic"><option value="owned">owned</option><option value="permission">permission</option><option value="cc">cc</option></select>
+         <input id="tpPerm" placeholder="permission note — who granted it, when (required unless owned)" style="grid-column:1/3">
+         <button class="btn sm" onclick="uploadTopoPhoto(${info.area_id})">↑ add crag photo</button></div>`;
+  }catch(e){el.innerHTML='<span class="minor">⚠ topo endpoints unavailable — '+esc(e)+'</span>'}
+}
+async function uploadTopoPhoto(areaId){
+  const f=document.getElementById('tpFile').files[0];
+  if(!f){toast('⚠ pick a photo first');return}
+  const credit=document.getElementById('tpCredit').value.trim();
+  if(!credit){toast('⚠ credit is required — rights are the gate');return}
+  const dims=await new Promise(res=>{const i=new Image();i.onload=()=>res([i.naturalWidth,i.naturalHeight]);i.src=URL.createObjectURL(f)});
+  const fd=new FormData();
+  fd.append('file',f);fd.append('area_id',areaId);fd.append('title','');
+  fd.append('credit',credit);fd.append('license',document.getElementById('tpLic').value);
+  fd.append('permission_note',document.getElementById('tpPerm').value);
+  fd.append('width',dims[0]);fd.append('height',dims[1]);
+  try{const r=await api('/topomedia',{method:'POST',body:fd});toast('photo added');await refreshTopoSec();openTopoEditor(r.topo_id)}
+  catch(e){toast('⚠ '+e)}
+}
+async function openTopoEditor(id){
+  TPtopo=await api('/topo/'+id);
+  const mine=TPtopo.lines.find(l=>l.route_id===R.id);
+  TPline=mine?mine.line.slice():[];
+  TPpitch=mine&&mine.pitches?mine.pitches.slice():[];
+  TPdesc=mine&&mine.descent?mine.descent.slice():[];
+  TPothers=TPtopo.lines.filter(l=>l.route_id!==R.id);
+  $('tpTitle').textContent=(TPtopo.title||'untitled')+' — drawing: '+R.name;
+  $('tpBelaySize').value=TPtopo.belay_size;
+  $('tpStatusBtn').textContent=TPtopo.status==='draft'?'→ publish':'→ draft';
+  TPimg=new Image();
+  TPimg.onload=()=>{tpFit();tpDrawAll()};
+  TPimg.src='/'+TPtopo.uri;
+  document.getElementById('topoModal').classList.add('on');
+  tpPitchesUi();
+}
+function tpClose(){document.getElementById('topoModal').classList.remove('on')}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')tpClose()});
+function tpMode(btn){TPm=btn.dataset.m;btn.parentNode.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b===btn))}
+function tpFit(){
+  const c=document.getElementById('tpCanvas');
+  const maxW=Math.min(window.innerWidth*0.94-30,1400),maxH=window.innerHeight*0.94-150;
+  TPscale=Math.min(1,maxW/TPimg.width,maxH/TPimg.height);
+  c.width=Math.round(TPimg.width*TPscale);c.height=Math.round(TPimg.height*TPscale);
+}
+function tpPath(ctx,pts,color,dashed){
+  if(pts.length<2)return;
+  ctx.strokeStyle=color;ctx.lineWidth=Math.max(2,6*TPscale*((TPtopo.belay_size||24)/24));
+  ctx.lineCap=ctx.lineJoin='round';
+  ctx.setLineDash(dashed?[12*TPscale+4,8*TPscale+3]:[]);
+  ctx.beginPath();ctx.moveTo(pts[0][0]*TPscale,pts[0][1]*TPscale);
+  for(let i=1;i<pts.length;i++)ctx.lineTo(pts[i][0]*TPscale,pts[i][1]*TPscale);
+  ctx.stroke();ctx.setLineDash([]);
+}
+function tpDrawAll(){
+  if(!TPimg)return;
+  const c=document.getElementById('tpCanvas'),ctx=c.getContext('2d');
+  ctx.clearRect(0,0,c.width,c.height);
+  ctx.drawImage(TPimg,0,0,c.width,c.height);
+  for(const l of TPothers)tpPath(ctx,l.line,TLINE_DIM);
+  tpPath(ctx,TPline,TLINE);
+  if(TPdesc.length)tpPath(ctx,TPdesc,TDESC,true);
+  const bs=Math.max(5,(TPtopo.belay_size||24)*TPscale);
+  TPpitch.forEach((p,i)=>{
+    if(!p.belayPosition)return;
+    const x=p.belayPosition[0]*TPscale,y=p.belayPosition[1]*TPscale;
+    ctx.fillStyle=TBELAY;ctx.beginPath();ctx.arc(x,y,bs,0,7);ctx.fill();
+    ctx.fillStyle='#000';ctx.font=`bold ${Math.max(9,bs)}px sans-serif`;
+    ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(i+1,x,y);
+    if(p.labelPosition){
+      const t=`P${i+1}${p.grade?' '+p.grade:''}${p.height?' '+p.height:''}`;
+      ctx.font=`bold ${Math.max(10,bs*1.1)}px sans-serif`;ctx.textAlign='left';
+      ctx.lineWidth=3;ctx.strokeStyle='rgba(0,0,0,.75)';
+      ctx.strokeText(t,p.labelPosition[0]*TPscale,p.labelPosition[1]*TPscale);
+      ctx.fillStyle='#fff';ctx.fillText(t,p.labelPosition[0]*TPscale,p.labelPosition[1]*TPscale);
+    }
+  });
+  ctx.fillStyle='#fff';
+  for(const p of TPline){ctx.beginPath();ctx.arc(p[0]*TPscale,p[1]*TPscale,2.5,0,7);ctx.fill()}
+}
+document.getElementById('tpCanvas').addEventListener('click',e=>{
+  if(!TPtopo)return;
+  const r=e.target.getBoundingClientRect();
+  const x=Math.round((e.clientX-r.left)/TPscale),y=Math.round((e.clientY-r.top)/TPscale);
+  if(TPm==='line')TPline.push([x,y]);
+  else if(TPm==='descent')TPdesc.push([x,y]);
+  else{
+    const d=(R.pitch_rows||[])[TPpitch.length]||{};   // prefill from the card's real pitch rows
+    TPpitch.push({belayPosition:[x,y],labelPosition:[x+60,y+12],
+      grade:d.original_grade||'',height:d.length_m?d.length_m+'m':''});
+    tpPitchesUi();
+  }
+  tpDrawAll();
+});
+function tpUndo(){
+  if(TPm==='line')TPline.pop();else if(TPm==='descent')TPdesc.pop();else{TPpitch.pop();tpPitchesUi()}
+  tpDrawAll();
+}
+function tpClear(){TPline=[];TPpitch=[];TPdesc=[];tpPitchesUi();tpDrawAll()}
+function tpBelay(v){
+  TPtopo.belay_size=+v||24;tpDrawAll();
+  api('/topo/'+TPtopo.id,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({belay_size:TPtopo.belay_size})}).catch(e=>toast('⚠ '+e));
+}
+async function tpStatus(){
+  const ns=TPtopo.status==='draft'?'publish':'draft';
+  try{await api('/topo/'+TPtopo.id,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({status:ns})});
+    TPtopo.status=ns;$('tpStatusBtn').textContent=ns==='draft'?'→ publish':'→ draft';toast('topo '+ns)}catch(e){toast('⚠ '+e)}
+}
+function tpPitchesUi(){
+  const el=document.getElementById('tpPitches');
+  el.innerHTML=TPpitch.map((p,i)=>`<span class="tppitch"><b>P${i+1}</b>
+    <input placeholder="grade" value="${esc(p.grade)}" onchange="TPpitch[${i}].grade=this.value;tpDrawAll()">
+    <input placeholder="height" value="${esc(p.height)}" onchange="TPpitch[${i}].height=this.value;tpDrawAll()">
+    <button class="btn sm" onclick="tpPlaceLabel(${i})" title="click, then click the photo to place the label">label</button></span>`).join('')
+    ||'<span class="minor">belays mode + click the photo to add pitch markers (prefilled from the pitch rows above)</span>';
+}
+function tpPlaceLabel(i){
+  toast('click the photo to place P'+(i+1)+' label');
+  const c=document.getElementById('tpCanvas');
+  const once=e=>{const r=c.getBoundingClientRect();
+    TPpitch[i].labelPosition=[Math.round((e.clientX-r.left)/TPscale),Math.round((e.clientY-r.top)/TPscale)];
+    c.removeEventListener('click',once,true);e.stopPropagation();tpDrawAll()};
+  c.addEventListener('click',once,true);
+}
+async function tpSave(){
+  if(TPline.length<2){toast('⚠ draw at least 2 points');return}
+  try{
+    await api('/topo/'+TPtopo.id+'/line/'+R.id,{method:'PUT',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({line:TPline,pitches:TPpitch,descent:TPdesc.length?TPdesc:null})});
+    toast('topo line saved');
+    TPtopo=await api('/topo/'+TPtopo.id);TPothers=TPtopo.lines.filter(l=>l.route_id!==R.id);
+    refreshTopoSec();
+  }catch(e){toast('⚠ '+e)}
+}
+async function tpDeleteLine(){
+  try{await api('/topo/'+TPtopo.id+'/line/'+R.id,{method:'DELETE'});toast('line removed');tpClear();refreshTopoSec()}
+  catch(e){toast('⚠ '+e)}
+}
+window.addEventListener('resize',()=>{if(TPimg&&document.getElementById('topoModal').classList.contains('on')){tpFit();tpDrawAll()}});
+
 boot();
 </script>
 </html>
