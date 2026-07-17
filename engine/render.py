@@ -24,6 +24,34 @@ from .stays import STAY_ADULTS, STAY_RADIUS_KM
 from .weather import ASPECT_ADJ
 
 MP_MAP_URL = "https://multi-pitch.com/map/"
+
+# "Recent chatter" — weekly Google harvest for the top-10 ranked venues,
+# written by trip-ni-july-2026/scripts/fetch_chatter.py (committed, unlike
+# venue-env.json, because it holds only what the page publishes). Loaded once
+# per build; venues outside the top 10 simply get chatter=None.
+_CHATTER = None
+
+
+def _chatter_for(name: str):
+    """Cache entries are keyed by the venue's full name (rank-history uses
+    full names: 'Mournes, NI', 'West Cornwall (Bosigran)'); fall back to a
+    short_name match so either key form resolves."""
+    global _CHATTER
+    if _CHATTER is None:
+        from pathlib import Path
+        p = Path(__file__).resolve().parents[1] / "cache" / "crag-chatter.json"
+        try:
+            _CHATTER = json.loads(p.read_text())
+        except Exception:
+            _CHATTER = {}
+    venues = _CHATTER.get("venues") or {}
+    ent = venues.get(name)
+    if ent is None:
+        short = short_name(name)
+        ent = next((e for k, e in venues.items() if short_name(k) == short), None)
+    if not ent or not ent.get("items"):
+        return None
+    return {"fetched": ent.get("fetched_at", "")[:10], "items": ent["items"]}
 SHEET_URL = "https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit"
 REPO_URL = "https://github.com/uncinimichel/climbing-agent"
 PAGES_BASE = "https://uncinimichel.github.io/climbing-agent/"   # canonical URL for SEO tags + sitemap
@@ -572,6 +600,7 @@ def venue_payload(n, r, ctx, mp_climbs, guidebooks, extra_climbing_data, tag_spe
         "flights": flights_out,
         "stays": r.get("stays"), "guide": guidebook(v, guidebooks),
         "extraClimbing": extra_climbing(v, extra_climbing_data),
+        "chatter": _chatter_for(v["name"]),
         "maps": maps_url(v), "weather": weather_url(v), "mpMap": MP_MAP_URL,
         "tidal": tidal,
         "tags": venue_tags(v, cards, grades, tag_spec,
@@ -867,6 +896,19 @@ svg.topo .dseg{pointer-events:stroke}
 a.sample{text-decoration:none}
 a.sample:hover{color:var(--ink);border-color:var(--muted)}
 .xnote{font-size:11.5px;color:var(--mixed);background:var(--mixed-bg);border:1px solid rgba(185,138,46,.35);border-radius:8px;padding:9px 12px;margin-bottom:12px;max-width:640px;line-height:1.5}
+/* "Overheard" — recent chatter cards (weekly Google harvest, top-10 venues) */
+.overheard{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;max-width:760px}
+.oh-card{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:13px 15px 11px;position:relative;display:flex;flex-direction:column;gap:8px}
+.oh-card:before{content:"\201C";font-family:var(--disp);font-weight:800;font-size:34px;line-height:0;color:var(--line2);position:absolute;top:20px;left:12px}
+.oh-snip{font-size:13px;font-style:italic;padding-left:20px;color:var(--ink)}
+.oh-foot{display:flex;align-items:center;gap:8px;margin-top:auto;padding-left:20px;flex-wrap:wrap;font-size:11.5px}
+.oh-foot a{color:var(--muted);max-width:22ch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-decoration:none}
+.oh-foot a:hover{color:var(--ink);text-decoration:underline}
+.oh-date{font-family:var(--mono);font-size:10px;color:#C4FF5C;margin-left:auto;white-space:nowrap}
+.oh-date.old{color:var(--faint)}
+.srcchip{font-family:var(--mono);font-size:9px;letter-spacing:.07em;text-transform:uppercase;padding:1px 6px;border-radius:4px;border:1px solid var(--line2);color:var(--muted);white-space:nowrap}
+.srcchip.src-forum{color:var(--rain);border-color:rgba(57,135,229,.4)}
+.srcchip.src-social{color:var(--temp);border-color:rgba(217,89,38,.4)}
 .xlinks{display:flex;flex-direction:column;gap:8px;max-width:640px}
 a.xlink{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;text-decoration:none;border:1px solid var(--line2);border-radius:9px;padding:9px 13px;background:var(--card)}
 a.xlink:hover{border-color:var(--muted)}
@@ -1781,6 +1823,31 @@ function staysHtml(v){
     +'<div class="stay-cols">'+cols+'</div>'+guide+'</div>';
 }
 
+// "Overheard" — recent chatter cards. Data is the weekly Google harvest for
+// the top-10 ranked venues (cache/crag-chatter.json); other venues have
+// v.chatter=null and render nothing. Detail pane shows the freshest 4; the
+// static venue page carries the full set.
+function chatterDateLbl(i){
+  if(i.days_ago===0)return 'today';
+  if(i.days_ago!=null&&i.days_ago<=9)return i.days_ago+'d';
+  return i.date?String(i.date).replace(/,\s*\d{4}$/,''):'';
+}
+function chatterHtml(v){
+  var c=v.chatter;if(!c||!(c.items||[]).length)return '';
+  var cards=c.items.slice(0,4).map(function(i){
+    var d=chatterDateLbl(i);
+    return '<div class="oh-card"><div class="oh-snip">'+esc(i.snippet||i.title||'')+'</div>'
+      +'<div class="oh-foot"><span class="srcchip src-'+esc(i.src||'web')+'">'+esc(i.src||'web')+'</span>'
+      +'<a target="_blank" rel="noopener" href="'+safeUrl(i.link)+'">'+esc(i.domain||'')+'</a>'
+      +(d?'<span class="oh-date'+((i.days_ago==null||i.days_ago>7)?' old':'')+'">'+esc(d)+'</span>':'')
+      +'</div></div>';
+  }).join('');
+  return '<div class="sec"><div class="sec-hd"><div class="eyebrow">Overheard · past 2 weeks · updated '+esc(c.fetched||'')+'</div>'
+    +'<a class="lk sm" href="venues/'+slugify(v.shortName)+'.html">All chatter ↗</a></div>'
+    +'<div class="overheard">'+cards+'</div>'
+    +'<div class="xnote" style="margin-top:10px">⚠ found via Google search (past 2 weeks), not verified — conditions &amp; access can change; check before you travel.</div></div>';
+}
+
 function detailHtml(v){
   var chips=(v.facts||[]).map(function(f){
     return '<div class="chip"><div class="chip-l">'+esc(f.lbl)+'</div><div class="chip-v">'+esc(f.val)+'</div><div class="chip-s">'+esc(f.sub)+'</div></div>';
@@ -1797,6 +1864,7 @@ function detailHtml(v){
     +verdictHtml(v)
     +'<div class="sec"><div class="eyebrow">Getting there</div><div class="fgrid">'
       +(D.trip.travellers||[]).map(function(t){return flightCard(t.name,t.from,v.flights&&v.flights[t.key])}).join('')+'</div></div>'
+    +chatterHtml(v)
     +((climbs)?'<div class="sec"><div class="sec-hd"><div class="eyebrow">'+(hl?'More climbs':'Climbs')+' nearby · from multi-pitch.com</div>'
       +(safeUrl(v.mpMap)?'<a class="lk sm" target="_blank" rel="noopener" href="'+safeUrl(v.mpMap)+'">Browse the map ↗</a>':'')+'</div>'+climbs+'</div>':'')
     +extraClimbingHtml(v)
@@ -1977,6 +2045,23 @@ def venue_page(v, trip, tag_spec, all_venues=None):
         f'<li><a href="{_esc(x["url"])}" rel="noopener">{_esc(x.get("title",""))}</a> '
         f'<span class="src">({_esc(x.get("source",""))})</span> — {_esc(x.get("note",""))}</li>'
         for x in (v.get("extraClimbing") or []) if isinstance(x, dict) and x.get("url"))
+    chat = v.get("chatter") or {}
+
+    def _chat_date(i):
+        da = i.get("days_ago")
+        if da == 0:
+            return "today"
+        if da is not None and da <= 9:
+            return f"{da}d"
+        return re.sub(r",\s*\d{4}$", "", str(i.get("date") or ""))
+
+    chat_cards = "".join(
+        f'<div class="oh-card"><div class="oh-snip">{_esc(i.get("snippet") or i.get("title") or "")}</div>'
+        f'<div class="oh-foot"><span class="srcchip src-{_esc(i.get("src", "web"))}">{_esc(i.get("src", "web"))}</span>'
+        f'<a href="{_esc(i.get("link", ""))}" rel="noopener" target="_blank">{_esc(i.get("domain", ""))}</a>'
+        f'<span class="oh-date{" old" if (i.get("days_ago") is None or i.get("days_ago", 99) > 7) else ""}">{_esc(_chat_date(i))}</span>'
+        f'</div></div>'
+        for i in (chat.get("items") or []) if i.get("link"))
     fl = []
     for t in trip.get("travellers") or []:
         who, lbl = t["key"], f"from {t['from']}" if t.get("from") else t["name"]
@@ -2034,6 +2119,18 @@ footer{{margin-top:34px;color:var(--faint);font-size:12px;border-top:1px solid v
 .areas a{{color:var(--muted);text-decoration:none;white-space:nowrap}}
 .areas a:hover{{color:var(--ink);text-decoration:underline}}
 .areas b{{color:var(--ink);white-space:nowrap}}
+.overheard{{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}}
+.oh-card{{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:13px 15px 11px;position:relative;display:flex;flex-direction:column;gap:8px}}
+.oh-card:before{{content:"\\201C";font-family:var(--disp);font-weight:800;font-size:34px;line-height:0;color:var(--line2);position:absolute;top:20px;left:12px}}
+.oh-snip{{font-size:13px;font-style:italic;padding-left:20px}}
+.oh-foot{{display:flex;align-items:center;gap:8px;margin-top:auto;padding-left:20px;flex-wrap:wrap;font-size:11.5px}}
+.oh-foot a{{color:var(--muted);max-width:22ch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-decoration:none}}
+.oh-foot a:hover{{color:var(--ink);text-decoration:underline}}
+.oh-date{{font-family:var(--mono);font-size:10px;color:#C4FF5C;margin-left:auto;white-space:nowrap}}
+.oh-date.old{{color:var(--faint)}}
+.srcchip{{font-family:var(--mono);font-size:9px;letter-spacing:.07em;text-transform:uppercase;padding:1px 6px;border-radius:4px;border:1px solid var(--line2);color:var(--muted);white-space:nowrap}}
+.srcchip.src-forum{{color:#3987e5;border-color:rgba(57,135,229,.4)}}
+.srcchip.src-social{{color:#d95926;border-color:rgba(217,89,38,.4)}}
 {tag_spec.venue_css}
 </style></head><body>
 <header class="top">
@@ -2054,6 +2151,7 @@ footer{{margin-top:34px;color:var(--faint);font-size:12px;border-top:1px solid v
 {''.join(rows)}
 </table></div>
 <p class="meta">Updated {_esc(trip.get('updated',''))} · typical = 2021–2024 average · outlook = 45-day ensemble, replaced by the live 16-day forecast as the window approaches.</p>
+{f'<h2>Overheard — recent chatter</h2><div class="overheard">{chat_cards}</div><p class="src">Found via Google search (past 2 weeks), updated {_esc(chat.get("fetched", ""))} — not verified; conditions &amp; access can change. Check before you travel.</p>' if chat_cards else ''}
 {f'<h2>Classic routes</h2><ul>{climbs}</ul>' if climbs else ''}
 {f'<h2>More climbing &amp; guidebook resources</h2><ul>{extras}</ul>' if extras else ''}
 {f'<h2>Getting there</h2><p>{_esc(" · ".join(fl))}</p>' if fl else ''}

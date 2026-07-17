@@ -52,6 +52,14 @@ jobs:
       - name: Fetch venue environment (weather + tide, once per venue)
         run: python3 trip-ni-july-2026/scripts/fetch_env.py
 
+      # "Recent chatter" for the top-10 ranked venues (weekly TTL per venue,
+      # ~20 SerpAPI searches/week, quota-guarded). Never fails the build: on
+      # any problem it keeps the committed cache/crag-chatter.json as-is.
+      - name: Fetch recent chatter (top-10 venues, weekly TTL)
+        env:
+          SERPAPI_KEY: ${{ secrets.SERPAPI_KEY }}
+        run: python3 trip-ni-july-2026/scripts/fetch_chatter.py
+
       - name: Build report (weather ranking + per-venue flights + HTML)
         env:
           SERPAPI_KEY: ${{ secrets.SERPAPI_KEY }}
@@ -76,6 +84,7 @@ jobs:
                   trip-ni-july-2026/rank-history.json \
                   trip-ni-july-2026/serpapi-usage.json \
                   cache/climo-cache.json \
+                  cache/crag-chatter.json \
                   knowledge/
           if git diff --staged --quiet; then
             echo "No changes."
