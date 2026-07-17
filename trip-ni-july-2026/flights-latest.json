@@ -1,6 +1,6 @@
 {
   "comment": "Latest flight prices per combo (round-trip, 1 pax, GBP). Updated on demand by Claude or by an API script. null = not yet checked.",
-  "checked_at": "2026-07-17 09:50 UTC (Google Flights/SerpApi)",
+  "checked_at": "2026-07-17 11:15 UTC (Google Flights/SerpApi)",
   "currency": "GBP",
   "rep_combo": {
     "id": "fri-tue",
@@ -9,46 +9,6 @@
     "nights": 4
   },
   "venues": {
-    "Lundy": {
-      "michel": {
-        "mode": "drive"
-      },
-      "dan": {
-        "mode": "fly",
-        "to": "BRS",
-        "options": [
-          {
-            "price": 28,
-            "airline": "Ryanair",
-            "from": "DUB",
-            "to": "BRS",
-            "dep": "07:00",
-            "arr": "08:05",
-            "stops": 0
-          },
-          {
-            "price": 28,
-            "airline": "Ryanair",
-            "from": "DUB",
-            "to": "BRS",
-            "dep": "21:50",
-            "arr": "22:55",
-            "stops": 0
-          },
-          {
-            "price": 66,
-            "airline": "easyJet",
-            "from": "BFS",
-            "to": "BRS",
-            "dep": "21:45",
-            "arr": "22:55",
-            "stops": 0
-          }
-        ],
-        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQlJTGjASCjIwMjYtMDctMjhqBwgBEgNCUlNyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
-        "book_url": "https://www.skyscanner.net/transport/flights/dub/brs/260724/260728/"
-      }
-    },
     "Picos de Europa": {
       "michel": {
         "mode": "fly",
@@ -64,21 +24,21 @@
             "stops": 0
           },
           {
-            "price": 159,
-            "airline": "Vueling",
-            "from": "LHR",
-            "to": "BIO",
-            "dep": "15:30",
-            "arr": "18:35",
-            "stops": 0
-          },
-          {
             "price": 165,
             "airline": "Vueling",
             "from": "LGW",
             "to": "BIO",
             "dep": "16:20",
             "arr": "19:25",
+            "stops": 0
+          },
+          {
+            "price": 169,
+            "airline": "Vueling",
+            "from": "LHR",
+            "to": "BIO",
+            "dep": "15:30",
+            "arr": "18:35",
             "stops": 0
           }
         ],
@@ -121,13 +81,53 @@
         "book_url": "https://www.skyscanner.net/transport/flights/dub/bio/260724/260728/"
       }
     },
+    "Lundy": {
+      "michel": {
+        "mode": "drive"
+      },
+      "dan": {
+        "mode": "fly",
+        "to": "BRS",
+        "options": [
+          {
+            "price": 28,
+            "airline": "Ryanair",
+            "from": "DUB",
+            "to": "BRS",
+            "dep": "07:00",
+            "arr": "08:05",
+            "stops": 0
+          },
+          {
+            "price": 28,
+            "airline": "Ryanair",
+            "from": "DUB",
+            "to": "BRS",
+            "dep": "21:50",
+            "arr": "22:55",
+            "stops": 0
+          },
+          {
+            "price": 66,
+            "airline": "easyJet",
+            "from": "BFS",
+            "to": "BRS",
+            "dep": "21:45",
+            "arr": "22:55",
+            "stops": 0
+          }
+        ],
+        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQlJTGjASCjIwMjYtMDctMjhqBwgBEgNCUlNyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
+        "book_url": "https://www.skyscanner.net/transport/flights/dub/brs/260724/260728/"
+      }
+    },
     "Gredos": {
       "michel": {
         "mode": "fly",
         "to": "MAD",
         "options": [
           {
-            "price": 116,
+            "price": 104,
             "airline": "Wizz Air",
             "from": "LTN",
             "to": "MAD",
@@ -239,7 +239,7 @@
         "to": "LYS",
         "options": [
           {
-            "price": 201,
+            "price": 176,
             "airline": "easyJet",
             "from": "LTN",
             "to": "LYS",
@@ -274,7 +274,7 @@
         "to": "LYS",
         "options": [
           {
-            "price": 217,
+            "price": 218,
             "airline": "Aer Lingus",
             "from": "DUB",
             "to": "LYS",
@@ -292,57 +292,17 @@
             "stops": 1
           },
           {
-            "price": 296,
-            "airline": "Lufthansa",
+            "price": 285,
+            "airline": "KLM",
             "from": "DUB",
             "to": "LYS",
-            "dep": "06:05",
-            "arr": "13:55",
+            "dep": "05:55",
+            "arr": "17:35",
             "stops": 1
           }
         ],
         "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDTFlTGjASCjIwMjYtMDctMjhqBwgBEgNMWVNyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
         "book_url": "https://www.skyscanner.net/transport/flights/dub/lys/260724/260728/"
-      }
-    },
-    "West Cornwall (Bosigran)": {
-      "michel": {
-        "mode": "drive"
-      },
-      "dan": {
-        "mode": "fly",
-        "to": "NQY",
-        "options": [
-          {
-            "price": 143,
-            "airline": "Ryanair",
-            "from": "DUB",
-            "to": "NQY",
-            "dep": "13:55",
-            "arr": "15:00",
-            "stops": 0
-          },
-          {
-            "price": 179,
-            "airline": "Aer Lingus",
-            "from": "DUB",
-            "to": "NQY",
-            "dep": "15:40",
-            "arr": "16:55",
-            "stops": 0
-          },
-          {
-            "price": 599,
-            "airline": "Aer Lingus",
-            "from": "BHD",
-            "to": "NQY",
-            "dep": "07:00",
-            "arr": "16:55",
-            "stops": 2
-          }
-        ],
-        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDTlFZGjASCjIwMjYtMDctMjhqBwgBEgNOUVlyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
-        "book_url": "https://www.skyscanner.net/transport/flights/dub/nqy/260724/260728/"
       }
     },
     "Snowdonia (Llanberis Pass)": {
@@ -383,6 +343,46 @@
         ],
         "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDTUFOGjASCjIwMjYtMDctMjhqBwgBEgNNQU5yBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
         "book_url": "https://www.skyscanner.net/transport/flights/dub/man/260724/260728/"
+      }
+    },
+    "West Cornwall (Bosigran)": {
+      "michel": {
+        "mode": "drive"
+      },
+      "dan": {
+        "mode": "fly",
+        "to": "NQY",
+        "options": [
+          {
+            "price": 143,
+            "airline": "Ryanair",
+            "from": "DUB",
+            "to": "NQY",
+            "dep": "13:55",
+            "arr": "15:00",
+            "stops": 0
+          },
+          {
+            "price": 179,
+            "airline": "Aer Lingus",
+            "from": "DUB",
+            "to": "NQY",
+            "dep": "15:40",
+            "arr": "16:55",
+            "stops": 0
+          },
+          {
+            "price": 599,
+            "airline": "Aer Lingus",
+            "from": "BHD",
+            "to": "NQY",
+            "dep": "07:00",
+            "arr": "16:55",
+            "stops": 2
+          }
+        ],
+        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDTlFZGjASCjIwMjYtMDctMjhqBwgBEgNOUVlyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
+        "book_url": "https://www.skyscanner.net/transport/flights/dub/nqy/260724/260728/"
       }
     },
     "Devon": {
@@ -466,7 +466,7 @@
         "to": "BRU",
         "options": [
           {
-            "price": 195,
+            "price": 210,
             "airline": "Ryanair",
             "from": "DUB",
             "to": "BRU",
@@ -475,136 +475,170 @@
             "stops": 0
           },
           {
-            "price": 248,
-            "airline": "Aer Lingus",
-            "from": "DUB",
-            "to": "BRU",
-            "dep": "06:50",
-            "arr": "09:40",
-            "stops": 0
-          },
-          {
-            "price": 253,
+            "price": 268,
             "airline": "Ryanair",
             "from": "DUB",
             "to": "BRU",
             "dep": "16:15",
             "arr": "19:00",
             "stops": 0
+          },
+          {
+            "price": 236,
+            "airline": "SWISS",
+            "from": "DUB",
+            "to": "BRU",
+            "dep": "20:15",
+            "arr": "08:20",
+            "stops": 1
           }
         ],
         "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQlJVGjASCjIwMjYtMDctMjhqBwgBEgNCUlVyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
         "book_url": "https://www.skyscanner.net/transport/flights/dub/bru/260724/260728/"
       }
     },
-    "Sicilly": {
+    "Elbsandstein": {
       "michel": {
         "mode": "fly",
-        "to": "PMO",
+        "to": "PRG",
         "options": [
           {
-            "price": 139,
-            "airline": "easyJet",
-            "from": "LGW",
-            "to": "PMO",
-            "dep": "05:55",
-            "arr": "09:50",
-            "stops": 0
-          },
-          {
-            "price": 159,
+            "price": 178,
             "airline": "Ryanair",
             "from": "STN",
-            "to": "PMO",
-            "dep": "08:40",
-            "arr": "12:35",
+            "to": "PRG",
+            "dep": "18:00",
+            "arr": "20:50",
             "stops": 0
           },
           {
-            "price": 232,
-            "airline": "SWISS",
-            "from": "LCY",
-            "to": "PMO",
-            "dep": "19:15",
-            "arr": "09:00",
-            "stops": 1
+            "price": 187,
+            "airline": "Ryanair",
+            "from": "STN",
+            "to": "PRG",
+            "dep": "06:15",
+            "arr": "09:05",
+            "stops": 0
+          },
+          {
+            "price": 219,
+            "airline": "easyJet",
+            "from": "LGW",
+            "to": "PRG",
+            "dep": "18:10",
+            "arr": "21:10",
+            "stops": 0
           }
         ],
-        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTA3LTI0agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDUE1PGkISCjIwMjYtMDctMjhqBwgBEgNQTU9yBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ",
-        "book_url": "https://www.skyscanner.net/transport/flights/lgw/pmo/260724/260728/"
+        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTA3LTI0agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDUFJHGkISCjIwMjYtMDctMjhqBwgBEgNQUkdyBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ",
+        "book_url": "https://www.skyscanner.net/transport/flights/stn/prg/260724/260728/"
       },
       "dan": {
         "mode": "fly",
-        "to": "PMO",
+        "to": "PRG",
         "options": [
           {
-            "price": 308,
-            "airline": "SWISS",
+            "price": 215,
+            "airline": "Ryanair",
             "from": "DUB",
-            "to": "PMO",
-            "dep": "08:40",
-            "arr": "18:45",
+            "to": "PRG",
+            "dep": "15:05",
+            "arr": "18:30",
+            "stops": 0
+          },
+          {
+            "price": 268,
+            "airline": "Air France",
+            "from": "DUB",
+            "to": "PRG",
+            "dep": "05:55",
+            "arr": "21:45",
             "stops": 1
           },
           {
-            "price": 309,
-            "airline": "SWISS",
+            "price": 270,
+            "airline": "Lufthansa",
             "from": "DUB",
-            "to": "PMO",
-            "dep": "18:35",
-            "arr": "09:00",
+            "to": "PRG",
+            "dep": "06:05",
+            "arr": "13:40",
             "stops": 1
-          },
-          {
-            "price": 280,
-            "airline": "SWISS",
-            "from": "DUB",
-            "to": "PMO",
-            "dep": "20:15",
-            "arr": "18:50",
-            "stops": 2
           }
         ],
-        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDUE1PGjASCjIwMjYtMDctMjhqBwgBEgNQTU9yBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
-        "book_url": "https://www.skyscanner.net/transport/flights/dub/pmo/260724/260728/"
+        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDUFJHGjASCjIwMjYtMDctMjhqBwgBEgNQUkdyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
+        "book_url": "https://www.skyscanner.net/transport/flights/dub/prg/260724/260728/"
       }
     }
   },
   "flex": {
-    "venue": "Lundy",
+    "venue": "Picos de Europa",
     "travellers": {
-      "dan": [
+      "michel": [
         {
           "shift": -2,
           "out": "2026-07-22",
           "back": "2026-07-26",
-          "book_url": "https://www.skyscanner.net/transport/flights/bfs/brs/260722/260726/",
-          "price": 63,
-          "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTIyagcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQlJTGjASCjIwMjYtMDctMjZqBwgBEgNCUlNyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ"
+          "book_url": "https://www.skyscanner.net/transport/flights/lgw/bio/260722/260726/",
+          "price": 97,
+          "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTA3LTIyagcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDQklPGkISCjIwMjYtMDctMjZqBwgBEgNCSU9yBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ"
         },
         {
           "shift": -1,
           "out": "2026-07-23",
           "back": "2026-07-27",
-          "book_url": "https://www.skyscanner.net/transport/flights/bfs/brs/260723/260727/",
-          "price": 52,
-          "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTIzagcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQlJTGjASCjIwMjYtMDctMjdqBwgBEgNCUlNyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ"
+          "book_url": "https://www.skyscanner.net/transport/flights/lgw/bio/260723/260727/",
+          "price": 120,
+          "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTA3LTIzagcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDQklPGkISCjIwMjYtMDctMjdqBwgBEgNCSU9yBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ"
         },
         {
           "shift": 1,
           "out": "2026-07-25",
           "back": "2026-07-29",
-          "book_url": "https://www.skyscanner.net/transport/flights/bfs/brs/260725/260729/",
-          "price": 33,
-          "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTI1agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQlJTGjASCjIwMjYtMDctMjlqBwgBEgNCUlNyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ"
+          "book_url": "https://www.skyscanner.net/transport/flights/lgw/bio/260725/260729/",
+          "price": 68,
+          "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTA3LTI1agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDQklPGkISCjIwMjYtMDctMjlqBwgBEgNCSU9yBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ"
         },
         {
           "shift": 2,
           "out": "2026-07-26",
           "back": "2026-07-30",
-          "book_url": "https://www.skyscanner.net/transport/flights/bfs/brs/260726/260730/",
-          "price": 35,
-          "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTI2agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQlJTGjASCjIwMjYtMDctMzBqBwgBEgNCUlNyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ"
+          "book_url": "https://www.skyscanner.net/transport/flights/lgw/bio/260726/260730/",
+          "price": 79,
+          "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTA3LTI2agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDQklPGkISCjIwMjYtMDctMzBqBwgBEgNCSU9yBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ"
+        }
+      ],
+      "dan": [
+        {
+          "shift": -2,
+          "out": "2026-07-22",
+          "back": "2026-07-26",
+          "book_url": "https://www.skyscanner.net/transport/flights/bfs/bio/260722/260726/",
+          "price": 259,
+          "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTIyagcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQklPGjASCjIwMjYtMDctMjZqBwgBEgNCSU9yBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ"
+        },
+        {
+          "shift": -1,
+          "out": "2026-07-23",
+          "back": "2026-07-27",
+          "book_url": "https://www.skyscanner.net/transport/flights/bfs/bio/260723/260727/",
+          "price": 236,
+          "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTIzagcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQklPGjASCjIwMjYtMDctMjdqBwgBEgNCSU9yBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ"
+        },
+        {
+          "shift": 1,
+          "out": "2026-07-25",
+          "back": "2026-07-29",
+          "book_url": "https://www.skyscanner.net/transport/flights/bfs/bio/260725/260729/",
+          "price": 237,
+          "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTI1agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQklPGjASCjIwMjYtMDctMjlqBwgBEgNCSU9yBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ"
+        },
+        {
+          "shift": 2,
+          "out": "2026-07-26",
+          "back": "2026-07-30",
+          "book_url": "https://www.skyscanner.net/transport/flights/bfs/bio/260726/260730/",
+          "price": 275,
+          "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTI2agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQklPGjASCjIwMjYtMDctMzBqBwgBEgNCSU9yBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ"
         }
       ]
     }
