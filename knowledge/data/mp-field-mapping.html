@@ -1,0 +1,104 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Mp Field Mapping · multi-pitch Live</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"><style>
+:root{--ink:#0C0D10;--ink2:#12141B;--ink3:#191C27;--ink4:#20243A;--seam:#252840;
+--chalk:#EAE6DD;--chalk2:#9B9890;--chalk3:#5A5860;--go:#6CB268;--amb:#C8A44A;
+--wet:#B94438;--spike:#C4FF5C;--r:6px;--r-lg:12px}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--ink);color:var(--chalk)}
+body{font-family:'Inter',system-ui,sans-serif;font-size:15px;line-height:1.65;
+-webkit-font-smoothing:antialiased}
+.top{position:sticky;top:0;z-index:10;height:48px;background:var(--ink2);
+border-bottom:1px solid var(--seam);display:flex;align-items:center;gap:12px;padding:0 18px}
+.logo{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--chalk);
+letter-spacing:-.2px;text-decoration:none}
+.top a.btn{margin-left:auto;font-size:12px;color:var(--chalk2);text-decoration:none;
+border:1px solid var(--seam);border-radius:var(--r);padding:5px 12px}
+.top a.btn:hover{color:var(--chalk);border-color:var(--chalk3)}
+.wrap{max-width:860px;margin:0 auto;padding:32px 22px 96px}
+.crumb{font-size:12px;color:var(--chalk3);margin-bottom:22px;font-family:'DM Mono',monospace}
+.crumb a{color:var(--chalk2);text-decoration:none}
+.crumb a:hover{color:var(--spike)}
+h1,h2,h3,h4{font-family:'Syne',sans-serif;letter-spacing:-.3px;line-height:1.25;
+scroll-margin-top:64px}
+h1{font-size:30px;font-weight:800;margin:.2em 0 .6em}
+h2{font-size:21px;font-weight:700;margin:1.8em 0 .5em;padding-top:.4em;
+border-top:1px solid var(--seam)}
+h3{font-size:16.5px;font-weight:700;margin:1.4em 0 .4em;color:var(--chalk)}
+h4{font-size:14px;font-weight:700;margin:1.2em 0 .3em;color:var(--chalk2)}
+p{margin:.7em 0}
+a{color:var(--amb);text-decoration:none;border-bottom:1px solid rgba(200,164,74,.28)}
+a:hover{color:var(--spike);border-bottom-color:var(--spike)}
+strong{color:#fff;font-weight:600}
+code{font-family:'DM Mono',ui-monospace,monospace;font-size:.86em;background:var(--ink3);
+border:1px solid var(--seam);border-radius:4px;padding:1px 5px;color:var(--amb)}
+pre{background:var(--ink2);border:1px solid var(--seam);border-radius:var(--r-lg);
+padding:16px 18px;overflow-x:auto;margin:1em 0}
+pre code{background:none;border:none;padding:0;color:var(--chalk2);font-size:12.5px;
+line-height:1.5;white-space:pre}
+blockquote{margin:1.1em 0;padding:.4em 16px;border-left:3px solid var(--amb);
+background:var(--amb-d,rgba(200,164,74,.07));border-radius:0 var(--r) var(--r) 0;
+color:var(--chalk2)}
+blockquote p{margin:.4em 0}
+hr{border:none;border-top:1px solid var(--seam);margin:2em 0}
+ul,ol{margin:.6em 0;padding-left:1.4em}
+li{margin:.28em 0}
+li>ul,li>ol{margin:.25em 0}
+.tw{overflow-x:auto;margin:1.1em 0;border:1px solid var(--seam);border-radius:var(--r-lg)}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--seam);
+vertical-align:top}
+th{background:var(--ink3);font-family:'Syne',sans-serif;font-weight:700;font-size:12px;
+color:var(--chalk);white-space:nowrap}
+tr:last-child td{border-bottom:none}
+td code{white-space:nowrap}
+.idx-group{margin:1.4em 0}
+.idx-group h3{border-bottom:1px solid var(--seam);padding-bottom:.3em}
+.idx-card{display:block;padding:12px 14px;margin:8px 0;background:var(--ink2);
+border:1px solid var(--seam);border-radius:var(--r-lg);color:var(--chalk);
+border-bottom:1px solid var(--seam)}
+.idx-card:hover{border-color:var(--chalk3);color:var(--chalk)}
+.idx-card b{font-family:'Syne',sans-serif}
+.idx-card span{display:block;color:var(--chalk2);font-size:13px;margin-top:2px}
+@media(max-width:600px){.wrap{padding:22px 15px 80px}h1{font-size:24px}body{font-size:14px}}
+</style></head><body><div class=top><a class=logo href="../../index.html">🧗 multi-pitch <span style="color:var(--spike)">Live</span></a><a class=btn href="../../" title="The live ranked dashboard">Dashboard</a><a class=btn href="../../knowledge/index.html" title="The project knowledge base">Knowledge</a><a class=btn href="../../knowledge/corpus-inspector.html" title="Browse every climb with its taxonomy + weather (reads corpus.json)">Inspector</a><a class=btn href="../../knowledge/data-dependencies.html" title="How climb/venue data flows — the source of truth (decision #27)">Data map</a><a class=btn href="../../knowledge/operations/serpapi-quota.html" title="Live SerpApi/flight-search quota and API cost status">API Status</a><a class=btn href="https://multi-pitch.com/map/" title="Every venue on the multi-pitch.com map" target=_blank rel=noopener>Map</a><a class=btn href="https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit" title="The curated venue spreadsheet" target=_blank rel=noopener>Spreadsheet</a><a class=btn href="https://github.com/uncinimichel/climbing-agent" title="Project source on GitHub" target=_blank rel=noopener>GitHub</a><a class=btn href="https://multi-pitch.com/" target=_blank rel=noopener>multi-pitch.com ↗</a></div><div class=wrap><div class=crumb><a href="../index.html">📚 knowledge</a> / data / <b style='color:var(--chalk2)'>mp-field-mapping</b></div><h1 id="multi-pitch-com-climbing-db-field-mapping">multi-pitch.com ⇄ climbing DB — field mapping</h1>
+<p>The spec for merging the two projects: every multi-pitch <code>climbData</code> field, its home in the Postgres schema, and the taxonomy/schema work needed before a lossless round-trip (ingest MP → Postgres, then <code>export_mp.py</code> Postgres → MP JSON).</p>
+<p>Verified against all 52 climb files in <code>multi-pitch/website/data/climbs/</code> on 2026-07-15. <strong>Result: every MP field has a DB home except <code>guideBooks[].type</code></strong> (one new column needed), plus two taxonomy values and one widened CHECK.</p>
+<h2 id="1-field-map-climbs-id-json-schema">1 · Field map — <code>climbs/&lt;id&gt;.json</code> → schema</h2>
+<h3 id="identity-location">Identity &amp; location</h3>
+<div class="tw"><table><thead><tr><th>MP field</th><th>DB home</th><th>Status</th></tr></thead><tbody><tr><td><code>id</code></td><td><code>external_ref</code> (<code>source_id=&#x27;multipitch&#x27;</code>, <code>external_id</code>)</td><td>✅ already in use</td></tr><tr><td><code>routeName</code></td><td><code>route.name</code></td><td>✅</td></tr><tr><td><code>country</code></td><td><code>area</code> (kind <code>country</code>).name</td><td>✅</td></tr><tr><td><code>county</code></td><td><code>area</code> (kind <code>region</code>).name</td><td>✅ clean values first (see §4)</td></tr><tr><td><code>cliff</code></td><td><code>area</code> (kind <code>crag</code>).name</td><td>✅</td></tr><tr><td><code>geoLocation</code> (<code>&quot;lat,lon&quot;</code> string)</td><td><code>route.geom</code> (Point 4326)</td><td>✅ parse/format on the way through</td></tr><tr><td><code>timeZone</code></td><td><code>route.timezone</code></td><td>✅ (51/52 files have it)</td></tr><tr><td><code>status</code> (<code>draft</code>/<code>publish</code>)</td><td><code>route.status</code></td><td>✅ identical vocabulary</td></tr><tr><td><code>lastUpdate</code></td><td><code>route.last_update</code></td><td>⚠ export must reproduce MP's cache-bust rule: minor edit = old date + 1 s, major edit = now</td></tr></tbody></table></div>
+<h3 id="grades">Grades</h3>
+<div class="tw"><table><thead><tr><th>MP field</th><th>DB home</th><th>Status</th></tr></thead><tbody><tr><td><code>gradeSys</code></td><td><code>route.grade_system_code</code></td><td>✅ all 6 observed (ALP, BAS, FS, N, UIAA, YDS) are seeded</td></tr><tr><td><code>originalGrade</code></td><td><code>route.original_grade</code></td><td>⚠ ids 15, 19 store a JSON number (5.8/5.7 YDS) — cast to string</td></tr><tr><td><code>tradGrade</code></td><td><code>route.trad_grade</code></td><td>✅</td></tr><tr><td><code>techGrade</code></td><td><code>route.tech_grade</code></td><td>✅</td></tr><tr><td><code>dataGrade</code></td><td><code>route.data_grade</code></td><td>✅ observed 1–7 matches the CHECK; NULL on drafts is fine</td></tr></tbody></table></div>
+<h3 id="physical-character">Physical character</h3>
+<div class="tw"><table><thead><tr><th>MP field</th><th>DB home</th><th>Status</th></tr></thead><tbody><tr><td><code>length</code></td><td><code>route.length_m</code></td><td>✅</td></tr><tr><td><code>pitches</code></td><td><code>route.pitches_count</code></td><td>✅</td></tr><tr><td><code>face</code></td><td><code>route.aspect</code></td><td>✅ all 8 observed values in <code>aspect_dir</code></td></tr><tr><td><code>rock</code></td><td><code>route.rock_code</code></td><td>⚠ lowercase on ingest; 3 fixes in §3/§4</td></tr><tr><td><code>incline</code></td><td><code>route.incline_code</code></td><td>⚠ one taxonomy addition + one typo (§3/§4)</td></tr></tbody></table></div>
+<h3 id="hazards-mp-booleans-route-hazard-rows">Hazards (MP booleans → <code>route_hazard</code> rows)</h3>
+<p><code>abseil, traverse, boat, tidal, polished, loose, seepage, grassLegdes</code> → codes of the same name (<code>grassLegdes</code>→<code>grassLedges</code>). Mapping already exists in <code>enrich_from_multipitch.py</code>. Two notes:</p>
+<ul><li>MP stores these as a mix of <code>true</code>/<code>1</code>/<code>&quot;true&quot;</code>/<code>null</code> — ingest must truthy-coerce.</li><li><code>tidal</code>, <code>seepage</code>, <code>loose</code> are safety-critical (evidence required by trigger).</li></ul>
+<p>  MP flags are human-curated, so ingest with   <code>evidence_span = &#x27;multi-pitch.com curated flag&#x27;</code>, <code>source_url</code> = the climb's URL.</p>
+<h3 id="approach-prose">Approach &amp; prose</h3>
+<div class="tw"><table><thead><tr><th>MP field</th><th>DB home</th><th>Status</th></tr></thead><tbody><tr><td><code>approachTime</code></td><td><code>route.approach_time_min</code></td><td>✅</td></tr><tr><td><code>approachDifficulty</code></td><td><code>route.approach_difficulty</code></td><td>✅ observed 1–3 = CHECK range</td></tr><tr><td><code>intro</code></td><td><code>route.intro_html</code></td><td>✅ full HTML (current <code>mp-climbs.json</code> snapshot strips it — re-ingest)</td></tr><tr><td><code>approach</code></td><td><code>route.approach_html</code></td><td>✅ full HTML</td></tr><tr><td><code>pitchInfo</code></td><td><code>route.pitch_info_html</code></td><td>✅ verbatim HTML is the round-trip source of truth. Its <code>pitch-title</code>/<code>length</code>/<code>pitchGrade</code> spans are parseable into <code>pitch</code> rows later, but structured pitches are derived, not authoritative, until MP renders from them</td></tr></tbody></table></div>
+<h3 id="nested-objects">Nested objects</h3>
+<div class="tw"><table><thead><tr><th>MP field</th><th>DB home</th><th>Status</th></tr></thead><tbody><tr><td><code>guideBooks[]</code> <code>.isbn .title .rrp .imgURL .link</code></td><td><code>guidebook</code> (<code>isbn, title, rrp, img_url, link</code>)</td><td>✅</td></tr><tr><td><code>guideBooks[]</code> <code>.description .pg</code></td><td><code>route_guidebook</code> (<code>description, page</code>)</td><td>✅</td></tr><tr><td><code>guideBooks[]</code> <code>.type</code> (<code>&#x27;guidebook&#x27;</code> \</td><td><code>&#x27;PDF&#x27;</code>)</td><td><strong>nowhere</strong></td><td>❌ the one true gap — add <code>guidebook.kind</code> (§3)</td></tr><tr><td><code>references[]</code> (<code>text</code>, <code>url</code>)</td><td><code>route_reference</code></td><td>⚠ prefix CHECK too strict (§3)</td></tr><tr><td><code>weatherData</code> (<code>rainyDays/tempH/tempL</code> ×12)</td><td><code>route_climatology</code> (12 rows)</td><td>✅</td></tr><tr><td><code>mapImg</code> (<code>url, alt</code>, rarely <code>geo</code>)</td><td><code>route.map_img</code> jsonb</td><td>✅ opaque — nothing lost (id 28's extra <code>geo</code> key rides along)</td></tr><tr><td><code>topo</code> (<code>url, alt, attributionText, atributionURL, dataFile</code>)</td><td><code>route.topo</code> jsonb</td><td>✅ opaque; preserve the <code>atributionURL</code> typo key so the site keeps working, or fix site + data together</td></tr><tr><td><code>tileImage</code> (in <code>data.json</code> only)</td><td><code>route.tile_image</code> jsonb</td><td>✅ ingest from <code>data.json</code></td></tr></tbody></table></div>
+<h3 id="data-json"><code>data.json</code></h3>
+<p>Every per-climb key in <code>data.json</code> (the 18-key summary) is a projection of <code>route</code> + <code>area</code> columns — matches the <code>allClimbData: true</code> set in MP's <code>cms-mapping.js</code>. <code>export_mp.py</code> regenerates it entirely; top-level <code>lastUpdate</code> = export time.</p>
+<h3 id="db-fields-mp-has-no-source-for-stay-null-curated-later-in-the-studio">DB fields MP has no source for (stay NULL, curated later in the Studio)</h3>
+<p><code>protection_code/style, belays, commitment_code, escapable, rack, rope, bolts_count, descent_*, elevation_m, sun_window_code, wind_exposed, best_season, stars, left_right_index</code>, discipline/feature/character tags, structured <code>pitch</code> rows, <code>first_ascent</code>. These are the Studio's value-add on top of the MP record — <code>export_mp.py</code> simply omits what MP's schema doesn't render (until the site grows fields for them).</p>
+<h2 id="2-taxonomy-additions-do-in-the-curation-studio-auto-exports-105-taxonomy-values-json">2 · Taxonomy additions (do in the Curation Studio → auto-exports 105 + taxonomy-values.json)</h2>
+<ol><li><strong>rock</strong>: add <code>phonolite</code> — used by id 15 (Durance). Notes: sound volcanic,</li></ol>
+<p>   fine-grained; behaves like fine rhyolite.</p>
+<ol><li><strong>incline</strong>: add <code>Slab, Vertical &amp; Overhanging</code> (full-range composite;</li></ol>
+<p>   sort_order 4, shifting <code>Vertical &amp; Overhanging</code>→5, <code>Overhanging</code>→6).    ⚠ <code>incline</code> is not yet a Studio-managed family (<code>TAXONOMY</code> dict in    <code>curate.py</code>) — either add it there or seed via SQL.</p>
+<p>No hazard, grade-system, aspect, or status additions needed — MP's observed values are fully covered.</p>
+<h2 id="3-schema-tweaks-new-migration">3 · Schema tweaks (new migration)</h2>
+<ol><li><code>guidebook</code> <strong>add</strong> <code>kind text NOT NULL DEFAULT &#x27;guidebook&#x27; CHECK (kind IN (&#x27;guidebook&#x27;,&#x27;pdf&#x27;))</code></li></ol>
+<p>   — homes MP's <code>guideBooks[].type</code>.</p>
+<ol><li><code>route_reference.prefix</code> — MP references are mostly unprefixed free text</li></ol>
+<p>   (NULL prefix already passes the CHECK ✅) but observed prefixes include    <code>Access Info</code> and <code>Accommodation</code> (sic: "Accomerdation"). Widen the CHECK to    <code>(&#x27;Video&#x27;,&#x27;Travel&#x27;,&#x27;Article&#x27;,&#x27;Info&#x27;,&#x27;Tides&#x27;,&#x27;Access&#x27;,&#x27;Accommodation&#x27;)</code>;    ingest parses <code>text</code> up to the first <code>:</code> when it matches, else prefix NULL.</p>
+<h2 id="4-mp-source-cleanups-fix-in-multi-pitch-repo-before-the-final-ingest">4 · MP source cleanups (fix in multi-pitch repo before the final ingest)</h2>
+<div class="tw"><table><thead><tr><th>id</th><th>route</th><th>fix</th></tr></thead><tbody><tr><td>10</td><td>Wreakers Slab</td><td><code>rock: &quot;Shale &amp; Sandstone&quot;</code> — single-valued <code>rock_code</code>: set <code>sandstone</code>, note the shale bands in prose/curation_notes</td></tr><tr><td>15</td><td>Durance</td><td><code>originalGrade: 5.8</code> → <code>&quot;5.8&quot;</code></td></tr><tr><td>19</td><td>Joy</td><td><code>originalGrade: 5.7</code> → <code>&quot;5.7&quot;</code></td></tr><tr><td>21</td><td>Gweilo via Topcat</td><td><code>incline: &quot;Slsb, Vertical &amp; Overhanging&quot;</code> → <code>&quot;Slab, Vertical &amp; Overhanging&quot;</code></td></tr><tr><td>38</td><td>Pinnacle Slab</td><td><code>rock: &quot;Qurtzite&quot;</code> → <code>&quot;Quartzite&quot;</code></td></tr><tr><td>39</td><td>Donkey Serenades</td><td><code>rock: &quot;Qurtzite&quot;</code> → <code>&quot;Quartzite&quot;</code></td></tr><tr><td>45</td><td>Australia West Face</td><td>delete stray duplicate <code>rockType</code> key</td></tr><tr><td>51</td><td>Rincón de Placa</td><td><code>county: &quot; Alicante&quot;</code> — strip leading space</td></tr><tr><td>53</td><td>Aristotles</td><td><code>county: &quot; Alicante&quot;</code>-style leading space — strip</td></tr><tr><td>999</td><td>Route Name</td><td>template/placeholder record — exclude from ingest (like <code>template.json</code>)</td></tr></tbody></table></div>
+<p>Also normalise hazard flags stored as <code>&quot;true&quot;</code>/<code>1</code> to real booleans while editing (ingest coerces anyway, but the files may as well be clean).</p>
+<h2 id="5-merge-sequence">5 · Merge sequence</h2>
+<ol><li>Apply §3 migration + §2 taxonomy additions.</li><li>Fix §4 records in the multi-pitch repo (one commit).</li><li>One <strong>lossless</strong> re-ingest (successor to <code>enrich_from_multipitch.py</code> /</li></ol>
+<p>   <code>mp-climbs.json</code>, which is stripped-HTML and skips guidebooks/references/    images): full climb JSON + <code>data.json</code> <code>tileImage</code> → Postgres.</p>
+<ol><li>Write <code>export_mp.py</code>: Postgres → <code>website/data/climbs/&lt;id&gt;.json</code> + <code>data.json</code>,</li></ol>
+<p>   byte-stable against a freshly-ingested DB (round-trip test: ingest → export →    <code>git diff</code> clean apart from the known normalisations).</p>
+<ol><li>From then on: edit in the Curation Studio, export, review diff, commit.</li></ol>
+<p>   god-mode becomes read-only legacy (or a field-capture tool whose JSON is    imported as a draft).</p></div></body></html>
