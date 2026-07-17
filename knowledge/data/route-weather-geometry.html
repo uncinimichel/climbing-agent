@@ -1,0 +1,100 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Route Geometry × Weather · multi-pitch Live</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"><style>
+:root{--ink:#0C0D10;--ink2:#12141B;--ink3:#191C27;--ink4:#20243A;--seam:#252840;
+--chalk:#EAE6DD;--chalk2:#9B9890;--chalk3:#5A5860;--go:#6CB268;--amb:#C8A44A;
+--wet:#B94438;--spike:#C4FF5C;--r:6px;--r-lg:12px}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--ink);color:var(--chalk)}
+body{font-family:'Inter',system-ui,sans-serif;font-size:15px;line-height:1.65;
+-webkit-font-smoothing:antialiased}
+.top{position:sticky;top:0;z-index:10;height:48px;background:var(--ink2);
+border-bottom:1px solid var(--seam);display:flex;align-items:center;gap:12px;padding:0 18px}
+.logo{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--chalk);
+letter-spacing:-.2px;text-decoration:none}
+.top a.btn{margin-left:auto;font-size:12px;color:var(--chalk2);text-decoration:none;
+border:1px solid var(--seam);border-radius:var(--r);padding:5px 12px}
+.top a.btn:hover{color:var(--chalk);border-color:var(--chalk3)}
+.wrap{max-width:860px;margin:0 auto;padding:32px 22px 96px}
+.crumb{font-size:12px;color:var(--chalk3);margin-bottom:22px;font-family:'DM Mono',monospace}
+.crumb a{color:var(--chalk2);text-decoration:none}
+.crumb a:hover{color:var(--spike)}
+h1,h2,h3,h4{font-family:'Syne',sans-serif;letter-spacing:-.3px;line-height:1.25;
+scroll-margin-top:64px}
+h1{font-size:30px;font-weight:800;margin:.2em 0 .6em}
+h2{font-size:21px;font-weight:700;margin:1.8em 0 .5em;padding-top:.4em;
+border-top:1px solid var(--seam)}
+h3{font-size:16.5px;font-weight:700;margin:1.4em 0 .4em;color:var(--chalk)}
+h4{font-size:14px;font-weight:700;margin:1.2em 0 .3em;color:var(--chalk2)}
+p{margin:.7em 0}
+a{color:var(--amb);text-decoration:none;border-bottom:1px solid rgba(200,164,74,.28)}
+a:hover{color:var(--spike);border-bottom-color:var(--spike)}
+strong{color:#fff;font-weight:600}
+code{font-family:'DM Mono',ui-monospace,monospace;font-size:.86em;background:var(--ink3);
+border:1px solid var(--seam);border-radius:4px;padding:1px 5px;color:var(--amb)}
+pre{background:var(--ink2);border:1px solid var(--seam);border-radius:var(--r-lg);
+padding:16px 18px;overflow-x:auto;margin:1em 0}
+pre code{background:none;border:none;padding:0;color:var(--chalk2);font-size:12.5px;
+line-height:1.5;white-space:pre}
+blockquote{margin:1.1em 0;padding:.4em 16px;border-left:3px solid var(--amb);
+background:var(--amb-d,rgba(200,164,74,.07));border-radius:0 var(--r) var(--r) 0;
+color:var(--chalk2)}
+blockquote p{margin:.4em 0}
+hr{border:none;border-top:1px solid var(--seam);margin:2em 0}
+ul,ol{margin:.6em 0;padding-left:1.4em}
+li{margin:.28em 0}
+li>ul,li>ol{margin:.25em 0}
+.tw{overflow-x:auto;margin:1.1em 0;border:1px solid var(--seam);border-radius:var(--r-lg)}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--seam);
+vertical-align:top}
+th{background:var(--ink3);font-family:'Syne',sans-serif;font-weight:700;font-size:12px;
+color:var(--chalk);white-space:nowrap}
+tr:last-child td{border-bottom:none}
+td code{white-space:nowrap}
+.idx-group{margin:1.4em 0}
+.idx-group h3{border-bottom:1px solid var(--seam);padding-bottom:.3em}
+.idx-card{display:block;padding:12px 14px;margin:8px 0;background:var(--ink2);
+border:1px solid var(--seam);border-radius:var(--r-lg);color:var(--chalk);
+border-bottom:1px solid var(--seam)}
+.idx-card:hover{border-color:var(--chalk3);color:var(--chalk)}
+.idx-card b{font-family:'Syne',sans-serif}
+.idx-card span{display:block;color:var(--chalk2);font-size:13px;margin-top:2px}
+@media(max-width:600px){.wrap{padding:22px 15px 80px}h1{font-size:24px}body{font-size:14px}}
+</style></head><body><div class=top><a class=logo href="../../index.html">🧗 multi-pitch <span style="color:var(--spike)">Live</span></a><a class=btn href="../../" title="The live ranked dashboard">Dashboard</a><a class=btn href="../../knowledge/index.html" title="The project knowledge base">Knowledge</a><a class=btn href="../../knowledge/corpus-inspector.html" title="Browse every climb with its taxonomy + weather (reads corpus.json)">Inspector</a><a class=btn href="../../knowledge/data-dependencies.html" title="How climb/venue data flows — the source of truth (decision #27)">Data map</a><a class=btn href="../../knowledge/operations/serpapi-quota.html" title="Live SerpApi/flight-search quota and API cost status">API Status</a><a class=btn href="https://multi-pitch.com/map/" title="Every venue on the multi-pitch.com map" target=_blank rel=noopener>Map</a><a class=btn href="https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit" title="The curated venue spreadsheet" target=_blank rel=noopener>Spreadsheet</a><a class=btn href="https://github.com/uncinimichel/climbing-agent" title="Project source on GitHub" target=_blank rel=noopener>GitHub</a><a class=btn href="https://multi-pitch.com/" target=_blank rel=noopener>multi-pitch.com ↗</a></div><div class=wrap><div class=crumb><a href="../index.html">📚 knowledge</a> / data / <b style='color:var(--chalk2)'>route-weather-geometry</b></div><h1 id="route-geometry-weather-why-one-forecast-number-can-t-cover-a-climb">Route geometry × weather — why one forecast number can't cover a climb</h1>
+<p>How a route's <em>shape</em> (height gain, traverses, abseil approach) changes what a forecast means, and what a widget or scorer may honestly claim. Companion to <a href="weather-models.html"><code>weather-models.md</code></a> (which API and why) and <a href="condition-algorithm.html"><code>condition-algorithm.md</code></a> (the scoring maths). Grounded in the 2026-07-17 multi-pitch.com top-out work (PR #92 there) — every number below is from live calls, not theory.</p>
+<blockquote><p><strong>Method:</strong> verified against Open-Meteo with forced-elevation calls on <strong>Sass Pordoi (46.499, 11.808)</strong> and cross-checked against BBC/MeteoGroup village stations at three crags (NW Scotland, Mourne, Dolomites) on 2026-07-16/17.</p></blockquote>
+<h2 id="1-forecasts-are-model-points-at-one-elevation">1. Forecasts are model points at ONE elevation</h2>
+<p>Open-Meteo output is a numerical model <strong>statistically downscaled with a 90 m DEM</strong> to the request point's elevation (their docs, <code>elevation</code> parameter). It is <em>not</em> station interpolation — stations only feed the models' initial conditions upstream. Measured consequence, same Sass Pordoi coordinates, only <code>&amp;elevation=</code> changed:</p>
+<div class="tw"><table><thead><tr><th>Forced elevation</th><th>Tomorrow's max</th><th>Gusts</th></tr></thead><tbody><tr><td>2709 m (DEM default = the massif)</td><td>12.6 °C</td><td>13.9 m/s</td></tr><tr><td>1465 m (Canazei, the valley town)</td><td>23.2 °C</td><td>6.6 m/s</td></tr><tr><td>0 m (unphysical extrapolation)</td><td>31.5 °C</td><td>18.7 m/s — garbage</td></tr></tbody></table></div>
+<p>Implied gradient ≈ <strong>7.0 °C/km ≈ the standard lapse rate (6.5 °C/km)</strong>, and <strong>valley→summit roughly doubles gusts</strong>. The 0 m row is the warning: downscaling is trustworthy near the terrain's real elevation only.</p>
+<h2 id="2-a-multi-pitch-route-climbs-through-its-own-weather">2. A multi-pitch route climbs through its own weather</h2>
+<p>The climber starts at the base and tops out <code>length</code> metres higher, hours later. On a 555 m line (Fedele) that is ≈3.6 °C and a wind class <em>within one climb</em>; on the 720 m Grande Fermeda ≈4.7 °C. <strong>No single number covers both ends.</strong> Any per-route weather display must either state which point it describes or show both.</p>
+<p><strong>The relative-offset trick:</strong> you usually don't know whether the crag's DEM point sits at the cliff's base or top (it can be off by the full cliff height — dankni, multi-pitch PR #91). But a <em>second</em> forecast at <code>DEM_elevation + route_length</code> gives a correct <strong>base→top delta</strong> wherever the DEM point sits, because the offset — not the absolute — carries the signal.</p>
+<h2 id="3-length-height-gain-geometry-gates-everything">3. Length ≠ height gain — geometry gates everything</h2>
+<p><code>route length</code> approximates height gain <strong>only on broadly vertical lines</strong>:</p>
+<ul><li><strong>Traverse / girdle routes</strong> (taxonomy hazard <code>traverse</code>) cover <em>distance</em>, not</li></ul>
+<p>  altitude — Via Maria's 370 m includes long traverses. Applying lapse maths to their   length fabricates cold that isn't there. <strong>Rule: <code>traverse</code> ⇒ no top-out figures.</strong></p>
+<ul><li><strong>Traverse-then-climb, up-then-down lines</strong>: same problem, unknown split.</li><li><strong>Abseil routes</strong>: the taxonomy's <code>abseil</code> flag conflates <strong>abseil-approach</strong> (marker</li></ul>
+<p>  at the top; you drop <code>length</code> m then climb back — sea stacks, Old Man of Hoy) with   <strong>abseil-descent</strong> (marker at the base; normal alpine descent). The two put the   marker at <em>opposite ends</em> of the height band, so the flag carries <strong>no directional   signal</strong> for weather. Vertical abseil routes keep length≈height; direction stays   unknown.</p>
+<p><strong>Taxonomy proposal</strong> (to add via the Curation Studio per decision #35): split the hazard into <code>abseil-approach</code> and <code>abseil-descent</code>. Beyond planning value, the split is weather-relevant: approach ⇒ the coordinate describes the <em>top</em>; descent ⇒ the <em>base</em>.</p>
+<h2 id="4-further-nuances-the-one-number-view-hides">4. Further nuances the one-number view hides</h2>
+<ul><li><strong>Hours-on-route</strong>: a 10-pitch day spans a forecast's morning and afternoon — hourly</li></ul>
+<p>  data matters more than daily on long routes (see the widget's hour rows).</p>
+<ul><li><strong>Remote ranges = weaker models</strong>: NWP assimilates observations; sparse networks</li></ul>
+<p>  (exactly where the best multi-pitch lives) mean less-constrained output.</p>
+<ul><li><strong>Aspect × hour</strong>: a south face at valley dawn vs an arête at 14:00 differ more than</li></ul>
+<p>  any model resolves; taxonomy <code>aspect</code> + hourly sun is the best proxy.</p>
+<ul><li><strong>Wind exposure</strong>: summits/arêtes take the doubled gust figure above; sheltered bases</li></ul>
+<p>  may feel none of it — the model knows elevation, not shelter.</p>
+<ul><li><strong>Valley inversions / föhn</strong>: the two classic cases where lapse-rate intuition</li></ul>
+<p>  <em>inverts</em> (warm summit over cold valley); models catch some, not all.</p>
+<ul><li><strong>Dew point is elevation-dependent too</strong>: friction scoring</li></ul>
+<p>  (<a href="condition-algorithm.html"><code>condition-algorithm.md</code></a> §friction) uses the base   elevation's dew point; the top-out spread differs. Reader-facing rule of thumb shipped   in multi-pitch's widget: <em>rock temp near dew point ⇒ grease; wide gap ⇒ friction</em>.</p>
+<ul><li><strong>Tidal windows and seepage</strong> already have their own machinery (hazards <code>tidal</code>,</li></ul>
+<p>  <code>seepage</code>); they interact with the above (e.g. abseil-approach + tidal = committed).</p>
+<h2 id="what-a-widget-may-honestly-claim-shipped-rules-multi-pitch-pr-92-final">What a widget may honestly claim (shipped rules, multi-pitch PR #92 — final)</h2>
+<p>The two-figure/model-call version was <strong>rolled back in review</strong>: climbed length ≥ vertical gain on nearly every route (wandering lines, diagonal pitches), so <code>DEM + length</code> systematically overshoots the summit and precise-looking top figures overclaim. What survives is the one statement route length supports <em>by construction</em> — since <code>length ≥ height gain</code>, <code>lapse × length</code> is a strict <strong>upper bound</strong> on the drop:</p>
+<ol><li>Vertical routes whose bound rounds ≥2 °C: one clause — *"the top of this 555 m route</li></ol>
+<p>   could be <strong>up to</strong> ≈4° colder (rough estimate)"*. No second model call, no per-cell    marks.</p>
+<ol><li><code>traverse</code> routes and anything shorter: <strong>one figure, no claims</strong>.</li><li>Everything under a blunt caveat (dankni's wording): *"This forecast comes from a</li></ol>
+<p>   weather model calculated for the climb's coordinates. Never take a forecast for    granted."*</p>
+<p>Cross-validation that the <em>physics</em> holds even though the <em>per-route geometry</em> doesn't: met.no (independent model, explicit altitude) at 3264 m brackets Open-Meteo's forced- elevation numbers there (1.2–10.6 vs 3.2–9.1 °C, 2026-07-17); BBC's nearest Dolomites stations are valley towns only — the altitude signal is real, the route-specific claim is what must stay humble.</p></div></body></html>

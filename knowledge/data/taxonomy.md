@@ -266,7 +266,7 @@ Boolean tags (`1` = present, absent/`null` = not). Safety-critical ones (`loose`
 |---|---|---|
 | `tidal` | Access/base tide-dependent (sea cliffs) | tide-window logic (**live 5 Jul 2026** — see below) |
 | `seepage` | Weeps / holds water after rain | Predictive Condition Algorithm |
-| `abseil` | Requires an abseil (approach/descent) | gear & planning |
+| `abseil` | Requires an abseil (approach/descent) | gear & planning — proposal to split into `abseil-approach` / `abseil-descent`: the two put the marker at opposite ends of the height band, see [`route-weather-geometry.md`](route-weather-geometry.md) |
 | `traverse` | Significant traverse | rope management / commitment |
 | `boat` | Reached by boat or swim | logistics |
 | `polished` | Slick, polished rock | difficulty-in-practice |

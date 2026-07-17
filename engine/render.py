@@ -756,7 +756,9 @@ svg.topo .dseg{pointer-events:stroke}
 .wx-detail .wxd-head{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:8px}
 .wx-detail .wxd-head b{font-size:13.5px}
 .wx-detail .wxd-why{color:var(--muted);font-size:12px}
-.wx-detail .wxd-facts{display:flex;flex-wrap:wrap;gap:7px 18px}
+.wx-detail .wxhelp{width:15px;height:15px;margin-left:5px;padding:0;border:1px solid var(--muted);border-radius:50%;background:none;color:var(--muted);font-size:10px;font-weight:700;line-height:1;cursor:pointer;vertical-align:middle}
+.wxhelp-pop{display:none;max-width:340px;margin:4px 0 2px;padding:7px 9px;border-radius:8px;background:var(--line2);font-size:11.5px;line-height:1.45}
+.wxd-facts{display:flex;flex-wrap:wrap;gap:7px 18px}
 .wx-detail .wxd-facts>span{white-space:nowrap}
 .wx-detail .wxd-facts i{font-style:normal;font-family:var(--mono);font-size:9px;letter-spacing:.05em;text-transform:uppercase;color:var(--faint);margin-right:5px}
 .wx-detail .dim{color:var(--muted)}
@@ -1402,7 +1404,10 @@ function wxDetailHtml(d,v){
   if(tcc!=null)f.push('<span><i>Cloud</i>'+tcc+'%</span>');
   if(d.fc&&d.fc.friction)f.push('<span><i>Friction</i>'+esc(d.fc.friction)
     +(d.fc.dew!=null?' <span class="dim">dew '+num(d.fc.dew)+'°</span>':'')
-    +(d.fc.sunFrac!=null?' <span class="dim">· '+Math.round(num(d.fc.sunFrac)*100)+'% sun</span>':'')+'</span>');
+    +(d.fc.sunFrac!=null?' <span class="dim">· '+Math.round(num(d.fc.sunFrac)*100)+'% sun</span>':'')
+    +'<button class="wxhelp" aria-label="What is dew point?" onclick="var p=this.nextElementSibling;p.style.display=p.style.display===\'block\'?\'none\':\'block\'">?</button>'
+    +'<span class="wxhelp-pop">Dew point is the temperature at which moisture in the air condenses. Rock close to the dew point turns damp and greasy; a wide gap means dry air and better friction — the whole friction rating above is built on this spread.</span>'
+    +'</span>');
   if(d.sun)f.push('<span><i>Daylight</i>'+(d.sun[0]?esc(d.sun[0])+'→'+esc(d.sun[1])+' <span class="dim">· '+num(d.sun[2])+'h</span>':(d.sun[2]>=24?'24h sun':'no sun'))+'</span>');
   if(d.tide&&d.tide.length)f.push('<span><i>Tide</i>'+d.tide.map(function(x){return (x.k==='L'?'▼':'▲')+esc(x.t)+' '+num(x.h)+'m';}).join(' · ')+' <span class="dim">local</span></span>');
   // hours FIRST, flowing straight on from the day columns above (no label, no
