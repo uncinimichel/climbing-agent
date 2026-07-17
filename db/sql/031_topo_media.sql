@@ -35,11 +35,13 @@ CREATE TABLE topo (
 );
 CREATE INDEX topo_area_idx ON topo (area_id);
 
--- A route's line on a topo. Coordinates are pixels on the original image
--- (exactly multi-pitch's shape, so its 38 topos import losslessly):
---   line    [[x,y], ...]                       the climbing line, bottom → top
---   pitches [{belayPosition:[x,y], labelPosition:[x,y], grade, height}, ...]
---   descent [[x,y], ...]                       abseil / walk-off path
+-- A route's line on a topo. Coordinates are NORMALIZED 0-1 fractions of the
+-- EXIF-oriented image (tech review 17 Jul 2026 — survives re-derivation,
+-- matches OSM's wikimedia_commons:path convention for future export; EXIF is
+-- baked at upload so there is exactly one coordinate space):
+--   line    [[fx,fy], ...]                     the climbing line, bottom → top
+--   pitches [{belayPosition:[fx,fy], labelPosition:[fx,fy], grade, height}, ...]
+--   descent [{path:[[fx,fy],...], label, anchor, labelPosition}, ...]  labelled segments
 CREATE TABLE topo_line (
     topo_id     bigint NOT NULL REFERENCES topo (id) ON DELETE CASCADE,
     route_id    bigint NOT NULL REFERENCES route (id) ON DELETE CASCADE,

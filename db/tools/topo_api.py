@@ -5,9 +5,12 @@ same filters as all other curation.
 Model: media = the crag photo (credit + license mandatory; non-owned photos
 need a permission note — only owned/permissioned photos may ever reach a
 booklet); topo = a drawable canvas over one photo; topo_line = one route's
-line/pitches/descent as pixel coordinates on the ORIGINAL image
-(multi-pitch.com's exact topoData shape — its 38 topos were imported
-losslessly by import_mp_topos.py).
+line/pitches/descent as NORMALIZED 0-1 fractions of the oriented image
+(tech review 17 Jul 2026: EXIF orientation is baked at upload and dims come
+from the server, so there is exactly one coordinate space; fractions survive
+image re-derivation and match the OSM `wikimedia_commons:path` convention
+for future export). Descent = a list of labelled segments
+[{path, label, anchor, labelPosition}] — multi-pitch's richer shape.
 """
 from __future__ import annotations
 
@@ -19,6 +22,8 @@ from pathlib import Path
 import psycopg
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 from pydantic import BaseModel
+
+import images
 
 ROOT = Path(__file__).resolve().parents[2]
 TOPO_DIR = ROOT / "db" / "uploads" / "topos" / "studio"
@@ -77,8 +82,7 @@ def topo_detail(topo_id: int):
 @router.post("/api/topomedia")
 async def upload_topo_photo(file: UploadFile = File(...), area_id: int = Form(...),
                             credit: str = Form(...), license: str = Form("owned"),
-                            permission_note: str = Form(""), title: str = Form(""),
-                            width: int = Form(...), height: int = Form(...)):
+                            permission_note: str = Form(""), title: str = Form("")):
     if license not in ("owned", "permission", "cc"):
         raise HTTPException(400, "license must be owned|permission|cc")
     if license != "owned" and not permission_note.strip():
@@ -88,14 +92,37 @@ async def upload_topo_photo(file: UploadFile = File(...), area_id: int = Form(..
         raise HTTPException(400, "jpg/png/webp only")
     dest = TOPO_DIR / f"a{area_id}-{int(time.time())}{ext}"
     dest.write_bytes(await file.read())
+    try:   # bake EXIF orientation; the server's oriented dims ARE the coordinate space
+        w, h = images.normalize(dest)
+        images.derive(dest)
+    except Exception:
+        dest.unlink(missing_ok=True)
+        raise HTTPException(400, "could not read that image — is it a valid photo?")
     uri = f"uploads/topos/studio/{dest.name}"
     media = q("""INSERT INTO media (area_id, kind, uri, width_px, height_px, credit, license, permission_note)
                  VALUES (%s, 'crag_photo', %s, %s, %s, %s, %s, nullif(%s, ''))
-                 RETURNING id""", (area_id, uri, width, height, credit, license, permission_note))
+                 RETURNING id""", (area_id, uri, w, h, credit, license, permission_note))
     topo = q("""INSERT INTO topo (media_id, area_id, title)
                 VALUES (%s, %s, coalesce(nullif(%s, ''), (SELECT name FROM area WHERE id = %s)))
                 RETURNING id""", (media[0]["id"], area_id, title, area_id))
     return {"topo_id": topo[0]["id"]}
+
+
+@router.delete("/api/topo/{topo_id}")
+def delete_topo(topo_id: int):
+    """Remove a bad/typo'd upload: the topo, its media row, and the files."""
+    rows = q("""DELETE FROM topo t USING media m WHERE t.id = %s AND m.id = t.media_id
+                RETURNING m.id AS media_id, m.uri""", (topo_id,))
+    if not rows:
+        raise HTTPException(404, "no such topo")
+    q("DELETE FROM media WHERE id = %s RETURNING id", (rows[0]["media_id"],))
+    f = ROOT / rows[0]["uri"]
+    for p in [f, *images.variant_paths(f).values()]:
+        try:
+            p.unlink(missing_ok=True)
+        except Exception:
+            pass
+    return {"ok": True}
 
 
 class TopoPatch(BaseModel):

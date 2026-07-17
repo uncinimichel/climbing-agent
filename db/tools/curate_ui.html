@@ -153,9 +153,27 @@
   .tpbar b{font-family:var(--serif);font-size:15px;margin-right:auto}
   .tpwrap{overflow:auto;flex:1;background:var(--panel-2);display:flex;justify-content:center}
   .tpwrap canvas{display:block;cursor:crosshair}
-  .tppitches{display:flex;gap:6px;flex-wrap:wrap;align-items:center;padding:8px 14px;border-top:1px solid var(--line)}
-  .tppitch{display:flex;gap:4px;align-items:center;font:11px var(--mono);background:var(--panel-2);border:1px solid var(--line);border-radius:6px;padding:3px 7px}
-  .tppitch input{width:54px;border:1px solid var(--line);border-radius:5px;background:var(--panel);color:var(--ink);font:11px var(--mono);padding:2px 5px}
+  /* unified pitch rail: THE pitch rows (same data as card ④), editable beside the photo */
+  .tppitches{display:flex;gap:8px;align-items:flex-start;padding:9px 14px;border-top:1px solid var(--line);overflow-x:auto}
+  .tppitch{flex:1 1 200px;min-width:180px;max-width:300px;display:flex;flex-direction:column;gap:4px;font:11px var(--mono);background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:6px 8px}
+  .tppitch.sel{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+  .tppitch .tpr1{display:flex;gap:4px;align-items:center}
+  .tppitch input{width:52px;border:1px solid var(--line);border-radius:5px;background:var(--panel);color:var(--ink);font:11px var(--mono);padding:2px 5px}
+  .tppitch textarea{width:100%;min-height:44px;border:1px solid var(--line);border-radius:5px;background:var(--panel);color:var(--ink);font:11px/1.4 var(--sans);padding:3px 6px;resize:vertical}
+  .tppitch .nob{color:var(--faint)}
+  .tppitch .nob.set{color:var(--accent-ink);font-weight:700}
+  .tpdescent{display:none;gap:6px;align-items:center;flex-wrap:wrap;padding:8px 14px;border-top:1px solid var(--line);font:11.5px var(--sans)}
+  .tpdescent.on{display:flex}
+  .tpdescent input,.tpdescent select{border:1px solid var(--line);border-radius:5px;background:var(--panel-2);color:var(--ink);font:11.5px var(--sans);padding:3px 6px}
+  .tphint{font:10.5px var(--sans);color:var(--faint);padding:0 14px 8px}
+  .btn.attn{border-color:var(--amber);color:var(--amber);font-weight:700}
+  #tpTitleIn{border:0;background:transparent;color:var(--ink);font:600 15px var(--serif);min-width:220px;flex:1}
+  #tpTitleIn:focus{outline:1px dashed var(--line-2)}
+  /* dark mode: never white-on-light-accent (review P0-4) */
+  @media (prefers-color-scheme:dark){
+    .btn.primary,.views button.on,.season i.on{color:#171B19}
+    .statuschip.pub{color:var(--accent-ink)}
+  }
 
   .gridview{display:none}
   .bulk{display:flex;gap:8px;align-items:center;background:var(--accent-soft);border:1px solid var(--accent);border-radius:10px;padding:8px 12px;font-size:12px;color:var(--accent-ink);margin-bottom:10px;flex-wrap:wrap}
@@ -317,22 +335,34 @@
 <div id="topoModal">
   <div class="tpbox">
     <div class="tpbar">
-      <b id="tpTitle">topo</b>
+      <input id="tpTitleIn" title="topo title — saves on change" onchange="tpTitleSave(this.value)">
       <div class="views">
         <button class="on" data-m="line" onclick="tpMode(this)">line</button>
         <button data-m="belay" onclick="tpMode(this)">belays</button>
         <button data-m="descent" onclick="tpMode(this)">descent</button>
       </div>
-      <button class="btn sm" onclick="tpUndo()">undo point</button>
-      <button class="btn sm danger" onclick="tpClear()">clear</button>
-      <label class="minor">belay size <input id="tpBelaySize" type="number" min="8" max="80" style="width:52px" onchange="tpBelay(this.value)"></label>
-      <button class="btn sm" id="tpStatusBtn" onclick="tpStatus()">publish</button>
-      <button class="btn sm danger" onclick="tpDeleteLine()" title="remove this route's line from this topo">✕ line</button>
-      <button class="btn sm primary" onclick="tpSave()">💾 save</button>
+      <button class="btn sm" onclick="tpUndo()" title="remove the last point in this mode">undo</button>
+      <button class="btn sm" onclick="tpFitView()" title="reset zoom (scroll to zoom, drag with right button to pan)">fit</button>
+      <label class="minor">belays <input id="tpBelaySize" type="number" min="8" max="80" style="width:52px" onchange="tpBelay(this.value)"></label>
+      <span style="flex:1"></span>
+      <button class="btn sm danger" onclick="tpClear()" title="clear this route's line, belays and descent (asks first)">clear</button>
+      <button class="btn sm danger" onclick="tpDeleteLine()" title="remove this route's saved line from this topo">✕ line</button>
+      <button class="btn sm danger" onclick="tpDeleteTopo()" title="delete this topo photo entirely (asks first)">🗑 photo</button>
+      <button class="btn sm" id="tpStatusBtn" onclick="tpStatus()" title="only published topos can reach a booklet">topo → publish</button>
+      <button class="btn sm primary" id="tpSaveBtn" onclick="tpSave()">💾 save topo + pitches</button>
       <button class="btn sm" onclick="tpClose()">close</button>
     </div>
     <div class="tpwrap"><canvas id="tpCanvas" width="10" height="10"></canvas></div>
+    <div class="tpdescent" id="tpDescentBar">
+      <b>descent</b>
+      <select id="tpDescMethod" onchange="save('descent_method',this.value||null)"></select>
+      <label>abseils <input id="tpDescAbs" type="number" min="0" style="width:52px" onchange="save('descent_abseils',this.value===''?null:+this.value)"></label>
+      <input id="tpDescNotes" style="flex:1;min-width:200px" placeholder="descent notes — abseil stations, walk-off line" onchange="save('descent_notes',this.value||null)">
+      <label>segment label <input id="tpSegLabel" style="width:130px" placeholder="60m abseil" onchange="tpSegLabelSave(this.value)"></label>
+      <button class="btn sm" onclick="tpNewSeg()" title="start a separate descent segment (e.g. a second abseil)">+ segment</button>
+    </div>
     <div class="tppitches" id="tpPitches"></div>
+    <div class="tphint" id="tpHint"></div>
   </div>
 </div>
 
@@ -461,6 +491,8 @@ function move(d){
 
 // ── autosave helpers ─────────────────────────────
 function save(field,value){
+  if(NUM_F.has(field)&&value!==null&&value!==''&&isNaN(+value)){
+    toast(`⚠ ${field.replace(/_/g,' ')} must be a number — got “${value}”`);return}
   const rid=R.id;   // captured NOW — the debounced write must never hit the next route
   R[field]=value;   // and the in-memory route keeps step, so a re-render (e.g. picking a
                     // grade system) can never wipe freshly-typed prose from the screen
@@ -481,6 +513,8 @@ function saveTags(){
 
 // ── queue card ─────────────────────────────
 const FAMS=[['disciplines',''],['features',''],['character',''],['hazards','haz']];
+// mirror of the server's typed-PATCH sets — reject garbage before it travels
+const NUM_F=new Set(['length_m','pitches_count','approach_time_min','elevation_m','descent_abseils','approach_difficulty','stars','data_grade']);
 function factInput(label,field,val,opts,missing){
   const cls='fact'+(missing&&(val===null||val===undefined||val==='')?' miss':'');
   if(opts){
@@ -490,32 +524,71 @@ function factInput(label,field,val,opts,missing){
   }
   return `<div class="${cls}"><b>${label}</b><input value="${esc(val)}" onchange="save('${field}',this.value===''?null:(isNaN(this.value)?this.value:+this.value))"></div>`;
 }
+function boolFact(label,field,val,hint){
+  const v=val===true?'yes':val===false?'no':'';
+  return `<div class="fact"${hint?` title="${hint}"`:''}><b>${label}</b>
+    <select onchange="save('${field}',this.value||null)"><option value=""></option>
+      <option ${v==='yes'?'selected':''}>yes</option><option ${v==='no'?'selected':''}>no</option></select></div>`;
+}
+function statusChipHtml(r){
+  const s=r.status;
+  return `<span class="statuschip ${s==='publish'?'pub':s==='quarantined'?'quar':r.needs_field_check?'field':''}" id="statusChip">
+    ${s==='publish'?'✓ published':s==='quarantined'?'✕ quarantined':(r.needs_field_check?'🥾 field check':'draft · '+r.tagged_by+'-tagged')}</span>`;
+}
+function chipsRow(f,extra){
+  const chipCls=R.tagged_by==='human'?'human':'';
+  return `<span class="minor" style="width:76px">${f}</span>
+    ${(R.tags[f]||[]).map(t=>`<span class="chip ${chipCls} ${extra}" onclick="dropTag('${f}',decodeURIComponent('${encodeURIComponent(t)}'))">${esc(t)}</span>`).join('')}
+    <select onchange="addTag('${f}',this.value);this.value=''"><option value="">+ add</option>
+      ${(ENUMS[f]||[]).filter(v=>!(R.tags[f]||[]).includes(v)).map(v=>`<option>${v}</option>`).join('')}</select>`;
+}
+function starsHtml(){
+  return [1,2,3].map(i=>`<span class="${(R.stars||0)>=i?'lit':''}" onclick="setStars(${i})" title="${i} star${i>1?'s':''} — click again to clear">★</span>`).join('');
+}
+function seasonHtml(){
+  const seasonSet=new Set(R.best_season||[]);
+  return [...Array(12)].map((_,i)=>`<i class="${seasonSet.has(i+1)?'on':''}" onclick="toggleMonth(${i+1})" title="${['January','February','March','April','May','June','July','August','September','October','November','December'][i]}">${'JFMAMJJASOND'[i]}</i>`).join('');
+}
+function warnHtml(r){
+  return r.grade_warning?`<div class="minor" style="color:var(--amber);margin-top:4px">⚠ ${r.grade_warning} — publish is blocked until the grade matches its scale</div>`:'';
+}
+// refresh only the grade-related widgets — a full renderCard here used to wipe
+// unsaved pitch/guidebook/reference rows (review P0-2)
+function refreshGradeBits(){
+  const gi=$('gradeInput');
+  if(gi)gi.placeholder=GRADE_EG[R.grade_system_code]||'';
+  const dl=$('gradeLadder');
+  if(dl)dl.innerHTML=((ENUMS.grade_ladder||{})[R.grade_system_code]||[]).map(g=>`<option value="${esc(g)}">`).join('');
+  const hb=$('gradeHintBox');if(hb)hb.innerHTML=gradeHint(R);
+  const wb=$('gradeWarnBox');if(wb)wb.innerHTML=warnHtml(R);
+  const gd=document.querySelector('.rt-head .grade');if(gd)gd.textContent=R.original_grade||'—';
+}
+function dirtySec(btnId){const b=$(btnId);if(b&&!b.classList.contains('attn')){b.classList.add('attn');b.textContent='● '+b.textContent.replace(/^● /,'')}}
+function cleanSec(btnId,label){const b=$(btnId);if(b){b.classList.remove('attn');b.textContent=label}}
 function renderCard(){
-  const r=R, s=r.status, chipCls=r.tagged_by==='human'?'human':'';
-  const seasonSet=new Set(r.best_season||[]);
+  const r=R;
   $('main').innerHTML=`
   <div class="card">
     <div class="rt-head"><h2>${esc(r.name)}</h2><span class="grade">${esc(r.original_grade)||'—'}</span>
-      <span class="statuschip ${s==='publish'?'pub':s==='quarantined'?'quar':r.needs_field_check?'field':''}">
-        ${s==='publish'?'✓ published':s==='quarantined'?'✕ quarantined':(r.needs_field_check?'🥾 field check':'draft · '+r.tagged_by+'-tagged')}</span>
+      ${statusChipHtml(r)}
       <span class="crag">${esc((r.path_tokens||[]).join(' › '))} · ${r.eff_rock_code||'rock?'} · ${r.eff_aspect||'aspect?'} · <span style="font-family:var(--mono)">#${r.id}</span>
         <button class="btn sm" style="float:right" onclick="previewPage()" title="see this record as the climb page will show it">👁 page preview</button></span></div>
     ${proseBlock('ta-intro','① intro','— opens the page: why climb it, crux, character','intro_html',r.intro_html,5)}
     <div class="sec">② the info rings <small>— grade · length · approach · attributes, the ring row under the intro</small></div>
     <div class="facts">
       <div class="fact${!r.grade_system_code?' miss':''}" style="grid-column:span 2"><b>grade system — the scale this grade is in</b>
-        <select onchange="save('grade_system_code',this.value||null);R.grade_system_code=this.value||null;renderCard()"><option value="">pick the scale…</option>
+        <select onchange="save('grade_system_code',this.value||null);refreshGradeBits()"><option value="">pick the scale…</option>
           ${(ENUMS.grade_systems||[]).map(g=>`<option value="${g.code}" ${g.code==r.grade_system_code?'selected':''}>${g.code} — ${g.name} (${g.region})</option>`).join('')}
         </select></div>
       <div class="fact${r.grade_warning?' miss':''}" title="${r.grade_warning||'grade in the selected system'}"><b>grade ${r.grade_warning?'⚠':''}</b>
-        <input list="gradeLadder" value="${esc(r.original_grade)}" placeholder="${GRADE_EG[r.grade_system_code]||''}" onchange="saveGrade(this.value)">
+        <input id="gradeInput" list="gradeLadder" value="${esc(r.original_grade)}" placeholder="${GRADE_EG[r.grade_system_code]||''}" onchange="saveGrade(this.value)">
         <datalist id="gradeLadder">${((ENUMS.grade_ladder||{})[r.grade_system_code]||[]).map(g=>`<option value="${esc(g)}">`).join('')}</datalist></div>
       ${factInput('length m','length_m',r.length_m)}
       ${factInput('pitches','pitches_count',r.pitches_count)}
       ${factInput('incline','incline_code',r.incline_code,ENUMS.incline)}
       <div class="fact"><b>protection</b>
         <select title="${(ENUMS.protection.find(p=>p.code==r.protection_code)||{}).meaning||'Erickson seriousness scale (G/PG/PG-13/R/X)'}"
-          onchange="save('protection_code',this.value||null);renderCard()"><option value=""></option>
+          onchange="save('protection_code',this.value||null)"><option value=""></option>
           ${ENUMS.protection.map(o=>`<option title="${o.meaning}" ${o.code==r.protection_code?'selected':''}>${o.code}</option>`).join('')}
         </select></div>
       ${factInput('prot. style','protection_style',r.protection_style,ENUMS.protection_style,true)}
@@ -524,35 +597,47 @@ function renderCard(){
       ${factInput('sun window','sun_window_code',r.sun_window_code,ENUMS.sun_window,true)}
       ${factInput('approach min','approach_time_min',r.approach_time_min)}
       ${factInput('descent','descent_method',r.descent_method,ENUMS.descent_method,true)}
-      ${factInput('rack','rack',r.rack,null,true)}
+      ${boolFact('wind exposed','wind_exposed',r.wind_exposed,'sea cliff / summit ridge — gusts bite harder')}
+      ${boolFact('escapable','escapable',r.escapable,'can you bail mid-route without topping out?')}
+      ${factInput('commitment','commitment_code',r.commitment_code,ENUMS.commitment)}
+      ${factInput('abseils','descent_abseils',r.descent_abseils,null,true)}
+      ${factInput('rope','rope',r.rope,null,true)}
+      ${factInput('appr. diff 1-5','approach_difficulty',r.approach_difficulty)}
+      <div class="fact${r.lat?'':' miss'}" title="decimal degrees — both fields save together"><b>lat</b>
+        <input id="latIn" value="${r.lat??''}" placeholder="54.178" onchange="saveCoords()"></div>
+      <div class="fact${r.lat?'':' miss'}" title="decimal degrees — both fields save together"><b>lon</b>
+        <input id="lonIn" value="${r.lon??''}" placeholder="-5.98" onchange="saveCoords()"></div>
     </div>
-    ${gradeHint(r)}
-    ${r.grade_warning?`<div class="minor" style="color:var(--amber);margin-top:4px">⚠ ${r.grade_warning} — publish is blocked until the grade matches its scale</div>`:''}
+    <div id="gradeHintBox">${gradeHint(r)}</div>
+    <div id="gradeWarnBox">${warnHtml(r)}</div>
     <div class="sec">tags <small>— click to drop · dashed = ${r.tagged_by}-tagged, solid = human-verified · they turn solid on publish</small></div>
-    ${FAMS.map(([f,extra])=>`<div class="chips" style="margin-bottom:5px">
-        <span class="minor" style="width:76px">${f}</span>
-        ${(r.tags[f]||[]).map(t=>`<span class="chip ${chipCls} ${extra}" onclick="dropTag('${f}',decodeURIComponent('${encodeURIComponent(t)}'))">${esc(t)}</span>`).join('')}
-        <select onchange="addTag('${f}',this.value);this.value=''"><option value="">+ add</option>
-          ${(ENUMS[f]||[]).filter(v=>!(r.tags[f]||[]).includes(v)).map(v=>`<option>${v}</option>`).join('')}</select>
-      </div>`).join('')}
+    ${FAMS.map(([f,extra])=>`<div class="chips" id="chips-${f}" style="margin-bottom:5px">${chipsRow(f,extra)}</div>`).join('')}
     <div class="gaps">
       <div><b class="glabel">quality <small>— 0–3 stars, Rockfax-style</small></b>
-        <span class="stars">${[1,2,3].map(i=>`<span class="${(r.stars||0)>=i?'lit':''}" onclick="setStars(${i})" title="${i} star${i>1?'s':''} — click again to clear">★</span>`).join('')}</span></div>
+        <span class="stars" id="starsRow">${starsHtml()}</span></div>
       <div><b class="glabel">best months <small>— click to toggle the good season</small></b>
-        <span class="season">${[...Array(12)].map((_,i)=>`<i class="${seasonSet.has(i+1)?'on':''}" onclick="toggleMonth(${i+1})" title="${['January','February','March','April','May','June','July','August','September','October','November','December'][i]}">${'JFMAMJJASOND'[i]}</i>`).join('')}</span></div>
+        <span class="season" id="seasonRow">${seasonHtml()}</span></div>
     </div>
   </div>
   <div class="card">
     ${proseBlock('ta-appr','③ approach & descent','— parking coords, timings, hazards','approach_html',r.approach_html,7)}
-    <div class="sec">④ pitch by pitch <small>— one row per pitch; the site's pitchInfo renders from these</small></div>
+    <div class="gaps" style="margin-top:10px">
+      <div style="flex:1;min-width:260px"><b class="glabel">rack <small>— the sentence version ("doubles 0.3–2, wires, 60m ropes")</small></b>
+        <input style="width:100%;background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:7px 10px;color:var(--ink);font:12.5px var(--sans)"
+          value="${esc(r.rack)}" onchange="save('rack',this.value||null)"></div>
+      <div style="flex:1;min-width:260px"><b class="glabel">descent notes <small>— abseil stations, walk-off line (drawn in blue on the topo)</small></b>
+        <input style="width:100%;background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:7px 10px;color:var(--ink);font:12.5px var(--sans)"
+          value="${esc(r.descent_notes)}" onchange="save('descent_notes',this.value||null)"></div>
+    </div>
+    <div class="sec">④ pitch by pitch <small>— one row per pitch · the same rows are editable beside the photo in the topo editor</small></div>
     <div class="pitchhead"><span>#</span><span>length m</span><span>grade</span><span>the pitch — moves, crux, where to belay</span><span></span></div>
-    <div id="pitches">${(r.pitch_rows||[]).map(pitchRowHtml).join('')}</div>
-    <button class="btn sm" onclick="addPitch()">+ pitch</button>
-    <button class="btn sm primary" onclick="savePitches()">save pitches</button>
+    <div id="pitches" oninput="dirtySec('savePitchesBtn')">${(r.pitch_rows||[]).map(pitchRowHtml).join('')}</div>
+    <button class="btn sm" onclick="addPitch();dirtySec('savePitchesBtn')">+ pitch</button>
+    <button class="btn sm primary" id="savePitchesBtn" onclick="savePitches()">save pitches</button>
   </div>
   <div class="card">
     <div class="sec" style="margin-top:0">⑤ images <small>— tile = the card thumbnail · map &amp; topo feed the page's topography section</small></div>
-    <div class="imgs">
+    <div class="imgs" id="imgsRow">
       ${imgCell('tile_image','tile — card thumbnail',r.tile_image)}
       ${imgCell('map_img','map image',r.map_img)}
       ${imgCell('topo','topo image',r.topo)}
@@ -562,13 +647,13 @@ function renderCard(){
   </div>
   <div class="card">
     <div class="sec" style="margin-top:0">⑥ guidebooks <small>— shared across routes, deduped on ISBN · weather ⑦ sits in the rail →</small></div>
-    <div id="gbooks">${(r.guidebooks||[]).map(gbRowHtml).join('')}</div>
-    <button class="btn sm" onclick="addGuidebook()">+ guidebook</button>
-    <button class="btn sm" onclick="saveGuidebooks()">save guidebooks</button>
+    <div id="gbooks" oninput="dirtySec('saveGbooksBtn')">${(r.guidebooks||[]).map(gbRowHtml).join('')}</div>
+    <button class="btn sm" onclick="addGuidebook();dirtySec('saveGbooksBtn')">+ guidebook</button>
+    <button class="btn sm" id="saveGbooksBtn" onclick="saveGuidebooks()">save guidebooks</button>
     <div class="sec">⑧ references &amp; links <small>— text shown verbatim; a leading 'Video:' / 'Access:' label is understood</small></div>
-    <div id="refsEd">${(r.references||[]).map(refRowHtml).join('')}</div>
-    <button class="btn sm" onclick="addRef()">+ reference</button>
-    <button class="btn sm" onclick="saveReferences()">save references</button>
+    <div id="refsEd" oninput="dirtySec('saveRefsBtn')">${(r.references||[]).map(refRowHtml).join('')}</div>
+    <button class="btn sm" onclick="addRef();dirtySec('saveRefsBtn')">+ reference</button>
+    <button class="btn sm" id="saveRefsBtn" onclick="saveReferences()">save references</button>
     <div class="sec">curator note <small>— Studio-only; never rendered on the page</small></div>
     <textarea rows="2" onchange="save('curation_notes',this.value||null)">${esc(r.curation_notes)}</textarea>
   </div>`;
@@ -636,7 +721,9 @@ async function uploadImg(kind,inp){
   try{
     const d=await api(`/route/${R.id}/image/${kind}`,{method:'POST',body:fd});
     R[kind]={...(R[kind]||{}),url:d.url};
-    toast('image saved');renderCard();
+    toast('image saved');
+    const row=$('imgsRow');   // images row only — a full render wipes unsaved rows
+    if(row)row.innerHTML=`${imgCell('tile_image','tile — card thumbnail',R.tile_image)}${imgCell('map_img','map image',R.map_img)}${imgCell('topo','topo image',R.topo)}`;
   }catch(e){toast('⚠ '+e)}
 }
 function addPitch(){const d=document.createElement('div');d.innerHTML=pitchRowHtml({number:document.querySelectorAll('.pitchrow').length+1},99);$('pitches').appendChild(d.firstChild)}
@@ -648,8 +735,10 @@ async function savePitches(){
   }).filter(p=>p.number);
   try{
     await api('/route/'+R.id+'/pitches',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(rows)});
-    R.pitch_rows=rows;   // keep the in-memory route fresh — the topo editor prefills belays from it
+    R.pitch_rows=rows;        // keep the in-memory route fresh — the topo editor reads it
+    R.pitches_count=rows.length;   // server syncs this too; keep the fact tile honest
     toast(rows.length+' pitches saved');
+    cleanSec('savePitchesBtn','save pitches');
   }catch(e){toast('⚠ '+e)}
 }
 function gbRowHtml(g){
@@ -673,7 +762,7 @@ async function saveGuidebooks(){
             description:el.querySelector('textarea').value||null};
   }).filter(g=>g.title);
   try{const d=await api('/route/'+R.id+'/guidebooks',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(rows)});
-    toast(d.guidebooks+' guidebooks saved')}catch(e){toast('⚠ '+e)}
+    toast(d.guidebooks+' guidebooks saved');cleanSec('saveGbooksBtn','save guidebooks')}catch(e){toast('⚠ '+e)}
 }
 function refRowHtml(ref){
   return `<div class="refrow">
@@ -688,7 +777,7 @@ async function saveReferences(){
     return {text:text.value||null,url:url.value||null};
   }).filter(x=>x.text&&x.url);
   try{const d=await api('/route/'+R.id+'/references',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(rows)});
-    toast(d.references+' references saved')}catch(e){toast('⚠ '+e)}
+    toast(d.references+' references saved');cleanSec('saveRefsBtn','save references')}catch(e){toast('⚠ '+e)}
 }
 function previewPage(){
   const r=R; if(!r)return;
@@ -727,8 +816,14 @@ function previewPage(){
     <h3>References &amp; additional links</h3>${refs?'<ul>'+refs+'</ul>':'<p class="minor">none</p>'}
   </div>`;
 }
-function dropTag(f,t){R.tags[f]=R.tags[f].filter(x=>x!==t);saveTags();renderCard()}
-function addTag(f,t){if(!t)return;R.tags[f]=[...(R.tags[f]||[]),t];saveTags();renderCard()}
+// partial refreshes — a full renderCard on every chip/star/month click used to
+// wipe unsaved pitch/guidebook/reference rows (review P0-2)
+function refreshChips(f){
+  const el=$('chips-'+f);
+  if(el)el.innerHTML=chipsRow(f,FAMS.find(x=>x[0]===f)?.[1]||'');
+}
+function dropTag(f,t){R.tags[f]=R.tags[f].filter(x=>x!==t);saveTags();refreshChips(f)}
+function addTag(f,t){if(!t)return;R.tags[f]=[...(R.tags[f]||[]),t];saveTags();refreshChips(f)}
 const GRADE_EG={BAS:'VS 4c · HVS 5a · E1 5b',FS:'6a+ / f6a+',YDS:'5.9 · 5.10b',UIAA:'V+ · VI-',
   ALP:'PD · TD+',SCO:'V,6',EW:'18',V:'V4',Font:'6B+',WI:'WI4',M:'M5',A:'A2',N:'6-'};
 function suggestSys(r){
@@ -750,7 +845,7 @@ function gradeHint(r){
   if(!sug)return '';
   const g=(ENUMS.grade_systems||[]).find(x=>x.code===sug)||{};
   if(!r.grade_system_code)
-    return `<div class="gradehint">This looks like a <b>${(r.tags?.disciplines||[]).includes('sport')?'sport':'trad'}</b> route in <b>${(r.path_tokens||[])[0]||'?'}</b> → grades are usually <b>${sug} — ${g.name||''}</b> (${GRADE_EG[sug]||''})<button onclick="save('grade_system_code','${sug}');R.grade_system_code='${sug}';renderCard()">use ${sug}</button></div>`;
+    return `<div class="gradehint">This looks like a <b>${(r.tags?.disciplines||[]).includes('sport')?'sport':'trad'}</b> route in <b>${(r.path_tokens||[])[0]||'?'}</b> → grades are usually <b>${sug} — ${g.name||''}</b> (${GRADE_EG[sug]||''})<button onclick="save('grade_system_code','${sug}');refreshGradeBits()">use ${sug}</button></div>`;
   if(r.grade_system_code!==sug)
     return `<div class="gradehint">Heads up: routes here usually use <b>${sug}</b> (${GRADE_EG[sug]||''}) — this one is set to <b>${r.grade_system_code}</b>. Fine if intentional (e.g. a sport line).</div>`;
   return '';
@@ -759,10 +854,17 @@ function saveGrade(v){
   api('/route/'+R.id,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({original_grade:v||null})})
     .then(d=>{R.original_grade=v;R.grade_warning=d.gradeWarning;
       if(d.gradeWarning)toast('⚠ '+d.gradeWarning);else toast('grade ok ('+(R.grade_system_code||'?')+')');
-      renderCard()}).catch(e=>toast('⚠ '+e));
+      refreshGradeBits()}).catch(e=>toast('⚠ '+e));
 }
-function setStars(n){R.stars=(R.stars===n?n-1:n)||null;save('stars',R.stars);renderCard()}
-function toggleMonth(m){const s=new Set(R.best_season||[]);s.has(m)?s.delete(m):s.add(m);R.best_season=[...s].sort((a,b)=>a-b);save('best_season',R.best_season.length?R.best_season:null);renderCard()}
+function setStars(n){R.stars=(R.stars===n?n-1:n)||null;save('stars',R.stars);const el=$('starsRow');if(el)el.innerHTML=starsHtml()}
+function toggleMonth(m){const s=new Set(R.best_season||[]);s.has(m)?s.delete(m):s.add(m);R.best_season=[...s].sort((a,b)=>a-b);save('best_season',R.best_season.length?R.best_season:null);const el=$('seasonRow');if(el)el.innerHTML=seasonHtml()}
+function saveCoords(){
+  const lat=$('latIn')?.value.trim(), lon=$('lonIn')?.value.trim();
+  if(!lat||!lon){if(lat||lon)toast('enter BOTH lat and lon — they save together');return}
+  api('/route/'+R.id,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({lat,lon})})
+    .then(()=>{R.lat=+lat;R.lon=+lon;toast('route pin saved');renderRail()})
+    .catch(e=>toast('⚠ '+e));
+}
 
 // ── evidence rail ─────────────────────────────
 function renderRail(){
@@ -835,10 +937,14 @@ async function statusFlip(call,msg){       // publish/quarantine: advance to the
   const i=QUEUE.findIndex(x=>x.id===curId);
   try{await api(call,{method:'POST'});toast(msg);}
   catch(e){toast('⚠ '+e);return}
+  const prevName=R.name;
   R=null;curId=null;
   await Promise.all([loadQueue(),loadTree()]);
   const next=QUEUE[Math.min(Math.max(i,0),QUEUE.length-1)];
-  if(next)openRoute(next.id);
+  if(next){await openRoute(next.id);
+    // make the advance LOUD — a silent card swap once let edits land on the wrong route
+    toast(`${msg} — “${prevName}” done · now editing: ${next.name}`,3600);
+    document.querySelector('.rt-head')?.classList.add('flash');}
   else{$('main').innerHTML='<div class="card">all done here 🎉 — pick another place or status</div>';$('rail').innerHTML='';$('nexthint').textContent='';renderList();}
 }
 const publish=()=>R&&statusFlip('/route/'+R.id+'/publish','✓ published — tags now human');
@@ -847,7 +953,9 @@ async function fieldcheck(){
   if(!R)return;
   commitFocus();
   const d=await api('/route/'+R.id+'/fieldcheck',{method:'POST'});
-  R.needs_field_check=d.needs_field_check;toast(d.needs_field_check?'🥾 flagged for field check':'flag removed');renderCard();loadQueue(R.id);
+  R.needs_field_check=d.needs_field_check;toast(d.needs_field_check?'🥾 flagged for field check':'flag removed');
+  const chip=$('statusChip');if(chip)chip.outerHTML=statusChipHtml(R);   // chip only — full renders wipe unsaved rows
+  loadQueue(R.id);
 }
 async function exportCorpus(){
   toast('exporting…');
@@ -870,11 +978,11 @@ function selCount(){const n=document.querySelectorAll('#gbody input:checked').le
 function bulkFieldChanged(){
   const f=$('bulkField').value;
   const opts=f==='stars'?['1','2','3']:f==='sun_window_code'?ENUMS.sun_window:f==='belays'?ENUMS.belays:ENUMS.protection_style;
-  $('bulkValue').innerHTML=(opts||[]).map(o=>`<option>${o}</option>`).join('');
+  $('bulkValue').innerHTML='<option value="">(clear)</option>'+(opts||[]).map(o=>`<option>${o}</option>`).join('');
 }
 $('bulkField').onchange=bulkFieldChanged;
 async function bulkApply(){
-  const f=$('bulkField').value; let v=$('bulkValue').value; if(f==='stars')v=+v;
+  const f=$('bulkField').value; let v=$('bulkValue').value||null; if(f==='stars'&&v!==null)v=+v;
   const ids=[...document.querySelectorAll('#gbody input:checked')].map(x=>+x.dataset.id);
   for(const id of ids)await api('/route/'+id,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({[f]:v})});
   toast(`set ${f} on ${ids.length} routes`);loadQueue(R?.id);
@@ -1009,7 +1117,8 @@ async function jumpTo(id,status){
 document.addEventListener('keydown',e=>{
   if(!(e.metaKey||e.ctrlKey))return;
   const typing=['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName);
-  if(typing&&(e.key==='ArrowRight'||e.key==='ArrowLeft'))return;  // ⌘←/→ = cursor moves while editing
+  if(typing)return;  // never publish/navigate from inside an editor (review P0-1:
+                     // ⌘⏎ mid-sentence used to publish AND silently swap routes)
   if(e.key==='Enter'){e.preventDefault();publish()}
   if(e.key==='ArrowRight'){e.preventDefault();move(1)}
   if(e.key==='ArrowLeft'){e.preventDefault();move(-1)}
@@ -1017,17 +1126,22 @@ document.addEventListener('keydown',e=>{
 });
 $('q').addEventListener('input',()=>{clearTimeout(saveTimers._q);saveTimers._q=setTimeout(()=>loadQueue(),350)});
 
-// ── ⑤b drawn topo (decision #37): route lines as data, multi-pitch's exact
-// visual constants so every topo — imported or drawn here — looks the same ──
+// ── ⑤b drawn topo (decision #37, reworked after the 17 Jul review + tech
+// research): coordinates are NORMALIZED 0-1 fractions of the oriented photo;
+// lines render with Catmull-Rom smoothing (the guidebook look); the editor
+// zooms (wheel) and pans (right-drag); and the pitch rail below the photo IS
+// the route's pitch rows — same data as card ④, one save writes both. ──
 const TLINE="rgba(204,25,29,0.95)",TLINE_DIM="rgba(204,25,29,0.35)",TBELAY="rgba(236,142,140,0.9)",TDESC="rgba(1,70,181,0.95)";
-let TPtopo=null,TPimg=null,TPscale=1,TPline=[],TPpitch=[],TPdesc=[],TPothers=[],TPm='line';
+let TPtopo=null,TPimg=null,TPline=[],TPitems=[],TPdesc=[],TPothers=[],TPm='line';
+let VS0=1,VZ=1,VTX=0,VTY=0,TPdirty=false,TPsel=-1,TPsegSel=0;
+const thumbUri=u=>'/'+u.replace(/(\.[a-z]+)$/i,'-thumb.webp');
 async function refreshTopoSec(){
   const el=document.getElementById('topoSec');if(!el||!R)return;
   try{
     const info=await api('/route/'+R.id+'/topoinfo');
     el.innerHTML=(info.topos.map(t=>`
       <div class="topothumb${t.has_route?' has':''}" onclick="openTopoEditor(${t.id})" title="${esc(t.credit)} · ${esc(t.license)}">
-        <img src="/${esc(t.uri)}" loading="lazy">
+        <img src="${thumbUri(esc(t.uri))}" onerror="this.onerror=null;this.src='/${esc(t.uri)}'" loading="lazy">
         <span>${esc(t.title||'untitled')}<small>${t.has_route?'✓ this route drawn':t.lines+' line'+(t.lines==1?'':'s')} · ${t.status}</small></span>
       </div>`).join('')||'<span class="minor">no crag photos for this area yet — add one below.</span>')
       +`<div class="srcadd" style="grid-template-columns:1fr 1fr auto;align-items:center">
@@ -1043,134 +1157,262 @@ async function uploadTopoPhoto(areaId){
   if(!f){toast('⚠ pick a photo first');return}
   const credit=document.getElementById('tpCredit').value.trim();
   if(!credit){toast('⚠ credit is required — rights are the gate');return}
-  const dims=await new Promise(res=>{const i=new Image();i.onload=()=>res([i.naturalWidth,i.naturalHeight]);i.src=URL.createObjectURL(f)});
   const fd=new FormData();
   fd.append('file',f);fd.append('area_id',areaId);fd.append('title','');
   fd.append('credit',credit);fd.append('license',document.getElementById('tpLic').value);
   fd.append('permission_note',document.getElementById('tpPerm').value);
-  fd.append('width',dims[0]);fd.append('height',dims[1]);
   try{const r=await api('/topomedia',{method:'POST',body:fd});toast('photo added');await refreshTopoSec();openTopoEditor(r.topo_id)}
   catch(e){toast('⚠ '+e)}
 }
+function tpBuildItems(saved){
+  // THE unified rows: route pitch rows + saved marker positions, index-aligned
+  const rows=(R.pitch_rows||[]).map(p=>({number:p.number,length_m:p.length_m,grade:p.original_grade||'',
+    description:p.description||'',belayPosition:null,labelPosition:null}));
+  (saved||[]).forEach((sp,i)=>{
+    if(!rows[i])rows[i]={number:i+1,length_m:sp.height?parseInt(sp.height):null,grade:sp.grade||'',description:'',belayPosition:null,labelPosition:null};
+    rows[i].belayPosition=sp.belayPosition||null;
+    rows[i].labelPosition=sp.labelPosition||null;
+  });
+  return rows;
+}
 async function openTopoEditor(id){
   TPtopo=await api('/topo/'+id);
+  try{history.replaceState(null,'','#r='+R.id+'&topo='+id)}catch(e){}
   const mine=TPtopo.lines.find(l=>l.route_id===R.id);
   TPline=mine?mine.line.slice():[];
-  TPpitch=mine&&mine.pitches?mine.pitches.slice():[];
-  TPdesc=mine&&mine.descent?mine.descent.slice():[];
+  TPitems=tpBuildItems(mine&&mine.pitches);
+  TPdesc=(mine&&mine.descent)?mine.descent.map(s=>({...s,path:(s.path||[]).slice()})):[];
+  TPsegSel=Math.max(0,TPdesc.length-1);
   TPothers=TPtopo.lines.filter(l=>l.route_id!==R.id);
-  $('tpTitle').textContent=(TPtopo.title||'untitled')+' — drawing: '+R.name;
+  TPdirty=false;TPsel=-1;
+  $('tpTitleIn').value=TPtopo.title||'';
   $('tpBelaySize').value=TPtopo.belay_size;
-  $('tpStatusBtn').textContent=TPtopo.status==='draft'?'→ publish':'→ draft';
+  $('tpStatusBtn').textContent=TPtopo.status==='draft'?'topo → publish':'topo → draft';
+  const dm=$('tpDescMethod');
+  dm.innerHTML='<option value=""></option>'+(ENUMS.descent_method||[]).map(o=>`<option ${o==R.descent_method?'selected':''}>${o}</option>`).join('');
+  $('tpDescAbs').value=R.descent_abseils??'';
+  $('tpDescNotes').value=R.descent_notes||'';
   TPimg=new Image();
-  TPimg.onload=()=>{tpFit();tpDrawAll()};
+  TPimg.onload=()=>{tpFitView();tpPitchesUi()};
   TPimg.src='/'+TPtopo.uri;
   document.getElementById('topoModal').classList.add('on');
-  tpPitchesUi();
+  tpHint();
 }
-function tpClose(){document.getElementById('topoModal').classList.remove('on')}
-document.addEventListener('keydown',e=>{if(e.key==='Escape')tpClose()});
-function tpMode(btn){TPm=btn.dataset.m;btn.parentNode.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b===btn))}
-function tpFit(){
+function tpClose(){
+  if(TPdirty&&!confirm('Discard unsaved topo changes? (💾 save topo + pitches keeps them)'))return;
+  document.getElementById('topoModal').classList.remove('on');
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.getElementById('topoModal').classList.contains('on'))tpClose()});
+function tpMode(btn){
+  TPm=btn.dataset.m;
+  btn.parentNode.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b===btn));
+  $('tpDescentBar').classList.toggle('on',TPm==='descent');
+  tpHint();tpDrawAll();
+}
+function tpHint(){
+  $('tpHint').textContent=TPm==='line'?'line: click along the route bottom → top · scroll = zoom · right-drag = pan · undo removes the last point'
+    :TPm==='belay'?'belays: click the rock to place the next pitch\'s stance (it binds to the pitch row below — write the description right there) · drag a ring to move it'
+    :'descent: click the abseil/walk-off path · label the segment or start a second one · the fields here save to the route\'s descent facts';
+}
+function tpFitView(){
   const c=document.getElementById('tpCanvas');
-  const maxW=Math.min(window.innerWidth*0.94-30,1400),maxH=window.innerHeight*0.94-150;
-  TPscale=Math.min(1,maxW/TPimg.width,maxH/TPimg.height);
-  c.width=Math.round(TPimg.width*TPscale);c.height=Math.round(TPimg.height*TPscale);
+  const maxW=Math.min(window.innerWidth*0.94-30,1400),maxH=window.innerHeight*0.94-220;
+  VS0=Math.min(1,maxW/TPimg.width,maxH/TPimg.height);
+  c.width=Math.round(TPimg.width*VS0);c.height=Math.round(TPimg.height*VS0);
+  VZ=1;VTX=0;VTY=0;
+  tpDrawAll();
 }
-function tpPath(ctx,pts,color,dashed){
+const n2c=p=>[p[0]*TPimg.width*VS0*VZ+VTX,p[1]*TPimg.height*VS0*VZ+VTY];
+const c2n=(x,y)=>[Math.min(1,Math.max(0,(x-VTX)/(VS0*VZ)/TPimg.width)),Math.min(1,Math.max(0,(y-VTY)/(VS0*VZ)/TPimg.height))];
+function tpStroke(ctx,pts,color,dashed){
   if(pts.length<2)return;
-  ctx.strokeStyle=color;ctx.lineWidth=Math.max(2,6*TPscale*((TPtopo.belay_size||24)/24));
+  const P=pts.map(n2c);
+  ctx.strokeStyle=color;ctx.lineWidth=Math.max(2,6*VS0*VZ*((TPtopo.belay_size||24)/24));
   ctx.lineCap=ctx.lineJoin='round';
-  ctx.setLineDash(dashed?[12*TPscale+4,8*TPscale+3]:[]);
-  ctx.beginPath();ctx.moveTo(pts[0][0]*TPscale,pts[0][1]*TPscale);
-  for(let i=1;i<pts.length;i++)ctx.lineTo(pts[i][0]*TPscale,pts[i][1]*TPscale);
+  ctx.setLineDash(dashed?[14*VS0*VZ+4,9*VS0*VZ+3]:[]);
+  ctx.beginPath();ctx.moveTo(P[0][0],P[0][1]);
+  if(P.length===2)ctx.lineTo(P[1][0],P[1][1]);
+  else for(let i=0;i<P.length-1;i++){          // Catmull-Rom → bezier: smooth THROUGH every stored point
+    const p0=P[Math.max(0,i-1)],p1=P[i],p2=P[i+1],p3=P[Math.min(P.length-1,i+2)];
+    ctx.bezierCurveTo(p1[0]+(p2[0]-p0[0])/6,p1[1]+(p2[1]-p0[1])/6,
+                      p2[0]-(p3[0]-p1[0])/6,p2[1]-(p3[1]-p1[1])/6,p2[0],p2[1]);
+  }
   ctx.stroke();ctx.setLineDash([]);
 }
 function tpDrawAll(){
-  if(!TPimg)return;
+  if(!TPimg||!TPimg.width)return;
   const c=document.getElementById('tpCanvas'),ctx=c.getContext('2d');
   ctx.clearRect(0,0,c.width,c.height);
-  ctx.drawImage(TPimg,0,0,c.width,c.height);
-  for(const l of TPothers)tpPath(ctx,l.line,TLINE_DIM);
-  tpPath(ctx,TPline,TLINE);
-  if(TPdesc.length)tpPath(ctx,TPdesc,TDESC,true);
-  const bs=Math.max(5,(TPtopo.belay_size||24)*TPscale);
-  TPpitch.forEach((p,i)=>{
+  ctx.drawImage(TPimg,VTX,VTY,TPimg.width*VS0*VZ,TPimg.height*VS0*VZ);
+  for(const l of TPothers)tpStroke(ctx,l.line,TLINE_DIM);
+  tpStroke(ctx,TPline,TLINE);
+  const bs=Math.max(5,(TPtopo.belay_size||24)*VS0*VZ);
+  TPdesc.forEach((seg,si)=>{
+    tpStroke(ctx,seg.path||[],TDESC,true);
+    const lp=seg.labelPosition&&seg.labelPosition[0]!=null?seg.labelPosition:(seg.path&&seg.path[0]);
+    if(seg.label&&lp){const [x,y]=n2c(lp);
+      ctx.font=`bold ${Math.max(10,bs)}px sans-serif`;ctx.textAlign='left';ctx.textBaseline='middle';
+      ctx.lineWidth=3;ctx.strokeStyle='rgba(0,0,0,.75)';ctx.strokeText(seg.label,x,y);
+      ctx.fillStyle='#9db8e8';ctx.fillText(seg.label,x,y);}
+  });
+  TPitems.forEach((p,i)=>{
     if(!p.belayPosition)return;
-    const x=p.belayPosition[0]*TPscale,y=p.belayPosition[1]*TPscale;
+    const [x,y]=n2c(p.belayPosition);
+    if(i===TPsel){ctx.strokeStyle='#fff';ctx.lineWidth=2.5;ctx.beginPath();ctx.arc(x,y,bs+3,0,7);ctx.stroke();}
     ctx.fillStyle=TBELAY;ctx.beginPath();ctx.arc(x,y,bs,0,7);ctx.fill();
     ctx.fillStyle='#000';ctx.font=`bold ${Math.max(9,bs)}px sans-serif`;
-    ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(i+1,x,y);
-    if(p.labelPosition){
-      const t=`P${i+1}${p.grade?' '+p.grade:''}${p.height?' '+p.height:''}`;
+    ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(p.number??i+1,x,y);
+    const lp=p.labelPosition;
+    if(lp){
+      const t=`P${p.number??i+1}${p.grade?' '+p.grade:''}${p.length_m?' '+p.length_m+'m':''}`;
+      const [lx,ly]=n2c(lp);
       ctx.font=`bold ${Math.max(10,bs*1.1)}px sans-serif`;ctx.textAlign='left';
-      ctx.lineWidth=3;ctx.strokeStyle='rgba(0,0,0,.75)';
-      ctx.strokeText(t,p.labelPosition[0]*TPscale,p.labelPosition[1]*TPscale);
-      ctx.fillStyle='#fff';ctx.fillText(t,p.labelPosition[0]*TPscale,p.labelPosition[1]*TPscale);
+      ctx.lineWidth=3;ctx.strokeStyle='rgba(0,0,0,.75)';ctx.strokeText(t,lx,ly);
+      ctx.fillStyle='#fff';ctx.fillText(t,lx,ly);
     }
   });
   ctx.fillStyle='#fff';
-  for(const p of TPline){ctx.beginPath();ctx.arc(p[0]*TPscale,p[1]*TPscale,2.5,0,7);ctx.fill()}
+  for(const p of TPline){const [x,y]=n2c(p);ctx.beginPath();ctx.arc(x,y,2.5,0,7);ctx.fill()}
 }
-document.getElementById('tpCanvas').addEventListener('click',e=>{
+// pointer machinery: click-to-add, drag-a-belay, right-drag pan, wheel zoom
+let TPdown=null,TPdragIdx=-1,TPpanned=false;
+const tpCanvasEl=()=>document.getElementById('tpCanvas');
+function tpHitBelay(x,y){
+  const bs=Math.max(5,(TPtopo.belay_size||24)*VS0*VZ)+4;
+  return TPitems.findIndex(p=>{if(!p.belayPosition)return false;const [bx,by]=n2c(p.belayPosition);return Math.hypot(bx-x,by-y)<=bs});
+}
+document.getElementById('tpCanvas').addEventListener('pointerdown',e=>{
   if(!TPtopo)return;
-  const r=e.target.getBoundingClientRect();
-  const x=Math.round((e.clientX-r.left)/TPscale),y=Math.round((e.clientY-r.top)/TPscale);
-  if(TPm==='line')TPline.push([x,y]);
-  else if(TPm==='descent')TPdesc.push([x,y]);
-  else{
-    const d=(R.pitch_rows||[])[TPpitch.length]||{};   // prefill from the card's real pitch rows
-    TPpitch.push({belayPosition:[x,y],labelPosition:[x+60,y+12],
-      grade:d.original_grade||'',height:d.length_m?d.length_m+'m':''});
-    tpPitchesUi();
+  const r=e.target.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;
+  TPdown={x,y,vx:VTX,vy:VTY,btn:e.button};TPpanned=false;TPdragIdx=-1;
+  if(e.button===0&&TPm==='belay'){TPdragIdx=tpHitBelay(x,y);if(TPdragIdx>=0){TPsel=TPdragIdx;tpPitchesUi(false)}}
+  e.target.setPointerCapture(e.pointerId);
+});
+document.getElementById('tpCanvas').addEventListener('pointermove',e=>{
+  if(!TPdown)return;
+  const r=e.target.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;
+  const dx=x-TPdown.x,dy=y-TPdown.y;
+  if(TPdown.btn===2){VTX=TPdown.vx+dx;VTY=TPdown.vy+dy;TPpanned=true;tpDrawAll();return}
+  if(TPdragIdx>=0&&Math.hypot(dx,dy)>3){TPitems[TPdragIdx].belayPosition=c2n(x,y);TPdirty=true;TPpanned=true;tpDrawAll()}
+});
+document.getElementById('tpCanvas').addEventListener('pointerup',e=>{
+  if(!TPdown)return;
+  const r=e.target.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;
+  const moved=Math.hypot(x-TPdown.x,y-TPdown.y)>4||TPpanned;
+  const btn=TPdown.btn;TPdown=null;TPdragIdx=-1;
+  if(btn!==0||moved)return;
+  const n=c2n(x,y);
+  if(TPm==='line'){TPline.push(n);TPdirty=true}
+  else if(TPm==='descent'){
+    if(!TPdesc.length)TPdesc=[{path:[],label:'',anchor:null,labelPosition:null}];
+    TPdesc[TPsegSel].path.push(n);TPdirty=true;
+  }else{
+    const i=TPitems.findIndex(p=>!p.belayPosition);
+    const idx=i>=0?i:(TPitems.push({number:TPitems.length+1,length_m:null,grade:'',description:'',belayPosition:null,labelPosition:null}),TPitems.length-1);
+    TPitems[idx].belayPosition=n;
+    TPitems[idx].labelPosition=[Math.min(0.96,n[0]+0.05),n[1]+0.005];
+    TPsel=idx;TPdirty=true;
+    tpPitchesUi();                                  // …and write the pitch right there
+    const ta=document.querySelector(`.tppitch[data-i="${idx}"] textarea`);if(ta)ta.focus();
   }
   tpDrawAll();
 });
-function tpUndo(){
-  if(TPm==='line')TPline.pop();else if(TPm==='descent')TPdesc.pop();else{TPpitch.pop();tpPitchesUi()}
+document.getElementById('tpCanvas').addEventListener('contextmenu',e=>e.preventDefault());
+document.getElementById('tpCanvas').addEventListener('wheel',e=>{
+  if(!TPtopo)return;
+  e.preventDefault();
+  const r=e.target.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;
+  const f=e.deltaY<0?1.15:1/1.15,nz=Math.min(8,Math.max(1,VZ*f));
+  VTX=x-(x-VTX)*(nz/VZ);VTY=y-(y-VTY)*(nz/VZ);VZ=nz;
+  if(VZ===1){VTX=0;VTY=0}
   tpDrawAll();
+},{passive:false});
+function tpUndo(){
+  if(TPm==='line')TPline.pop();
+  else if(TPm==='descent'){const s=TPdesc[TPsegSel];if(s)s.path.pop()}
+  else{const i=[...TPitems].reverse().findIndex(p=>p.belayPosition);
+    if(i>=0){const idx=TPitems.length-1-i;TPitems[idx].belayPosition=null;TPitems[idx].labelPosition=null;tpPitchesUi(false)}}
+  TPdirty=true;tpDrawAll();
 }
-function tpClear(){TPline=[];TPpitch=[];TPdesc=[];tpPitchesUi();tpDrawAll()}
+function tpClear(){
+  if(!confirm('Clear this route\'s line, belay markers and descent on this topo? (pitch text stays)'))return;
+  TPline=[];TPdesc=[];TPitems.forEach(p=>{p.belayPosition=null;p.labelPosition=null});
+  TPdirty=true;TPsel=-1;tpPitchesUi(false);tpDrawAll();
+}
 function tpBelay(v){
   TPtopo.belay_size=+v||24;tpDrawAll();
   api('/topo/'+TPtopo.id,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({belay_size:TPtopo.belay_size})}).catch(e=>toast('⚠ '+e));
 }
+function tpTitleSave(v){
+  api('/topo/'+TPtopo.id,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:v||null})})
+    .then(()=>{TPtopo.title=v;toast('topo title saved');refreshTopoSec()}).catch(e=>toast('⚠ '+e));
+}
 async function tpStatus(){
   const ns=TPtopo.status==='draft'?'publish':'draft';
   try{await api('/topo/'+TPtopo.id,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({status:ns})});
-    TPtopo.status=ns;$('tpStatusBtn').textContent=ns==='draft'?'→ publish':'→ draft';toast('topo '+ns)}catch(e){toast('⚠ '+e)}
+    TPtopo.status=ns;$('tpStatusBtn').textContent=ns==='draft'?'topo → publish':'topo → draft';toast('topo '+ns);refreshTopoSec()}catch(e){toast('⚠ '+e)}
 }
-function tpPitchesUi(){
+function tpSegLabelSave(v){const s=TPdesc[TPsegSel];if(s){s.label=v;TPdirty=true;tpDrawAll()}}
+function tpNewSeg(){TPdesc.push({path:[],label:'',anchor:null,labelPosition:null});TPsegSel=TPdesc.length-1;$('tpSegLabel').value='';TPdirty=true;toast('new descent segment — click its path')}
+function tpPitchesUi(redraw=true){
   const el=document.getElementById('tpPitches');
-  el.innerHTML=TPpitch.map((p,i)=>`<span class="tppitch"><b>P${i+1}</b>
-    <input placeholder="grade" value="${esc(p.grade)}" onchange="TPpitch[${i}].grade=this.value;tpDrawAll()">
-    <input placeholder="height" value="${esc(p.height)}" onchange="TPpitch[${i}].height=this.value;tpDrawAll()">
-    <button class="btn sm" onclick="tpPlaceLabel(${i})" title="click, then click the photo to place the label">label</button></span>`).join('')
-    ||'<span class="minor">belays mode + click the photo to add pitch markers (prefilled from the pitch rows above)</span>';
+  el.innerHTML=TPitems.map((p,i)=>`<div class="tppitch${i===TPsel?' sel':''}" data-i="${i}" onclick="tpSelPitch(${i})">
+      <div class="tpr1"><b>P${p.number??i+1}</b><span class="nob${p.belayPosition?' set':''}" title="${p.belayPosition?'belay placed on the photo':'no belay on the photo yet — belays mode + click the rock'}">${p.belayPosition?'●':'○'}</span>
+        <input placeholder="grade" value="${esc(p.grade)}" onchange="TPitems[${i}].grade=this.value;TPdirty=true;tpDrawAll()">
+        <input placeholder="len m" value="${esc(p.length_m)}" onchange="TPitems[${i}].length_m=this.value===''?null:+this.value;TPdirty=true;tpDrawAll()">
+        <button class="btn sm" onclick="event.stopPropagation();tpPlaceLabel(${i})" title="click, then click the photo to place the P${p.number??i+1} label">label</button>
+        <button class="btn sm" onclick="event.stopPropagation();tpDelPitch(${i})" title="remove this pitch row entirely">✕</button></div>
+      <textarea placeholder="the pitch — moves, crux, where to belay…" oninput="TPitems[${i}].description=this.value;TPdirty=true">${esc(p.description)}</textarea>
+    </div>`).join('')
+    +`<button class="btn sm" style="align-self:center" onclick="TPitems.push({number:TPitems.length+1,length_m:null,grade:'',description:'',belayPosition:null,labelPosition:null});TPdirty=true;tpPitchesUi()">+ pitch</button>`;
+  if(redraw)tpDrawAll();
+}
+function tpSelPitch(i){TPsel=i;document.querySelectorAll('.tppitch').forEach((el,j)=>el.classList.toggle('sel',j===i));tpDrawAll()}
+function tpDelPitch(i){
+  if(TPitems[i].description&&!confirm(`Remove pitch P${TPitems[i].number??i+1} and its text?`))return;
+  TPitems.splice(i,1);TPitems.forEach((p,j)=>p.number=j+1);TPsel=-1;TPdirty=true;tpPitchesUi();
 }
 function tpPlaceLabel(i){
-  toast('click the photo to place P'+(i+1)+' label');
-  const c=document.getElementById('tpCanvas');
+  toast('click the photo to place the P'+(TPitems[i].number??i+1)+' label');
+  const c=tpCanvasEl();
   const once=e=>{const r=c.getBoundingClientRect();
-    TPpitch[i].labelPosition=[Math.round((e.clientX-r.left)/TPscale),Math.round((e.clientY-r.top)/TPscale)];
-    c.removeEventListener('click',once,true);e.stopPropagation();tpDrawAll()};
-  c.addEventListener('click',once,true);
+    TPitems[i].labelPosition=c2n(e.clientX-r.left,e.clientY-r.top);
+    c.removeEventListener('pointerup',once,true);e.stopPropagation();TPdirty=true;tpDrawAll()};
+  c.addEventListener('pointerup',once,true);
 }
 async function tpSave(){
-  if(TPline.length<2){toast('⚠ draw at least 2 points');return}
+  if(TPline.length<2){toast('⚠ draw the route line first (2+ points)');return}
+  const pitchRows=TPitems.map((p,i)=>({number:p.number??i+1,length_m:p.length_m,original_grade:p.grade||null,
+    grade_system_code:R.grade_system_code||null,description:p.description||null}));
+  const topoPitches=TPitems.map((p,i)=>({belayPosition:p.belayPosition,labelPosition:p.labelPosition,
+    grade:p.grade||'',height:p.length_m?p.length_m+'m':''}));
+  const desc=TPdesc.filter(s=>(s.path||[]).length>=2||s.label);
   try{
     await api('/topo/'+TPtopo.id+'/line/'+R.id,{method:'PUT',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({line:TPline,pitches:TPpitch,descent:TPdesc.length?TPdesc:null})});
-    toast('topo line saved');
+      body:JSON.stringify({line:TPline,pitches:topoPitches,descent:desc.length?desc:null})});
+    await api('/route/'+R.id+'/pitches',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(pitchRows)});
+    R.pitch_rows=pitchRows;R.pitches_count=pitchRows.length;
+    const pl=$('pitches');if(pl)pl.innerHTML=pitchRows.map(pitchRowHtml).join('');   // card ④ = same rows
+    cleanSec('savePitchesBtn','save pitches');
+    TPdirty=false;
+    toast('topo + '+pitchRows.length+' pitches saved — one record, two views');
     TPtopo=await api('/topo/'+TPtopo.id);TPothers=TPtopo.lines.filter(l=>l.route_id!==R.id);
     refreshTopoSec();
   }catch(e){toast('⚠ '+e)}
 }
 async function tpDeleteLine(){
-  try{await api('/topo/'+TPtopo.id+'/line/'+R.id,{method:'DELETE'});toast('line removed');tpClear();refreshTopoSec()}
+  try{await api('/topo/'+TPtopo.id+'/line/'+R.id,{method:'DELETE'});toast('line removed');
+    TPline=[];TPdesc=[];TPitems.forEach(p=>{p.belayPosition=null;p.labelPosition=null});TPdirty=false;
+    tpPitchesUi();refreshTopoSec()}
   catch(e){toast('⚠ '+e)}
 }
-window.addEventListener('resize',()=>{if(TPimg&&document.getElementById('topoModal').classList.contains('on')){tpFit();tpDrawAll()}});
+async function tpDeleteTopo(){
+  if(!confirm('Delete this topo photo entirely — the image, and every route line drawn on it?'))return;
+  try{await api('/topo/'+TPtopo.id,{method:'DELETE'});toast('topo deleted');TPdirty=false;
+    document.getElementById('topoModal').classList.remove('on');refreshTopoSec()}
+  catch(e){toast('⚠ '+e)}
+}
+window.addEventListener('resize',()=>{if(TPimg&&document.getElementById('topoModal').classList.contains('on')){tpFitView()}});
 
 boot();
 </script>

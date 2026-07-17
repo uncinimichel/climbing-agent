@@ -71,6 +71,12 @@ TAG_TABLES = {
     "character": ("route_character", "character_code"),
 }
 
+# typed PATCH fields → validated server-side with a clear 422 instead of the
+# raw 500 a curator used to get for typing "ninety" into length m
+NUMERIC_PATCH = {"length_m", "pitches_count", "approach_time_min", "elevation_m",
+                 "descent_abseils", "approach_difficulty", "stars", "data_grade"}
+BOOL_PATCH = {"wind_exposed", "escapable"}
+
 # Studio-managed vocabularies (decision #35): family → (table, editable meta columns,
 # usage-count SQL). Adding/editing values here IS the taxonomy write path; every write
 # re-exports 105_taxonomy_extensions.sql + taxonomy-values.json via export_taxonomy.py.
@@ -292,10 +298,32 @@ def route_detail(rid: int):
 def patch_route(rid: int, body: dict):
     fields = {k: v for k, v in body.items() if k in PATCHABLE}
     tags = body.get("tags") or {}
-    if not fields and not tags:
+    has_coords = "lat" in body or "lon" in body
+    if not fields and not tags and not has_coords:
         raise HTTPException(400, "nothing patchable in body")
+    for k, v in list(fields.items()):
+        if v is None:
+            continue
+        if k in NUMERIC_PATCH:
+            try:
+                fields[k] = int(v)
+            except (TypeError, ValueError):
+                raise HTTPException(422, f"{k.replace('_', ' ')} must be a whole number — got '{v}'")
+        elif k in BOOL_PATCH and not isinstance(v, bool):
+            fields[k] = str(v).lower() in ("true", "yes", "1")
     warning = None
     with db() as conn, conn.cursor() as cur:
+        if has_coords:
+            try:
+                lat, lon = float(body.get("lat")), float(body.get("lon"))
+            except (TypeError, ValueError):
+                raise HTTPException(422, "lat and lon must both be numbers (decimal degrees)")
+            if not (-90 <= lat <= 90 and -180 <= lon <= 180):
+                raise HTTPException(422, "lat/lon out of range")
+            cur.execute("UPDATE route SET geom = ST_SetSRID(ST_MakePoint(%s, %s), 4326)::geography, "
+                        "last_update = now() WHERE id = %s RETURNING id", (lon, lat, rid))
+            if not cur.fetchone():
+                raise HTTPException(404)
         if fields:
             sets = ", ".join(f"{k} = %s" for k in fields)
             cur.execute(f"UPDATE route SET {sets}, last_update = now() WHERE id = %s RETURNING id",
