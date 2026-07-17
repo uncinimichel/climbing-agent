@@ -1,0 +1,7 @@
+# Curation Studio (curate.py + topo_api.py) — pinned to what runs on Michel's Mac
+fastapi==0.139.0
+uvicorn==0.50.0
+psycopg[binary]==3.3.4
+pydantic==2.13.4
+python-multipart==0.0.32
+pillow==12.3.0
