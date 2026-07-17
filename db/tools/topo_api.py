@@ -92,8 +92,9 @@ async def upload_topo_photo(file: UploadFile = File(...), area_id: int = Form(..
     media = q("""INSERT INTO media (area_id, kind, uri, width_px, height_px, credit, license, permission_note)
                  VALUES (%s, 'crag_photo', %s, %s, %s, %s, %s, nullif(%s, ''))
                  RETURNING id""", (area_id, uri, width, height, credit, license, permission_note))
-    topo = q("""INSERT INTO topo (media_id, area_id, title) VALUES (%s, %s, nullif(%s, ''))
-                RETURNING id""", (media[0]["id"], area_id, title))
+    topo = q("""INSERT INTO topo (media_id, area_id, title)
+                VALUES (%s, %s, coalesce(nullif(%s, ''), (SELECT name FROM area WHERE id = %s)))
+                RETURNING id""", (media[0]["id"], area_id, title, area_id))
     return {"topo_id": topo[0]["id"]}
 
 

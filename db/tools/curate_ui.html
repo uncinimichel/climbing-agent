@@ -462,6 +462,8 @@ function move(d){
 // ── autosave helpers ─────────────────────────────
 function save(field,value){
   const rid=R.id;   // captured NOW — the debounced write must never hit the next route
+  R[field]=value;   // and the in-memory route keeps step, so a re-render (e.g. picking a
+                    // grade system) can never wipe freshly-typed prose from the screen
   clearTimeout(saveTimers[field]);
   saveTimers[field]=setTimeout(async()=>{
     try{await api('/route/'+rid,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({[field]:value})});toast('saved '+field)}
@@ -644,7 +646,11 @@ async function savePitches(){
     return {number:+n.value||null,length_m:l.value?+l.value:null,original_grade:g.value||null,
             grade_system_code:R.grade_system_code||null,description:el.querySelector('textarea').value||null};
   }).filter(p=>p.number);
-  try{await api('/route/'+R.id+'/pitches',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(rows)});toast(rows.length+' pitches saved')}catch(e){toast('⚠ '+e)}
+  try{
+    await api('/route/'+R.id+'/pitches',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(rows)});
+    R.pitch_rows=rows;   // keep the in-memory route fresh — the topo editor prefills belays from it
+    toast(rows.length+' pitches saved');
+  }catch(e){toast('⚠ '+e)}
 }
 function gbRowHtml(g){
   return `<div class="gbrow">
