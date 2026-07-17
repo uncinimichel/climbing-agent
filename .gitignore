@@ -20,3 +20,5 @@ db/.raw_cache/
 secrets.json
 credentials*.json
 agent/.venv/
+db/uploads/
+db/.raw_cache/

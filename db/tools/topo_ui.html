@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Topo Studio</title>
+<style>
+:root{--bg:#14161A;--panel:#191C21;--card:#20242B;--ink:#E9E7E1;--muted:#A0A19A;--faint:#6E7069;
+--line:#2A2E36;--line2:#353A44;--dry:#57A664;--wet:#D06A57;--mixed:#B98A2E;
+--mono:ui-monospace,Menlo,monospace;--body:system-ui,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:13.5px;line-height:1.5}
+.top{display:flex;align-items:center;gap:14px;padding:10px 16px;border-bottom:1px solid var(--line2);background:var(--panel)}
+.top b{font-size:15px}
+.top .hint{color:var(--faint);font-size:11.5px}
+.layout{display:grid;grid-template-columns:320px minmax(0,1fr);min-height:calc(100vh - 45px)}
+.side{border-right:1px solid var(--line2);background:var(--panel);padding:14px;overflow-y:auto;max-height:calc(100vh - 45px)}
+.main{padding:14px;overflow:auto}
+h3{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:16px 0 7px}
+h3:first-child{margin-top:0}
+select,input,button,textarea{font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line2);border-radius:7px;padding:5px 9px}
+select{width:100%}
+input[type=file]{padding:4px}
+button{cursor:pointer}
+button:hover{border-color:var(--muted)}
+button.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+button.danger{color:var(--wet)}
+.row{display:flex;gap:6px;flex-wrap:wrap;margin:5px 0}
+.list{display:flex;flex-direction:column;gap:4px}
+.item{display:flex;justify-content:space-between;gap:8px;padding:6px 9px;border:1px solid var(--line);border-radius:7px;background:var(--card);cursor:pointer;font-size:12.5px}
+.item:hover{border-color:var(--muted)}
+.item.on{border-color:var(--dry);box-shadow:inset 2px 0 0 var(--dry)}
+.item .sub{color:var(--faint);font-family:var(--mono);font-size:10.5px;white-space:nowrap}
+.canvas-wrap{position:relative;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:auto;max-height:calc(100vh - 160px)}
+canvas{display:block;cursor:crosshair}
+.toolbar{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+.toolbar .sep{width:1px;height:22px;background:var(--line2);margin:0 4px}
+.pill{font-family:var(--mono);font-size:10px;letter-spacing:.05em;padding:2px 8px;border-radius:9px}
+.pill.draft{background:rgba(185,138,46,.15);color:#DDB150}
+.pill.publish{background:rgba(87,166,100,.16);color:#8ED09A}
+.plist{margin-top:8px;display:flex;flex-direction:column;gap:4px}
+.pitem{display:flex;gap:6px;align-items:center;font-family:var(--mono);font-size:11px;background:var(--card);border:1px solid var(--line);border-radius:6px;padding:4px 8px}
+.pitem input{width:64px;padding:2px 6px;font-size:11px}
+.note{color:var(--faint);font-size:11px;margin-top:6px;line-height:1.5}
+.msg{color:var(--dry);font-family:var(--mono);font-size:11px;min-height:16px;margin-top:6px}
+label{font-size:11.5px;color:var(--muted)}
+form .row input,form .row select{flex:1;min-width:0}
+</style></head><body>
+<div class="top"><b>Topo Studio</b>
+  <span class="hint">pick an area → open or upload a photo → select a route → click to draw · the line is data, drawn multi-pitch style</span>
+  <span class="msg" id="msg" style="margin-left:auto"></span>
+</div>
+<div class="layout">
+<div class="side">
+  <h3>Area</h3>
+  <select id="areaSel"><option>loading…</option></select>
+
+  <h3>Topos here</h3>
+  <div class="list" id="topoList"><span class="note">pick an area</span></div>
+
+  <h3>New photo → new topo</h3>
+  <form id="upForm">
+    <div class="row"><input type="file" id="upFile" accept=".jpg,.jpeg,.png,.webp" required></div>
+    <div class="row"><input id="upTitle" placeholder="title (optional)"></div>
+    <div class="row"><input id="upCredit" placeholder="photographer / credit" required>
+      <select id="upLicense" style="max-width:110px">
+        <option value="owned">owned</option><option value="permission">permission</option><option value="cc">cc</option>
+      </select></div>
+    <div class="row"><input id="upPerm" placeholder="permission note (who granted, when)"></div>
+    <div class="row"><button type="submit">Upload</button></div>
+  </form>
+  <div class="note">Rights gate: non-owned photos need the permission note — only owned/permissioned photos can ever reach a booklet.</div>
+
+  <h3>Routes in this area</h3>
+  <div class="list" id="routeList"></div>
+</div>
+
+<div class="main">
+  <div class="toolbar" id="toolbar" style="display:none">
+    <span id="topoTitle" style="font-weight:600"></span>
+    <span class="pill draft" id="statusPill">draft</span>
+    <button id="statusBtn">publish</button>
+    <span class="sep"></span>
+    <button class="mode on" data-mode="line">line</button>
+    <button class="mode" data-mode="belay">belays</button>
+    <button class="mode" data-mode="descent">descent</button>
+    <span class="sep"></span>
+    <button id="undoBtn">undo point</button>
+    <button id="clearBtn" class="danger">clear route line</button>
+    <span class="sep"></span>
+    <label>belay size <input id="belaySize" type="number" min="8" max="80" style="width:58px"></label>
+    <button id="saveBtn">💾 Save line</button>
+  </div>
+  <div class="canvas-wrap"><canvas id="cv" width="10" height="10"></canvas></div>
+  <div class="plist" id="pitchList"></div>
+  <div class="note" id="mainNote">Open a topo from the left — or upload a crag photo to start one. Imported multi-pitch topos are read-only reference until you select their route and edit.</div>
+</div>
+</div>
+
+<script>
+/* multi-pitch.com's exact visual constants — one look for every topo */
+const LINE = "rgba(204,25,29,0.95)", LINE_DIM = "rgba(204,25,29,0.35)";
+const BELAY = "rgba(236,142,140,0.9)", DESC = "rgba(1,70,181,0.95)";
+const $ = id => document.getElementById(id);
+const msg = t => { $("msg").textContent = t; setTimeout(() => { if ($("msg").textContent === t) $("msg").textContent = ""; }, 4000); };
+const api = (p, o) => fetch(p, o).then(r => { if (!r.ok) return r.json().then(e => { throw new Error(e.detail || r.status); }); return r.json(); });
+
+let areaId = null, topo = null, img = null, scale = 1;
+let routeId = null, line = [], pitches = [], descent = [], mode = "line", otherLines = [];
+
+async function loadAreas() {
+  const as = await api("/api/areas");
+  $("areaSel").innerHTML = '<option value="">— pick an area —</option>' +
+    as.map(a => `<option value="${a.id}">${a.parent ? a.parent + " › " : ""}${a.name} (${a.routes} routes · ${a.topos} topos)</option>`).join("");
+}
+$("areaSel").onchange = async e => { areaId = +e.target.value || null; if (areaId) { await loadTopos(); await loadRoutes(); } };
+
+async function loadTopos() {
+  const ts = await api(`/api/area/${areaId}/topos`);
+  $("topoList").innerHTML = ts.length ? ts.map(t =>
+    `<div class="item" data-t="${t.id}"><span>${t.title || "untitled"}</span>
+     <span class="sub">${t.lines} line${t.lines == 1 ? "" : "s"} · ${t.status}</span></div>`).join("")
+    : '<span class="note">no topos yet — upload a photo</span>';
+  for (const el of $("topoList").children) if (el.dataset) el.onclick = () => openTopo(+el.dataset.t, el);
+}
+async function loadRoutes() {
+  const rs = await api(`/api/area/${areaId}/routes`);
+  $("routeList").innerHTML = rs.map(r =>
+    `<div class="item" data-r="${r.id}"><span>${r.name}</span>
+     <span class="sub">${r.grade || ""}${r.pitches_count ? " · " + r.pitches_count + "p" : ""}</span></div>`).join("");
+  for (const el of $("routeList").children) el.onclick = () => selectRoute(+el.dataset.r, el);
+}
+
+async function openTopo(id, el) {
+  topo = await api(`/api/topo/${id}`);
+  try { history.replaceState(null, "", "#topo=" + id); } catch (e) {}
+  for (const x of $("topoList").children) x.classList && x.classList.toggle("on", x === el);
+  $("toolbar").style.display = "flex";
+  $("topoTitle").textContent = topo.title || "untitled";
+  $("belaySize").value = topo.belay_size;
+  setStatus(topo.status);
+  routeId = null; line = []; pitches = []; descent = [];
+  otherLines = topo.lines;
+  img = new Image();
+  img.onload = () => { fit(); draw(); };
+  img.src = "/" + topo.uri;
+  $("mainNote").textContent = `${topo.credit} · ${topo.license} · ${topo.width_px}×${topo.height_px}px — select a route on the left, then click along it bottom→top.`;
+  renderPitches();
+}
+function setStatus(s) { $("statusPill").textContent = s; $("statusPill").className = "pill " + s; $("statusBtn").textContent = s === "draft" ? "publish" : "back to draft"; }
+$("statusBtn").onclick = async () => {
+  const ns = topo.status === "draft" ? "publish" : "draft";
+  await api(`/api/topo/${topo.id}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ status: ns }) });
+  topo.status = ns; setStatus(ns); msg("status: " + ns);
+};
+$("belaySize").onchange = async e => {
+  topo.belay_size = +e.target.value || 24;
+  await api(`/api/topo/${topo.id}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ belay_size: topo.belay_size }) });
+  draw();
+};
+
+async function selectRoute(id, el) {
+  if (!topo) { msg("open a topo first"); return; }
+  routeId = id;
+  for (const x of $("routeList").children) x.classList.toggle("on", x === el);
+  const existing = topo.lines.find(l => l.route_id === id);
+  line = existing ? existing.line.slice() : [];
+  pitches = existing && existing.pitches ? existing.pitches.slice() : [];
+  descent = existing && existing.descent ? existing.descent.slice() : [];
+  otherLines = topo.lines.filter(l => l.route_id !== id);
+  if (!pitches.length) {   // prefill markers-to-be from the route's real pitch data
+    window._pitchDefaults = await api(`/api/route/${id}/pitches`);
+  }
+  renderPitches(); draw();
+}
+
+function fit() {
+  const maxW = $("cv").parentElement.clientWidth - 2, maxH = window.innerHeight - 170;
+  scale = Math.min(1, maxW / img.width, maxH / img.height);
+  const cv = $("cv");
+  cv.width = Math.round(img.width * scale);
+  cv.height = Math.round(img.height * scale);
+}
+
+function drawPath(ctx, pts, color, dashed) {
+  if (pts.length < 2) return;
+  ctx.strokeStyle = color;
+  ctx.lineWidth = Math.max(2, 6 * scale * (topo.belay_size / 24));
+  ctx.lineCap = ctx.lineJoin = "round";
+  ctx.setLineDash(dashed ? [12 * scale + 4, 8 * scale + 3] : []);
+  ctx.beginPath();
+  ctx.moveTo(pts[0][0] * scale, pts[0][1] * scale);
+  for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i][0] * scale, pts[i][1] * scale);
+  ctx.stroke();
+  ctx.setLineDash([]);
+}
+function draw() {
+  if (!img) return;
+  const ctx = $("cv").getContext("2d");
+  ctx.clearRect(0, 0, $("cv").width, $("cv").height);
+  ctx.drawImage(img, 0, 0, $("cv").width, $("cv").height);
+  for (const l of otherLines) drawPath(ctx, l.line, LINE_DIM);           // context, faded
+  drawPath(ctx, line, LINE);
+  if (descent.length) drawPath(ctx, descent, DESC, true);
+  const bs = Math.max(5, topo.belay_size * scale);
+  pitches.forEach((p, i) => {
+    if (!p.belayPosition) return;
+    const [x, y] = [p.belayPosition[0] * scale, p.belayPosition[1] * scale];
+    ctx.fillStyle = BELAY; ctx.beginPath(); ctx.arc(x, y, bs, 0, 7); ctx.fill();
+    ctx.fillStyle = "#000"; ctx.font = `bold ${Math.max(9, bs)}px sans-serif`;
+    ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(i + 1, x, y);
+    if (p.labelPosition) {
+      const t = `P${i + 1}${p.grade ? " " + p.grade : ""}${p.height ? " " + p.height : ""}`;
+      ctx.font = `bold ${Math.max(10, bs * 1.1)}px sans-serif`;
+      ctx.textAlign = "left"; ctx.lineWidth = 3; ctx.strokeStyle = "rgba(0,0,0,.75)";
+      ctx.strokeText(t, p.labelPosition[0] * scale, p.labelPosition[1] * scale);
+      ctx.fillStyle = "#fff"; ctx.fillText(t, p.labelPosition[0] * scale, p.labelPosition[1] * scale);
+    }
+  });
+  // editable handles on the active line
+  ctx.fillStyle = "#fff";
+  for (const p of line) { ctx.beginPath(); ctx.arc(p[0] * scale, p[1] * scale, 2.5, 0, 7); ctx.fill(); }
+}
+
+$("cv").onclick = e => {
+  if (!topo) return;
+  if (!routeId && mode !== "descent") { msg("select a route first"); return; }
+  const r = $("cv").getBoundingClientRect();
+  const x = Math.round((e.clientX - r.left) / scale), y = Math.round((e.clientY - r.top) / scale);
+  if (mode === "line") line.push([x, y]);
+  else if (mode === "descent") descent.push([x, y]);
+  else if (mode === "belay") {
+    const d = (window._pitchDefaults || [])[pitches.length];
+    pitches.push({ belayPosition: [x, y], labelPosition: [x + Math.round(60 / scale * scale), y + 10],
+                   grade: d ? (d.grade || "") : "", height: d && d.length_m ? d.length_m + "m" : "" });
+    renderPitches();
+  }
+  draw();
+};
+
+for (const b of document.querySelectorAll(".mode"))
+  b.onclick = () => { mode = b.dataset.mode; document.querySelectorAll(".mode").forEach(x => x.classList.toggle("on", x === b)); };
+
+$("undoBtn").onclick = () => {
+  if (mode === "line") line.pop();
+  else if (mode === "descent") descent.pop();
+  else { pitches.pop(); renderPitches(); }
+  draw();
+};
+$("clearBtn").onclick = () => { line = []; pitches = []; descent = []; renderPitches(); draw(); };
+
+function renderPitches() {
+  $("pitchList").innerHTML = pitches.map((p, i) =>
+    `<div class="pitem"><b>P${i + 1}</b>
+     <input placeholder="grade" value="${p.grade || ""}" data-i="${i}" data-f="grade">
+     <input placeholder="height" value="${p.height || ""}" data-i="${i}" data-f="height">
+     <button data-l="${i}" title="click, then click on the photo to place the label">place label</button></div>`).join("");
+  for (const inp of $("pitchList").querySelectorAll("input"))
+    inp.onchange = () => { pitches[+inp.dataset.i][inp.dataset.f] = inp.value; draw(); };
+  for (const btn of $("pitchList").querySelectorAll("button"))
+    btn.onclick = () => {
+      const i = +btn.dataset.l;
+      msg("click the photo to place P" + (i + 1) + " label");
+      const once = e => {
+        const r = $("cv").getBoundingClientRect();
+        pitches[i].labelPosition = [Math.round((e.clientX - r.left) / scale), Math.round((e.clientY - r.top) / scale)];
+        $("cv").removeEventListener("click", once, true); e.stopPropagation(); draw();
+      };
+      $("cv").addEventListener("click", once, true);
+    };
+}
+
+$("saveBtn").onclick = async () => {
+  if (!topo || !routeId) { msg("open a topo + select a route"); return; }
+  if (line.length < 2) { msg("draw at least 2 points"); return; }
+  await api(`/api/topo/${topo.id}/line/${routeId}`, {
+    method: "PUT", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ line, pitches, descent: descent.length ? descent : null }) });
+  msg("saved ✓");
+  topo = await api(`/api/topo/${topo.id}`);
+  otherLines = topo.lines.filter(l => l.route_id !== routeId);
+  loadTopos();
+};
+
+$("upForm").onsubmit = async e => {
+  e.preventDefault();
+  if (!areaId) { msg("pick an area first"); return; }
+  const f = $("upFile").files[0];
+  if (!f) return;
+  const dims = await new Promise(res => { const i = new Image(); i.onload = () => res([i.naturalWidth, i.naturalHeight]); i.src = URL.createObjectURL(f); });
+  const fd = new FormData();
+  fd.append("file", f); fd.append("area_id", areaId);
+  fd.append("title", $("upTitle").value); fd.append("credit", $("upCredit").value);
+  fd.append("license", $("upLicense").value); fd.append("permission_note", $("upPerm").value);
+  fd.append("width", dims[0]); fd.append("height", dims[1]);
+  try {
+    const r = await api("/api/media", { method: "POST", body: fd });
+    msg("uploaded ✓"); $("upForm").reset();
+    await loadTopos();
+    const el = [...$("topoList").children].find(x => +x.dataset.t === r.topo_id);
+    if (el) el.click();
+  } catch (err) { msg("✗ " + err.message); }
+};
+
+window.onresize = () => { if (img) { fit(); draw(); } };
+(async function boot() {          // deep link: #topo=<id> opens straight into the editor
+  await loadAreas();
+  const m = location.hash.match(/topo=(\d+)/);
+  if (m) {
+    const t = await api(`/api/topo/${m[1]}`);
+    if (t.area_id) { $("areaSel").value = t.area_id; areaId = t.area_id; await loadTopos(); await loadRoutes(); }
+    const el = [...$("topoList").children].find(x => x.dataset && +x.dataset.t === +m[1]);
+    openTopo(+m[1], el);
+  }
+})();
+</script>
+</body></html>
