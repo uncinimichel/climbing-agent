@@ -899,7 +899,7 @@ a.sample:hover{color:var(--ink);border-color:var(--muted)}
 /* "Overheard" — recent chatter cards (weekly Google harvest, top-10 venues) */
 .overheard{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;max-width:760px}
 .oh-card{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:13px 15px 11px;position:relative;display:flex;flex-direction:column;gap:8px}
-.oh-card:before{content:"\201C";font-family:var(--disp);font-weight:800;font-size:34px;line-height:0;color:var(--line2);position:absolute;top:20px;left:12px}
+.oh-card:before{content:"“";font-family:var(--disp);font-weight:800;font-size:34px;line-height:0;color:var(--line2);position:absolute;top:20px;left:12px}
 .oh-snip{font-size:13px;font-style:italic;padding-left:20px;color:var(--ink)}
 .oh-foot{display:flex;align-items:center;gap:8px;margin-top:auto;padding-left:20px;flex-wrap:wrap;font-size:11.5px}
 .oh-foot a{color:var(--muted);max-width:22ch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-decoration:none}
@@ -2121,7 +2121,7 @@ footer{{margin-top:34px;color:var(--faint);font-size:12px;border-top:1px solid v
 .areas b{{color:var(--ink);white-space:nowrap}}
 .overheard{{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}}
 .oh-card{{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:13px 15px 11px;position:relative;display:flex;flex-direction:column;gap:8px}}
-.oh-card:before{{content:"\\201C";font-family:var(--disp);font-weight:800;font-size:34px;line-height:0;color:var(--line2);position:absolute;top:20px;left:12px}}
+.oh-card:before{{content:"“";font-family:var(--disp);font-weight:800;font-size:34px;line-height:0;color:var(--line2);position:absolute;top:20px;left:12px}}
 .oh-snip{{font-size:13px;font-style:italic;padding-left:20px}}
 .oh-foot{{display:flex;align-items:center;gap:8px;margin-top:auto;padding-left:20px;flex-wrap:wrap;font-size:11.5px}}
 .oh-foot a{{color:var(--muted);max-width:22ch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-decoration:none}}
