@@ -758,7 +758,7 @@ svg.topo .dseg{pointer-events:stroke}
 .wx-detail .wxd-head b{font-size:13.5px}
 .wx-detail .wxd-why{color:var(--muted);font-size:12px}
 .wx-detail .wxhelp{width:15px;height:15px;margin-left:5px;padding:0;border:1px solid var(--muted);border-radius:50%;background:none;color:var(--muted);font-size:10px;font-weight:700;line-height:1;cursor:pointer;vertical-align:middle}
-.wxhelp-pop{display:none;max-width:340px;margin:4px 0 2px;padding:7px 9px;border-radius:8px;background:var(--line2);font-size:11.5px;line-height:1.45}
+.wxhelp-pop{display:none;max-width:340px;margin:4px 0 2px;padding:7px 9px;border-radius:8px;background:var(--line2);font-size:11.5px;line-height:1.45;white-space:normal;text-align:left;font-weight:400}
 .wxd-facts{display:flex;flex-wrap:wrap;gap:7px 18px}
 .wx-detail .wxd-facts>span{white-space:nowrap}
 .wx-detail .wxd-facts i{font-style:normal;font-family:var(--mono);font-size:9px;letter-spacing:.05em;text-transform:uppercase;color:var(--faint);margin-right:5px}
