@@ -28,7 +28,8 @@
       },
       "aspect": "N",
       "coastal": true,
-      "wind_exposed": true
+      "wind_exposed": true,
+      "cliff_height_m": 100
     },
     {
       "name": "Mournes, NI",
@@ -49,7 +50,8 @@
           "mode": "local"
         }
       },
-      "wind_exposed": true
+      "wind_exposed": true,
+      "cliff_height_m": 100
     },
     {
       "name": "Dolomites (Cortina)",
@@ -70,7 +72,8 @@
           "mode": "fly",
           "to": "VCE"
         }
-      }
+      },
+      "cliff_height_m": 500
     },
     {
       "name": "East Tyrol (Lienz)",
@@ -91,7 +94,8 @@
           "mode": "fly",
           "to": "INN"
         }
-      }
+      },
+      "cliff_height_m": 400
     },
     {
       "name": "Lake District (Borrowdale)",
@@ -111,7 +115,8 @@
           "mode": "fly",
           "to": "MAN"
         }
-      }
+      },
+      "cliff_height_m": 100
     },
     {
       "name": "Snowdonia (Llanberis Pass)",
@@ -132,7 +137,8 @@
           "to": "MAN"
         }
       },
-      "drying": "slow"
+      "drying": "slow",
+      "cliff_height_m": 100
     },
     {
       "name": "Isle of Arran",
@@ -155,7 +161,8 @@
         }
       },
       "coastal": true,
-      "wind_exposed": true
+      "wind_exposed": true,
+      "cliff_height_m": 250
     },
     {
       "name": "Picos de Europa",
@@ -176,7 +183,8 @@
           "mode": "fly",
           "to": "BIO"
         }
-      }
+      },
+      "cliff_height_m": 500
     },
     {
       "name": "Paklenica (Anica Kuk)",
@@ -198,7 +206,8 @@
           "to": "ZAD"
         }
       },
-      "aspect": "N"
+      "aspect": "N",
+      "cliff_height_m": 350
     },
     {
       "name": "Donegal (Sail Rock)",
@@ -222,7 +231,8 @@
       },
       "aspect": "W",
       "coastal": true,
-      "wind_exposed": true
+      "wind_exposed": true,
+      "cliff_height_m": 100
     },
     {
       "name": "West Cornwall (Bosigran)",
@@ -247,7 +257,8 @@
       "aspect": "NW",
       "coastal": true,
       "wind_exposed": true,
-      "drying": "fast"
+      "drying": "fast",
+      "cliff_height_m": 80
     },
     {
       "name": "Écrins (Aiguille Dibona)",
@@ -269,7 +280,8 @@
           "to": "LYS"
         }
       },
-      "wind_exposed": true
+      "wind_exposed": true,
+      "cliff_height_m": 350
     },
     {
       "name": "Stetind (Norway)",
@@ -292,7 +304,8 @@
         }
       },
       "coastal": true,
-      "wind_exposed": true
+      "wind_exposed": true,
+      "cliff_height_m": 600
     }
   ]
 }

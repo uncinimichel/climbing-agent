@@ -603,6 +603,7 @@ def venue_payload(n, r, ctx, mp_climbs, guidebooks, extra_climbing_data, tag_spe
         "chatter": _chatter_for(v["name"]),
         "maps": maps_url(v), "weather": weather_url(v), "mpMap": MP_MAP_URL,
         "tidal": tidal,
+        "cliffH": v.get("cliff_height_m"),
         "tags": venue_tags(v, cards, grades, tag_spec,
                             (f"{tag} · {rain}% wet days" if rain is not None else tag), tidal),
         "listInfo": _li["txt"],
@@ -1408,6 +1409,7 @@ function wxDetailHtml(d,v){
     +'<button class="wxhelp" aria-label="What is dew point?" onclick="var p=this.nextElementSibling;p.style.display=p.style.display===\'block\'?\'none\':\'block\'">?</button>'
     +'<span class="wxhelp-pop">Dew point is the temperature at which moisture in the air condenses. Rock close to the dew point turns damp and greasy; a wide gap means dry air and better friction — the whole friction rating above is built on this spread.</span>'
     +'</span>');
+  if(v.cliffH&&Math.round(v.cliffH*0.0065)>=2)f.push('<span><i>Crag top</i>up to ≈'+Math.round(v.cliffH*0.0065)+'° cooler <span class="dim">· '+v.cliffH+'m wall · rough estimate — height, not route length</span></span>');
   if(d.sun)f.push('<span><i>Daylight</i>'+(d.sun[0]?esc(d.sun[0])+'→'+esc(d.sun[1])+' <span class="dim">· '+num(d.sun[2])+'h</span>':(d.sun[2]>=24?'24h sun':'no sun'))+'</span>');
   if(d.tide&&d.tide.length)f.push('<span><i>Tide</i>'+d.tide.map(function(x){return (x.k==='L'?'▼':'▲')+esc(x.t)+' '+num(x.h)+'m';}).join(' · ')+' <span class="dim">local</span></span>');
   // hours FIRST, flowing straight on from the day columns above (no label, no
