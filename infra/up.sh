@@ -44,6 +44,13 @@ aws iam get-policy --policy-arn "$EXEC_POLICY" >/dev/null 2>&1 || \
     --description "Scoped CloudFormation execution for climbing-agent CDK stacks" >/dev/null
 npx --yes aws-cdk@2 bootstrap "aws://$ACCOUNT/$REGION" \
   --cloudformation-execution-policies "$EXEC_POLICY"
+
+# confused-deputy guard (sec review #4): only CloudFormation runs FROM THIS
+# ACCOUNT may assume the exec role. Re-applied after every bootstrap because
+# a re-bootstrap rewrites the trust policy without the condition.
+aws iam update-assume-role-policy \
+  --role-name "cdk-hnb659fds-cfn-exec-role-$ACCOUNT-$REGION" \
+  --policy-document "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"cloudformation.amazonaws.com\"},\"Action\":\"sts:AssumeRole\",\"Condition\":{\"StringEquals\":{\"aws:SourceAccount\":\"$ACCOUNT\"}}}]}"
 npx --yes aws-cdk@2 deploy ClimbingAgentCorpusDb \
     -c "corpusDbAllowedCidr=$IP/32" \
     --require-approval never --outputs-file corpus-db-outputs.json

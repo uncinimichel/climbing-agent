@@ -53,6 +53,8 @@ class CorpusDbStack(cdk.Stack):
                 "climbing", secret_name="climbing-agent/corpus-db"),
             default_database_name="climbing",
             parameter_group=params,
+            storage_encrypted=True,           # sec review 17 Jul: at-rest encryption
+            backup=rds.BackupProps(retention=cdk.Duration.days(7)),
             removal_policy=cdk.RemovalPolicy.SNAPSHOT,
         )
 

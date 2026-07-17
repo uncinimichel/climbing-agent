@@ -41,6 +41,31 @@ app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
 from topo_api import router as _topo_router  # noqa: E402 — drawn-topo endpoints (decision #37)
 app.include_router(_topo_router)
 
+# The Studio has no auth BY DESIGN (loopback-only). This guard closes the two
+# holes that design leaves open (sec review 17 Jul #6): DNS-rebinding (a
+# hostile page resolving its own domain to 127.0.0.1 — caught by the Host
+# check) and cross-site "simple" POSTs driving mutations (caught by the
+# Origin check; browsers always attach Origin to cross-site POSTs).
+_OK_HOSTS = {"localhost", "127.0.0.1", "0.0.0.0", "db", "studio"}
+
+
+@app.middleware("http")
+async def _local_only(request, call_next):
+    host = (request.headers.get("host") or "").split(":")[0].lower()
+    if host not in _OK_HOSTS:
+        from fastapi.responses import JSONResponse
+        return JSONResponse({"detail": "Studio answers localhost only"}, status_code=403)
+    origin = request.headers.get("origin")
+    if origin and request.method not in ("GET", "HEAD", "OPTIONS"):
+        from urllib.parse import urlparse
+        if (urlparse(origin).hostname or "").lower() not in _OK_HOSTS:
+            from fastapi.responses import JSONResponse
+            return JSONResponse({"detail": "cross-origin writes are not allowed"}, status_code=403)
+    return await call_next(request)
+
+
+MAX_UPLOAD_BYTES = 30 * 1024 * 1024   # crag photos are big; 30MB is still sane
+
 _enrich = {"mtime": None, "data": {}}
 
 
@@ -413,7 +438,10 @@ async def upload_image(rid: int, kind: str, file: UploadFile = File(...)):
     dest = UPLOAD_DIR / f"route-{rid}"
     dest.mkdir(parents=True, exist_ok=True)
     path = dest / f"{kind}{ext}"
-    path.write_bytes(await file.read())
+    data = await file.read(MAX_UPLOAD_BYTES + 1)
+    if len(data) > MAX_UPLOAD_BYTES:
+        raise HTTPException(413, f"image too large (max {MAX_UPLOAD_BYTES // (1024*1024)}MB)")
+    path.write_bytes(data)
     url = f"/uploads/route-{rid}/{kind}{ext}"
     with db() as conn, conn.cursor() as cur:
         cur.execute(

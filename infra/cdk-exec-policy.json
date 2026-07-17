@@ -2,7 +2,7 @@
   "Version": "2012-10-17",
   "Statement": [
     {
-      "Sid": "WhatOurStacksActuallyCreate",
+      "Sid": "RdsAndNetworking",
       "Effect": "Allow",
       "Action": [
         "rds:*",
@@ -14,20 +14,31 @@
         "ec2:RevokeSecurityGroupEgress",
         "ec2:CreateTags",
         "ec2:DeleteTags",
-        "ec2:Describe*",
-        "secretsmanager:*",
+        "ec2:Describe*"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "OnlyOurSecrets",
+      "Effect": "Allow",
+      "Action": ["secretsmanager:*"],
+      "Resource": "arn:aws:secretsmanager:eu-west-2:166832185275:secret:climbing-agent/*"
+    },
+    {
+      "Sid": "DefaultKeyGrantsForEncryptedStorage",
+      "Effect": "Allow",
+      "Action": [
         "kms:DescribeKey",
         "kms:CreateGrant",
         "kms:Decrypt",
-        "kms:GenerateDataKey",
-        "s3:GetObject*",
-        "s3:GetBucket*",
-        "s3:List*",
-        "ssm:GetParameter*",
-        "ssm:PutParameter",
-        "ssm:DeleteParameter",
-        "ssm:AddTagsToResource"
+        "kms:GenerateDataKey"
       ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "ReadDeployAssets",
+      "Effect": "Allow",
+      "Action": ["s3:GetObject*", "s3:GetBucket*", "s3:List*"],
       "Resource": "*"
     }
   ]

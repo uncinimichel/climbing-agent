@@ -91,7 +91,11 @@ async def upload_topo_photo(file: UploadFile = File(...), area_id: int = Form(..
     if ext not in (".jpg", ".jpeg", ".png", ".webp"):
         raise HTTPException(400, "jpg/png/webp only")
     dest = TOPO_DIR / f"a{area_id}-{int(time.time())}{ext}"
-    dest.write_bytes(await file.read())
+    MAX = 30 * 1024 * 1024
+    data = await file.read(MAX + 1)
+    if len(data) > MAX:
+        raise HTTPException(413, "photo too large (max 30MB)")
+    dest.write_bytes(data)
     try:   # bake EXIF orientation; the server's oriented dims ARE the coordinate space
         w, h = images.normalize(dest)
         images.derive(dest)

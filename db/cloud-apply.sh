@@ -23,7 +23,12 @@ s = json.load(sys.stdin)
 print("HOST=%s\nPORT=%s\nPGUSER=%s\nPGPASS=%s"
       % (s["host"], s["port"], s["username"], s["password"]))')"
 
-DSN="postgresql://$PGUSER:$PGPASS@$HOST:$PORT/climbing?sslmode=require"
+# verify-full = TLS + server-certificate verification (sec review #7): the
+# public RDS CA bundle rides along into the container so psql can check it
+CA=/tmp/rds-eu-west-2-ca.pem
+[ -s "$CA" ] || curl -sf "https://truststore.pki.rds.amazonaws.com/eu-west-2/eu-west-2-bundle.pem" -o "$CA"
+docker cp "$CA" "$C":/tmp/rds-ca.pem >/dev/null
+DSN="postgresql://$PGUSER:$PGPASS@$HOST:$PORT/climbing?sslmode=verify-full&sslrootcert=/tmp/rds-ca.pem"
 
 for f in sql/*.sql; do
     echo "== applying $f"
