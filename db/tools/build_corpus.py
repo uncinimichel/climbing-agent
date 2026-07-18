@@ -1,14 +1,12 @@
 #!/usr/bin/env python3
-"""Export db/corpus.json from Postgres — the committed backup of the corpus DB.
+"""Export db/corpus.json from the JSON record — the derived corpus the site reads.
 
-Postgres-first (decision #34, supersedes this file's original seed-merging role):
-the climbing schema is the WORKING STORE — the Curation Studio (curate.py) edits it,
-the crawler inserts into it, ingest_corpus.py restores into it. This script is the
-other direction: a faithful, git-diffable EXPORT of every area and route (draft,
-publish and quarantined alike), so
+Record-first (decision #39, supersedes #34's Postgres-first): db/record/ is the
+source of truth — the Curation Studio (curate.py) edits it through store.py.
+This script is the read side: a faithful, git-diffable EXPORT of every area and
+route (draft, publish and quarantined alike), so
 
-  - corpus.json stays the committed backup (repo-as-database ethos, #2) —
-    `apply.sh && ingest_corpus.py` rebuilds the DB from it losslessly,
+  - corpus.json stays the committed derived view (repo-as-database ethos, #2),
   - the Corpus Inspector and the trip pipeline (#27 pending switch) read one file,
   - every curation session shows up as a reviewable git diff.
 
@@ -16,24 +14,23 @@ Governance fields (#32) ride along: status · source · taggedBy · tagProv ·
 curationNotes · needsFieldCheck. Prose rides along too: intro / approach /
 pitchInfo + structured pitches[].
 
-Dependency-free (stdlib; talks to Postgres via psql / docker exec):
-    python3 db/tools/build_corpus.py
+Run:  agent/.venv/bin/python db/tools/build_corpus.py
 """
 import json
 import re
-import subprocess
 import sys
 import unicodedata
 from datetime import date
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from store import Store  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "db" / "corpus.json"
 # A deployed copy under knowledge/ (the only tree GitHub Pages serves), so the
 # corpus is fetchable by the Corpus Inspector and clickable from the data map.
 DEPLOY_OUT = ROOT / "knowledge" / "data" / "corpus.json"
-DB_DSN = "postgresql://climbing:climbing@localhost:5432/climbing"
-DB_CONTAINER = "climbing-db"          # docker exec fallback if no local psql
 TAXONOMY_REF = "knowledge/data/tag-spec.json"
 
 
@@ -42,65 +39,71 @@ def slug(s: str) -> str:
     return re.sub(r"[^a-z0-9]+", "-", s).strip("-")
 
 
-AREAS_Q = r"""
-SELECT json_agg(a ORDER BY a.path_tokens) FROM (
-  SELECT ar.id AS pg_id, ar.parent_id, ar.name, ar.kind, ar.path_tokens,
-         ar.eff_grade_context, a.grade_context, a.rock_code, a.aspect,
-         ST_Y(a.geom::geometry) AS lat, ST_X(a.geom::geometry) AS lon,
-         p.name AS parent_name
-  FROM area_resolved ar
-  JOIN area a ON a.id = ar.id
-  LEFT JOIN area p ON p.id = ar.parent_id
-) a;"""
-
-ROUTES_Q = r"""
-SELECT json_agg(r ORDER BY r.path_tokens, r.name) FROM (
-  SELECT rr.id AS pg_id, rr.name, rr.status, rr.tagged_by, rr.tag_prov,
-    rr.curation_notes, rr.needs_field_check, rr.curated_at, rr.path_tokens,
-    rr.length_m, rr.pitches_count, rr.incline_code, rr.data_grade,
-    rr.grade_system_code, rr.original_grade, rr.trad_grade, rr.tech_grade,
-    rr.protection_code, rr.protection_style, rr.belays, rr.rack, rr.rope,
-    rr.escapable, rr.commitment_code, rr.timezone,
-    rr.approach_time_min, rr.approach_difficulty,
-    rr.descent_method, rr.descent_abseils, rr.descent_notes,
-    rr.elevation_m, rr.sun_window_code, rr.wind_exposed, rr.best_season, rr.stars,
-    rr.intro_html, rr.approach_html, rr.pitch_info_html,
-    rr.area_id, (SELECT name FROM area WHERE id = rr.area_id) AS area_name,
-    ST_Y(rr.geom::geometry) AS lat, ST_X(rr.geom::geometry) AS lon,
-    (SELECT json_agg(json_build_object('label', label,
-        'lat', ST_Y(geom::geometry), 'lon', ST_X(geom::geometry)) ORDER BY ord, id)
-        FROM route_parking pk WHERE pk.route_id = rr.id) AS parkings,
-    (SELECT array_agg(discipline_code ORDER BY discipline_code) FROM route_discipline d WHERE d.route_id = rr.id) AS disciplines,
-    (SELECT array_agg(feature_code ORDER BY feature_code) FROM route_feature f WHERE f.route_id = rr.id) AS features,
-    (SELECT array_agg(character_code ORDER BY character_code) FROM route_character c WHERE c.route_id = rr.id) AS "character",
-    (SELECT array_agg(hazard_code ORDER BY hazard_code) FROM route_hazard h WHERE h.route_id = rr.id) AS hazards,
-    (SELECT json_object_agg(hazard_code, json_build_object('span', evidence_span, 'url', source_url))
-        FROM route_hazard h WHERE h.route_id = rr.id) AS hazard_evidence,
-    (SELECT json_agg(json_build_object('number', number, 'length', length_m,
-        'gradeSys', grade_system_code, 'grade', original_grade,
-        'description', description) ORDER BY number)
-        FROM pitch p WHERE p.route_id = rr.id) AS pitch_rows,
-    (SELECT json_agg(json_build_object('month', month, 'rainyDays', rainy_days,
-        'tempHigh', temp_high, 'tempLow', temp_low) ORDER BY month)
-        FROM route_climatology w WHERE w.route_id = rr.id) AS climatology,
-    (SELECT json_agg(json_build_object('source', source_id, 'id', external_id, 'url', url)
-                     ORDER BY source_id, external_id)
-        FROM external_ref e WHERE e.entity_type = 'route' AND e.entity_id = rr.id) AS refs
-  FROM route_resolved rr
-) r;"""
+def num(v):
+    """Postgres numerics exported as 13.0 — the corpus has always said 13."""
+    return int(v) if isinstance(v, float) and v.is_integer() else v
 
 
-def pg_json(query: str):
-    for cmd in (["psql", DB_DSN, "-tAc", query],
-                ["docker", "exec", DB_CONTAINER, "psql", "-U", "climbing",
-                 "-d", "climbing", "-tAc", query]):
-        try:
-            out = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
-            if out.returncode == 0 and out.stdout.strip():
-                return json.loads(out.stdout.strip())
-        except Exception:
-            continue
-    return None
+def load_raw(s: Store) -> tuple[list[dict], list[dict]]:
+    """The record, reshaped into the rows the old AREAS_Q / ROUTES_Q returned —
+    everything downstream (ids, camelCase mapping) is unchanged."""
+    areas_raw = []
+    for a in s.areas.values():
+        areas_raw.append({
+            "pg_id": a["id"], "parent_id": a.get("parent_id"), "name": a["name"],
+            "kind": a.get("kind"), "path_tokens": a["path_tokens"],
+            "eff_grade_context": a.get("eff_grade_context"),
+            "grade_context": a.get("grade_context"), "rock_code": a.get("rock_code"),
+            "aspect": a.get("aspect"), "lat": a.get("lat"), "lon": a.get("lon"),
+            "parent_name": s.areas.get(a.get("parent_id"), {}).get("name"),
+        })
+    areas_raw.sort(key=lambda a: a["path_tokens"])
+
+    routes_raw = []
+    for r in s.routes.values():
+        ar = s.areas[r["area_id"]]
+        row = {k: r.get(k) for k in (
+            "name", "status", "tagged_by", "tag_prov", "curation_notes",
+            "needs_field_check", "curated_at", "length_m", "pitches_count",
+            "incline_code", "data_grade", "grade_system_code", "original_grade",
+            "trad_grade", "tech_grade", "protection_code", "protection_style",
+            "belays", "rack", "rope", "escapable", "commitment_code",
+            "approach_time_min", "approach_difficulty", "descent_method",
+            "descent_abseils", "descent_notes", "elevation_m", "sun_window_code",
+            "wind_exposed", "best_season", "stars", "intro_html", "approach_html",
+            "pitch_info_html", "area_id", "lat", "lon")}
+        row.update({
+            "pg_id": r["id"], "path_tokens": ar["path_tokens"], "area_name": ar["name"],
+            "timezone": r.get("timezone"),    # the route's OWN column, like rr.timezone was
+            "parkings": [{"label": pk.get("label"), "lat": pk.get("lat"), "lon": pk.get("lon")}
+                         for pk in sorted(r.get("parkings") or [],
+                                          key=lambda p: (p.get("ord") or 0, p.get("id") or 0))],
+            "disciplines": sorted((r.get("tags") or {}).get("disciplines", [])),
+            "features": sorted((r.get("tags") or {}).get("features", [])),
+            "character": sorted((r.get("tags") or {}).get("character", [])),
+            "hazards": sorted(h["hazard_code"] for h in r.get("hazards") or []),
+            "hazard_evidence": {h["hazard_code"]: {"span": h.get("evidence_span"),
+                                                   "url": h.get("source_url")}
+                                for h in r.get("hazards") or []},
+            "pitch_rows": [{"number": p.get("number"), "length": p.get("length_m"),
+                            "gradeSys": p.get("grade_system_code"),
+                            "grade": p.get("original_grade"),
+                            "description": p.get("description")}
+                           for p in sorted(r.get("pitches") or [],
+                                           key=lambda p: p.get("number") or 0)],
+            "climatology": [{"month": m["month"], "rainyDays": num(m.get("rainy_days")),
+                             "tempHigh": num(m.get("temp_high")),
+                             "tempLow": num(m.get("temp_low"))}
+                            for m in sorted(r.get("climatology") or [],
+                                            key=lambda m: m["month"])],
+            "refs": [{"source": x.get("source_id"), "id": x.get("external_id"),
+                      "url": x.get("url")}
+                     for x in sorted(r.get("external_refs") or [],
+                                     key=lambda x: (x.get("source_id"), x.get("external_id")))],
+        })
+        routes_raw.append(row)
+    routes_raw.sort(key=lambda r: (r["path_tokens"], r["name"]))
+    return areas_raw, routes_raw
 
 
 def unique_area_ids(areas_raw: list[dict]) -> dict:
@@ -131,7 +134,7 @@ def export_area(a: dict, ids: dict, parent_pg: dict) -> dict:
         "geoLocation": [round(a["lat"], 4), round(a["lon"], 4)] if a.get("lat") is not None else None,
         "rock": a.get("rock_code"), "aspect": a.get("aspect"),
         "gradeContext": a.get("grade_context"),
-        "status": "draft", "source": "postgres",
+        "status": "draft", "source": "record",
     }
 
 
@@ -180,11 +183,7 @@ def export_route(r: dict, area_ids: dict) -> dict:
 
 
 def build():
-    areas_raw = pg_json(AREAS_Q)
-    routes_raw = pg_json(ROUTES_Q)
-    if not areas_raw or not routes_raw:
-        sys.exit("[error] Postgres unreachable (colima start && cd db && docker-compose up -d) "
-                 "— corpus.json left untouched (it IS the backup)")
+    areas_raw, routes_raw = load_raw(Store())
 
     area_ids = unique_area_ids(areas_raw)
     parent_pg = {a["pg_id"]: a.get("parent_id") for a in areas_raw}
@@ -192,7 +191,7 @@ def build():
     routes = [export_route(r, area_ids) for r in routes_raw]
 
     # area status: publish if a human-published route hangs under it (walked by
-    # pg id, immune to name collisions) — mirrors the old curated-area semantics
+    # record id, immune to name collisions) — mirrors the old curated-area semantics
     pub_pg = set()
     for r in routes_raw:
         if r["status"] == "publish":
@@ -214,8 +213,8 @@ def build():
     corpus = {
         "schemaVersion": "2.0",
         "generated": date.today().isoformat(),
-        "note": "EXPORT of the Postgres corpus DB (decision #34: Postgres-first — edit via "
-                "the Curation Studio, not this file; restore via db/tools/ingest_corpus.py). "
+        "note": "EXPORT of the JSON record (decision #39: db/record/ is the source of "
+                "truth — edit via the Curation Studio, not this file). "
                 "Governance (#32): suggestions/ranking may only use status:publish + "
                 "taggedBy:human rows.",
         "taxonomyRef": TAXONOMY_REF,

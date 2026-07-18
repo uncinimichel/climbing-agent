@@ -6,56 +6,36 @@ rationale and table map: [`knowledge/data/database.md`](../knowledge/data/databa
 The controlled vocabularies it encodes: [`knowledge/data/taxonomy.md`](../knowledge/data/taxonomy.md)
 (that file stays the human source of truth — extend enums there first, then in the seeds).
 
-## Run it — fresh clone, Docker only (the "show a friend" path)
+## Run it — no database, no Docker (decision #39)
 
-Everything needed is in the repo; the DB content restores from the committed
-`corpus.json`. With Docker (or Colima) installed:
-
-```bash
-git clone https://github.com/uncinimichel/climbing-agent && cd climbing-agent/db
-docker-compose up -d                                  # Postgres (schema+seeds auto-apply on first boot)
-                                                      #   + the Curation Studio container
-docker-compose run --rm studio python ingest_corpus.py   # restore the corpus (220 routes, 181 areas)
-open http://localhost:8890                            # ← the Studio
-```
-
-Notes for a fresh clone:
-- **Topo photos are not in git** (`db/uploads/` is ignored — 92 MB of copies).
-  The drawn-line *data* restores fine; base photos re-import from the public
-  [multi-pitch repo](https://github.com/dankni/multi-pitch): clone it, then
-  `docker-compose run --rm -e MP_SITE=/mp -v /path/to/multi-pitch/website:/mp studio python import_mp_topos.py`.
-  Or just upload new photos in the Studio — that works with nothing extra.
-- **The database of record is the CLOUD (decision #38, 18 Jul 2026)** — Aurora
-  PostgreSQL 18 (encrypted, 7-day PITR, nightly S3 dumps via GitHub Actions with
-  180-day retention). Nothing authoritative lives on any laptop. Day-to-day:
-  `./studio.sh` opens the Studio against the record; the local Docker DB is a
-  disposable offline/dev copy — refresh it any time with
-  `gunzip -c backups/<latest>.sql.gz | docker exec -i climbing-db psql -q -U climbing -d climbing`
-  or a fresh `./backup.sh cloud`. Cost of the record being always-on: ~£3–4/month
-  (public IPv4 + secret + storage), watched by a $5 budget alarm.
-
-## Run it — on this Mac (the usual dev loop)
+**The JSON record under `db/record/` IS the database**: one document per route,
+plus taxonomies, grades, the area tree and drawn topos. Git holds its readable
+history; the versioned S3 bucket holds the cloud copy + the photos. Postgres
+is gone — validation that used to be FK constraints now runs as JSON-Schema
+enums generated from the taxonomy files (CI re-lints every change:
+`validate-record.yml`).
 
 ```bash
-colima start && cd db
-docker-compose up -d db       # postgis/postgis:18-3.6; first boot auto-applies sql/
-./smoke.sh                    # end-to-end smoke test (rolls back, leaves no data)
-docker exec -it climbing-db psql -U climbing   # interactive psql
-../agent/.venv/bin/uvicorn curate:app --port 8890   # Studio from the host venv (from db/tools)
+git clone https://github.com/uncinimichel/climbing-agent && cd climbing-agent
+python3 -m venv agent/.venv && agent/.venv/bin/pip install -r db/tools/requirements.txt
+db/sync.sh pull          # photos + latest record from S3 (needs AWS creds; skip = no photos)
+db/studio.sh             # → http://localhost:8890
 ```
 
-Host venv setup (once): `python3 -m venv agent/.venv && agent/.venv/bin/pip install -r db/tools/requirements.txt`
-(plus whatever `agent/` itself needs). The E2E suite + demo recorder live in
-[`tools/e2e/`](tools/e2e/README.md) — run `e2e_topo.py` before touching the Studio UI.
+Day-to-day: edit in the Studio (writes validate against the taxonomy schema
+and land as pretty-printed JSON), then `db/sync.sh push` + `git commit db/record`
+— that IS the save. `db/tools/lint_record.py` is the integrity gate (pre-push
+and in CI). Queries beyond the Studio: DuckDB reads the record directly
+(`SELECT ... FROM read_json_auto('db/record/routes/*.json')`).
 
-Connection: `postgres://climbing:climbing@localhost:5432/climbing` (local dev only).
+### The Postgres escape hatch (legacy, dormant)
 
-**⚠️ `./apply.sh` DROPS the whole `climbing` schema — including real crawl + curation
-work.** Since #34 the DB is the working store, so the only safe rebuild is:
-
-```bash
-./apply.sh && ../agent/.venv/bin/python tools/ingest_corpus.py   # restore from corpus.json
-```
+`db/sql/` (the full schema) and `tools/ingest_corpus.py` are kept ON PURPOSE:
+the day the corpus outgrows JSON (a second concurrent curator, ~100k routes,
+transactional bulk rewrites — see decision #39's breaking points), a Postgres
+rebuilds from the record in minutes: run any postgres+postgis container,
+apply `sql/`, `pip install psycopg[binary]`, run `ingest_corpus.py`. The
+final pg_dumps from the retirement live in `db/backups/`.
 
 ## The Curation Studio — turn drafts into curated routes ✏️
 

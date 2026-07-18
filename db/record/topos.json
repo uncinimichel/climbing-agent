@@ -2,22 +2,47 @@
  "schema": 1,
  "topos": [
   {
-   "title": "Old Man of Stoer > Original Route | VS 5a - 67m",
-   "status": "publish",
-   "belay_size": 26,
+   "area_id": 16,
    "area_name": "Old Man of Stoer",
-   "uri": "uploads/topos/mp/1-crag.jpg",
-   "kind": "crag_photo",
-   "width_px": 3024,
-   "height_px": 4032,
+   "belay_size": 26,
    "credit": "Dan Knight / multi-pitch.com",
+   "height_px": 4032,
+   "id": 1,
+   "kind": "crag_photo",
    "license": "owned",
-   "permission_note": null,
-   "taken_at": null,
    "lines": [
     {
-     "route_name": "Original Route",
-     "route_area": "Old Man of Stoer",
+     "descent": [
+      {
+       "anchor": [
+        0.53274,
+        0.12624
+       ],
+       "label": " < 60m abseil",
+       "labelPosition": [
+        0.59358,
+        0.1441
+       ],
+       "path": [
+        [
+         0.54067,
+         0.1255
+        ],
+        [
+         0.5539,
+         0.13616
+        ],
+        [
+         0.57771,
+         0.16121
+        ],
+        [
+         0.58565,
+         0.19767
+        ]
+       ]
+      }
+     ],
      "line": [
       [
        0.56548,
@@ -190,118 +215,178 @@
      ],
      "pitches": [
       {
-       "grade": "5a",
-       "height": "15m",
        "belayPosition": [
         0.36376,
         0.83631
        ],
+       "grade": "5a",
+       "height": "15m",
        "labelPosition": [
         0.46693,
         0.8688
        ]
       },
       {
-       "grade": "4b",
-       "height": "12m",
        "belayPosition": [
         0.46561,
         0.67336
        ],
+       "grade": "4b",
+       "height": "12m",
        "labelPosition": [
         0.36442,
         0.73264
        ]
       },
       {
-       "grade": "4b",
-       "height": "15m",
        "belayPosition": [
         0.46329,
         0.4876
        ],
+       "grade": "4b",
+       "height": "15m",
        "labelPosition": [
         0.50728,
         0.59201
        ]
       },
       {
-       "grade": "4c",
-       "height": "10m",
        "belayPosition": [
         0.52745,
         0.3564
        ],
+       "grade": "4c",
+       "height": "10m",
        "labelPosition": [
         0.57507,
         0.45015
        ]
       },
       {
-       "grade": "4a",
-       "height": "15m",
        "belayPosition": [
         0.53274,
         0.12624
        ],
+       "grade": "4a",
+       "height": "15m",
        "labelPosition": [
         0.53009,
         0.23686
        ]
       }
      ],
+     "route_area": "Old Man of Stoer",
+     "route_name": "Original Route",
+     "source_id": "multipitch"
+    }
+   ],
+   "permission_note": null,
+   "status": "publish",
+   "taken_at": null,
+   "title": "Old Man of Stoer > Original Route | VS 5a - 67m",
+   "uri": "uploads/topos/mp/1-crag.jpg",
+   "width_px": 3024
+  },
+  {
+   "area_id": 245,
+   "area_name": "Cornakey Cliff",
+   "belay_size": 22,
+   "credit": "Dan Knight / multi-pitch.com",
+   "height_px": 2496,
+   "id": 2,
+   "kind": "crag_photo",
+   "license": "owned",
+   "lines": [
+    {
      "descent": [
       {
+       "anchor": [
+        null,
+        null
+       ],
+       "label": "",
+       "labelPosition": [
+        null,
+        null
+       ],
        "path": [
         [
-         0.54067,
-         0.1255
+         0.45,
+         0.45553
         ],
         [
-         0.5539,
-         0.13616
+         0.40833,
+         0.48878
         ],
         [
-         0.57771,
-         0.16121
-        ],
-        [
-         0.58565,
-         0.19767
+         0.34917,
+         0.53165
         ]
-       ],
-       "label": " < 60m abseil",
+       ]
+      },
+      {
        "anchor": [
-        0.53274,
-        0.12624
+        null,
+        null
        ],
+       "label": "",
        "labelPosition": [
-        0.59358,
-        0.1441
+        null,
+        null
+       ],
+       "path": [
+        [
+         0.33333,
+         0.89623
+        ],
+        [
+         0.36583,
+         0.88822
+        ]
+       ]
+      },
+      {
+       "anchor": [
+        null,
+        null
+       ],
+       "label": "",
+       "labelPosition": [
+        null,
+        null
+       ],
+       "path": [
+        [
+         0.46861,
+         0.89062
+        ],
+        [
+         0.50278,
+         0.91466
+        ],
+        [
+         0.53056,
+         0.90425
+        ],
+        [
+         0.56861,
+         0.91466
+        ],
+        [
+         0.61472,
+         0.90665
+        ],
+        [
+         0.66583,
+         0.94151
+        ],
+        [
+         0.71389,
+         0.9387
+        ]
        ]
       }
      ],
-     "source_id": "multipitch"
-    }
-   ]
-  },
-  {
-   "title": "Cornakey Cliff > Wreckers Slab | VS 4b - 130m",
-   "status": "publish",
-   "belay_size": 22,
-   "area_name": "Cornakey Cliff",
-   "uri": "uploads/topos/mp/10-crag.jpg",
-   "kind": "crag_photo",
-   "width_px": 3600,
-   "height_px": 2496,
-   "credit": "Dan Knight / multi-pitch.com",
-   "license": "owned",
-   "permission_note": null,
-   "taken_at": null,
-   "lines": [
-    {
-     "route_name": "Wreakers Slab",
-     "route_area": "Cornakey Cliff",
      "line": [
       [
        0.73139,
@@ -406,152 +491,167 @@
      ],
      "pitches": [
       {
-       "grade": "4a",
-       "height": "40m",
        "belayPosition": [
         0.69444,
         0.63181
        ],
+       "grade": "4a",
+       "height": "40m",
        "labelPosition": [
         0.7075,
         0.72917
        ]
       },
       {
-       "grade": "4b",
-       "height": "40m",
        "belayPosition": [
         0.68333,
         0.3778
        ],
+       "grade": "4b",
+       "height": "40m",
        "labelPosition": [
         0.71389,
         0.48478
        ]
       },
       {
-       "grade": "4a",
-       "height": "50m",
        "belayPosition": [
         0.69167,
         0.123
        ],
+       "grade": "4a",
+       "height": "50m",
        "labelPosition": [
         0.67417,
         0.1883
        ]
       }
      ],
+     "route_area": "Cornakey Cliff",
+     "route_name": "Wreakers Slab",
+     "source_id": "multipitch"
+    }
+   ],
+   "permission_note": null,
+   "status": "publish",
+   "taken_at": null,
+   "title": "Cornakey Cliff > Wreckers Slab | VS 4b - 130m",
+   "uri": "uploads/topos/mp/10-crag.jpg",
+   "width_px": 3600
+  },
+  {
+   "area_id": 288,
+   "area_name": "Roca Gris",
+   "belay_size": 22,
+   "credit": "Dan Knight / multi-pitch.com",
+   "height_px": 2800,
+   "id": 3,
+   "kind": "crag_photo",
+   "license": "owned",
+   "lines": [
+    {
      "descent": [
       {
-       "path": [
-        [
-         0.45,
-         0.45553
-        ],
-        [
-         0.40833,
-         0.48878
-        ],
-        [
-         0.34917,
-         0.53165
-        ]
-       ],
-       "label": "",
        "anchor": [
         null,
         null
        ],
+       "label": "80m",
        "labelPosition": [
-        null,
-        null
+        0.64643,
+        0.13346
+       ],
+       "path": [
+        [
+         0.57393,
+         0.11679
+        ],
+        [
+         0.58571,
+         0.1225
+        ],
+        [
+         0.59286,
+         0.13929
+        ],
+        [
+         0.60607,
+         0.14036
+        ],
+        [
+         0.625,
+         0.14036
+        ],
+        [
+         0.64643,
+         0.15464
+        ]
        ]
       },
       {
+       "anchor": [
+        0.72964,
+        0.19286
+       ],
+       "label": "40m",
+       "labelPosition": [
+        0.76429,
+        0.21786
+       ],
        "path": [
         [
-         0.33333,
-         0.89623
+         0.72607,
+         0.20132
         ],
         [
-         0.36583,
-         0.88822
+         0.71679,
+         0.22857
         ]
-       ],
-       "label": "",
-       "anchor": [
-        null,
-        null
-       ],
-       "labelPosition": [
-        null,
-        null
        ]
       },
       {
+       "anchor": [
+        0.68929,
+        0.37775
+       ],
+       "label": "40m",
+       "labelPosition": [
+        0.70607,
+        0.41321
+       ],
        "path": [
         [
-         0.46861,
-         0.89062
+         0.68821,
+         0.38821
         ],
         [
-         0.50278,
-         0.91466
-        ],
-        [
-         0.53056,
-         0.90425
-        ],
-        [
-         0.56861,
-         0.91466
-        ],
-        [
-         0.61472,
-         0.90665
-        ],
-        [
-         0.66583,
-         0.94151
-        ],
-        [
-         0.71389,
-         0.9387
+         0.68214,
+         0.41893
         ]
-       ],
-       "label": "",
+       ]
+      },
+      {
        "anchor": [
-        null,
-        null
+        0.64536,
+        0.575
        ],
+       "label": "60m",
        "labelPosition": [
-        null,
-        null
+        0.66679,
+        0.63821
+       ],
+       "path": [
+        [
+         0.64893,
+         0.58464
+        ],
+        [
+         0.65714,
+         0.61071
+        ]
        ]
       }
      ],
-     "source_id": "multipitch"
-    }
-   ]
-  },
-  {
-   "title": "Roca Gris > Esparraguera - VS 5a | 190m",
-   "status": "publish",
-   "belay_size": 22,
-   "area_name": "Roca Gris",
-   "uri": "uploads/topos/mp/12-crag.jpg",
-   "kind": "crag_photo",
-   "width_px": 2800,
-   "height_px": 2800,
-   "credit": "Dan Knight / multi-pitch.com",
-   "license": "owned",
-   "permission_note": null,
-   "taken_at": null,
-   "lines": [
-    {
-     "route_name": "Esparraguera",
-     "route_area": "Roca Gris",
      "line": [
       [
        0.10143,
@@ -692,201 +792,194 @@
      ],
      "pitches": [
       {
-       "grade": "UIAA IV",
-       "height": "30m",
        "belayPosition": [
         0.11536,
         0.83107
        ],
+       "grade": "UIAA IV",
+       "height": "30m",
        "labelPosition": [
         0.1275,
         0.90964
        ]
       },
       {
-       "grade": "UIAA V",
-       "height": "40m",
        "belayPosition": [
         0.20821,
         0.66071
        ],
+       "grade": "UIAA V",
+       "height": "40m",
        "labelPosition": [
         0.17143,
         0.74536
        ]
       },
       {
-       "grade": "UIAA V+",
-       "height": "25m",
        "belayPosition": [
         0.3,
         0.50107
        ],
+       "grade": "UIAA V+",
+       "height": "25m",
        "labelPosition": [
         0.27607,
         0.58107
        ]
       },
       {
-       "grade": "UIAA IV",
-       "height": "50m",
        "belayPosition": [
         0.38929,
         0.27857
        ],
+       "grade": "UIAA IV",
+       "height": "50m",
        "labelPosition": [
         0.37857,
         0.40964
        ]
       },
       {
-       "grade": "UIAA IV",
-       "height": "20m",
        "belayPosition": [
         0.49643,
         0.18929
        ],
+       "grade": "UIAA IV",
+       "height": "20m",
        "labelPosition": [
         0.46679,
         0.25
        ]
       },
       {
-       "grade": "UIAA IV+",
-       "height": "30m",
        "belayPosition": [
         0.54179,
         0.11679
        ],
+       "grade": "UIAA IV+",
+       "height": "30m",
        "labelPosition": [
         0.53929,
         0.1475
        ]
       }
      ],
+     "route_area": "Roca Gris",
+     "route_name": "Esparraguera",
+     "source_id": "multipitch"
+    }
+   ],
+   "permission_note": null,
+   "status": "publish",
+   "taken_at": null,
+   "title": "Roca Gris > Esparraguera - VS 5a | 190m",
+   "uri": "uploads/topos/mp/12-crag.jpg",
+   "width_px": 2800
+  },
+  {
+   "area_id": 242,
+   "area_name": "Chair Ladder",
+   "belay_size": 20,
+   "credit": "Dan Knight / multi-pitch.com",
+   "height_px": 1996,
+   "id": 4,
+   "kind": "crag_photo",
+   "license": "owned",
+   "lines": [
+    {
      "descent": [
       {
-       "path": [
-        [
-         0.57393,
-         0.11679
-        ],
-        [
-         0.58571,
-         0.1225
-        ],
-        [
-         0.59286,
-         0.13929
-        ],
-        [
-         0.60607,
-         0.14036
-        ],
-        [
-         0.625,
-         0.14036
-        ],
-        [
-         0.64643,
-         0.15464
-        ]
-       ],
-       "label": "80m",
        "anchor": [
         null,
         null
        ],
+       "label": "",
        "labelPosition": [
-        0.64643,
-        0.13346
+        null,
+        null
+       ],
+       "path": [
+        [
+         0.2237,
+         0.30361
+        ],
+        [
+         0.23266,
+         0.34319
+        ],
+        [
+         0.19881,
+         0.37124
+        ]
        ]
       },
       {
+       "anchor": [
+        null,
+        null
+       ],
+       "label": "",
+       "labelPosition": [
+        null,
+        null
+       ],
        "path": [
         [
-         0.72607,
-         0.20132
+         0.18619,
+         0.56012
         ],
         [
-         0.71679,
-         0.22857
+         0.19881,
+         0.58116
+        ],
+        [
+         0.16794,
+         0.6022
+        ],
+        [
+         0.18022,
+         0.62625
         ]
-       ],
-       "label": "40m",
-       "anchor": [
-        0.72964,
-        0.19286
-       ],
-       "labelPosition": [
-        0.76429,
-        0.21786
        ]
       },
       {
+       "anchor": [
+        null,
+        null
+       ],
+       "label": "",
+       "labelPosition": [
+        null,
+        null
+       ],
        "path": [
         [
-         0.68821,
-         0.38821
+         0.24262,
+         0.6999
         ],
         [
-         0.68214,
-         0.41893
-        ]
-       ],
-       "label": "40m",
-       "anchor": [
-        0.68929,
-        0.37775
-       ],
-       "labelPosition": [
-        0.70607,
-        0.41321
-       ]
-      },
-      {
-       "path": [
-        [
-         0.64893,
-         0.58464
+         0.26684,
+         0.72545
         ],
         [
-         0.65714,
-         0.61071
+         0.28775,
+         0.71794
+        ],
+        [
+         0.30534,
+         0.73747
+        ],
+        [
+         0.31065,
+         0.76804
+        ],
+        [
+         0.33455,
+         0.77856
         ]
-       ],
-       "label": "60m",
-       "anchor": [
-        0.64536,
-        0.575
-       ],
-       "labelPosition": [
-        0.66679,
-        0.63821
        ]
       }
      ],
-     "source_id": "multipitch"
-    }
-   ]
-  },
-  {
-   "title": "Chair Ladder > Pegasus | HS 4b - 70m",
-   "status": "publish",
-   "belay_size": 20,
-   "area_name": "Chair Ladder",
-   "uri": "uploads/topos/mp/14-crag.jpg",
-   "kind": "crag_photo",
-   "width_px": 3013,
-   "height_px": 1996,
-   "credit": "Dan Knight / multi-pitch.com",
-   "license": "owned",
-   "permission_note": null,
-   "taken_at": null,
-   "lines": [
-    {
-     "route_name": "Pegasus",
-     "route_area": "Chair Ladder",
      "line": [
       [
        0.43976,
@@ -995,156 +1088,92 @@
      ],
      "pitches": [
       {
-       "grade": "4b",
-       "height": "32m",
        "belayPosition": [
         0.47594,
         0.5476
        ],
+       "grade": "4b",
+       "height": "32m",
        "labelPosition": [
         0.47693,
         0.68136
        ]
       },
       {
-       "grade": "4a",
-       "height": "20m",
        "belayPosition": [
         0.56754,
         0.37325
        ],
+       "grade": "4a",
+       "height": "20m",
        "labelPosition": [
         0.53103,
         0.43186
        ]
       },
       {
-       "grade": "4b",
-       "height": "18m",
        "belayPosition": [
         0.55028,
         0.24399
        ],
+       "grade": "4b",
+       "height": "18m",
        "labelPosition": [
         0.54962,
         0.28156
        ]
       }
      ],
+     "route_area": "Chair Ladder",
+     "route_name": "Pegasus",
+     "source_id": "multipitch"
+    }
+   ],
+   "permission_note": null,
+   "status": "publish",
+   "taken_at": null,
+   "title": "Chair Ladder > Pegasus | HS 4b - 70m",
+   "uri": "uploads/topos/mp/14-crag.jpg",
+   "width_px": 3013
+  },
+  {
+   "area_id": 270,
+   "area_name": "Lliwedd",
+   "belay_size": 12,
+   "credit": "Dan Knight / multi-pitch.com",
+   "height_px": 1519,
+   "id": 5,
+   "kind": "crag_photo",
+   "license": "owned",
+   "lines": [
+    {
      "descent": [
       {
-       "path": [
-        [
-         0.2237,
-         0.30361
-        ],
-        [
-         0.23266,
-         0.34319
-        ],
-        [
-         0.19881,
-         0.37124
-        ]
-       ],
-       "label": "",
        "anchor": [
         null,
         null
        ],
+       "label": "",
        "labelPosition": [
         null,
         null
-       ]
-      },
-      {
+       ],
        "path": [
         [
-         0.18619,
-         0.56012
+         0.28718,
+         0.27386
         ],
         [
-         0.19881,
-         0.58116
+         0.27305,
+         0.26267
         ],
         [
-         0.16794,
-         0.6022
-        ],
-        [
-         0.18022,
-         0.62625
+         0.24267,
+         0.27386
         ]
-       ],
-       "label": "",
-       "anchor": [
-        null,
-        null
-       ],
-       "labelPosition": [
-        null,
-        null
-       ]
-      },
-      {
-       "path": [
-        [
-         0.24262,
-         0.6999
-        ],
-        [
-         0.26684,
-         0.72545
-        ],
-        [
-         0.28775,
-         0.71794
-        ],
-        [
-         0.30534,
-         0.73747
-        ],
-        [
-         0.31065,
-         0.76804
-        ],
-        [
-         0.33455,
-         0.77856
-        ]
-       ],
-       "label": "",
-       "anchor": [
-        null,
-        null
-       ],
-       "labelPosition": [
-        null,
-        null
        ]
       }
      ],
-     "source_id": "multipitch"
-    }
-   ]
-  },
-  {
-   "title": "Lliwedd > Longlands Continuation | S 4b - 280m",
-   "status": "publish",
-   "belay_size": 12,
-   "area_name": "Lliwedd",
-   "uri": "uploads/topos/mp/16-crag.jpg",
-   "kind": "crag_photo",
-   "width_px": 2831,
-   "height_px": 1519,
-   "credit": "Dan Knight / multi-pitch.com",
-   "license": "owned",
-   "permission_note": null,
-   "taken_at": null,
-   "lines": [
-    {
-     "route_name": "Longlands Continuation",
-     "route_area": "Lliwedd",
      "line": [
       [
        0.24868,
@@ -1249,198 +1278,287 @@
      ],
      "pitches": [
       {
-       "grade": "",
-       "height": "20m",
        "belayPosition": [
         0.25327,
         0.66294
        ],
+       "grade": "",
+       "height": "20m",
        "labelPosition": [
         0.25786,
         0.69849
        ]
       },
       {
-       "grade": "",
-       "height": "30m",
        "belayPosition": [
         0.27411,
         0.60764
        ],
+       "grade": "",
+       "height": "30m",
        "labelPosition": [
         0.27552,
         0.64121
        ]
       },
       {
-       "grade": "",
-       "height": "15m",
        "belayPosition": [
         0.28541,
         0.54707
        ],
+       "grade": "",
+       "height": "15m",
        "labelPosition": [
         0.28788,
         0.57867
        ]
       },
       {
-       "grade": "",
-       "height": "25m",
        "belayPosition": [
         0.30131,
         0.4898
        ],
+       "grade": "",
+       "height": "25m",
        "labelPosition": [
         0.29495,
         0.52469
        ]
       },
       {
-       "grade": "",
-       "height": "33m",
        "belayPosition": [
         0.30625,
         0.45425
        ],
+       "grade": "",
+       "height": "33m",
        "labelPosition": [
         0.31332,
         0.47465
        ]
       },
       {
-       "grade": "",
-       "height": "33m",
        "belayPosition": [
         0.32568,
         0.42725
        ],
+       "grade": "",
+       "height": "33m",
        "labelPosition": [
         0.3278,
         0.45161
        ]
       },
       {
-       "grade": "",
-       "height": "24m 4a",
        "belayPosition": [
         0.34158,
         0.37854
        ],
+       "grade": "",
+       "height": "24m 4a",
        "labelPosition": [
         0.34369,
         0.4029
        ]
       },
       {
-       "grade": "",
-       "height": "30m 4a",
        "belayPosition": [
         0.34193,
         0.33509
        ],
+       "grade": "",
+       "height": "30m 4a",
        "labelPosition": [
         0.30025,
         0.35813
        ]
       },
       {
-       "grade": "",
-       "height": "",
        "belayPosition": [
         0.35959,
         0.32719
        ],
+       "grade": "",
+       "height": "",
        "labelPosition": [
         null,
         null
        ]
       },
       {
-       "grade": "",
-       "height": "25m ",
        "belayPosition": [
         0.34723,
         0.27716
        ],
+       "grade": "",
+       "height": "25m ",
        "labelPosition": [
         0.36312,
         0.29559
        ]
       },
       {
-       "grade": "",
-       "height": "30m",
        "belayPosition": [
         0.35676,
         0.24819
        ],
+       "grade": "",
+       "height": "30m",
        "labelPosition": [
         0.32215,
         0.25609
        ]
       },
       {
-       "grade": "",
-       "height": "15m 4b",
        "belayPosition": [
         0.35924,
         0.21856
        ],
+       "grade": "",
+       "height": "15m 4b",
        "labelPosition": [
         0.36842,
         0.23634
        ]
       }
      ],
+     "route_area": "Lliwedd",
+     "route_name": "Longlands Continuation",
+     "source_id": "multipitch"
+    }
+   ],
+   "permission_note": null,
+   "status": "publish",
+   "taken_at": null,
+   "title": "Lliwedd > Longlands Continuation | S 4b - 280m",
+   "uri": "uploads/topos/mp/16-crag.jpg",
+   "width_px": 2831
+  },
+  {
+   "area_id": 278,
+   "area_name": "Mount Indefatigable",
+   "belay_size": 26,
+   "credit": "Dan Knight / multi-pitch.com",
+   "height_px": 4000,
+   "id": 6,
+   "kind": "crag_photo",
+   "license": "owned",
+   "lines": [
+    {
      "descent": [
       {
-       "path": [
-        [
-         0.28718,
-         0.27386
-        ],
-        [
-         0.27305,
-         0.26267
-        ],
-        [
-         0.24267,
-         0.27386
-        ]
-       ],
-       "label": "",
        "anchor": [
         null,
         null
        ],
+       "label": "",
        "labelPosition": [
         null,
         null
+       ],
+       "path": [
+        [
+         0.72867,
+         0.308
+        ],
+        [
+         0.7225,
+         0.2905
+        ],
+        [
+         0.72167,
+         0.272
+        ]
+       ]
+      },
+      {
+       "anchor": [
+        null,
+        null
+       ],
+       "label": "Summit & Descent",
+       "labelPosition": [
+        0.68367,
+        0.2075
+       ],
+       "path": [
+        [
+         0.71833,
+         0.2275
+        ],
+        [
+         0.70967,
+         0.22075
+        ],
+        [
+         0.70117,
+         0.22075
+        ]
+       ]
+      },
+      {
+       "anchor": [
+        null,
+        null
+       ],
+       "label": "Non Summit Descent",
+       "labelPosition": [
+        0.76333,
+        0.2875
+       ],
+       "path": [
+        [
+         0.741,
+         0.252
+        ],
+        [
+         0.746,
+         0.269
+        ],
+        [
+         0.76,
+         0.279
+        ],
+        [
+         0.761,
+         0.29625
+        ],
+        [
+         0.77183,
+         0.30025
+        ]
+       ]
+      },
+      {
+       "anchor": [
+        null,
+        null
+       ],
+       "label": "",
+       "labelPosition": [
+        0.938,
+        0.37768
+       ],
+       "path": [
+        [
+         0.93633,
+         0.3895
+        ],
+        [
+         0.97333,
+         0.40325
+        ],
+        [
+         0.976,
+         0.43625
+        ],
+        [
+         0.98433,
+         0.4565
+        ]
        ]
       }
      ],
-     "source_id": "multipitch"
-    }
-   ]
-  },
-  {
-   "title": "Mount Indefatigable > Joy | S 4a (5.7 / 5.8 YSD) - 300m",
-   "status": "publish",
-   "belay_size": 26,
-   "area_name": "Mount Indefatigable",
-   "uri": "uploads/topos/mp/19-crag.jpg",
-   "kind": "crag_photo",
-   "width_px": 6000,
-   "height_px": 4000,
-   "credit": "Dan Knight / multi-pitch.com",
-   "license": "owned",
-   "permission_note": null,
-   "taken_at": null,
-   "lines": [
-    {
-     "route_name": "Joy",
-     "route_area": "Mount Indefatigable",
      "line": [
       [
        0.41917,
@@ -1537,261 +1655,188 @@
      ],
      "pitches": [
       {
-       "grade": "",
-       "height": "",
        "belayPosition": [
         0.47317,
         0.717
        ],
+       "grade": "",
+       "height": "",
        "labelPosition": [
         null,
         null
        ]
       },
       {
-       "grade": "5.4",
-       "height": "",
        "belayPosition": [
         0.5305,
         0.64975
        ],
+       "grade": "5.4",
+       "height": "",
        "labelPosition": [
         0.504,
         0.682
        ]
       },
       {
-       "grade": "5.4",
-       "height": "",
        "belayPosition": [
         0.56933,
         0.60175
        ],
+       "grade": "5.4",
+       "height": "",
        "labelPosition": [
         0.5535,
         0.622
        ]
       },
       {
-       "grade": "5.6/7",
-       "height": "",
        "belayPosition": [
         0.59717,
         0.56875
        ],
+       "grade": "5.6/7",
+       "height": "",
        "labelPosition": [
         0.5855,
         0.58375
        ]
       },
       {
-       "grade": "5.4",
-       "height": "",
        "belayPosition": [
         0.61933,
         0.52725
        ],
+       "grade": "5.4",
+       "height": "",
        "labelPosition": [
         0.611,
         0.543
        ]
       },
       {
-       "grade": "5.7/8",
-       "height": "",
        "belayPosition": [
         0.63933,
         0.49475
        ],
+       "grade": "5.7/8",
+       "height": "",
        "labelPosition": [
         0.6325,
         0.50375
        ]
       },
       {
-       "grade": "5.4",
-       "height": "",
        "belayPosition": [
         0.66083,
         0.46175
        ],
+       "grade": "5.4",
+       "height": "",
        "labelPosition": [
         0.65283,
         0.4745
        ]
       },
       {
-       "grade": "5.4",
-       "height": "",
        "belayPosition": [
         0.6875,
         0.41325
        ],
+       "grade": "5.4",
+       "height": "",
        "labelPosition": [
         0.67383,
         0.4375
        ]
       },
       {
-       "grade": "5.6/7",
-       "height": "",
        "belayPosition": [
         0.70583,
         0.368
        ],
+       "grade": "5.6/7",
+       "height": "",
        "labelPosition": [
         0.701,
         0.3775
        ]
       },
       {
-       "grade": "5.6/7",
-       "height": "",
        "belayPosition": [
         0.72667,
         0.3295
        ],
+       "grade": "5.6/7",
+       "height": "",
        "labelPosition": [
         0.722,
         0.3375
        ]
       }
      ],
+     "route_area": "Mount Indefatigable",
+     "route_name": "Joy",
+     "source_id": "multipitch"
+    }
+   ],
+   "permission_note": null,
+   "status": "publish",
+   "taken_at": null,
+   "title": "Mount Indefatigable > Joy | S 4a (5.7 / 5.8 YSD) - 300m",
+   "uri": "uploads/topos/mp/19-crag.jpg",
+   "width_px": 6000
+  },
+  {
+   "area_id": 235,
+   "area_name": "Bosigran",
+   "belay_size": 24,
+   "credit": "Dan Knight / multi-pitch.com",
+   "height_px": 2943,
+   "id": 7,
+   "kind": "crag_photo",
+   "license": "owned",
+   "lines": [
+    {
      "descent": [
       {
-       "path": [
-        [
-         0.72867,
-         0.308
-        ],
-        [
-         0.7225,
-         0.2905
-        ],
-        [
-         0.72167,
-         0.272
-        ]
+       "anchor": [
+        null,
+        null
        ],
        "label": "",
-       "anchor": [
-        null,
-        null
-       ],
        "labelPosition": [
         null,
         null
-       ]
-      },
-      {
+       ],
        "path": [
         [
-         0.71833,
-         0.2275
+         0.79822,
+         0.71016
         ],
         [
-         0.70967,
-         0.22075
+         0.76444,
+         0.73734
         ],
         [
-         0.70117,
-         0.22075
+         0.73844,
+         0.75093
+        ],
+        [
+         0.70667,
+         0.76521
+        ],
+        [
+         0.68511,
+         0.75535
+        ],
+        [
+         0.65933,
+         0.76555
         ]
-       ],
-       "label": "Summit & Descent",
-       "anchor": [
-        null,
-        null
-       ],
-       "labelPosition": [
-        0.68367,
-        0.2075
-       ]
-      },
-      {
-       "path": [
-        [
-         0.741,
-         0.252
-        ],
-        [
-         0.746,
-         0.269
-        ],
-        [
-         0.76,
-         0.279
-        ],
-        [
-         0.761,
-         0.29625
-        ],
-        [
-         0.77183,
-         0.30025
-        ]
-       ],
-       "label": "Non Summit Descent",
-       "anchor": [
-        null,
-        null
-       ],
-       "labelPosition": [
-        0.76333,
-        0.2875
-       ]
-      },
-      {
-       "path": [
-        [
-         0.93633,
-         0.3895
-        ],
-        [
-         0.97333,
-         0.40325
-        ],
-        [
-         0.976,
-         0.43625
-        ],
-        [
-         0.98433,
-         0.4565
-        ]
-       ],
-       "label": "",
-       "anchor": [
-        null,
-        null
-       ],
-       "labelPosition": [
-        0.938,
-        0.37768
        ]
       }
      ],
-     "source_id": "multipitch"
-    }
-   ]
-  },
-  {
-   "title": "Bosigran > Doorpost | HS 4b - 67m",
-   "status": "publish",
-   "belay_size": 24,
-   "area_name": "Bosigran",
-   "uri": "uploads/topos/mp/2-crag.jpg",
-   "kind": "crag_photo",
-   "width_px": 4500,
-   "height_px": 2943,
-   "credit": "Dan Knight / multi-pitch.com",
-   "license": "owned",
-   "permission_note": null,
-   "taken_at": null,
-   "lines": [
-    {
-     "route_name": "Doorpost",
-     "route_area": "Bosigran",
      "line": [
       [
        0.46733,
@@ -1936,102 +1981,121 @@
      ],
      "pitches": [
       {
-       "grade": "4a",
-       "height": "27m",
        "belayPosition": [
         0.51444,
         0.5841
        ],
+       "grade": "4a",
+       "height": "27m",
        "labelPosition": [
         0.504,
         0.66599
        ]
       },
       {
-       "grade": "4b",
-       "height": "15m",
        "belayPosition": [
         0.52556,
         0.42949
        ],
+       "grade": "4b",
+       "height": "15m",
        "labelPosition": [
         0.52289,
         0.49745
        ]
       },
       {
-       "grade": "4a",
-       "height": "25m",
        "belayPosition": [
         0.51511,
         0.19572
        ],
+       "grade": "4a",
+       "height": "25m",
        "labelPosition": [
         0.52289,
         0.30717
        ]
       }
      ],
+     "route_area": "Bosigran",
+     "route_name": "Doorpost",
+     "source_id": "multipitch"
+    }
+   ],
+   "permission_note": null,
+   "status": "publish",
+   "taken_at": null,
+   "title": "Bosigran > Doorpost | HS 4b - 67m",
+   "uri": "uploads/topos/mp/2-crag.jpg",
+   "width_px": 4500
+  },
+  {
+   "area_id": 296,
+   "area_name": "Slieve Beg",
+   "belay_size": 28,
+   "credit": "Dan Knight / multi-pitch.com",
+   "height_px": 3430,
+   "id": 8,
+   "kind": "crag_photo",
+   "license": "owned",
+   "lines": [
+    {
      "descent": [
       {
-       "path": [
-        [
-         0.79822,
-         0.71016
-        ],
-        [
-         0.76444,
-         0.73734
-        ],
-        [
-         0.73844,
-         0.75093
-        ],
-        [
-         0.70667,
-         0.76521
-        ],
-        [
-         0.68511,
-         0.75535
-        ],
-        [
-         0.65933,
-         0.76555
-        ]
-       ],
-       "label": "",
        "anchor": [
         null,
         null
        ],
+       "label": "Devils Coach Road Approach",
        "labelPosition": [
+        0.75925,
+        0.48029
+       ],
+       "path": [
+        [
+         0.823,
+         0.51469
+        ],
+        [
+         0.82675,
+         0.51195
+        ],
+        [
+         0.85575,
+         0.5551
+        ],
+        [
+         0.853,
+         0.61195
+        ]
+       ]
+      },
+      {
+       "anchor": [
         null,
         null
+       ],
+       "label": "Direct Approach",
+       "labelPosition": [
+        0.7755,
+        0.92985
+       ],
+       "path": [
+        [
+         0.82625,
+         0.95685
+        ],
+        [
+         0.76,
+         0.95773
+        ],
+        [
+         0.707,
+         0.94169
+        ]
        ]
       }
      ],
-     "source_id": "multipitch"
-    }
-   ]
-  },
-  {
-   "title": "Slieve Beg > Poetic Justice | VS 4b - 80m",
-   "status": "publish",
-   "belay_size": 28,
-   "area_name": "Slieve Beg",
-   "uri": "uploads/topos/mp/20-crag.jpg",
-   "kind": "crag_photo",
-   "width_px": 4000,
-   "height_px": 3430,
-   "credit": "Dan Knight / multi-pitch.com",
-   "license": "owned",
-   "permission_note": null,
-   "taken_at": null,
-   "lines": [
-    {
-     "route_name": "Poetic Justice",
-     "route_area": "Slieve Beg",
      "line": [
       [
        0.5905,
@@ -2192,225 +2256,76 @@
      ],
      "pitches": [
       {
-       "grade": "4b",
-       "height": "45m",
        "belayPosition": [
         0.583,
         0.39359
        ],
+       "grade": "4b",
+       "height": "45m",
        "labelPosition": [
         0.65925,
         0.53469
        ]
       },
       {
-       "grade": "4b",
-       "height": "25m",
        "belayPosition": [
         0.5655,
         0.18863
        ],
+       "grade": "4b",
+       "height": "25m",
        "labelPosition": [
         0.57675,
         0.27318
        ]
       },
       {
-       "grade": "4b",
-       "height": "12m",
        "belayPosition": [
         0.59875,
         0.05802
        ],
+       "grade": "4b",
+       "height": "12m",
        "labelPosition": [
         0.5945,
         0.12391
        ]
       }
      ],
-     "descent": [
-      {
-       "path": [
-        [
-         0.823,
-         0.51469
-        ],
-        [
-         0.82675,
-         0.51195
-        ],
-        [
-         0.85575,
-         0.5551
-        ],
-        [
-         0.853,
-         0.61195
-        ]
-       ],
-       "label": "Devils Coach Road Approach",
-       "anchor": [
-        null,
-        null
-       ],
-       "labelPosition": [
-        0.75925,
-        0.48029
-       ]
-      },
-      {
-       "path": [
-        [
-         0.82625,
-         0.95685
-        ],
-        [
-         0.76,
-         0.95773
-        ],
-        [
-         0.707,
-         0.94169
-        ]
-       ],
-       "label": "Direct Approach",
-       "anchor": [
-        null,
-        null
-       ],
-       "labelPosition": [
-        0.7755,
-        0.92985
-       ]
-      }
-     ],
+     "route_area": "Slieve Beg",
+     "route_name": "Poetic Justice",
      "source_id": "multipitch"
     }
-   ]
+   ],
+   "permission_note": null,
+   "status": "publish",
+   "taken_at": null,
+   "title": "Slieve Beg > Poetic Justice | VS 4b - 80m",
+   "uri": "uploads/topos/mp/20-crag.jpg",
+   "width_px": 4000
   },
   {
-   "title": "Peñón de Ifach > Diedro U.B.S.A. | UIAA V+ or HVS 5a - 250m",
-   "status": "publish",
-   "belay_size": 26,
+   "area_id": 283,
    "area_name": "Peñón de Ifach",
-   "uri": "uploads/topos/mp/22-crag.jpg",
-   "kind": "crag_photo",
-   "width_px": 3278,
-   "height_px": 4765,
+   "belay_size": 26,
    "credit": "Dan Knight / multi-pitch.com",
+   "height_px": 4765,
+   "id": 9,
+   "kind": "crag_photo",
    "license": "owned",
-   "permission_note": null,
-   "taken_at": null,
    "lines": [
     {
-     "route_name": "Diedro UBSA",
-     "route_area": "Peñón de Ifach",
-     "line": [
-      [
-       0.68151,
-       0.85289
-      ]
-     ],
-     "pitches": [
-      {
-       "grade": "Grade III",
-       "height": "15m",
-       "belayPosition": [
-        0.68029,
-        0.85205
-       ],
-       "labelPosition": [
-        0.65223,
-        0.88898
-       ]
-      },
-      {
-       "grade": "Grade V+",
-       "height": "40m",
-       "belayPosition": [
-        0.63606,
-        0.68206
-       ],
-       "labelPosition": [
-        0.71629,
-        0.73389
-       ]
-      },
-      {
-       "grade": "Grade V+",
-       "height": "30m",
-       "belayPosition": [
-        0.54057,
-        0.53326
-       ],
-       "labelPosition": [
-        0.50641,
-        0.58951
-       ]
-      },
-      {
-       "grade": "Grade V+",
-       "height": "30m",
-       "belayPosition": [
-        0.54301,
-        0.41406
-       ],
-       "labelPosition": [
-        0.60281,
-        0.46212
-       ]
-      },
-      {
-       "grade": "Grade V",
-       "height": "30m",
-       "belayPosition": [
-        0.50458,
-        0.27639
-       ],
-       "labelPosition": [
-        0.56162,
-        0.32802
-       ]
-      },
-      {
-       "grade": "Grade V+",
-       "height": "30m",
-       "belayPosition": [
-        0.48505,
-        0.19937
-       ],
-       "labelPosition": [
-        0.60555,
-        0.22875
-       ]
-      },
-      {
-       "grade": "Grade V",
-       "height": "40m",
-       "belayPosition": [
-        0.44082,
-        0.24596
-       ],
-       "labelPosition": [
-        0.3795,
-        0.2852
-       ]
-      },
-      {
-       "grade": "Grade V+",
-       "height": "45m",
-       "belayPosition": [
-        0.27151,
-        0.21322
-       ],
-       "labelPosition": [
-        0.31269,
-        0.18888
-       ]
-      }
-     ],
      "descent": [
       {
+       "anchor": [
+        null,
+        null
+       ],
+       "label": "",
+       "labelPosition": [
+        null,
+        null
+       ],
        "path": [
         [
          0.48017,
@@ -2424,39 +2339,221 @@
          0.46217,
          0.22455
         ]
+       ]
+      }
+     ],
+     "line": [
+      [
+       0.68151,
+       0.85289
+      ]
+     ],
+     "pitches": [
+      {
+       "belayPosition": [
+        0.68029,
+        0.85205
        ],
-       "label": "",
+       "grade": "Grade III",
+       "height": "15m",
+       "labelPosition": [
+        0.65223,
+        0.88898
+       ]
+      },
+      {
+       "belayPosition": [
+        0.63606,
+        0.68206
+       ],
+       "grade": "Grade V+",
+       "height": "40m",
+       "labelPosition": [
+        0.71629,
+        0.73389
+       ]
+      },
+      {
+       "belayPosition": [
+        0.54057,
+        0.53326
+       ],
+       "grade": "Grade V+",
+       "height": "30m",
+       "labelPosition": [
+        0.50641,
+        0.58951
+       ]
+      },
+      {
+       "belayPosition": [
+        0.54301,
+        0.41406
+       ],
+       "grade": "Grade V+",
+       "height": "30m",
+       "labelPosition": [
+        0.60281,
+        0.46212
+       ]
+      },
+      {
+       "belayPosition": [
+        0.50458,
+        0.27639
+       ],
+       "grade": "Grade V",
+       "height": "30m",
+       "labelPosition": [
+        0.56162,
+        0.32802
+       ]
+      },
+      {
+       "belayPosition": [
+        0.48505,
+        0.19937
+       ],
+       "grade": "Grade V+",
+       "height": "30m",
+       "labelPosition": [
+        0.60555,
+        0.22875
+       ]
+      },
+      {
+       "belayPosition": [
+        0.44082,
+        0.24596
+       ],
+       "grade": "Grade V",
+       "height": "40m",
+       "labelPosition": [
+        0.3795,
+        0.2852
+       ]
+      },
+      {
+       "belayPosition": [
+        0.27151,
+        0.21322
+       ],
+       "grade": "Grade V+",
+       "height": "45m",
+       "labelPosition": [
+        0.31269,
+        0.18888
+       ]
+      }
+     ],
+     "route_area": "Peñón de Ifach",
+     "route_name": "Diedro UBSA",
+     "source_id": "multipitch"
+    }
+   ],
+   "permission_note": null,
+   "status": "publish",
+   "taken_at": null,
+   "title": "Peñón de Ifach > Diedro U.B.S.A. | UIAA V+ or HVS 5a - 250m",
+   "uri": "uploads/topos/mp/22-crag.jpg",
+   "width_px": 3278
+  },
+  {
+   "area_id": 307,
+   "area_name": "Vajolet towers",
+   "belay_size": 32,
+   "credit": "Dan Knight / multi-pitch.com",
+   "height_px": 5185,
+   "id": 10,
+   "kind": "crag_photo",
+   "license": "owned",
+   "lines": [
+    {
+     "descent": [
+      {
+       "anchor": [
+        0.56545,
+        0.11398
+       ],
+       "label": "< 60m",
+       "labelPosition": [
+        0.57103,
+        0.1676
+       ],
+       "path": [
+        [
+         0.56847,
+         0.11971
+        ],
+        [
+         0.57173,
+         0.13057
+        ]
+       ]
+      },
+      {
+       "anchor": [
+        0.65031,
+        0.43452
+       ],
+       "label": "~60m",
+       "labelPosition": [
+        0.63985,
+        0.48486
+       ],
+       "path": [
+        [
+         0.65101,
+         0.44031
+        ],
+        [
+         0.65589,
+         0.45246
+        ],
+        [
+         0.65775,
+         0.46532
+        ]
+       ]
+      },
+      {
        "anchor": [
         null,
         null
        ],
+       "label": "Grade II scramble",
        "labelPosition": [
-        null,
-        null
+        0.39061,
+        0.88582
+       ],
+       "path": [
+        [
+         0.46501,
+         0.86577
+        ],
+        [
+         0.46315,
+         0.82989
+        ],
+        [
+         0.40549,
+         0.80366
+        ],
+        [
+         0.35341,
+         0.79229
+        ],
+        [
+         0.3076,
+         0.73308
+        ],
+        [
+         0.28203,
+         0.71919
+        ]
        ]
       }
      ],
-     "source_id": "multipitch"
-    }
-   ]
-  },
-  {
-   "title": "Vajolet towers > Piaz Arete Delagokante | HS 4a - 156m",
-   "status": "publish",
-   "belay_size": 32,
-   "area_name": "Vajolet towers",
-   "uri": "uploads/topos/mp/26-crag.jpg",
-   "kind": "crag_photo",
-   "width_px": 4301,
-   "height_px": 5185,
-   "credit": "Dan Knight / multi-pitch.com",
-   "license": "owned",
-   "permission_note": null,
-   "taken_at": null,
-   "lines": [
-    {
-     "route_name": "Piaz Arete Delagokante",
-     "route_area": "Vajolet towers",
      "line": [
       [
        0.26831,
@@ -2573,172 +2670,178 @@
      ],
      "pitches": [
       {
-       "grade": "UIAA IV+",
-       "height": "30m",
        "belayPosition": [
         0.30435,
         0.52131
        ],
+       "grade": "UIAA IV+",
+       "height": "30m",
        "labelPosition": [
         0.30551,
         0.59479
        ]
       },
       {
-       "grade": "UIAA IV",
-       "height": "25m",
        "belayPosition": [
         0.37875,
         0.36818
        ],
+       "grade": "UIAA IV",
+       "height": "25m",
        "labelPosition": [
         0.36689,
         0.43645
        ]
       },
       {
-       "grade": "UIAA IV",
-       "height": "25m",
        "belayPosition": [
         0.41548,
         0.25497
        ],
+       "grade": "UIAA IV",
+       "height": "25m",
        "labelPosition": [
         0.42409,
         0.30222
        ]
       },
       {
-       "grade": "UIAA IV",
-       "height": "25m",
        "belayPosition": [
         0.43525,
         0.14388
        ],
+       "grade": "UIAA IV",
+       "height": "25m",
        "labelPosition": [
         0.46431,
         0.19634
        ]
       },
       {
-       "grade": "UIAA III",
-       "height": "25m",
        "belayPosition": [
         0.55871,
         0.108
        ],
+       "grade": "UIAA III",
+       "height": "25m",
        "labelPosition": [
         0.50174,
         0.12498
        ]
       }
      ],
+     "route_area": "Vajolet towers",
+     "route_name": "Piaz Arete Delagokante",
+     "source_id": "multipitch"
+    }
+   ],
+   "permission_note": null,
+   "status": "publish",
+   "taken_at": null,
+   "title": "Vajolet towers > Piaz Arete Delagokante | HS 4a - 156m",
+   "uri": "uploads/topos/mp/26-crag.jpg",
+   "width_px": 4301
+  },
+  {
+   "area_id": 241,
+   "area_name": "Cathedral Rock",
+   "belay_size": 22,
+   "credit": "Dan Knight / multi-pitch.com",
+   "height_px": 4032,
+   "id": 11,
+   "kind": "crag_photo",
+   "license": "owned",
+   "lines": [
+    {
      "descent": [
       {
+       "anchor": [
+        0.44808,
+        0.312
+       ],
+       "label": "30m",
+       "labelPosition": [
+        0.44345,
+        0.19965
+       ],
        "path": [
         [
-         0.56847,
-         0.11971
+         0.46197,
+         0.15278
         ],
         [
-         0.57173,
-         0.13057
+         0.45701,
+         0.18279
         ]
-       ],
-       "label": "< 60m",
-       "anchor": [
-        0.56545,
-        0.11398
-       ],
-       "labelPosition": [
-        0.57103,
-        0.1676
        ]
       },
       {
-       "path": [
-        [
-         0.65101,
-         0.44031
-        ],
-        [
-         0.65589,
-         0.45246
-        ],
-        [
-         0.65775,
-         0.46532
-        ]
-       ],
-       "label": "~60m",
-       "anchor": [
-        0.65031,
-        0.43452
-       ],
-       "labelPosition": [
-        0.63985,
-        0.48486
-       ]
-      },
-      {
-       "path": [
-        [
-         0.46501,
-         0.86577
-        ],
-        [
-         0.46315,
-         0.82989
-        ],
-        [
-         0.40549,
-         0.80366
-        ],
-        [
-         0.35341,
-         0.79229
-        ],
-        [
-         0.3076,
-         0.73308
-        ],
-        [
-         0.28203,
-         0.71919
-        ]
-       ],
-       "label": "Grade II scramble",
        "anchor": [
         null,
         null
        ],
+       "label": "UIAA II ",
        "labelPosition": [
-        0.39061,
-        0.88582
+        0.30985,
+        0.33978
+       ],
+       "path": [
+        [
+         0.44015,
+         0.31448
+        ],
+        [
+         0.40906,
+         0.33532
+        ],
+        [
+         0.37963,
+         0.36483
+        ],
+        [
+         0.35615,
+         0.38591
+        ],
+        [
+         0.32176,
+         0.39583
+        ],
+        [
+         0.29993,
+         0.39162
+        ],
+        [
+         0.32011,
+         0.4065
+        ],
+        [
+         0.30688,
+         0.41468
+        ]
+       ]
+      },
+      {
+       "anchor": [
+        0.29729,
+        0.42535
+       ],
+       "label": "~40m",
+       "labelPosition": [
+        0.28241,
+        0.47842
+       ],
+       "path": [
+        [
+         0.29663,
+         0.4313
+        ],
+        [
+         0.29597,
+         0.4561
+        ]
        ]
       }
      ],
-     "source_id": "multipitch"
-    }
-   ]
-  },
-  {
-   "title": "Cathedral Rock > Via Mendez & Guillermo | UIAA V+ or ~VS 5a - 115m",
-   "status": "publish",
-   "belay_size": 22,
-   "area_name": "Cathedral Rock",
-   "uri": "uploads/topos/mp/28-crag.jpg",
-   "kind": "crag_photo",
-   "width_px": 3024,
-   "height_px": 4032,
-   "credit": "Dan Knight / multi-pitch.com",
-   "license": "owned",
-   "permission_note": null,
-   "taken_at": null,
-   "lines": [
-    {
-     "route_name": "Mendez and Guillermo",
-     "route_area": "Cathedral Rock",
      "line": [
       [
        0.50099,
@@ -2871,152 +2974,159 @@
      ],
      "pitches": [
       {
-       "grade": "UIAA IV+",
-       "height": "35m",
        "belayPosition": [
         0.35384,
         0.55977
        ],
+       "grade": "UIAA IV+",
+       "height": "35m",
        "labelPosition": [
         0.52116,
         0.70288
        ]
       },
       {
-       "grade": "UIAA IV+",
-       "height": "45m",
        "belayPosition": [
         0.47784,
         0.31176
        ],
+       "grade": "UIAA IV+",
+       "height": "45m",
        "labelPosition": [
         0.54134,
         0.41741
        ]
       },
       {
-       "grade": "UIAA V+",
-       "height": "35m",
        "belayPosition": [
         0.46329,
         0.14658
        ],
+       "grade": "UIAA V+",
+       "height": "35m",
        "labelPosition": [
         0.51157,
         0.21974
        ]
       }
      ],
+     "route_area": "Cathedral Rock",
+     "route_name": "Mendez and Guillermo",
+     "source_id": "multipitch"
+    }
+   ],
+   "permission_note": null,
+   "status": "publish",
+   "taken_at": null,
+   "title": "Cathedral Rock > Via Mendez & Guillermo | UIAA V+ or ~VS 5a - 115m",
+   "uri": "uploads/topos/mp/28-crag.jpg",
+   "width_px": 3024
+  },
+  {
+   "area_id": 310,
+   "area_name": "Wintours Leap",
+   "belay_size": 18,
+   "credit": "Dan Knight / multi-pitch.com",
+   "height_px": 2170,
+   "id": 12,
+   "kind": "crag_photo",
+   "license": "owned",
+   "lines": [
+    {
      "descent": [
       {
-       "path": [
-        [
-         0.46197,
-         0.15278
-        ],
-        [
-         0.45701,
-         0.18279
-        ]
-       ],
-       "label": "30m",
-       "anchor": [
-        0.44808,
-        0.312
-       ],
-       "labelPosition": [
-        0.44345,
-        0.19965
-       ]
-      },
-      {
-       "path": [
-        [
-         0.44015,
-         0.31448
-        ],
-        [
-         0.40906,
-         0.33532
-        ],
-        [
-         0.37963,
-         0.36483
-        ],
-        [
-         0.35615,
-         0.38591
-        ],
-        [
-         0.32176,
-         0.39583
-        ],
-        [
-         0.29993,
-         0.39162
-        ],
-        [
-         0.32011,
-         0.4065
-        ],
-        [
-         0.30688,
-         0.41468
-        ]
-       ],
-       "label": "UIAA II ",
        "anchor": [
         null,
         null
        ],
+       "label": "30m",
        "labelPosition": [
-        0.30985,
-        0.33978
+        0.62125,
+        0.21309
+       ],
+       "path": [
+        [
+         0.6575,
+         0.16009
+        ],
+        [
+         0.65292,
+         0.18452
+        ],
+        [
+         0.65708,
+         0.20111
+        ]
        ]
       },
       {
+       "anchor": [
+        null,
+        null
+       ],
+       "label": "",
+       "labelPosition": [
+        null,
+        null
+       ],
        "path": [
         [
-         0.29663,
-         0.4313
+         0.69,
+         0.46774
         ],
         [
-         0.29597,
-         0.4561
+         0.645,
+         0.47051
         ]
-       ],
-       "label": "~40m",
+       ]
+      },
+      {
        "anchor": [
-        0.29729,
-        0.42535
+        0.50333,
+        0.47281
        ],
+       "label": "~45m",
        "labelPosition": [
-        0.28241,
-        0.47842
+        0.52042,
+        0.53871
+       ],
+       "path": [
+        [
+         0.50458,
+         0.47977
+        ],
+        [
+         0.51,
+         0.50005
+        ],
+        [
+         0.51083,
+         0.52171
+        ]
+       ]
+      },
+      {
+       "anchor": [
+        0.55542,
+        0.87373
+       ],
+       "label": "~20m",
+       "labelPosition": [
+        0.56542,
+        0.90138
+       ],
+       "path": [
+        [
+         0.55604,
+         0.8823
+        ],
+        [
+         0.55937,
+         0.90949
+        ]
        ]
       }
      ],
-     "source_id": "multipitch"
-    }
-   ]
-  },
-  {
-   "title": "Wintours Leap > Right Hand Route | HS 4b - 87m",
-   "status": "publish",
-   "belay_size": 18,
-   "area_name": "Wintours Leap",
-   "uri": "uploads/topos/mp/29-wintours-leap-crag.jpg",
-   "kind": "crag_photo",
-   "width_px": 2400,
-   "height_px": 2170,
-   "credit": "Dan Knight / multi-pitch.com",
-   "license": "owned",
-   "permission_note": null,
-   "taken_at": null,
-   "lines": [
-    {
-     "route_name": "Right Hand Route",
-     "route_area": "Wintours Leap",
      "line": [
       [
        0.75042,
@@ -3121,169 +3231,162 @@
      ],
      "pitches": [
       {
-       "grade": "3c",
-       "height": "18m",
        "belayPosition": [
         0.74625,
         0.81336
        ],
+       "grade": "3c",
+       "height": "18m",
        "labelPosition": [
         0.68708,
         0.85207
        ]
       },
       {
-       "grade": "4b",
-       "height": "21m",
        "belayPosition": [
         0.77333,
         0.6212
        ],
+       "grade": "4b",
+       "height": "21m",
        "labelPosition": [
         0.70292,
         0.70046
        ]
       },
       {
-       "grade": "4b",
-       "height": "17m",
        "belayPosition": [
         0.7475,
         0.46636
        ],
+       "grade": "4b",
+       "height": "17m",
        "labelPosition": [
         0.73583,
         0.54101
        ]
       },
       {
-       "grade": "4a",
-       "height": "30m",
        "belayPosition": [
         0.65875,
         0.15253
        ],
+       "grade": "4a",
+       "height": "30m",
        "labelPosition": [
         0.65417,
         0.30599
        ]
       }
      ],
+     "route_area": "Wintours Leap",
+     "route_name": "Right Hand Route",
+     "source_id": "multipitch"
+    }
+   ],
+   "permission_note": null,
+   "status": "publish",
+   "taken_at": null,
+   "title": "Wintours Leap > Right Hand Route | HS 4b - 87m",
+   "uri": "uploads/topos/mp/29-wintours-leap-crag.jpg",
+   "width_px": 2400
+  },
+  {
+   "area_id": 244,
+   "area_name": "Clogwyn Dur Arddu",
+   "belay_size": 16,
+   "credit": "Dan Knight / multi-pitch.com",
+   "height_px": 1755,
+   "id": 13,
+   "kind": "crag_photo",
+   "license": "owned",
+   "lines": [
+    {
      "descent": [
       {
-       "path": [
-        [
-         0.6575,
-         0.16009
-        ],
-        [
-         0.65292,
-         0.18452
-        ],
-        [
-         0.65708,
-         0.20111
-        ]
-       ],
-       "label": "30m",
        "anchor": [
         null,
         null
-       ],
-       "labelPosition": [
-        0.62125,
-        0.21309
-       ]
-      },
-      {
-       "path": [
-        [
-         0.69,
-         0.46774
-        ],
-        [
-         0.645,
-         0.47051
-        ]
        ],
        "label": "",
+       "labelPosition": [
+        null,
+        null
+       ],
+       "path": [
+        [
+         0.52851,
+         0.88262
+        ],
+        [
+         0.58699,
+         0.85299
+        ],
+        [
+         0.62646,
+         0.87009
+        ],
+        [
+         0.65058,
+         0.85983
+        ]
+       ]
+      },
+      {
        "anchor": [
         null,
         null
        ],
+       "label": "",
        "labelPosition": [
         null,
         null
+       ],
+       "path": [
+        [
+         0.70175,
+         0.82473
+        ],
+        [
+         0.75512,
+         0.77459
+        ]
        ]
       },
       {
+       "anchor": [
+        null,
+        null
+       ],
+       "label": "",
+       "labelPosition": [
+        null,
+        null
+       ],
        "path": [
         [
-         0.50458,
-         0.47977
+         0.51389,
+         0.1453
         ],
         [
-         0.51,
-         0.50005
+         0.50439,
+         0.16809
         ],
         [
-         0.51083,
-         0.52171
+         0.46637,
+         0.16581
+        ],
+        [
+         0.45468,
+         0.19886
+        ],
+        [
+         0.42982,
+         0.20912
         ]
-       ],
-       "label": "~45m",
-       "anchor": [
-        0.50333,
-        0.47281
-       ],
-       "labelPosition": [
-        0.52042,
-        0.53871
-       ]
-      },
-      {
-       "path": [
-        [
-         0.55604,
-         0.8823
-        ],
-        [
-         0.55937,
-         0.90949
-        ]
-       ],
-       "label": "~20m",
-       "anchor": [
-        0.55542,
-        0.87373
-       ],
-       "labelPosition": [
-        0.56542,
-        0.90138
        ]
       }
      ],
-     "source_id": "multipitch"
-    }
-   ]
-  },
-  {
-   "title": "Clogwyn Du'r Arddu > Great Slab | VS 4c - 162m",
-   "status": "publish",
-   "belay_size": 16,
-   "area_name": "Clogwyn Dur Arddu",
-   "uri": "uploads/topos/mp/3-crag.jpg",
-   "kind": "crag_photo",
-   "width_px": 2736,
-   "height_px": 1755,
-   "credit": "Dan Knight / multi-pitch.com",
-   "license": "owned",
-   "permission_note": null,
-   "taken_at": null,
-   "lines": [
-    {
-     "route_name": "Great Slab",
-     "route_area": "Clogwyn Dur Arddu",
      "line": [
       [
        0.77266,
@@ -3408,172 +3511,120 @@
      ],
      "pitches": [
       {
-       "grade": "4c",
-       "height": "45m",
        "belayPosition": [
         0.69079,
         0.58405
        ],
+       "grade": "4c",
+       "height": "45m",
        "labelPosition": [
         0.73904,
         0.65698
        ]
       },
       {
-       "grade": "4a",
-       "height": "12m",
        "belayPosition": [
         0.70687,
         0.47009
        ],
+       "grade": "4a",
+       "height": "12m",
        "labelPosition": [
         0.72588,
         0.54872
        ]
       },
       {
-       "grade": "4c",
-       "height": "45m",
        "belayPosition": [
         0.62354,
         0.32877
        ],
+       "grade": "4c",
+       "height": "45m",
        "labelPosition": [
         0.70249,
         0.39487
        ]
       },
       {
-       "grade": "",
-       "height": "45m",
        "belayPosition": [
         0.54825,
         0.23533
        ],
+       "grade": "",
+       "height": "45m",
        "labelPosition": [
         0.58991,
         0.25584
        ]
       },
       {
-       "grade": "",
-       "height": "15m",
        "belayPosition": [
         0.52851,
         0.15214
        ],
+       "grade": "",
+       "height": "15m",
        "labelPosition": [
         0.54605,
         0.19316
        ]
       }
      ],
+     "route_area": "Clogwyn Dur Arddu",
+     "route_name": "Great Slab",
+     "source_id": "multipitch"
+    }
+   ],
+   "permission_note": null,
+   "status": "publish",
+   "taken_at": null,
+   "title": "Clogwyn Du'r Arddu > Great Slab | VS 4c - 162m",
+   "uri": "uploads/topos/mp/3-crag.jpg",
+   "width_px": 2736
+  },
+  {
+   "area_id": 234,
+   "area_name": "Avon Gorge",
+   "belay_size": 24,
+   "credit": "Dan Knight / multi-pitch.com",
+   "height_px": 2969,
+   "id": 14,
+   "kind": "crag_photo",
+   "license": "owned",
+   "lines": [
+    {
      "descent": [
       {
-       "path": [
-        [
-         0.52851,
-         0.88262
-        ],
-        [
-         0.58699,
-         0.85299
-        ],
-        [
-         0.62646,
-         0.87009
-        ],
-        [
-         0.65058,
-         0.85983
-        ]
-       ],
-       "label": "",
        "anchor": [
         null,
         null
        ],
+       "label": "10min walk off",
        "labelPosition": [
-        null,
-        null
-       ]
-      },
-      {
+        0.89389,
+        0.11485
+       ],
        "path": [
         [
-         0.70175,
-         0.82473
+         0.80472,
+         0.12529
         ],
         [
-         0.75512,
-         0.77459
+         0.8325,
+         0.15527
+        ],
+        [
+         0.86056,
+         0.14887
+        ],
+        [
+         0.91944,
+         0.15056
         ]
-       ],
-       "label": "",
-       "anchor": [
-        null,
-        null
-       ],
-       "labelPosition": [
-        null,
-        null
-       ]
-      },
-      {
-       "path": [
-        [
-         0.51389,
-         0.1453
-        ],
-        [
-         0.50439,
-         0.16809
-        ],
-        [
-         0.46637,
-         0.16581
-        ],
-        [
-         0.45468,
-         0.19886
-        ],
-        [
-         0.42982,
-         0.20912
-        ]
-       ],
-       "label": "",
-       "anchor": [
-        null,
-        null
-       ],
-       "labelPosition": [
-        null,
-        null
        ]
       }
      ],
-     "source_id": "multipitch"
-    }
-   ]
-  },
-  {
-   "title": "Avon Gorge > Morpheus | HVD 4a - 67m",
-   "status": "publish",
-   "belay_size": 24,
-   "area_name": "Avon Gorge",
-   "uri": "uploads/topos/mp/30-crag.jpg",
-   "kind": "crag_photo",
-   "width_px": 3600,
-   "height_px": 2969,
-   "credit": "Dan Knight / multi-pitch.com",
-   "license": "owned",
-   "permission_note": null,
-   "taken_at": null,
-   "lines": [
-    {
-     "route_name": "Morpheus",
-     "route_area": "Avon Gorge",
      "line": [
       [
        0.17778,
@@ -3710,106 +3761,133 @@
      ],
      "pitches": [
       {
-       "grade": "4a",
-       "height": "28m",
        "belayPosition": [
         0.41167,
         0.53318
        ],
+       "grade": "4a",
+       "height": "28m",
        "labelPosition": [
         0.38528,
         0.67295
        ]
       },
       {
-       "grade": "3c",
-       "height": "16m",
        "belayPosition": [
         0.53417,
         0.34725
        ],
+       "grade": "3c",
+       "height": "16m",
        "labelPosition": [
         0.52278,
         0.43213
        ]
       },
       {
-       "grade": "4a",
-       "height": "10m",
        "belayPosition": [
         0.61194,
         0.22398
        ],
+       "grade": "4a",
+       "height": "10m",
        "labelPosition": [
         0.60694,
         0.29471
        ]
       },
       {
-       "grade": "3b",
-       "height": "12m",
        "belayPosition": [
         0.74917,
         0.12529
        ],
+       "grade": "3b",
+       "height": "12m",
        "labelPosition": [
         0.65472,
         0.12193
        ]
       }
      ],
+     "route_area": "Avon Gorge",
+     "route_name": "Morpheus",
+     "source_id": "multipitch"
+    }
+   ],
+   "permission_note": null,
+   "status": "publish",
+   "taken_at": null,
+   "title": "Avon Gorge > Morpheus | HVD 4a - 67m",
+   "uri": "uploads/topos/mp/30-crag.jpg",
+   "width_px": 3600
+  },
+  {
+   "area_id": 258,
+   "area_name": "Freÿr",
+   "belay_size": 24,
+   "credit": "Dan Knight / multi-pitch.com",
+   "height_px": 2545,
+   "id": 15,
+   "kind": "crag_photo",
+   "license": "owned",
+   "lines": [
+    {
      "descent": [
       {
-       "path": [
-        [
-         0.80472,
-         0.12529
-        ],
-        [
-         0.8325,
-         0.15527
-        ],
-        [
-         0.86056,
-         0.14887
-        ],
-        [
-         0.91944,
-         0.15056
-        ]
-       ],
-       "label": "10min walk off",
        "anchor": [
         null,
         null
        ],
+       "label": "End Le Merinos",
        "labelPosition": [
-        0.89389,
-        0.11485
+        0.26298,
+        0.2554
+       ],
+       "path": [
+        [
+         0.3478,
+         0.29391
+        ],
+        [
+         0.32873,
+         0.28723
+        ],
+        [
+         0.35503,
+         0.27859
+        ]
+       ]
+      },
+      {
+       "anchor": [
+        null,
+        null
+       ],
+       "label": "",
+       "labelPosition": [
+        null,
+        null
+       ],
+       "path": [
+        [
+         0.51841,
+         0.10334
+        ],
+        [
+         0.55128,
+         0.09352
+        ],
+        [
+         0.58941,
+         0.08291
+        ],
+        [
+         0.62623,
+         0.09194
+        ]
        ]
       }
      ],
-     "source_id": "multipitch"
-    }
-   ]
-  },
-  {
-   "title": "Freÿr > Le Merinos | S 4b - 100m",
-   "status": "publish",
-   "belay_size": 24,
-   "area_name": "Freÿr",
-   "uri": "uploads/topos/mp/32-crag.jpg",
-   "kind": "crag_photo",
-   "width_px": 3042,
-   "height_px": 2545,
-   "credit": "Dan Knight / multi-pitch.com",
-   "license": "owned",
-   "permission_note": null,
-   "taken_at": null,
-   "lines": [
-    {
-     "route_name": "Le Merinos",
-     "route_area": "Freÿr",
      "line": [
       [
        0.12492,
@@ -3922,131 +4000,150 @@
      ],
      "pitches": [
       {
-       "grade": "~30m 4b",
-       "height": "La Savonnette ",
        "belayPosition": [
         0.47337,
         0.11356
        ],
+       "grade": "~30m 4b",
+       "height": "La Savonnette ",
        "labelPosition": [
         0.44773,
         0.17917
        ]
       },
       {
-       "grade": "",
-       "height": "~35m",
        "belayPosition": [
         0.36095,
         0.30884
        ],
+       "grade": "",
+       "height": "~35m",
        "labelPosition": [
         0.31657,
         0.39528
        ]
       },
       {
-       "grade": "3c",
-       "height": "~20m",
        "belayPosition": [
         0.23077,
         0.48684
        ],
+       "grade": "3c",
+       "height": "~20m",
        "labelPosition": [
         0.20874,
         0.57878
        ]
       },
       {
-       "grade": "3c",
-       "height": "~15m",
        "belayPosition": [
         0.12558,
         0.76464
        ],
+       "grade": "3c",
+       "height": "~15m",
        "labelPosition": [
         0.15286,
         0.85108
        ]
       }
      ],
+     "route_area": "Freÿr",
+     "route_name": "Le Merinos",
+     "source_id": "multipitch"
+    }
+   ],
+   "permission_note": null,
+   "status": "publish",
+   "taken_at": null,
+   "title": "Freÿr > Le Merinos | S 4b - 100m",
+   "uri": "uploads/topos/mp/32-crag.jpg",
+   "width_px": 3042
+  },
+  {
+   "area_id": 259,
+   "area_name": "Grande Fermeda",
+   "belay_size": 14,
+   "credit": "Dan Knight / multi-pitch.com",
+   "height_px": 2236,
+   "id": 16,
+   "kind": "crag_photo",
+   "license": "owned",
+   "lines": [
+    {
      "descent": [
       {
-       "path": [
-        [
-         0.3478,
-         0.29391
-        ],
-        [
-         0.32873,
-         0.28723
-        ],
-        [
-         0.35503,
-         0.27859
-        ]
-       ],
-       "label": "End Le Merinos",
        "anchor": [
         null,
         null
        ],
+       "label": "",
        "labelPosition": [
-        0.26298,
-        0.2554
+        null,
+        null
+       ],
+       "path": [
+        [
+         0.47457,
+         0.16234
+        ],
+        [
+         0.47636,
+         0.18023
+        ]
        ]
       },
       {
-       "path": [
-        [
-         0.51841,
-         0.10334
-        ],
-        [
-         0.55128,
-         0.09352
-        ],
-        [
-         0.58941,
-         0.08291
-        ],
-        [
-         0.62623,
-         0.09194
-        ]
-       ],
-       "label": "",
        "anchor": [
         null,
         null
        ],
+       "label": "",
        "labelPosition": [
         null,
         null
+       ],
+       "path": [
+        [
+         0.56877,
+         0.32804
+        ],
+        [
+         0.57235,
+         0.3352
+        ],
+        [
+         0.57056,
+         0.34191
+        ]
+       ]
+      },
+      {
+       "anchor": [
+        null,
+        null
+       ],
+       "label": "",
+       "labelPosition": [
+        null,
+        null
+       ],
+       "path": [
+        [
+         0.59742,
+         0.43225
+        ],
+        [
+         0.6096,
+         0.43761
+        ],
+        [
+         0.61891,
+         0.45237
+        ]
        ]
       }
      ],
-     "source_id": "multipitch"
-    }
-   ]
-  },
-  {
-   "title": "Grande Fermeda > Via Normale | VDiff / UIAA IV- | 720m",
-   "status": "publish",
-   "belay_size": 14,
-   "area_name": "Grande Fermeda",
-   "uri": "uploads/topos/mp/33-crag.jpg",
-   "kind": "crag_photo",
-   "width_px": 2792,
-   "height_px": 2236,
-   "credit": "Dan Knight / multi-pitch.com",
-   "license": "owned",
-   "permission_note": null,
-   "taken_at": null,
-   "lines": [
-    {
-     "route_name": "Normal Route",
-     "route_area": "Grande Fermeda",
      "line": [
       [
        0.98496,
@@ -4223,328 +4320,397 @@
      ],
      "pitches": [
       {
-       "grade": "UIAA III-",
-       "height": "~50m",
        "belayPosition": [
         0.80516,
         0.66369
        ],
+       "grade": "UIAA III-",
+       "height": "~50m",
        "labelPosition": [
         0.87428,
         0.75581
        ]
       },
       {
-       "grade": "UIAA III-",
-       "height": "~50m",
        "belayPosition": [
         0.66798,
         0.5322
        ],
+       "grade": "UIAA III-",
+       "height": "~50m",
        "labelPosition": [
         0.69019,
         0.60461
        ]
       },
       {
-       "grade": "UIAA III-",
-       "height": "~50m",
        "belayPosition": [
         0.59169,
         0.43113
        ],
+       "grade": "UIAA III-",
+       "height": "~50m",
        "labelPosition": [
         0.57514,
         0.48117
        ]
       },
       {
-       "grade": "UIAA III-",
-       "height": "~50m",
        "belayPosition": [
         0.55659,
         0.38283
        ],
+       "grade": "UIAA III-",
+       "height": "~50m",
        "labelPosition": [
         0.51934,
         0.41154
        ]
       },
       {
-       "grade": "",
-       "height": "",
        "belayPosition": [
         0.56017,
         0.35331
        ],
+       "grade": "",
+       "height": "",
        "labelPosition": [
         null,
         null
        ]
       },
       {
-       "grade": "",
-       "height": "",
        "belayPosition": [
         0.56554,
         0.32424
        ],
+       "grade": "",
+       "height": "",
        "labelPosition": [
         null,
         null
        ]
       },
       {
-       "grade": "",
-       "height": "",
        "belayPosition": [
         0.56948,
         0.29606
        ],
+       "grade": "",
+       "height": "",
        "labelPosition": [
         null,
         null
        ]
       },
       {
-       "grade": "~100m UIAA III",
-       "height": "Pitches 5-8",
        "belayPosition": [
         0.5788,
         0.27683
        ],
+       "grade": "~100m UIAA III",
+       "height": "Pitches 5-8",
        "labelPosition": [
         0.59527,
         0.31753
        ]
       },
       {
-       "grade": "",
-       "height": "",
        "belayPosition": [
         0.55731,
         0.25939
        ],
+       "grade": "",
+       "height": "",
        "labelPosition": [
         null,
         null
        ]
       },
       {
-       "grade": "",
-       "height": "",
        "belayPosition": [
         0.53689,
         0.25
        ],
+       "grade": "",
+       "height": "",
        "labelPosition": [
         null,
         null
        ]
       },
       {
-       "grade": "",
-       "height": "",
        "belayPosition": [
         0.50681,
         0.23032
        ],
+       "grade": "",
+       "height": "",
        "labelPosition": [
         null,
         null
        ]
       },
       {
-       "grade": "~170m UIAA II",
-       "height": "pitches 9-13",
        "belayPosition": [
         0.48352,
         0.21914
        ],
+       "grade": "~170m UIAA II",
+       "height": "pitches 9-13",
        "labelPosition": [
         0.55516,
         0.21288
        ]
       },
       {
-       "grade": "",
-       "height": "",
        "belayPosition": [
         0.45093,
         0.21288
        ],
+       "grade": "",
+       "height": "",
        "labelPosition": [
         null,
         null
        ]
       },
       {
-       "grade": "UIAA III",
-       "height": "~30m",
        "belayPosition": [
         0.4563,
         0.19589
        ],
+       "grade": "UIAA III",
+       "height": "~30m",
        "labelPosition": [
         0.39434,
         0.21735
        ]
       },
       {
-       "grade": "UIAA IV-",
-       "height": "~30m",
        "belayPosition": [
         0.47493,
         0.15474
        ],
+       "grade": "UIAA IV-",
+       "height": "~30m",
        "labelPosition": [
         0.48245,
         0.1686
        ]
       },
       {
-       "grade": "",
-       "height": "~20m UIAA III",
        "belayPosition": [
         0.51755,
         0.12567
        ],
+       "grade": "",
+       "height": "~20m UIAA III",
        "labelPosition": [
         0.54262,
         0.12925
        ]
       },
       {
-       "grade": "",
-       "height": "~50m UIAA II",
        "belayPosition": [
         0.56662,
         0.06082
        ],
+       "grade": "",
+       "height": "~50m UIAA II",
        "labelPosition": [
         0.57307,
         0.09839
        ]
       },
       {
-       "grade": "",
-       "height": "~30m UIAA II",
        "belayPosition": [
         0.55158,
         0.09213
        ],
+       "grade": "",
+       "height": "~30m UIAA II",
        "labelPosition": [
         0.57736,
         0.07513
        ]
       },
       {
-       "grade": "",
-       "height": "~40m UIAA III",
        "belayPosition": [
         0.54011,
         0.05859
        ],
+       "grade": "",
+       "height": "~40m UIAA III",
        "labelPosition": [
         0.56125,
         0.04204
        ]
       }
      ],
+     "route_area": "Grande Fermeda",
+     "route_name": "Normal Route",
+     "source_id": "multipitch"
+    }
+   ],
+   "permission_note": null,
+   "status": "publish",
+   "taken_at": null,
+   "title": "Grande Fermeda > Via Normale | VDiff / UIAA IV- | 720m",
+   "uri": "uploads/topos/mp/33-crag.jpg",
+   "width_px": 2792
+  },
+  {
+   "area_id": 280,
+   "area_name": "Old Man of Hoy",
+   "belay_size": 17,
+   "credit": "Dan Knight / multi-pitch.com",
+   "height_px": 2144,
+   "id": 17,
+   "kind": "crag_photo",
+   "license": "owned",
+   "lines": [
+    {
      "descent": [
       {
-       "path": [
-        [
-         0.47457,
-         0.16234
-        ],
-        [
-         0.47636,
-         0.18023
-        ]
-       ],
-       "label": "",
        "anchor": [
         null,
         null
        ],
+       "label": "",
        "labelPosition": [
         null,
         null
+       ],
+       "path": [
+        [
+         0.51338,
+         0.79058
+        ],
+        [
+         0.50754,
+         0.76959
+        ],
+        [
+         0.50754,
+         0.73134
+        ]
        ]
       },
       {
-       "path": [
-        [
-         0.56877,
-         0.32804
-        ],
-        [
-         0.57235,
-         0.3352
-        ],
-        [
-         0.57056,
-         0.34191
-        ]
-       ],
-       "label": "",
        "anchor": [
         null,
         null
        ],
+       "label": "",
        "labelPosition": [
         null,
         null
+       ],
+       "path": [
+        [
+         0.67299,
+         0.15392
+        ],
+        [
+         0.66569,
+         0.15765
+        ],
+        [
+         0.66618,
+         0.16604
+        ]
        ]
       },
       {
-       "path": [
-        [
-         0.59742,
-         0.43225
-        ],
-        [
-         0.6096,
-         0.43761
-        ],
-        [
-         0.61891,
-         0.45237
-        ]
-       ],
-       "label": "",
        "anchor": [
         null,
         null
        ],
+       "label": "",
        "labelPosition": [
         null,
         null
+       ],
+       "path": [
+        [
+         0.66618,
+         0.31763
+        ],
+        [
+         0.65937,
+         0.32416
+        ]
+       ]
+      },
+      {
+       "anchor": [
+        null,
+        null
+       ],
+       "label": "",
+       "labelPosition": [
+        null,
+        null
+       ],
+       "path": [
+        [
+         0.6399,
+         0.39179
+        ],
+        [
+         0.63406,
+         0.40019
+        ]
+       ]
+      },
+      {
+       "anchor": [
+        null,
+        null
+       ],
+       "label": "",
+       "labelPosition": [
+        null,
+        null
+       ],
+       "path": [
+        [
+         0.59903,
+         0.49067
+        ],
+        [
+         0.59367,
+         0.5014
+        ]
+       ]
+      },
+      {
+       "anchor": [
+        null,
+        null
+       ],
+       "label": "",
+       "labelPosition": [
+        null,
+        null
+       ],
+       "path": [
+        [
+         0.54939,
+         0.60774
+        ],
+        [
+         0.53869,
+         0.61194
+        ],
+        [
+         0.53479,
+         0.62687
+        ]
        ]
       }
      ],
-     "source_id": "multipitch"
-    }
-   ]
-  },
-  {
-   "title": "Old Man of Hoy > Original Route | E1 5b - 137m",
-   "status": "publish",
-   "belay_size": 17,
-   "area_name": "Old Man of Hoy",
-   "uri": "uploads/topos/mp/34-crag.jpg",
-   "kind": "crag_photo",
-   "width_px": 2055,
-   "height_px": 2144,
-   "credit": "Dan Knight / multi-pitch.com",
-   "license": "owned",
-   "permission_note": null,
-   "taken_at": null,
-   "lines": [
-    {
-     "route_name": "Original Route",
-     "route_area": "Old Man of Hoy",
      "line": [
       [
        0.51922,
@@ -4637,227 +4803,149 @@
      ],
      "pitches": [
       {
-       "grade": "4b",
-       "height": "25m",
        "belayPosition": [
         0.56058,
         0.60961
        ],
+       "grade": "4b",
+       "height": "25m",
        "labelPosition": [
         0.55377,
         0.66698
        ]
       },
       {
-       "grade": "5b",
-       "height": "35m",
        "belayPosition": [
         0.60487,
         0.48461
        ],
+       "grade": "5b",
+       "height": "35m",
        "labelPosition": [
         0.61849,
         0.54104
        ]
       },
       {
-       "grade": "4b",
-       "height": "20m",
        "belayPosition": [
         0.64477,
         0.38526
        ],
+       "grade": "4b",
+       "height": "20m",
        "labelPosition": [
         0.64234,
         0.4361
        ]
       },
       {
-       "grade": "4b",
-       "height": "35m",
        "belayPosition": [
         0.67105,
         0.31063
        ],
+       "grade": "4b",
+       "height": "35m",
        "labelPosition": [
         0.6764,
         0.34981
        ]
       },
       {
-       "grade": "4c",
-       "height": "20m",
        "belayPosition": [
         0.67591,
         0.14552
        ],
+       "grade": "4c",
+       "height": "20m",
        "labelPosition": [
         0.69246,
         0.20616
        ]
       }
      ],
+     "route_area": "Old Man of Hoy",
+     "route_name": "Original Route",
+     "source_id": "multipitch"
+    }
+   ],
+   "permission_note": null,
+   "status": "publish",
+   "taken_at": null,
+   "title": "Old Man of Hoy > Original Route | E1 5b - 137m",
+   "uri": "uploads/topos/mp/34-crag.jpg",
+   "width_px": 2055
+  },
+  {
+   "area_id": 267,
+   "area_name": "Ksar Rock",
+   "belay_size": 28,
+   "credit": "Dan Knight / multi-pitch.com",
+   "height_px": 3000,
+   "id": 18,
+   "kind": "crag_photo",
+   "license": "owned",
+   "lines": [
+    {
      "descent": [
       {
-       "path": [
-        [
-         0.51338,
-         0.79058
-        ],
-        [
-         0.50754,
-         0.76959
-        ],
-        [
-         0.50754,
-         0.73134
-        ]
-       ],
-       "label": "",
        "anchor": [
         null,
         null
        ],
+       "label": "",
        "labelPosition": [
         null,
         null
+       ],
+       "path": [
+        [
+         0.64975,
+         0.11233
+        ],
+        [
+         0.643,
+         0.11
+        ],
+        [
+         0.638,
+         0.089
+        ],
+        [
+         0.62225,
+         0.07667
+        ]
        ]
       },
       {
-       "path": [
-        [
-         0.67299,
-         0.15392
-        ],
-        [
-         0.66569,
-         0.15765
-        ],
-        [
-         0.66618,
-         0.16604
-        ]
-       ],
-       "label": "",
        "anchor": [
         null,
         null
        ],
+       "label": "",
        "labelPosition": [
         null,
         null
-       ]
-      },
-      {
+       ],
        "path": [
         [
-         0.66618,
-         0.31763
+         0.5155,
+         0.079
         ],
         [
-         0.65937,
-         0.32416
+         0.5065,
+         0.04233
+        ],
+        [
+         0.49725,
+         0.02767
+        ],
+        [
+         0.4865,
+         0.03567
         ]
-       ],
-       "label": "",
-       "anchor": [
-        null,
-        null
-       ],
-       "labelPosition": [
-        null,
-        null
-       ]
-      },
-      {
-       "path": [
-        [
-         0.6399,
-         0.39179
-        ],
-        [
-         0.63406,
-         0.40019
-        ]
-       ],
-       "label": "",
-       "anchor": [
-        null,
-        null
-       ],
-       "labelPosition": [
-        null,
-        null
-       ]
-      },
-      {
-       "path": [
-        [
-         0.59903,
-         0.49067
-        ],
-        [
-         0.59367,
-         0.5014
-        ]
-       ],
-       "label": "",
-       "anchor": [
-        null,
-        null
-       ],
-       "labelPosition": [
-        null,
-        null
-       ]
-      },
-      {
-       "path": [
-        [
-         0.54939,
-         0.60774
-        ],
-        [
-         0.53869,
-         0.61194
-        ],
-        [
-         0.53479,
-         0.62687
-        ]
-       ],
-       "label": "",
-       "anchor": [
-        null,
-        null
-       ],
-       "labelPosition": [
-        null,
-        null
        ]
       }
      ],
-     "source_id": "multipitch"
-    }
-   ]
-  },
-  {
-   "title": "Ksar Rock > East Buttress | S 4b - 120m",
-   "status": "publish",
-   "belay_size": 28,
-   "area_name": "Ksar Rock",
-   "uri": "uploads/topos/mp/35-crag.jpg",
-   "kind": "crag_photo",
-   "width_px": 4000,
-   "height_px": 3000,
-   "credit": "Dan Knight / multi-pitch.com",
-   "license": "owned",
-   "permission_note": null,
-   "taken_at": null,
-   "lines": [
-    {
-     "route_name": "East Buttress",
-     "route_area": "Ksar Rock",
      "line": [
       [
        0.764,
@@ -4954,159 +5042,102 @@
      ],
      "pitches": [
       {
-       "grade": "",
-       "height": "20m",
        "belayPosition": [
         0.723,
         0.699
        ],
+       "grade": "",
+       "height": "20m",
        "labelPosition": [
         0.744,
         0.73433
        ]
       },
       {
-       "grade": "3b",
-       "height": "20m",
        "belayPosition": [
         0.698,
         0.60433
        ],
+       "grade": "3b",
+       "height": "20m",
        "labelPosition": [
         0.723,
         0.62233
        ]
       },
       {
-       "grade": "4b",
-       "height": "20m",
        "belayPosition": [
         0.64975,
         0.48667
        ],
+       "grade": "4b",
+       "height": "20m",
        "labelPosition": [
         0.683,
         0.50667
        ]
       },
       {
-       "grade": "3c",
-       "height": "30m",
        "belayPosition": [
         0.63975,
         0.33
        ],
+       "grade": "3c",
+       "height": "30m",
        "labelPosition": [
         0.64975,
         0.381
        ]
       },
       {
-       "grade": "4a",
-       "height": "15m",
        "belayPosition": [
         0.649,
         0.27233
        ],
+       "grade": "4a",
+       "height": "15m",
        "labelPosition": [
         0.679,
         0.29333
        ]
       },
       {
-       "grade": "4b",
-       "height": "15",
        "belayPosition": [
         0.664,
         0.129
        ],
+       "grade": "4b",
+       "height": "15",
        "labelPosition": [
         0.6855,
         0.18333
        ]
       }
      ],
-     "descent": [
-      {
-       "path": [
-        [
-         0.64975,
-         0.11233
-        ],
-        [
-         0.643,
-         0.11
-        ],
-        [
-         0.638,
-         0.089
-        ],
-        [
-         0.62225,
-         0.07667
-        ]
-       ],
-       "label": "",
-       "anchor": [
-        null,
-        null
-       ],
-       "labelPosition": [
-        null,
-        null
-       ]
-      },
-      {
-       "path": [
-        [
-         0.5155,
-         0.079
-        ],
-        [
-         0.5065,
-         0.04233
-        ],
-        [
-         0.49725,
-         0.02767
-        ],
-        [
-         0.4865,
-         0.03567
-        ]
-       ],
-       "label": "",
-       "anchor": [
-        null,
-        null
-       ],
-       "labelPosition": [
-        null,
-        null
-       ]
-      }
-     ],
+     "route_area": "Ksar Rock",
+     "route_name": "East Buttress",
      "source_id": "multipitch"
     }
-   ]
+   ],
+   "permission_note": null,
+   "status": "publish",
+   "taken_at": null,
+   "title": "Ksar Rock > East Buttress | S 4b - 120m",
+   "uri": "uploads/topos/mp/35-crag.jpg",
+   "width_px": 4000
   },
   {
-   "title": "High Sierra > High Sierra Dome | VS 5a - 120m",
-   "status": "publish",
-   "belay_size": 26,
+   "area_id": 263,
    "area_name": "High Sierra Dome",
-   "uri": "uploads/topos/mp/37-crag.jpg",
-   "kind": "crag_photo",
-   "width_px": 4032,
-   "height_px": 3024,
+   "belay_size": 26,
    "credit": "Dan Knight / multi-pitch.com",
+   "height_px": 3024,
+   "id": 19,
+   "kind": "crag_photo",
    "license": "owned",
-   "permission_note": null,
-   "taken_at": null,
    "lines": [
     {
-     "route_name": "High Sierra",
-     "route_area": "High Sierra Dome",
+     "descent": null,
      "line": [
       [
        0.54241,
@@ -5263,76 +5294,78 @@
      ],
      "pitches": [
       {
-       "grade": "5a",
-       "height": "30m",
        "belayPosition": [
         0.47123,
         0.63459
        ],
+       "grade": "5a",
+       "height": "30m",
        "labelPosition": [
         0.48438,
         0.73347
        ]
       },
       {
-       "grade": "4b",
-       "height": "30m",
        "belayPosition": [
         0.48859,
         0.51852
        ],
+       "grade": "4b",
+       "height": "30m",
        "labelPosition": [
         0.48313,
         0.56548
        ]
       },
       {
-       "grade": "4a",
-       "height": "45m",
        "belayPosition": [
         0.46751,
         0.35913
        ],
+       "grade": "4a",
+       "height": "45m",
        "labelPosition": [
         0.50719,
         0.41534
        ]
       },
       {
-       "grade": "4b",
-       "height": "15m",
        "belayPosition": [
         0.50595,
         0.28571
        ],
+       "grade": "4b",
+       "height": "15m",
        "labelPosition": [
         0.50595,
         0.32176
        ]
       }
      ],
-     "descent": null,
+     "route_area": "High Sierra Dome",
+     "route_name": "High Sierra",
      "source_id": "multipitch"
     }
-   ]
+   ],
+   "permission_note": null,
+   "status": "publish",
+   "taken_at": null,
+   "title": "High Sierra > High Sierra Dome | VS 5a - 120m",
+   "uri": "uploads/topos/mp/37-crag.jpg",
+   "width_px": 4032
   },
   {
-   "title": "Pinnacle Slab > Amzkhssan Wall | Diff 3b - 130m",
-   "status": "publish",
-   "belay_size": 32,
+   "area_id": 232,
    "area_name": "Amzkhssan Wall",
-   "uri": "uploads/topos/mp/38-crag.jpg",
-   "kind": "crag_photo",
-   "width_px": 4000,
-   "height_px": 2976,
+   "belay_size": 32,
    "credit": "Dan Knight / multi-pitch.com",
+   "height_px": 2976,
+   "id": 20,
+   "kind": "crag_photo",
    "license": "owned",
-   "permission_note": null,
-   "taken_at": null,
    "lines": [
     {
-     "route_name": "Pinnacle Slab",
-     "route_area": "Amzkhssan Wall",
+     "descent": null,
      "line": [
       [
        0.7125,
@@ -5381,64 +5414,92 @@
      ],
      "pitches": [
       {
-       "grade": "",
-       "height": "50m",
        "belayPosition": [
         0.49625,
         0.5252
        ],
+       "grade": "",
+       "height": "50m",
        "labelPosition": [
         0.5525,
         0.65457
        ]
       },
       {
-       "grade": "",
-       "height": "50m",
        "belayPosition": [
         0.39,
         0.1791
        ],
+       "grade": "",
+       "height": "50m",
        "labelPosition": [
         0.45625,
         0.32191
        ]
       },
       {
-       "grade": "",
-       "height": "30m",
        "belayPosition": [
         0.36075,
         0.08098
        ],
+       "grade": "",
+       "height": "30m",
        "labelPosition": [
         0.39,
         0.1203
        ]
       }
      ],
-     "descent": null,
+     "route_area": "Amzkhssan Wall",
+     "route_name": "Pinnacle Slab",
      "source_id": "multipitch"
     }
-   ]
+   ],
+   "permission_note": null,
+   "status": "publish",
+   "taken_at": null,
+   "title": "Pinnacle Slab > Amzkhssan Wall | Diff 3b - 130m",
+   "uri": "uploads/topos/mp/38-crag.jpg",
+   "width_px": 4000
   },
   {
-   "title": "Donkey Serenades > Lower Eagel Crag | VD 3c - 270m",
-   "status": "publish",
-   "belay_size": 22,
+   "area_id": 272,
    "area_name": "Lower Eagle Crag",
-   "uri": "uploads/topos/mp/39-crag.jpg",
-   "kind": "crag_photo",
-   "width_px": 3389,
-   "height_px": 3509,
+   "belay_size": 22,
    "credit": "Dan Knight / multi-pitch.com",
+   "height_px": 3509,
+   "id": 21,
+   "kind": "crag_photo",
    "license": "owned",
-   "permission_note": null,
-   "taken_at": null,
    "lines": [
     {
-     "route_name": "Donkey Serenades",
-     "route_area": "Lower Eagle Crag",
+     "descent": [
+      {
+       "anchor": [
+        null,
+        null
+       ],
+       "label": "",
+       "labelPosition": [
+        null,
+        null
+       ],
+       "path": [
+        [
+         0.45146,
+         0.15702
+        ],
+        [
+         0.46857,
+         0.14249
+        ],
+        [
+         0.491,
+         0.13508
+        ]
+       ]
+      }
+     ],
      "line": [
       [
        0.72145,
@@ -5587,150 +5648,126 @@
      ],
      "pitches": [
       {
-       "grade": "",
-       "height": "25m",
        "belayPosition": [
         0.66922,
         0.77087
        ],
+       "grade": "",
+       "height": "25m",
        "labelPosition": [
         0.73975,
         0.82445
        ]
       },
       {
-       "grade": "3c",
-       "height": "40m",
        "belayPosition": [
         0.61316,
         0.60587
        ],
+       "grade": "3c",
+       "height": "40m",
        "labelPosition": [
         0.55474,
         0.6851
        ]
       },
       {
-       "grade": "",
-       "height": "30m",
        "belayPosition": [
         0.64296,
         0.53434
        ],
+       "grade": "",
+       "height": "30m",
        "labelPosition": [
         0.59693,
         0.57253
        ]
       },
       {
-       "grade": "",
-       "height": "25m",
        "belayPosition": [
         0.5866,
         0.45711
        ],
+       "grade": "",
+       "height": "25m",
        "labelPosition": [
         0.6229,
         0.49587
        ]
       },
       {
-       "grade": "",
-       "height": "25m",
        "belayPosition": [
         0.43464,
         0.39527
        ],
+       "grade": "",
+       "height": "25m",
        "labelPosition": [
         0.4733,
         0.43688
        ]
       },
       {
-       "grade": "3c",
-       "height": "45m",
        "belayPosition": [
         0.45648,
         0.29268
        ],
+       "grade": "3c",
+       "height": "45m",
        "labelPosition": [
         0.46592,
         0.33713
        ]
       },
       {
-       "grade": "",
-       "height": "30m",
        "belayPosition": [
         0.39805,
         0.25306
        ],
+       "grade": "",
+       "height": "30m",
        "labelPosition": [
         0.40572,
         0.27757
        ]
       },
       {
-       "grade": "3c",
-       "height": "30m",
        "belayPosition": [
         0.4314,
         0.17982
        ],
+       "grade": "3c",
+       "height": "30m",
        "labelPosition": [
         0.43582,
         0.1992
        ]
       }
      ],
-     "descent": [
-      {
-       "path": [
-        [
-         0.45146,
-         0.15702
-        ],
-        [
-         0.46857,
-         0.14249
-        ],
-        [
-         0.491,
-         0.13508
-        ]
-       ],
-       "label": "",
-       "anchor": [
-        null,
-        null
-       ],
-       "labelPosition": [
-        null,
-        null
-       ]
-      }
-     ],
+     "route_area": "Lower Eagle Crag",
+     "route_name": "Donkey Serenades",
      "source_id": "multipitch"
     }
-   ]
+   ],
+   "permission_note": null,
+   "status": "publish",
+   "taken_at": null,
+   "title": "Donkey Serenades > Lower Eagel Crag | VD 3c - 270m",
+   "uri": "uploads/topos/mp/39-crag.jpg",
+   "width_px": 3389
   },
   {
-   "title": "Vratsa > Bulgaria 1300 | E1 5c - 400m",
-   "status": "publish",
-   "belay_size": 28,
+   "area_id": 228,
    "area_name": "Vratsa",
-   "uri": "uploads/topos/mp/4-crag.jpg",
-   "kind": "crag_photo",
-   "width_px": 3264,
-   "height_px": 2448,
+   "belay_size": 28,
    "credit": "Dan Knight / multi-pitch.com",
+   "height_px": 2448,
+   "id": 22,
+   "kind": "crag_photo",
    "license": "owned",
-   "permission_note": null,
-   "taken_at": null,
    "lines": [
     {
-     "route_name": "Bulgaria 1300",
-     "route_area": "Vratsa",
+     "descent": null,
      "line": [
       [
        0.38113,
@@ -5870,28 +5907,160 @@
       ]
      ],
      "pitches": [],
-     "descent": null,
+     "route_area": "Vratsa",
+     "route_name": "Bulgaria 1300",
      "source_id": "multipitch"
     }
-   ]
+   ],
+   "permission_note": null,
+   "status": "publish",
+   "taken_at": null,
+   "title": "Vratsa > Bulgaria 1300 | E1 5c - 400m",
+   "uri": "uploads/topos/mp/4-crag.jpg",
+   "width_px": 3264
   },
   {
-   "title": "Great Tor > East Ridge | S 3c - 71m",
-   "status": "publish",
-   "belay_size": 24,
+   "area_id": 260,
    "area_name": "Great Tor",
-   "uri": "uploads/topos/mp/40-crag.jpg",
-   "kind": "crag_photo",
-   "width_px": 4000,
-   "height_px": 3000,
+   "belay_size": 24,
    "credit": "Dan Knight / multi-pitch.com",
+   "height_px": 3000,
+   "id": 23,
+   "kind": "crag_photo",
    "license": "owned",
-   "permission_note": null,
-   "taken_at": null,
    "lines": [
     {
-     "route_name": "East Ridge",
-     "route_area": "Great Tor",
+     "descent": [
+      {
+       "anchor": [
+        0.89825,
+        0.16567
+       ],
+       "label": "A. Abseil (50m to ledge)",
+       "labelPosition": [
+        0.85,
+        0.25433
+       ],
+       "path": [
+        [
+         0.89775,
+         0.17367
+        ],
+        [
+         0.87775,
+         0.205
+        ]
+       ]
+      },
+      {
+       "anchor": [
+        null,
+        null
+       ],
+       "label": "B. Low tide scramble",
+       "labelPosition": [
+        0.304,
+        0.93567
+       ],
+       "path": [
+        [
+         0.30625,
+         0.91233
+        ],
+        [
+         0.27175,
+         0.90267
+        ],
+        [
+         0.24575,
+         0.87667
+        ],
+        [
+         0.25825,
+         0.854
+        ]
+       ]
+      },
+      {
+       "anchor": [
+        null,
+        null
+       ],
+       "label": "C. Scramble from top",
+       "labelPosition": [
+        0.55,
+        0.26833
+       ],
+       "path": [
+        [
+         0.5445,
+         0.21967
+        ],
+        [
+         0.53,
+         0.243
+        ],
+        [
+         0.5485,
+         0.289
+        ],
+        [
+         0.53,
+         0.32567
+        ]
+       ]
+      },
+      {
+       "anchor": [
+        null,
+        null
+       ],
+       "label": "",
+       "labelPosition": [
+        null,
+        null
+       ],
+       "path": [
+        [
+         0.609,
+         0.56933
+        ],
+        [
+         0.5785,
+         0.60067
+        ],
+        [
+         0.54675,
+         0.628
+        ]
+       ]
+      },
+      {
+       "anchor": [
+        null,
+        null
+       ],
+       "label": "Walk Off",
+       "labelPosition": [
+        0.5235,
+        0.096
+       ],
+       "path": [
+        [
+         0.47075,
+         0.08067
+        ],
+        [
+         0.5125,
+         0.08533
+        ],
+        [
+         0.51925,
+         0.11667
+        ]
+       ]
+      }
+     ],
      "line": [
       [
        0.28875,
@@ -6000,206 +6169,145 @@
      ],
      "pitches": [
       {
-       "grade": "3c",
-       "height": "18m",
        "belayPosition": [
         0.34125,
         0.578
        ],
+       "grade": "3c",
+       "height": "18m",
        "labelPosition": [
         0.34075,
         0.66333
        ]
       },
       {
-       "grade": "3a",
-       "height": "16m",
        "belayPosition": [
         0.36425,
         0.44367
        ],
+       "grade": "3a",
+       "height": "16m",
        "labelPosition": [
         0.3575,
         0.49933
        ]
       },
       {
-       "grade": "3a",
-       "height": "13m",
        "belayPosition": [
         0.40975,
         0.341
        ],
+       "grade": "3a",
+       "height": "13m",
        "labelPosition": [
         0.39175,
         0.38667
        ]
       },
       {
-       "grade": "3c",
-       "height": "24m",
        "belayPosition": [
         0.45925,
         0.08367
        ],
+       "grade": "3c",
+       "height": "24m",
        "labelPosition": [
         0.4475,
         0.20167
        ]
       }
      ],
+     "route_area": "Great Tor",
+     "route_name": "East Ridge",
+     "source_id": "multipitch"
+    }
+   ],
+   "permission_note": null,
+   "status": "publish",
+   "taken_at": null,
+   "title": "Great Tor > East Ridge | S 3c - 71m",
+   "uri": "uploads/topos/mp/40-crag.jpg",
+   "width_px": 4000
+  },
+  {
+   "area_id": 297,
+   "area_name": "Slieve Lamagan",
+   "belay_size": 26,
+   "credit": "Dan Knight / multi-pitch.com",
+   "height_px": 3672,
+   "id": 24,
+   "kind": "crag_photo",
+   "license": "owned",
+   "lines": [
+    {
      "descent": [
       {
+       "anchor": [
+        null,
+        null
+       ],
+       "label": "Steep Scramble Off",
+       "labelPosition": [
+        0.79749,
+        0.49292
+       ],
        "path": [
         [
-         0.89775,
-         0.17367
+         0.65502,
+         0.36329
         ],
         [
-         0.87775,
-         0.205
+         0.68068,
+         0.35893
+        ],
+        [
+         0.70906,
+         0.3622
+        ],
+        [
+         0.75136,
+         0.38344
+        ],
+        [
+         0.79967,
+         0.42756
+        ],
+        [
+         0.82396,
+         0.44853
         ]
-       ],
-       "label": "A. Abseil (50m to ledge)",
-       "anchor": [
-        0.89825,
-        0.16567
-       ],
-       "labelPosition": [
-        0.85,
-        0.25433
        ]
       },
       {
-       "path": [
-        [
-         0.30625,
-         0.91233
-        ],
-        [
-         0.27175,
-         0.90267
-        ],
-        [
-         0.24575,
-         0.87667
-        ],
-        [
-         0.25825,
-         0.854
-        ]
-       ],
-       "label": "B. Low tide scramble",
        "anchor": [
         null,
         null
        ],
+       "label": "To Summit",
        "labelPosition": [
-        0.304,
-        0.93567
-       ]
-      },
-      {
+        0.51447,
+        0.29031
+       ],
        "path": [
         [
-         0.5445,
-         0.21967
+         0.63783,
+         0.34559
         ],
         [
-         0.53,
-         0.243
+         0.57806,
+         0.33469
         ],
         [
-         0.5485,
-         0.289
+         0.5161,
+         0.30664
         ],
         [
-         0.53,
-         0.32567
+         0.47789,
+         0.29684
         ]
-       ],
-       "label": "C. Scramble from top",
-       "anchor": [
-        null,
-        null
-       ],
-       "labelPosition": [
-        0.55,
-        0.26833
-       ]
-      },
-      {
-       "path": [
-        [
-         0.609,
-         0.56933
-        ],
-        [
-         0.5785,
-         0.60067
-        ],
-        [
-         0.54675,
-         0.628
-        ]
-       ],
-       "label": "",
-       "anchor": [
-        null,
-        null
-       ],
-       "labelPosition": [
-        null,
-        null
-       ]
-      },
-      {
-       "path": [
-        [
-         0.47075,
-         0.08067
-        ],
-        [
-         0.5125,
-         0.08533
-        ],
-        [
-         0.51925,
-         0.11667
-        ]
-       ],
-       "label": "Walk Off",
-       "anchor": [
-        null,
-        null
-       ],
-       "labelPosition": [
-        0.5235,
-        0.096
        ]
       }
      ],
-     "source_id": "multipitch"
-    }
-   ]
-  },
-  {
-   "title": "Slieve Lamagan > FM | VDiff 3c - 160m",
-   "status": "publish",
-   "belay_size": 26,
-   "area_name": "Slieve Lamagan",
-   "uri": "uploads/topos/mp/41-crag.jpg",
-   "kind": "crag_photo",
-   "width_px": 3664,
-   "height_px": 3672,
-   "credit": "Dan Knight / multi-pitch.com",
-   "license": "owned",
-   "permission_note": null,
-   "taken_at": null,
-   "lines": [
-    {
-     "route_name": "FM",
-     "route_area": "Slieve Lamagan",
      "line": [
       [
        0.55568,
@@ -6324,155 +6432,90 @@
      ],
      "pitches": [
       {
-       "grade": "3b",
-       "height": "35m",
        "belayPosition": [
         0.54258,
         0.78322
        ],
+       "grade": "3b",
+       "height": "35m",
        "labelPosition": [
         0.57096,
         0.84232
        ]
       },
       {
-       "grade": "3b",
-       "height": "45m",
        "belayPosition": [
         0.5524,
         0.62718
        ],
+       "grade": "3b",
+       "height": "45m",
        "labelPosition": [
         0.57942,
         0.70724
        ]
       },
       {
-       "grade": "3c",
-       "height": "25m",
        "belayPosition": [
         0.53684,
         0.50626
        ],
+       "grade": "3c",
+       "height": "25m",
        "labelPosition": [
         0.56332,
         0.56672
        ]
       },
       {
-       "grade": "3b",
-       "height": "20m",
        "belayPosition": [
         0.59279,
         0.48121
        ],
+       "grade": "3b",
+       "height": "20m",
        "labelPosition": [
         0.60371,
         0.51934
        ]
       },
       {
-       "grade": "3b",
-       "height": "30m",
        "belayPosition": [
         0.64738,
         0.36411
        ],
+       "grade": "3b",
+       "height": "30m",
        "labelPosition": [
         0.62254,
         0.436
        ]
       }
      ],
-     "descent": [
-      {
-       "path": [
-        [
-         0.65502,
-         0.36329
-        ],
-        [
-         0.68068,
-         0.35893
-        ],
-        [
-         0.70906,
-         0.3622
-        ],
-        [
-         0.75136,
-         0.38344
-        ],
-        [
-         0.79967,
-         0.42756
-        ],
-        [
-         0.82396,
-         0.44853
-        ]
-       ],
-       "label": "Steep Scramble Off",
-       "anchor": [
-        null,
-        null
-       ],
-       "labelPosition": [
-        0.79749,
-        0.49292
-       ]
-      },
-      {
-       "path": [
-        [
-         0.63783,
-         0.34559
-        ],
-        [
-         0.57806,
-         0.33469
-        ],
-        [
-         0.5161,
-         0.30664
-        ],
-        [
-         0.47789,
-         0.29684
-        ]
-       ],
-       "label": "To Summit",
-       "anchor": [
-        null,
-        null
-       ],
-       "labelPosition": [
-        0.51447,
-        0.29031
-       ]
-      }
-     ],
+     "route_area": "Slieve Lamagan",
+     "route_name": "FM",
      "source_id": "multipitch"
     }
-   ]
+   ],
+   "permission_note": null,
+   "status": "publish",
+   "taken_at": null,
+   "title": "Slieve Lamagan > FM | VDiff 3c - 160m",
+   "uri": "uploads/topos/mp/41-crag.jpg",
+   "width_px": 3664
   },
   {
-   "title": "Sass Pordoi South Face > Via Maria | HS 4a - 370m",
-   "status": "publish",
-   "belay_size": 22,
+   "area_id": 291,
    "area_name": "Sass Pordoi South Face",
-   "uri": "uploads/topos/mp/42-crag.jpg",
-   "kind": "crag_photo",
-   "width_px": 4000,
-   "height_px": 2676,
+   "belay_size": 22,
    "credit": "Dan Knight / multi-pitch.com",
+   "height_px": 2676,
+   "id": 25,
+   "kind": "crag_photo",
    "license": "owned",
-   "permission_note": null,
-   "taken_at": null,
    "lines": [
     {
-     "route_name": "Via Maria",
-     "route_area": "Sass Pordoi South Face",
+     "descent": null,
      "line": [
       [
        0.35325,
@@ -6649,124 +6692,126 @@
      ],
      "pitches": [
       {
-       "grade": "IV",
-       "height": "25m",
        "belayPosition": [
         0.344,
         0.85949
        ],
+       "grade": "IV",
+       "height": "25m",
        "labelPosition": [
         0.3665,
         0.9077
        ]
       },
       {
-       "grade": "IV+",
-       "height": "35m",
        "belayPosition": [
         0.3065,
         0.70478
        ],
+       "grade": "IV+",
+       "height": "35m",
        "labelPosition": [
         0.3385,
         0.76682
        ]
       },
       {
-       "grade": "IV",
-       "height": "25m",
        "belayPosition": [
         0.297,
         0.60202
        ],
+       "grade": "IV",
+       "height": "25m",
        "labelPosition": [
         0.31775,
         0.63901
        ]
       },
       {
-       "grade": "IV",
-       "height": "40m",
        "belayPosition": [
         0.3115,
         0.51831
        ],
+       "grade": "IV",
+       "height": "40m",
        "labelPosition": [
         0.3245,
         0.55531
        ]
       },
       {
-       "grade": "III+",
-       "height": "50m",
        "belayPosition": [
         0.30725,
         0.46226
        ],
+       "grade": "III+",
+       "height": "50m",
        "labelPosition": [
         0.3275,
         0.47982
        ]
       },
       {
-       "grade": "IV",
-       "height": "35m",
        "belayPosition": [
         0.344,
         0.38079
        ],
+       "grade": "IV",
+       "height": "35m",
        "labelPosition": [
         0.34525,
         0.41442
        ]
       },
       {
-       "grade": "IV",
-       "height": "45m",
        "belayPosition": [
         0.37325,
         0.25187
        ],
+       "grade": "IV",
+       "height": "45m",
        "labelPosition": [
         0.37075,
         0.29858
        ]
       },
       {
-       "grade": "III",
-       "height": "~120m",
        "belayPosition": [
         0.42975,
         0.18124
        ],
+       "grade": "III",
+       "height": "~120m",
        "labelPosition": [
         0.424,
         0.23169
        ]
       }
      ],
-     "descent": null,
+     "route_area": "Sass Pordoi South Face",
+     "route_name": "Via Maria",
      "source_id": "multipitch"
     }
-   ]
+   ],
+   "permission_note": null,
+   "status": "publish",
+   "taken_at": null,
+   "title": "Sass Pordoi South Face > Via Maria | HS 4a - 370m",
+   "uri": "uploads/topos/mp/42-crag.jpg",
+   "width_px": 4000
   },
   {
-   "title": "Sella Towers > Via Steger | HS 4a - 175m",
-   "status": "publish",
-   "belay_size": 22,
+   "area_id": 293,
    "area_name": "Sella Towers",
-   "uri": "uploads/topos/mp/43-crag.jpg",
-   "kind": "crag_photo",
-   "width_px": 4000,
-   "height_px": 3000,
+   "belay_size": 22,
    "credit": "Dan Knight / multi-pitch.com",
+   "height_px": 3000,
+   "id": 26,
+   "kind": "crag_photo",
    "license": "owned",
-   "permission_note": null,
-   "taken_at": null,
    "lines": [
     {
-     "route_name": "Via Steger",
-     "route_area": "Sella Towers",
+     "descent": null,
      "line": [
       [
        0.45713,
@@ -6971,136 +7016,164 @@
      ],
      "pitches": [
       {
-       "grade": "III+",
-       "height": "25m",
        "belayPosition": [
         0.41875,
         0.67267
        ],
+       "grade": "III+",
+       "height": "25m",
        "labelPosition": [
         0.465,
         0.73033
        ]
       },
       {
-       "grade": "",
-       "height": "40m",
        "belayPosition": [
         0.29625,
         0.55533
        ],
+       "grade": "",
+       "height": "40m",
        "labelPosition": [
         0.34325,
         0.62767
        ]
       },
       {
-       "grade": "III+",
-       "height": "20m",
        "belayPosition": [
         0.32075,
         0.47867
        ],
+       "grade": "III+",
+       "height": "20m",
        "labelPosition": [
         0.31375,
         0.51867
        ]
       },
       {
-       "grade": "",
-       "height": "20m",
        "belayPosition": [
         0.39325,
         0.466
        ],
+       "grade": "",
+       "height": "20m",
        "labelPosition": [
         0.35,
         0.5
        ]
       },
       {
-       "grade": "IV-",
-       "height": "40m",
        "belayPosition": [
         0.40875,
         0.343
        ],
+       "grade": "IV-",
+       "height": "40m",
        "labelPosition": [
         0.41375,
         0.409
        ]
       },
       {
-       "grade": "",
-       "height": "15m",
        "belayPosition": [
         0.44825,
         0.329
        ],
+       "grade": "",
+       "height": "15m",
        "labelPosition": [
         0.425,
         0.36667
        ]
       },
       {
-       "grade": "IV",
-       "height": "40m",
        "belayPosition": [
         0.445,
         0.23833
        ],
+       "grade": "IV",
+       "height": "40m",
        "labelPosition": [
         0.45875,
         0.269
        ]
       },
       {
-       "grade": "IV+",
-       "height": "25m",
        "belayPosition": [
         0.47125,
         0.13167
        ],
+       "grade": "IV+",
+       "height": "25m",
        "labelPosition": [
         0.4795,
         0.19
        ]
       },
       {
-       "grade": "",
-       "height": "",
        "belayPosition": [
         0.58825,
         0.05433
        ],
+       "grade": "",
+       "height": "",
        "labelPosition": [
         null,
         null
        ]
       }
      ],
-     "descent": null,
+     "route_area": "Sella Towers",
+     "route_name": "Via Steger",
      "source_id": "multipitch"
     }
-   ]
+   ],
+   "permission_note": null,
+   "status": "publish",
+   "taken_at": null,
+   "title": "Sella Towers > Via Steger | HS 4a - 175m",
+   "uri": "uploads/topos/mp/43-crag.jpg",
+   "width_px": 4000
   },
   {
-   "title": "Puig Campana > Espolón Central | IV+ / HS 4a - 400m",
-   "status": "publish",
-   "belay_size": 18,
+   "area_id": 286,
    "area_name": "Puig Campana",
-   "uri": "uploads/topos/mp/44-crag.jpg",
-   "kind": "crag_photo",
-   "width_px": 3200,
-   "height_px": 2728,
+   "belay_size": 18,
    "credit": "Dan Knight / multi-pitch.com",
+   "height_px": 2728,
+   "id": 27,
+   "kind": "crag_photo",
    "license": "owned",
-   "permission_note": null,
-   "taken_at": null,
    "lines": [
     {
-     "route_name": "Espolón Central",
-     "route_area": "Puig Campana",
+     "descent": [
+      {
+       "anchor": [
+        null,
+        null
+       ],
+       "label": "",
+       "labelPosition": [
+        null,
+        null
+       ],
+       "path": [
+        [
+         0.30156,
+         0.26393
+        ],
+        [
+         0.31656,
+         0.25953
+        ],
+        [
+         0.33563,
+         0.2478
+        ]
+       ]
+      }
+     ],
      "line": [
       [
        0.19094,
@@ -7273,174 +7346,150 @@
      ],
      "pitches": [
       {
-       "grade": "IV+",
-       "height": "55m",
        "belayPosition": [
         0.16344,
         0.84238
        ],
+       "grade": "IV+",
+       "height": "55m",
        "labelPosition": [
         0.13062,
         0.88856
        ]
       },
       {
-       "grade": "IV",
-       "height": "30m",
        "belayPosition": [
         0.17719,
         0.78446
        ],
+       "grade": "IV",
+       "height": "30m",
        "labelPosition": [
         0.18969,
         0.81342
        ]
       },
       {
-       "grade": "III+",
-       "height": "~50m",
        "belayPosition": [
         0.23438,
         0.71848
        ],
+       "grade": "III+",
+       "height": "~50m",
        "labelPosition": [
         0.20688,
         0.74707
        ]
       },
       {
-       "grade": "IV",
-       "height": "20m",
        "belayPosition": [
         0.24375,
         0.67632
        ],
+       "grade": "IV",
+       "height": "20m",
        "labelPosition": [
         0.25094,
         0.68988
        ]
       },
       {
-       "grade": "IV",
-       "height": "45m",
        "belayPosition": [
         0.25656,
         0.61327
        ],
+       "grade": "IV",
+       "height": "45m",
        "labelPosition": [
         0.26344,
         0.64003
        ]
       },
       {
-       "grade": "IV+",
-       "height": "50m",
        "belayPosition": [
         0.245,
         0.54729
        ],
+       "grade": "IV+",
+       "height": "50m",
        "labelPosition": [
         0.26687,
         0.56708
        ]
       },
       {
-       "grade": "IV+",
-       "height": "30m",
        "belayPosition": [
         0.26281,
         0.46518
        ],
+       "grade": "IV+",
+       "height": "30m",
        "labelPosition": [
         0.26344,
         0.50073
        ]
       },
       {
-       "grade": "IV+",
-       "height": "50m",
        "belayPosition": [
         0.27094,
         0.39003
        ],
+       "grade": "IV+",
+       "height": "50m",
        "labelPosition": [
         0.2825,
         0.41239
        ]
       },
       {
-       "grade": "IV",
-       "height": "30m",
        "belayPosition": [
         0.27344,
         0.32551
        ],
+       "grade": "IV",
+       "height": "30m",
        "labelPosition": [
         0.28187,
         0.34457
        ]
       },
       {
-       "grade": "IV",
-       "height": "40m",
        "belayPosition": [
         0.28406,
         0.27749
        ],
+       "grade": "IV",
+       "height": "40m",
        "labelPosition": [
         0.29,
         0.29949
        ]
       }
      ],
-     "descent": [
-      {
-       "path": [
-        [
-         0.30156,
-         0.26393
-        ],
-        [
-         0.31656,
-         0.25953
-        ],
-        [
-         0.33563,
-         0.2478
-        ]
-       ],
-       "label": "",
-       "anchor": [
-        null,
-        null
-       ],
-       "labelPosition": [
-        null,
-        null
-       ]
-      }
-     ],
+     "route_area": "Puig Campana",
+     "route_name": "Espolón Central",
      "source_id": "multipitch"
     }
-   ]
+   ],
+   "permission_note": null,
+   "status": "publish",
+   "taken_at": null,
+   "title": "Puig Campana > Espolón Central | IV+ / HS 4a - 400m",
+   "uri": "uploads/topos/mp/44-crag.jpg",
+   "width_px": 3200
   },
   {
-   "title": "Dinorwic Quarry > Australia West Face | E1 5b - 113m",
-   "status": "publish",
-   "belay_size": 18,
+   "area_id": 250,
    "area_name": "Dinorwic Quarry",
-   "uri": "uploads/topos/mp/45-crag.jpg",
-   "kind": "crag_photo",
-   "width_px": 6000,
-   "height_px": 3228,
+   "belay_size": 18,
    "credit": "Dan Knight / multi-pitch.com",
+   "height_px": 3228,
+   "id": 28,
+   "kind": "crag_photo",
    "license": "owned",
-   "permission_note": null,
-   "taken_at": null,
    "lines": [
     {
-     "route_name": "Australia West Face",
-     "route_area": "Dinorwic Quarry",
+     "descent": null,
      "line": [
       [
        0.10183,
@@ -7613,40 +7662,64 @@
      ],
      "pitches": [
       {
-       "grade": "E1+",
-       "height": "20m",
        "belayPosition": [
         0.08717,
         0.7119
        ],
+       "grade": "E1+",
+       "height": "20m",
        "labelPosition": [
         0.06967,
         0.75093
        ]
       }
      ],
-     "descent": null,
+     "route_area": "Dinorwic Quarry",
+     "route_name": "Australia West Face",
      "source_id": "multipitch"
     }
-   ]
+   ],
+   "permission_note": null,
+   "status": "publish",
+   "taken_at": null,
+   "title": "Dinorwic Quarry > Australia West Face | E1 5b - 113m",
+   "uri": "uploads/topos/mp/45-crag.jpg",
+   "width_px": 6000
   },
   {
-   "title": "Cwm Cneifion > Cneifion Arete | D 3a - 120m",
-   "status": "publish",
-   "belay_size": 26,
+   "area_id": 246,
    "area_name": "Cwm Cneifion",
-   "uri": "uploads/topos/mp/46-crag.jpg",
-   "kind": "crag_photo",
-   "width_px": 3672,
-   "height_px": 4896,
+   "belay_size": 26,
    "credit": "Dan Knight / multi-pitch.com",
+   "height_px": 4896,
+   "id": 29,
+   "kind": "crag_photo",
    "license": "owned",
-   "permission_note": null,
-   "taken_at": null,
    "lines": [
     {
-     "route_name": "Cneifion Arete",
-     "route_area": "Cwm Cneifion",
+     "descent": [
+      {
+       "anchor": [
+        null,
+        null
+       ],
+       "label": "",
+       "labelPosition": [
+        null,
+        null
+       ],
+       "path": [
+        [
+         0.65632,
+         0.03942
+        ],
+        [
+         0.60539,
+         0.04126
+        ]
+       ]
+      }
+     ],
      "line": [
       [
        0.39706,
@@ -7779,110 +7852,90 @@
      ],
      "pitches": [
       {
-       "grade": "Diff 3a",
-       "height": "20m",
        "belayPosition": [
         0.28513,
         0.62112
        ],
+       "grade": "Diff 3a",
+       "height": "20m",
        "labelPosition": [
         0.38399,
         0.74163
        ]
       },
       {
-       "grade": "Diff 3a",
-       "height": "10m",
        "belayPosition": [
         0.25054,
         0.53105
        ],
+       "grade": "Diff 3a",
+       "height": "10m",
        "labelPosition": [
         0.28949,
         0.55331
        ]
       },
       {
-       "grade": "",
-       "height": "",
        "belayPosition": [
         0.69907,
         0.31209
        ],
+       "grade": "",
+       "height": "",
        "labelPosition": [
         null,
         null
        ]
       },
       {
-       "grade": "",
-       "height": "",
        "belayPosition": [
         0.69499,
         0.18587
        ],
+       "grade": "",
+       "height": "",
        "labelPosition": [
         null,
         null
        ]
       },
       {
-       "grade": "",
-       "height": "",
        "belayPosition": [
         0.65904,
         0.05964
        ],
+       "grade": "",
+       "height": "",
        "labelPosition": [
         null,
         null
        ]
       }
      ],
-     "descent": [
-      {
-       "path": [
-        [
-         0.65632,
-         0.03942
-        ],
-        [
-         0.60539,
-         0.04126
-        ]
-       ],
-       "label": "",
-       "anchor": [
-        null,
-        null
-       ],
-       "labelPosition": [
-        null,
-        null
-       ]
-      }
-     ],
+     "route_area": "Cwm Cneifion",
+     "route_name": "Cneifion Arete",
      "source_id": "multipitch"
     }
-   ]
+   ],
+   "permission_note": null,
+   "status": "publish",
+   "taken_at": null,
+   "title": "Cwm Cneifion > Cneifion Arete | D 3a - 120m",
+   "uri": "uploads/topos/mp/46-crag.jpg",
+   "width_px": 3672
   },
   {
-   "title": "Peñón de Ifach > Via Pany | UIAA IV+ or VS 4c - ~220m",
-   "status": "publish",
-   "belay_size": 26,
+   "area_id": 283,
    "area_name": "Peñón de Ifach",
-   "uri": "uploads/topos/mp/48-via-pany-topo.jpg",
-   "kind": "crag_photo",
-   "width_px": 4816,
-   "height_px": 7368,
+   "belay_size": 26,
    "credit": "Dan Knight / multi-pitch.com",
+   "height_px": 7368,
+   "id": 30,
+   "kind": "crag_photo",
    "license": "owned",
-   "permission_note": null,
-   "taken_at": null,
    "lines": [
     {
-     "route_name": "Via Pany",
-     "route_area": "Peñón de Ifach",
+     "descent": null,
      "line": [
       [
        0.08721,
@@ -8003,112 +8056,114 @@
      ],
      "pitches": [
       {
-       "grade": "Grade IV",
-       "height": "~30m",
        "belayPosition": [
         0.1358,
         0.51873
        ],
+       "grade": "Grade IV",
+       "height": "~30m",
        "labelPosition": [
         0.11566,
         0.56352
        ]
       },
       {
-       "grade": "III+",
-       "height": "48m",
        "belayPosition": [
         0.29755,
         0.3883
        ],
+       "grade": "III+",
+       "height": "48m",
        "labelPosition": [
         0.23858,
         0.47462
        ]
       },
       {
-       "grade": "Grade IV+",
-       "height": "~25m",
        "belayPosition": [
         0.24668,
         0.32424
        ],
+       "grade": "Grade IV+",
+       "height": "~25m",
        "labelPosition": [
         0.31499,
         0.34514
        ]
       },
       {
-       "grade": "Grade IV+",
-       "height": "20m",
        "belayPosition": [
         0.26703,
         0.26031
        ],
+       "grade": "Grade IV+",
+       "height": "20m",
        "labelPosition": [
         0.26495,
         0.29031
        ]
       },
       {
-       "grade": "Grade IV",
-       "height": "25m",
        "belayPosition": [
         0.36607,
         0.19734
        ],
+       "grade": "Grade IV",
+       "height": "25m",
        "labelPosition": [
         0.34157,
         0.22978
        ]
       },
       {
-       "grade": "Grade IV+",
-       "height": "~30m",
        "belayPosition": [
         0.36898,
         0.12907
        ],
+       "grade": "Grade IV+",
+       "height": "~30m",
        "labelPosition": [
         0.3939,
         0.16694
        ]
       },
       {
-       "grade": "Grade IV+",
-       "height": "~30m",
        "belayPosition": [
         0.27928,
         0.06202
        ],
+       "grade": "Grade IV+",
+       "height": "~30m",
        "labelPosition": [
         0.33036,
         0.07736
        ]
       }
      ],
-     "descent": null,
+     "route_area": "Peñón de Ifach",
+     "route_name": "Via Pany",
      "source_id": "multipitch"
     }
-   ]
+   ],
+   "permission_note": null,
+   "status": "publish",
+   "taken_at": null,
+   "title": "Peñón de Ifach > Via Pany | UIAA IV+ or VS 4c - ~220m",
+   "uri": "uploads/topos/mp/48-via-pany-topo.jpg",
+   "width_px": 4816
   },
   {
-   "title": "Buzzards Roost > The Sheugh | Severe 3c - 71m",
-   "status": "publish",
-   "belay_size": 20,
+   "area_id": 237,
    "area_name": "Buzzards Roost",
-   "uri": "uploads/topos/mp/49-crag.jpg",
-   "kind": "crag_photo",
-   "width_px": 2852,
-   "height_px": 2837,
+   "belay_size": 20,
    "credit": "Dan Knight / multi-pitch.com",
+   "height_px": 2837,
+   "id": 31,
+   "kind": "crag_photo",
    "license": "owned",
-   "permission_note": null,
-   "taken_at": null,
    "lines": [
     {
-     "route_name": "The Sheugh",
-     "route_area": "Buzzards Roost",
+     "descent": null,
      "line": [
       [
        0.47511,
@@ -8193,64 +8248,66 @@
      ],
      "pitches": [
       {
-       "grade": "Severe 3c",
-       "height": "28m",
        "belayPosition": [
         0.48808,
         0.56539
        ],
+       "grade": "Severe 3c",
+       "height": "28m",
        "labelPosition": [
         0.50596,
         0.67289
        ]
       },
       {
-       "grade": "Severe 3c",
-       "height": "25m",
        "belayPosition": [
         0.48948,
         0.52697
        ],
+       "grade": "Severe 3c",
+       "height": "25m",
        "labelPosition": [
         0.51648,
         0.54635
        ]
       },
       {
-       "grade": "Severe 3c",
-       "height": "18m",
        "belayPosition": [
         0.49755,
         0.44131
        ],
+       "grade": "Severe 3c",
+       "height": "18m",
        "labelPosition": [
         0.52595,
         0.48008
        ]
       }
      ],
-     "descent": null,
+     "route_area": "Buzzards Roost",
+     "route_name": "The Sheugh",
      "source_id": "multipitch"
     }
-   ]
+   ],
+   "permission_note": null,
+   "status": "publish",
+   "taken_at": null,
+   "title": "Buzzards Roost > The Sheugh | Severe 3c - 71m",
+   "uri": "uploads/topos/mp/49-crag.jpg",
+   "width_px": 2852
   },
   {
-   "title": "Pigeon Rock > Virgo | Very Severe 4c - 90m",
-   "status": "publish",
-   "belay_size": 20,
+   "area_id": 285,
    "area_name": "Pigeon Rock",
-   "uri": "uploads/topos/mp/50-crag.jpg",
-   "kind": "crag_photo",
-   "width_px": 2874,
-   "height_px": 3149,
+   "belay_size": 20,
    "credit": "Dan Knight / multi-pitch.com",
+   "height_px": 3149,
+   "id": 32,
+   "kind": "crag_photo",
    "license": "owned",
-   "permission_note": null,
-   "taken_at": null,
    "lines": [
     {
-     "route_name": "Virgo",
-     "route_area": "Pigeon Rock",
+     "descent": null,
      "line": [
       [
        0.48678,
@@ -8411,76 +8468,125 @@
      ],
      "pitches": [
       {
-       "grade": "4a",
-       "height": "10m",
        "belayPosition": [
         0.43737,
         0.71832
        ],
+       "grade": "4a",
+       "height": "10m",
        "labelPosition": [
         0.49617,
         0.7704
        ]
       },
       {
-       "grade": "4c",
-       "height": "20m",
        "belayPosition": [
         0.30097,
         0.60591
        ],
+       "grade": "4c",
+       "height": "20m",
        "labelPosition": [
         0.35003,
         0.66561
        ]
       },
       {
-       "grade": "4b",
-       "height": "30m",
        "belayPosition": [
         0.50139,
         0.43442
        ],
+       "grade": "4b",
+       "height": "30m",
        "labelPosition": [
         0.40049,
         0.51413
        ]
       },
       {
-       "grade": "4c",
-       "height": "30m",
        "belayPosition": [
         0.50939,
         0.20229
        ],
+       "grade": "4c",
+       "height": "30m",
        "labelPosition": [
         0.5508,
         0.35186
        ]
       }
      ],
-     "descent": null,
+     "route_area": "Pigeon Rock",
+     "route_name": "Virgo",
      "source_id": "multipitch"
     }
-   ]
+   ],
+   "permission_note": null,
+   "status": "publish",
+   "taken_at": null,
+   "title": "Pigeon Rock > Virgo | Very Severe 4c - 90m",
+   "uri": "uploads/topos/mp/50-crag.jpg",
+   "width_px": 2874
   },
   {
-   "title": "El Castellet > Rincón de Placa | UIAA V+ or Very Severe 4c - 120m",
-   "status": "publish",
-   "belay_size": 20,
+   "area_id": 255,
    "area_name": "El Castellet",
-   "uri": "uploads/topos/mp/51-crag.jpg",
-   "kind": "crag_photo",
-   "width_px": 4000,
-   "height_px": 3000,
+   "belay_size": 20,
    "credit": "Dan Knight / multi-pitch.com",
+   "height_px": 3000,
+   "id": 33,
+   "kind": "crag_photo",
    "license": "owned",
-   "permission_note": null,
-   "taken_at": null,
    "lines": [
     {
-     "route_name": "Rincón de Placa",
-     "route_area": "El Castellet",
+     "descent": [
+      {
+       "anchor": [
+        null,
+        null
+       ],
+       "label": "50m",
+       "labelPosition": [
+        0.554,
+        0.078
+       ],
+       "path": [
+        [
+         0.52375,
+         0.05933
+        ],
+        [
+         0.527,
+         0.069
+        ],
+        [
+         0.52725,
+         0.08367
+        ]
+       ]
+      },
+      {
+       "anchor": [
+        0.48875,
+        0.42067
+       ],
+       "label": "50m",
+       "labelPosition": [
+        0.45,
+        0.465
+       ],
+       "path": [
+        [
+         0.48975,
+         0.42633
+        ],
+        [
+         0.491,
+         0.458
+        ]
+       ]
+      }
+     ],
      "line": [
       [
        0.64975,
@@ -8621,123 +8727,150 @@
      ],
      "pitches": [
       {
-       "grade": "UIAA V / V+",
-       "height": "30m",
        "belayPosition": [
         0.59075,
         0.55167
        ],
+       "grade": "UIAA V / V+",
+       "height": "30m",
        "labelPosition": [
         0.566,
         0.72367
        ]
       },
       {
-       "grade": "UIAA V-",
-       "height": "35m",
        "belayPosition": [
         0.47325,
         0.42833
        ],
+       "grade": "UIAA V-",
+       "height": "35m",
        "labelPosition": [
         0.509,
         0.49833
        ]
       },
       {
-       "grade": "UIAA V",
-       "height": "25m",
        "belayPosition": [
         0.48325,
         0.28567
        ],
+       "grade": "UIAA V",
+       "height": "25m",
        "labelPosition": [
         0.41125,
         0.34633
        ]
       },
       {
-       "grade": "UIAA IV+ / V",
-       "height": "30m",
        "belayPosition": [
         0.522,
         0.054
        ],
+       "grade": "UIAA IV+ / V",
+       "height": "30m",
        "labelPosition": [
         0.44325,
         0.146
        ]
       }
      ],
+     "route_area": "El Castellet",
+     "route_name": "Rincón de Placa",
+     "source_id": "multipitch"
+    }
+   ],
+   "permission_note": null,
+   "status": "publish",
+   "taken_at": null,
+   "title": "El Castellet > Rincón de Placa | UIAA V+ or Very Severe 4c - 120m",
+   "uri": "uploads/topos/mp/51-crag.jpg",
+   "width_px": 4000
+  },
+  {
+   "area_id": 306,
+   "area_name": "Tryfan",
+   "belay_size": 11,
+   "credit": "Dan Knight / multi-pitch.com",
+   "height_px": 1150,
+   "id": 34,
+   "kind": "crag_photo",
+   "license": "owned",
+   "lines": [
+    {
      "descent": [
       {
-       "path": [
-        [
-         0.52375,
-         0.05933
-        ],
-        [
-         0.527,
-         0.069
-        ],
-        [
-         0.52725,
-         0.08367
-        ]
-       ],
-       "label": "50m",
        "anchor": [
         null,
         null
        ],
+       "label": "",
        "labelPosition": [
-        0.554,
-        0.078
+        null,
+        null
+       ],
+       "path": [
+        [
+         1.23148,
+         0.16783
+        ],
+        [
+         1.13592,
+         0.17565
+        ]
        ]
       },
       {
+       "anchor": [
+        null,
+        null
+       ],
+       "label": "",
+       "labelPosition": [
+        null,
+        null
+       ],
        "path": [
         [
-         0.48975,
-         0.42633
+         0.79765,
+         0.39304
         ],
         [
-         0.491,
-         0.458
+         0.82984,
+         0.42957
+        ],
+        [
+         0.86868,
+         0.46348
         ]
-       ],
-       "label": "50m",
+       ]
+      },
+      {
        "anchor": [
-        0.48875,
-        0.42067
+        null,
+        null
        ],
+       "label": "",
        "labelPosition": [
-        0.45,
-        0.465
+        null,
+        null
+       ],
+       "path": [
+        [
+         0.72611,
+         0.28
+        ],
+        [
+         0.7302,
+         0.27652
+        ],
+        [
+         0.73786,
+         0.29217
+        ]
        ]
       }
      ],
-     "source_id": "multipitch"
-    }
-   ]
-  },
-  {
-   "title": "Tryfan > Grooved Arete | HVD 4a - 240m",
-   "status": "publish",
-   "belay_size": 11,
-   "area_name": "Tryfan",
-   "uri": "uploads/topos/mp/52-crag.jpg",
-   "kind": "crag_photo",
-   "width_px": 1957,
-   "height_px": 1150,
-   "credit": "Dan Knight / multi-pitch.com",
-   "license": "owned",
-   "permission_note": null,
-   "taken_at": null,
-   "lines": [
-    {
-     "route_name": "Grooved Arete",
-     "route_area": "Tryfan",
      "line": [
       [
        0.85539,
@@ -8806,256 +8939,345 @@
      ],
      "pitches": [
       {
-       "grade": "Diff 3a",
-       "height": "20m",
        "belayPosition": [
         0.535,
         2.64435
        ],
+       "grade": "Diff 3a",
+       "height": "20m",
        "labelPosition": [
         0.72049,
         3.15739
        ]
       },
       {
-       "grade": "Diff 3a",
-       "height": "10m",
        "belayPosition": [
         0.47011,
         2.26087
        ],
+       "grade": "Diff 3a",
+       "height": "10m",
        "labelPosition": [
         0.54318,
         2.35565
        ]
       },
       {
-       "grade": "",
-       "height": "",
        "belayPosition": [
         1.3117,
         1.3287
        ],
+       "grade": "",
+       "height": "",
        "labelPosition": [
         null,
         null
        ]
       },
       {
-       "grade": "",
-       "height": "",
        "belayPosition": [
         1.30404,
         0.7913
        ],
+       "grade": "",
+       "height": "",
        "labelPosition": [
         null,
         null
        ]
       },
       {
-       "grade": "",
-       "height": "",
        "belayPosition": [
         1.23659,
         0.25391
        ],
+       "grade": "",
+       "height": "",
        "labelPosition": [
         null,
         null
        ]
       },
       {
-       "grade": "4a",
-       "height": "35m",
        "belayPosition": [
         0.82678,
         0.81304
        ],
+       "grade": "4a",
+       "height": "35m",
        "labelPosition": [
         0.87021,
         0.86
        ]
       },
       {
-       "grade": "4a",
-       "height": "30m",
        "belayPosition": [
         0.79765,
         0.66174
        ],
+       "grade": "4a",
+       "height": "30m",
        "labelPosition": [
         0.83546,
         0.71565
        ]
       },
       {
-       "grade": "",
-       "height": "20m",
        "belayPosition": [
         0.77261,
         0.60261
        ],
+       "grade": "",
+       "height": "20m",
        "labelPosition": [
         0.80583,
         0.62174
        ]
       },
       {
-       "grade": "3c",
-       "height": "50m",
        "belayPosition": [
         0.77466,
         0.51304
        ],
+       "grade": "3c",
+       "height": "50m",
        "labelPosition": [
         0.79254,
         0.54696
        ]
       },
       {
-       "grade": "4a",
-       "height": "25m",
        "belayPosition": [
         0.74706,
         0.45565
        ],
+       "grade": "4a",
+       "height": "25m",
        "labelPosition": [
         0.7813,
         0.47478
        ]
       },
       {
-       "grade": "4a",
-       "height": "20m",
        "belayPosition": [
         0.75881,
         0.39391
        ],
+       "grade": "4a",
+       "height": "20m",
        "labelPosition": [
         0.77466,
         0.41652
        ]
       },
       {
-       "grade": "4a",
-       "height": "15m",
        "belayPosition": [
         0.74451,
         0.34435
        ],
+       "grade": "4a",
+       "height": "15m",
        "labelPosition": [
         0.77108,
         0.34783
        ]
       },
       {
-       "grade": "3c",
-       "height": "30m",
        "belayPosition": [
         0.72407,
         0.2913
        ],
+       "grade": "3c",
+       "height": "30m",
        "labelPosition": [
         0.75064,
         0.30348
        ]
       }
      ],
+     "route_area": "Tryfan",
+     "route_name": "Grooved Arete",
+     "source_id": "multipitch"
+    }
+   ],
+   "permission_note": null,
+   "status": "publish",
+   "taken_at": null,
+   "title": "Tryfan > Grooved Arete | HVD 4a - 240m",
+   "uri": "uploads/topos/mp/52-crag.jpg",
+   "width_px": 1957
+  },
+  {
+   "area_id": 286,
+   "area_name": "Puig Campana",
+   "belay_size": 20,
+   "credit": "Dan Knight / multi-pitch.com",
+   "height_px": 4144,
+   "id": 35,
+   "kind": "crag_photo",
+   "license": "owned",
+   "lines": [
+    {
      "descent": [
       {
+       "anchor": [
+        0.2326,
+        0.5765
+       ],
+       "label": "~10m",
+       "labelPosition": [
+        0.24377,
+        0.55719
+       ],
        "path": [
         [
-         1.23148,
-         0.16783
+         0.22293,
+         0.56009
         ],
         [
-         1.13592,
-         0.17565
+         0.23,
+         0.56009
+        ],
+        [
+         0.23,
+         0.56419
         ]
-       ],
-       "label": "",
-       "anchor": [
-        null,
-        null
-       ],
-       "labelPosition": [
-        null,
-        null
        ]
       },
       {
-       "path": [
-        [
-         0.79765,
-         0.39304
-        ],
-        [
-         0.82984,
-         0.42957
-        ],
-        [
-         0.86868,
-         0.46348
-        ]
-       ],
-       "label": "",
        "anchor": [
         null,
         null
        ],
+       "label": "60m",
        "labelPosition": [
-        null,
-        null
+        0.26349,
+        0.5958
+       ],
+       "path": [
+        [
+         0.23483,
+         0.5806
+        ],
+        [
+         0.24079,
+         0.59097
+        ]
        ]
       },
       {
-       "path": [
-        [
-         0.72611,
-         0.28
-        ],
-        [
-         0.7302,
-         0.27652
-        ],
-        [
-         0.73786,
-         0.29217
-        ]
-       ],
-       "label": "",
        "anchor": [
         null,
         null
        ],
+       "label": "",
        "labelPosition": [
         null,
         null
+       ],
+       "path": [
+        [
+         0.26907,
+         0.70801
+        ],
+        [
+         0.27242,
+         0.71597
+        ],
+        [
+         0.28545,
+         0.71284
+        ],
+        [
+         0.28768,
+         0.70584
+        ],
+        [
+         0.30703,
+         0.69474
+        ],
+        [
+         0.32118,
+         0.7015
+        ]
+       ]
+      },
+      {
+       "anchor": [
+        null,
+        null
+       ],
+       "label": "",
+       "labelPosition": [
+        null,
+        null
+       ],
+       "path": [
+        [
+         0.40007,
+         0.72032
+        ],
+        [
+         0.40194,
+         0.73625
+        ],
+        [
+         0.41608,
+         0.75265
+        ],
+        [
+         0.43766,
+         0.7541
+        ]
+       ]
+      },
+      {
+       "anchor": [
+        null,
+        null
+       ],
+       "label": "",
+       "labelPosition": [
+        null,
+        null
+       ],
+       "path": [
+        [
+         0.50242,
+         0.75772
+        ],
+        [
+         0.53591,
+         0.75386
+        ]
+       ]
+      },
+      {
+       "anchor": [
+        null,
+        null
+       ],
+       "label": "",
+       "labelPosition": [
+        null,
+        null
+       ],
+       "path": [
+        [
+         0.69297,
+         0.73842
+        ],
+        [
+         0.73949,
+         0.743
+        ],
+        [
+         0.7112,
+         0.77124
+        ]
        ]
       }
      ],
-     "source_id": "multipitch"
-    }
-   ]
-  },
-  {
-   "title": "Puig Campana > Aristotles | UIAA V or Hard Severe 4b - 340m",
-   "status": "publish",
-   "belay_size": 20,
-   "area_name": "Puig Campana",
-   "uri": "uploads/topos/mp/53-crag.jpg",
-   "kind": "crag_photo",
-   "width_px": 2687,
-   "height_px": 4144,
-   "credit": "Dan Knight / multi-pitch.com",
-   "license": "owned",
-   "permission_note": null,
-   "taken_at": null,
-   "lines": [
-    {
-     "route_name": "Aristotles",
-     "route_area": "Puig Campana",
      "line": [
       [
        0.2192,
@@ -9188,295 +9410,197 @@
      ],
      "pitches": [
       {
-       "grade": "IV",
-       "height": "38m",
        "belayPosition": [
         0.18757,
         0.94764
        ],
+       "grade": "IV",
+       "height": "38m",
        "labelPosition": [
         0.21437,
         0.95174
        ]
       },
       {
-       "grade": "V",
-       "height": "50m",
        "belayPosition": [
         0.23818,
         0.88127
        ],
+       "grade": "V",
+       "height": "50m",
        "labelPosition": [
         0.2259,
         0.90878
        ]
       },
       {
-       "grade": "IV",
-       "height": "18m",
        "belayPosition": [
         0.25158,
         0.85618
        ],
+       "grade": "IV",
+       "height": "18m",
        "labelPosition": [
         0.2754,
         0.87114
        ]
       },
       {
-       "grade": "IV+",
-       "height": "28m",
        "belayPosition": [
         0.22739,
         0.81081
        ],
+       "grade": "IV+",
+       "height": "28m",
        "labelPosition": [
         0.26833,
         0.81829
        ]
       },
       {
-       "grade": "III+",
-       "height": "45m",
        "belayPosition": [
         0.28322,
         0.76158
        ],
+       "grade": "III+",
+       "height": "45m",
        "labelPosition": [
         0.28619,
         0.7792
        ]
       },
       {
-       "grade": "IV+",
-       "height": "40m",
        "belayPosition": [
         0.23521,
         0.71332
        ],
+       "grade": "IV+",
+       "height": "40m",
        "labelPosition": [
         0.20655,
         0.73142
        ]
       },
       {
-       "grade": "V",
-       "height": "25m",
        "belayPosition": [
         0.23483,
         0.67616
        ],
+       "grade": "V",
+       "height": "25m",
        "labelPosition": [
         0.18496,
         0.69015
        ]
       },
       {
-       "grade": "IV",
-       "height": "35m",
        "belayPosition": [
         0.22367,
         0.6361
        ],
+       "grade": "IV",
+       "height": "35m",
        "labelPosition": [
         0.17603,
         0.64431
        ]
       },
       {
-       "grade": "IV",
-       "height": "55m",
        "belayPosition": [
         0.21697,
         0.55888
        ],
+       "grade": "IV",
+       "height": "55m",
        "labelPosition": [
         0.18236,
         0.59604
        ]
       }
      ],
+     "route_area": "Puig Campana",
+     "route_name": "Aristotles",
+     "source_id": "multipitch"
+    }
+   ],
+   "permission_note": null,
+   "status": "publish",
+   "taken_at": null,
+   "title": "Puig Campana > Aristotles | UIAA V or Hard Severe 4b - 340m",
+   "uri": "uploads/topos/mp/53-crag.jpg",
+   "width_px": 2687
+  },
+  {
+   "area_id": 253,
+   "area_name": "Eagle Mountain",
+   "belay_size": 32,
+   "credit": "Dan Knight / multi-pitch.com",
+   "height_px": 4096,
+   "id": 36,
+   "kind": "crag_photo",
+   "license": "owned",
+   "lines": [
+    {
      "descent": [
       {
-       "path": [
-        [
-         0.22293,
-         0.56009
-        ],
-        [
-         0.23,
-         0.56009
-        ],
-        [
-         0.23,
-         0.56419
-        ]
-       ],
-       "label": "~10m",
-       "anchor": [
-        0.2326,
-        0.5765
-       ],
-       "labelPosition": [
-        0.24377,
-        0.55719
-       ]
-      },
-      {
-       "path": [
-        [
-         0.23483,
-         0.5806
-        ],
-        [
-         0.24079,
-         0.59097
-        ]
-       ],
-       "label": "60m",
        "anchor": [
         null,
         null
        ],
+       "label": "~60m",
        "labelPosition": [
-        0.26349,
-        0.5958
+        0.20768,
+        0.26123
+       ],
+       "path": [
+        [
+         0.21549,
+         0.18652
+        ],
+        [
+         0.2181,
+         0.21582
+        ]
        ]
       },
       {
-       "path": [
-        [
-         0.26907,
-         0.70801
-        ],
-        [
-         0.27242,
-         0.71597
-        ],
-        [
-         0.28545,
-         0.71284
-        ],
-        [
-         0.28768,
-         0.70584
-        ],
-        [
-         0.30703,
-         0.69474
-        ],
-        [
-         0.32118,
-         0.7015
-        ]
+       "anchor": [
+        null,
+        null
        ],
        "label": "",
-       "anchor": [
-        null,
-        null
-       ],
        "labelPosition": [
         null,
         null
-       ]
-      },
-      {
+       ],
        "path": [
         [
-         0.40007,
-         0.72032
+         0.16211,
+         0.75586
         ],
         [
-         0.40194,
-         0.73625
+         0.26628,
+         0.73218
         ],
         [
-         0.41608,
-         0.75265
+         0.26823,
+         0.71387
         ],
         [
-         0.43766,
-         0.7541
+         0.21842,
+         0.70728
+        ],
+        [
+         0.23112,
+         0.68628
+        ],
+        [
+         0.29557,
+         0.66968
         ]
-       ],
-       "label": "",
-       "anchor": [
-        null,
-        null
-       ],
-       "labelPosition": [
-        null,
-        null
-       ]
-      },
-      {
-       "path": [
-        [
-         0.50242,
-         0.75772
-        ],
-        [
-         0.53591,
-         0.75386
-        ]
-       ],
-       "label": "",
-       "anchor": [
-        null,
-        null
-       ],
-       "labelPosition": [
-        null,
-        null
-       ]
-      },
-      {
-       "path": [
-        [
-         0.69297,
-         0.73842
-        ],
-        [
-         0.73949,
-         0.743
-        ],
-        [
-         0.7112,
-         0.77124
-        ]
-       ],
-       "label": "",
-       "anchor": [
-        null,
-        null
-       ],
-       "labelPosition": [
-        null,
-        null
        ]
       }
      ],
-     "source_id": "multipitch"
-    }
-   ]
-  },
-  {
-   "title": "Eagle Mountain > Sammy Higgins | Very Severe 4c - 56m",
-   "status": "publish",
-   "belay_size": 32,
-   "area_name": "Eagle Mountain",
-   "uri": "uploads/topos/mp/54-crag.jpg",
-   "kind": "crag_photo",
-   "width_px": 3072,
-   "height_px": 4096,
-   "credit": "Dan Knight / multi-pitch.com",
-   "license": "owned",
-   "permission_note": null,
-   "taken_at": null,
-   "lines": [
-    {
-     "route_name": "Sammy Higgins",
-     "route_area": "Eagle Mountain",
      "line": [
       [
        0.40755,
@@ -9617,123 +9741,117 @@
      ],
      "pitches": [
       {
-       "grade": "4c",
-       "height": "28m",
        "belayPosition": [
         0.5153,
         0.42114
        ],
+       "grade": "4c",
+       "height": "28m",
        "labelPosition": [
         0.5625,
         0.52905
        ]
       },
       {
-       "grade": "4b",
-       "height": "18m",
        "belayPosition": [
         0.42611,
         0.29492
        ],
+       "grade": "4b",
+       "height": "18m",
        "labelPosition": [
         0.4873,
         0.35327
        ]
       },
       {
-       "grade": "4a",
-       "height": "10m",
        "belayPosition": [
         0.21712,
         0.17822
        ],
+       "grade": "4a",
+       "height": "10m",
        "labelPosition": [
         0.36068,
         0.22437
        ]
       }
      ],
+     "route_area": "Eagle Mountain",
+     "route_name": "Sammy Higgins",
+     "source_id": "multipitch"
+    }
+   ],
+   "permission_note": null,
+   "status": "publish",
+   "taken_at": null,
+   "title": "Eagle Mountain > Sammy Higgins | Very Severe 4c - 56m",
+   "uri": "uploads/topos/mp/54-crag.jpg",
+   "width_px": 3072
+  },
+  {
+   "area_id": 247,
+   "area_name": "Cwm Idwal",
+   "belay_size": 20,
+   "credit": "Dan Knight / multi-pitch.com",
+   "height_px": 2000,
+   "id": 37,
+   "kind": "crag_photo",
+   "license": "owned",
+   "lines": [
+    {
      "descent": [
       {
-       "path": [
-        [
-         0.21549,
-         0.18652
-        ],
-        [
-         0.2181,
-         0.21582
-        ]
-       ],
-       "label": "~60m",
        "anchor": [
         null,
         null
        ],
+       "label": "",
        "labelPosition": [
-        0.20768,
-        0.26123
+        null,
+        null
+       ],
+       "path": [
+        [
+         0.45912,
+         0.156
+        ],
+        [
+         0.43644,
+         0.1545
+        ]
        ]
       },
       {
-       "path": [
-        [
-         0.16211,
-         0.75586
-        ],
-        [
-         0.26628,
-         0.73218
-        ],
-        [
-         0.26823,
-         0.71387
-        ],
-        [
-         0.21842,
-         0.70728
-        ],
-        [
-         0.23112,
-         0.68628
-        ],
-        [
-         0.29557,
-         0.66968
-        ]
-       ],
-       "label": "",
        "anchor": [
         null,
         null
        ],
+       "label": "Scramble up & over",
        "labelPosition": [
-        null,
-        null
+        0.34945,
+        0.105
+       ],
+       "path": [
+        [
+         0.40354,
+         0.1515
+        ],
+        [
+         0.40254,
+         0.1305
+        ],
+        [
+         0.39681,
+         0.129
+        ],
+        [
+         0.39432,
+         0.1435
+        ]
        ]
       }
      ],
-     "source_id": "multipitch"
-    }
-   ]
-  },
-  {
-   "title": "Cwm Idwal > Ordinary Route | D 3a - 140m",
-   "status": "publish",
-   "belay_size": 20,
-   "area_name": "Cwm Idwal",
-   "uri": "uploads/topos/mp/7-crag.jpg",
-   "kind": "crag_photo",
-   "width_px": 4012,
-   "height_px": 2000,
-   "credit": "Dan Knight / multi-pitch.com",
-   "license": "owned",
-   "permission_note": null,
-   "taken_at": null,
-   "lines": [
-    {
-     "route_name": "Ordinary Route",
-     "route_area": "Cwm Idwal",
      "line": [
       [
        0.39506,
@@ -9834,127 +9952,125 @@
      ],
      "pitches": [
       {
-       "grade": "",
-       "height": "45m",
        "belayPosition": [
         0.40429,
         0.4395
        ],
+       "grade": "",
+       "height": "45m",
        "labelPosition": [
         0.40927,
         0.5305
        ]
       },
       {
-       "grade": "",
-       "height": "45m",
        "belayPosition": [
         0.46162,
         0.244
        ],
+       "grade": "",
+       "height": "45m",
        "labelPosition": [
         0.4327,
         0.2975
        ]
       },
       {
-       "grade": "",
-       "height": "25m",
        "belayPosition": [
         0.47208,
         0.212
        ],
+       "grade": "",
+       "height": "25m",
        "labelPosition": [
         0.48629,
         0.2275
        ]
       },
       {
-       "grade": "",
-       "height": "25m",
        "belayPosition": [
         0.48953,
         0.15
        ],
+       "grade": "",
+       "height": "25m",
        "labelPosition": [
         0.42298,
         0.1825
        ]
       }
      ],
+     "route_area": "Cwm Idwal",
+     "route_name": "Ordinary Route",
+     "source_id": "multipitch"
+    }
+   ],
+   "permission_note": null,
+   "status": "publish",
+   "taken_at": null,
+   "title": "Cwm Idwal > Ordinary Route | D 3a - 140m",
+   "uri": "uploads/topos/mp/7-crag.jpg",
+   "width_px": 4012
+  },
+  {
+   "area_id": 217,
+   "area_name": "Lundy",
+   "belay_size": 24,
+   "credit": "Dan Knight / multi-pitch.com",
+   "height_px": 3076,
+   "id": 38,
+   "kind": "crag_photo",
+   "license": "owned",
+   "lines": [
+    {
      "descent": [
       {
+       "anchor": [
+        0.8007,
+        0.44733
+       ],
+       "label": "Abseil in",
+       "labelPosition": [
+        0.82362,
+        0.47188
+       ],
        "path": [
         [
-         0.45912,
-         0.156
+         0.80229,
+         0.45335
         ],
         [
-         0.43644,
-         0.1545
+         0.80866,
+         0.48895
         ]
-       ],
-       "label": "",
-       "anchor": [
-        null,
-        null
-       ],
-       "labelPosition": [
-        null,
-        null
        ]
       },
       {
-       "path": [
-        [
-         0.40354,
-         0.1515
-        ],
-        [
-         0.40254,
-         0.1305
-        ],
-        [
-         0.39681,
-         0.129
-        ],
-        [
-         0.39432,
-         0.1435
-        ]
-       ],
-       "label": "Scramble up & over",
        "anchor": [
         null,
         null
        ],
+       "label": "Scramble or abseil down",
        "labelPosition": [
-        0.34945,
-        0.105
+        0.76472,
+        0.24805
+       ],
+       "path": [
+        [
+         0.76886,
+         0.22724
+        ],
+        [
+         0.74339,
+         0.23375
+        ],
+        [
+         0.75072,
+         0.25878
+        ]
        ]
       }
      ],
-     "source_id": "multipitch"
-    }
-   ]
-  },
-  {
-   "title": "Lundy > The Devils Slide | HS 4a - 117m",
-   "status": "publish",
-   "belay_size": 24,
-   "area_name": "Lundy",
-   "uri": "uploads/topos/mp/8-crag.jpg",
-   "kind": "crag_photo",
-   "width_px": 3141,
-   "height_px": 3076,
-   "credit": "Dan Knight / multi-pitch.com",
-   "license": "owned",
-   "permission_note": null,
-   "taken_at": null,
-   "lines": [
-    {
-     "route_name": "The Devils Slide",
-     "route_area": "Lundy",
      "line": [
       [
        0.82394,
@@ -10027,123 +10143,98 @@
      ],
      "pitches": [
       {
-       "grade": "",
-       "height": "",
        "belayPosition": [
         0.82362,
         0.84493
        ],
+       "grade": "",
+       "height": "",
        "labelPosition": [
         null,
         null
        ]
       },
       {
-       "grade": "3c",
-       "height": "50m",
        "belayPosition": [
         0.78797,
         0.4475
        ],
+       "grade": "3c",
+       "height": "50m",
        "labelPosition": [
         0.75018,
         0.55055
        ]
       },
       {
-       "grade": "4a",
-       "height": "40m",
        "belayPosition": [
         0.70583,
         0.22692
        ],
+       "grade": "4a",
+       "height": "40m",
        "labelPosition": [
         0.67377,
         0.31434
        ]
       },
       {
-       "grade": "4a",
-       "height": "30m",
        "belayPosition": [
         0.54919,
         0.06144
        ],
+       "grade": "4a",
+       "height": "30m",
        "labelPosition": [
         0.59748,
         0.13596
        ]
       }
      ],
+     "route_area": "Lundy",
+     "route_name": "The Devils Slide",
+     "source_id": "multipitch"
+    }
+   ],
+   "permission_note": null,
+   "status": "publish",
+   "taken_at": null,
+   "title": "Lundy > The Devils Slide | HS 4a - 117m",
+   "uri": "uploads/topos/mp/8-crag.jpg",
+   "width_px": 3141
+  },
+  {
+   "area_id": 318,
+   "area_name": "North Tor, Slieve Binnian",
+   "belay_size": 24,
+   "credit": "Dan Knight / multi-pitch.com",
+   "height_px": 3672,
+   "id": 39,
+   "kind": "crag_photo",
+   "license": "owned",
+   "lines": [
+    {
      "descent": [
       {
+       "anchor": null,
+       "label": "abseil 45m",
+       "labelPosition": null,
        "path": [
         [
-         0.80229,
-         0.45335
+         0.32009584067604213,
+         0.2158646547704711
         ],
         [
-         0.80866,
-         0.48895
+         0.2700808835357597,
+         0.5458646501813615
+        ],
+        [
+         0.24007190925159022,
+         0.9558646983670113
         ]
-       ],
-       "label": "Abseil in",
-       "anchor": [
-        0.8007,
-        0.44733
-       ],
-       "labelPosition": [
-        0.82362,
-        0.47188
-       ]
-      },
-      {
-       "path": [
-        [
-         0.76886,
-         0.22724
-        ],
-        [
-         0.74339,
-         0.23375
-        ],
-        [
-         0.75072,
-         0.25878
-        ]
-       ],
-       "label": "Scramble or abseil down",
-       "anchor": [
-        null,
-        null
-       ],
-       "labelPosition": [
-        0.76472,
-        0.24805
        ]
       }
      ],
-     "source_id": "multipitch"
-    }
-   ]
-  },
-  {
-   "title": "North Tor, Slieve Binnian",
-   "status": "publish",
-   "belay_size": 24,
-   "area_name": "North Tor, Slieve Binnian",
-   "uri": "uploads/topos/studio/a318-1784314641.jpg",
-   "kind": "crag_photo",
-   "width_px": 3664,
-   "height_px": 3672,
-   "credit": "Dan Knight / multi-pitch.com",
-   "license": "owned",
-   "permission_note": null,
-   "taken_at": null,
-   "lines": [
-    {
-     "route_name": "Granite Whisper",
-     "route_area": "North Tor, Slieve Binnian",
      "line": [
       [
        0.5501647584995758,
@@ -10188,66 +10279,53 @@
      ],
      "pitches": [
       {
-       "grade": "4a",
-       "height": "30m",
        "belayPosition": [
         0.5001498013592934,
         0.7600000137673285
        ],
+       "grade": "4a",
+       "height": "30m",
        "labelPosition": [
         0.5501498013592935,
         0.7650000137673285
        ]
       },
       {
-       "grade": "4c",
-       "height": "35m",
        "belayPosition": [
         0.5401617670715194,
         0.6282706583352914
        ],
+       "grade": "4c",
+       "height": "35m",
        "labelPosition": [
         0.5901617670715195,
         0.6332706583352914
        ]
       },
       {
-       "grade": "4b",
-       "height": "25m",
        "belayPosition": [
         0.5001498013592934,
         0.358270688164503
        ],
+       "grade": "4b",
+       "height": "25m",
        "labelPosition": [
         0.5501498013592935,
         0.36327068816450303
        ]
       }
      ],
-     "descent": [
-      {
-       "path": [
-        [
-         0.32009584067604213,
-         0.2158646547704711
-        ],
-        [
-         0.2700808835357597,
-         0.5458646501813615
-        ],
-        [
-         0.24007190925159022,
-         0.9558646983670113
-        ]
-       ],
-       "label": "abseil 45m",
-       "anchor": null,
-       "labelPosition": null
-      }
-     ],
+     "route_area": "North Tor, Slieve Binnian",
+     "route_name": "Granite Whisper",
      "source_id": null
     }
-   ]
+   ],
+   "permission_note": null,
+   "status": "publish",
+   "taken_at": null,
+   "title": "North Tor, Slieve Binnian",
+   "uri": "uploads/topos/studio/a318-1784314641.jpg",
+   "width_px": 3664
   }
  ]
 }
