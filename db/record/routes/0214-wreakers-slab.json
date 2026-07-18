@@ -1,0 +1,258 @@
+{
+ "approach_difficulty": 2,
+ "approach_html": "Park in Morwenstow tea room car park lat/lon: 50.908732, -4.553767. Go into the morwenstow graveyard and pass out the bottom (north east) down a path past some private housing into a small wooded area. Go over the tiny stream and turn left out of the woods. Cross two fields and turn right at the cliff edge. Follow the coastal path until you see Cornakey Cliff. When above it, pass behind it to a sketchy and thorny scramble down the slope. Reach the loose rib and work your way down to the makeshift hut. Pass that to the (hopefully) in-situ rope. Descend to sea level when the tide is out and make your way around to the base of the climb. This may require some rock hopping or down climbing. Don't forget to enjoy the descent, it's part of the experience.",
+ "approach_time_min": 50,
+ "area_id": 245,
+ "aspect": "S",
+ "belays": null,
+ "best_season": null,
+ "bolts_count": null,
+ "climatology": [
+  {
+   "month": 1,
+   "rainy_days": 16.0,
+   "temp_high": 8.0,
+   "temp_low": 6.0
+  },
+  {
+   "month": 2,
+   "rainy_days": 12.0,
+   "temp_high": 8.0,
+   "temp_low": 6.0
+  },
+  {
+   "month": 3,
+   "rainy_days": 13.0,
+   "temp_high": 10.0,
+   "temp_low": 7.0
+  },
+  {
+   "month": 4,
+   "rainy_days": 11.0,
+   "temp_high": 11.0,
+   "temp_low": 8.0
+  },
+  {
+   "month": 5,
+   "rainy_days": 10.0,
+   "temp_high": 15.0,
+   "temp_low": 11.0
+  },
+  {
+   "month": 6,
+   "rainy_days": 10.0,
+   "temp_high": 16.0,
+   "temp_low": 13.0
+  },
+  {
+   "month": 7,
+   "rainy_days": 11.0,
+   "temp_high": 19.0,
+   "temp_low": 15.0
+  },
+  {
+   "month": 8,
+   "rainy_days": 11.0,
+   "temp_high": 19.0,
+   "temp_low": 16.0
+  },
+  {
+   "month": 9,
+   "rainy_days": 11.0,
+   "temp_high": 17.0,
+   "temp_low": 14.0
+  },
+  {
+   "month": 10,
+   "rainy_days": 16.0,
+   "temp_high": 14.0,
+   "temp_low": 11.0
+  },
+  {
+   "month": 11,
+   "rainy_days": 16.0,
+   "temp_high": 11.0,
+   "temp_low": 8.0
+  },
+  {
+   "month": 12,
+   "rainy_days": 15.0,
+   "temp_high": 8.0,
+   "temp_low": 6.0
+  }
+ ],
+ "commitment_code": null,
+ "curated_at": null,
+ "curation_notes": null,
+ "data_grade": 5,
+ "descent_abseils": null,
+ "descent_method": null,
+ "descent_notes": null,
+ "elevation_m": null,
+ "escapable": null,
+ "external_refs": [
+  {
+   "external_id": "10",
+   "source_id": "multipitch",
+   "url": "https://multi-pitch.com/climbs/wreakers-slab-on-cornakey-cliff/"
+  }
+ ],
+ "first_ascents": [],
+ "grade_system_code": "BAS",
+ "guidebooks": [
+  {
+   "id": 2,
+   "img_url": "img/guidebooks/south-west-climbs-guidebook.jpg",
+   "isbn": "9781898573470",
+   "kind": "guidebook",
+   "link": "https://amzn.to/2lT6FRL",
+   "page": "187",
+   "rrp": "19.99",
+   "title": "South West Climbs"
+  },
+  {
+   "id": 1,
+   "img_url": "img/guidebooks/west-country-climbs.jpg",
+   "isbn": "9781873341377",
+   "kind": "guidebook",
+   "link": "https://amzn.to/2UxZN8z",
+   "page": "128",
+   "rrp": "24.99",
+   "title": "West Country Climbs"
+  }
+ ],
+ "hazards": [
+  {
+   "evidence_span": "multi-pitch.com curated flag",
+   "hazard_code": "loose",
+   "source_url": "https://multi-pitch.com/climbs/wreakers-slab-on-cornakey-cliff/"
+  },
+  {
+   "evidence_span": "multi-pitch.com curated flag",
+   "hazard_code": "tidal",
+   "source_url": "https://multi-pitch.com/climbs/wreakers-slab-on-cornakey-cliff/"
+  }
+ ],
+ "id": 214,
+ "incline_code": "Slab",
+ "intro_html": "Wreakers slab is a fantastic adventure and one of the longest vertical multi-pitch climbs in the South of the UK.  With around 120m of cliff to scale, it makes for a great day out. The climbing is generally easy, but the rock is loose in places, especially on the first pitch, so make sure the leader is experienced. Protection on the first pitch can also be a challenge, but it gets better the higher you go.",
+ "last_update": "2021-10-15T01:01:42.339000+00:00",
+ "lat": 50.919394,
+ "left_right_index": null,
+ "length_m": 130,
+ "lon": -4.556705,
+ "map_img": {
+  "alt": "Map showing Wreakers Slab on Cornakey Cliff",
+  "url": "img/topos/wreakers/maps/"
+ },
+ "name": "Wreakers Slab",
+ "needs_field_check": false,
+ "original_grade": "VS 4b",
+ "parkings": [
+  {
+   "geom": "0101000020E6100000876A4AB20E3712C0126A865451744940",
+   "id": 6,
+   "label": "Morwenstow tea room car park",
+   "ord": 1,
+   "route_id": 214
+  },
+  {
+   "geom": "0101000020E61000004F1E166A4D3312C0068195438B744940",
+   "id": 7,
+   "label": "layby (overflow)",
+   "ord": 2,
+   "route_id": 214
+  }
+ ],
+ "pitch_info_html": "It's fair to say everyone has a slightly different experience on wreckers slab, partly because the cliff is loose and the holds likely change regularly, even between the leader and the second! This makes helmets an absolute must. Due to its scale it's likely a lot of people also take slightly different lines, especially at the bottom and top pitches where the route is less clear. I think it justifies the grade of VS 4b. With the low technical grade it's an easy route to underestimate. A lot of the protection early on is marginal and some placements could actually make the climb more dangerous. For instance, a cam behind a large loose block could put the seconds life in danger. In short, it's not an ideal choice for those new to traditional multi-pitch climbing, but it offers stunning views and is a wonderful lengthy adventure if you have the experience to lead it.\r\n<br />\r\n<strong class=\"pitch-title\">Pitch 1 –<span class=\"length\">40m</span> <span class=\"pitchGrade\"\">4a</span></strong><br />\r\nMy experience here is reasonably worthless except to say if you leave the guidebook at the top of the cliff (because who wants to climb with a guide book in their bag), then the chances are you won’t actually know exactly which way to go and may attack the first belay head on. This takes you over loose ground with little or no gear and possibly makes the route a harder grade. Instead I’d recommend you don’t start too far right, climb up a few of meters to where the cliff eases off then traverse all the way left to the arete and head up to the belay.\r\n<br />\r\nThere are 2 pegs that you can use to form part of your belay. I’d highly recommend a 3 or 4 point anchor in addition to them. I placed my gear below the pegs giving a reasonably comfy ledge to belay from. Your nut tool comes in handy to clean the cracks when you lead this pitch!\r\n<br />\r\n<strong class=\"pitch-title\">Pitch 2 – <span class=\"length\">40m</span> <span class=\"pitchGrade\"\">4b</span></strong><br />\r\nHead up and around the overhanging block just above the belay. Whilst this is probably the steepest part of the climb it’s not fully vertical making gear placements easier than it looks. Be careful not to throw too many handholds at the belay below and follow the reasonably obvious crack up to a big grassy ledge with a pillar of rock on it.  There are lots of options to build a traditional anchor here. You can use the front of the pillar, side or even the nearby crack further up.\r\n<br />\r\n<strong class=\"pitch-title\">Pitch 3 – <span class=\"length\">50m</span> <span class=\"pitchGrade\"\">4a</span></strong><br />\r\nThis is where the rock climbing becomes utterly enjoyable. For the most part the rock is solid and there are plenty of placements for gear, the left ridge is recommended with its stunning if a little intense views. Guidebooks suggest the pitch is 45m, but a the full 50m will take you over the top and right a little. A good belay can be built on the other side of the top ridge. Consider belaying your partner off the top 10m walk. It would be a stretch to call it a 4th pitch, but placing a couple of pieces of gear makes it a safer scramble.",
+ "pitches": [
+  {
+   "bolts_count": null,
+   "description": "My experience here is reasonably worthless except to say if you leave the guidebook at the top of the cliff (because who wants to climb with a guide book in their bag), then the chances are you won’t actually know exactly which way to go and may attack the first belay head on. This takes you over loose ground with little or no gear and possibly makes the route a harder grade. Instead I’d recommend you don’t start too far right, climb up a few of meters to where the cliff eases off then traverse all the way left to the arete and head up to the belay.\r\n\r\nThere are 2 pegs that you can use to form part of your belay. I’d highly recommend a 3 or 4 point anchor in addition to them. I placed my gear below the pegs giving a reasonably comfy ledge to belay from. Your nut tool comes in handy to clean the cracks when you lead this pitch!",
+   "grade_system_code": null,
+   "length_m": 40,
+   "number": 1,
+   "original_grade": "4a"
+  },
+  {
+   "bolts_count": null,
+   "description": "Head up and around the overhanging block just above the belay. Whilst this is probably the steepest part of the climb it’s not fully vertical making gear placements easier than it looks. Be careful not to throw too many handholds at the belay below and follow the reasonably obvious crack up to a big grassy ledge with a pillar of rock on it.  There are lots of options to build a traditional anchor here. You can use the front of the pillar, side or even the nearby crack further up.",
+   "grade_system_code": null,
+   "length_m": 40,
+   "number": 2,
+   "original_grade": "4b"
+  },
+  {
+   "bolts_count": null,
+   "description": "This is where the rock climbing becomes utterly enjoyable. For the most part the rock is solid and there are plenty of placements for gear, the left ridge is recommended with its stunning if a little intense views. Guidebooks suggest the pitch is 45m, but a the full 50m will take you over the top and right a little. A good belay can be built on the other side of the top ridge. Consider belaying your partner off the top 10m walk. It would be a stretch to call it a 4th pitch, but placing a couple of pieces of gear makes it a safer scramble.",
+   "grade_system_code": null,
+   "length_m": 50,
+   "number": 3,
+   "original_grade": "4a"
+  }
+ ],
+ "pitches_count": 3,
+ "protection_code": "R",
+ "protection_style": null,
+ "provenance": [],
+ "rack": null,
+ "references": [
+  {
+   "id": 161,
+   "prefix": "Video",
+   "route_id": 214,
+   "text": "Video: Salute To The Admiral (the story of Wrecker’s Slab)",
+   "url": "https://vimeo.com/447803688"
+  },
+  {
+   "id": 162,
+   "prefix": "Video",
+   "route_id": 214,
+   "text": "Video: Headcam video of the accent on youTube",
+   "url": "https://www.youtube.com/watch?v=ifNQuBPfHJU"
+  }
+ ],
+ "rock_code": "sandstone",
+ "rope": null,
+ "stars": null,
+ "status": "publish",
+ "sun_window_code": null,
+ "tag_prov": {
+  "date": "2026-07-06",
+  "model": "claude-cli"
+ },
+ "tagged_by": "human",
+ "tags": {
+  "character": [
+   "exposed"
+  ],
+  "disciplines": [
+   "multi-pitch",
+   "trad"
+  ],
+  "features": [
+   "arête",
+   "crack",
+   "pillar",
+   "ridge",
+   "slab"
+  ]
+ },
+ "tech_grade": "4b",
+ "tile_image": {
+  "alt": "Wreakers Slab Sea Cliff in Cornwall",
+  "atributionURL": null,
+  "attributionText": null,
+  "url": "img/tiles/wreakers-slab-small.jpg"
+ },
+ "timezone": "Europe/London",
+ "topo": {
+  "alt": "Wreakers Slab Topo on Cornakey Cliff",
+  "atributionURL": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "attributionText": "our own image",
+  "dataFile": 5,
+  "url": "img/topos/wreakers/wreakers-slab-climb-in-cornwall.jpg"
+ },
+ "trad_grade": "VS",
+ "wind_exposed": null
+}

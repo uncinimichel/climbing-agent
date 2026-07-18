@@ -1,0 +1,233 @@
+{
+ "approach_difficulty": 3,
+ "approach_html": "<strong>Approach:</strong> There are multiple options for getting to the Vajolet Towers. Much of the advice is often mixed.<br><br><strong>Chairlift and Hike:</strong> From Pera, take the Vajolet 1 chairlift then the Vajolet 2 chair lift. As of June 2023 the chairlifts start at 8:15am and parking is free. From the end of the Vajolet 2 chairlift there is a hike of around 2 and half to 3 hours depending on speed. The Chairlift ticket office will provide maps but in short, the hike follows the path up and right into the forest towards Rufugio Gardenccia. From there the routes leaves the forest and hikes uphill towards Rufugio Vajolet and Rufugio Preuss. From there the hike goes steeply up and left through the notch / saddle of the mountains towards Rufugio Alberto. This section requires some easy scrambling and crossing some small sections of snow early in the season depending on weather. From Rufugio Alberto, the towers can be approached directly. The path follows right around the smaller tower of Piz Piaz to the base of the base of the Delago and Stabeler Tower in the gully. From here climbers can scramble up and left a short way to a bolted stance on the right of the Delago Tower, then lead an easy (UIAA grade II) pitch to left, to reach another bolted stance a few meters right of the towers edge, this is where the route starts properly. Alternatively climbers can scramble directly to the start of the route (around UIAA grade II), to avoid the easy traverse pitch.<br><br><strong>Shuttle Bus:</strong> There is said to be a shuttle bus that runs between Pera in the Val di Fassa and Rufugio Gardenccia (The service departs from the large carpark by the Ciampedie chairlift in Pera). From here follow the above hiking instructions.<br><br><strong>Higher parking:</strong> There is a carpark just before Rufugio Gardenccia. Permission needs to be sought from the council to park there and the requirements for gaining permission are unclear. This would however be a quick option saving a portion of the hike. From the car park follow the directions above.<br><br><strong>Pian Peccei Chairlift extension:</strong> Vejolet 2 chairlift finishes at 1800m of elevation and Rufugio Alberto sits at 2600, so there is 800m of elevation gain on the Chairlift and hike option. The Pian Peccei chairlift goes up another 200m slightly the wrong way. Paying for this chair lift will make for a slightly longer hike in distance, but save some uphill. It typically wont be quicker, but some climbers may prefer it.<br><br><strong>Abseil Descent:</strong> From the east edge of Delago, there are a number of options for abseiling. Depending on rope length it can be done in as few as 2 abseils or as many as 5. Rufugio Alberto has <a href=\"/img/topos/vejolet/abseil-options.jpg\" onclick=\"openLightBox('/img/topos/vejolet/abseil-options.jpg', 'A good map of abseil points');return false;\" target=\"blank\">a good map of abseil options here</a>. With a pair of 60m or more ropes, climbers can abseil to a large ledge then from there make an additional abseil to a point were scrambling off should be possible. Alternately on a pair of 50m ropes it's possible to make a 40m abseil to a notch between the two larger towers (Stabeler and Delago). Make another 40 then 45m to the base of the gully between the towers to the ledge the route started on. From here you can hike back.<br>",
+ "approach_time_min": 160,
+ "area_id": 307,
+ "aspect": "SW",
+ "belays": null,
+ "best_season": null,
+ "bolts_count": null,
+ "climatology": [
+  {
+   "month": 1,
+   "rainy_days": 9.0,
+   "temp_high": -7.0,
+   "temp_low": -18.0
+  },
+  {
+   "month": 2,
+   "rainy_days": 7.0,
+   "temp_high": -4.0,
+   "temp_low": -15.0
+  },
+  {
+   "month": 3,
+   "rainy_days": 10.0,
+   "temp_high": 2.0,
+   "temp_low": -11.0
+  },
+  {
+   "month": 4,
+   "rainy_days": 10.0,
+   "temp_high": 5.0,
+   "temp_low": -7.0
+  },
+  {
+   "month": 5,
+   "rainy_days": 12.0,
+   "temp_high": 10.0,
+   "temp_low": -3.0
+  },
+  {
+   "month": 6,
+   "rainy_days": 14.0,
+   "temp_high": 14.0,
+   "temp_low": 0.0
+  },
+  {
+   "month": 7,
+   "rainy_days": 15.0,
+   "temp_high": 16.0,
+   "temp_low": 2.0
+  },
+  {
+   "month": 8,
+   "rainy_days": 14.0,
+   "temp_high": 15.0,
+   "temp_low": 2.0
+  },
+  {
+   "month": 9,
+   "rainy_days": 10.0,
+   "temp_high": 10.0,
+   "temp_low": -2.0
+  },
+  {
+   "month": 10,
+   "rainy_days": 7.0,
+   "temp_high": 4.0,
+   "temp_low": -7.0
+  },
+  {
+   "month": 11,
+   "rainy_days": 9.0,
+   "temp_high": -3.0,
+   "temp_low": -13.0
+  },
+  {
+   "month": 12,
+   "rainy_days": 9.0,
+   "temp_high": -7.0,
+   "temp_low": -17.0
+  }
+ ],
+ "commitment_code": null,
+ "curated_at": null,
+ "curation_notes": null,
+ "data_grade": 4,
+ "descent_abseils": null,
+ "descent_method": null,
+ "descent_notes": null,
+ "elevation_m": null,
+ "escapable": null,
+ "external_refs": [
+  {
+   "external_id": "26",
+   "source_id": "multipitch",
+   "url": "https://multi-pitch.com/climbs/piaz-arete-delagokante-on-vajolet-towers/"
+  }
+ ],
+ "first_ascents": [],
+ "grade_system_code": "UIAA",
+ "guidebooks": [
+  {
+   "id": 20,
+   "img_url": "img/guidebooks/new-guide-to-catinaccio-in-the-dolomites.jpg",
+   "isbn": "9788827219652",
+   "kind": "guidebook",
+   "link": "https://www.amazon.it/nuova-guida-Catinaccio-Ediz-illustrata/dp/882721965X",
+   "page": "54",
+   "rrp": "25",
+   "title": "La nuova guida del Catinaccio"
+  },
+  {
+   "id": 19,
+   "img_url": "img/guidebooks/the-dolomites-climbing-guide.jpg",
+   "isbn": "9781873341971",
+   "kind": "guidebook",
+   "link": "https://amzn.to/2NdBIQw",
+   "page": "86",
+   "rrp": "29.95",
+   "title": "The Dolomites, Rock Climbs and Via Ferrata"
+  }
+ ],
+ "hazards": [
+  {
+   "evidence_span": "multi-pitch.com curated flag",
+   "hazard_code": "abseil",
+   "source_url": "https://multi-pitch.com/climbs/piaz-arete-delagokante-on-vajolet-towers/"
+  },
+  {
+   "evidence_span": "multi-pitch.com curated flag",
+   "hazard_code": "polished",
+   "source_url": "https://multi-pitch.com/climbs/piaz-arete-delagokante-on-vajolet-towers/"
+  },
+  {
+   "evidence_span": "multi-pitch.com curated flag",
+   "hazard_code": "traverse",
+   "source_url": "https://multi-pitch.com/climbs/piaz-arete-delagokante-on-vajolet-towers/"
+  }
+ ],
+ "id": 252,
+ "incline_code": "Slab & Vertical",
+ "intro_html": "The left hand edge or arête on the Delago Tower is a true classic, often said to be the best climb at its grade in the Dolomites. The route is consistent in grade and offers some incredible exposure, with huge drops both sides of the arête. Although steep in places the holds are typically good. The route is also well protected with bolted stances and pitons on many pitches. A light rack is still needed to fill gaps and protect the last pitch. The quality of the route makes it popular despite the lengthy and involved walk in. Its popularity has led to polish on most of the pitches. Descent requires between 2 and 5 abseils depending on rope length. It's common for climbers to stay at one of the local mountain lodges (Rifugios) as part of the trip due to the lengthy journey to and from the Vejolet Towers. Rifugio Re Alberto is the closest just 10mins walk from the towers. There are other rifugio options on the peak to the west and in the valley to the south. <br>",
+ "last_update": "2023-06-26T13:35:51.764000+00:00",
+ "lat": 46.460408,
+ "left_right_index": null,
+ "length_m": 156,
+ "lon": 11.624514,
+ "map_img": {
+  "alt": "Location of the Vejolet Towers",
+  "url": "img/topos/vejolet/maps/"
+ },
+ "name": "Piaz Arete Delagokante",
+ "needs_field_check": false,
+ "original_grade": "IV+",
+ "parkings": [],
+ "pitch_info_html": "The sign at Rifugio Alberto describes the route as \"Arial climbing... one of the most celebrated routes in the Alps\" and it's easy to see why. Although the hike in is arduous, there can't be many rock climbing routes in the world that provide the same sense of exposure and atmosphere at such an amenable grade. <br><br><em>The description below omits the initial grade II traverse some guides include. See approch info above for further information.</em> The scramble to the start of the first proper pitch is similar in difficulty compared to the scramble to the start of the traverse/walk pitch. As always, climbers should used their own judgement and make their own decisions. <br><strong class=\"pitch-title\">Pitch 1 –<span class=\"length\">30m</span> <span class=\"pitchGrade uiaa\">IV</span></strong><br>For the first proper pitch, climb more or less directly up to the next obvious ledge with a bolted belay point. Modern guidebooks suggest this pitch is the technical crux at grade IV+, but older guides grade it the same as later pitches, at grade IV.<br><strong class=\"pitch-title\">Pitch 2 –2<span class=\"length\">5m</span> <span class=\"pitchGrade uiaa\">IV</span></strong><br>The second pitch has what is probably the most extreme exposure of the route. The cliff falls away over half a kilometre, almost vertically, from the northern side of the tower (left of the edge). The line starts by climbing out onto the left side of the arête, with aforementioned exposure, then moving up, keeping on the left side of the ridge, with pitons and gear options for a few meters, before moving back onto the ridge and following a line up to the next ledge with another bolted belay point.<br><strong class=\"pitch-title\">Pitch 3 –2<span class=\"length\">5m</span> <span class=\"pitchGrade uiaa\">IV</span></strong><br>The third pitch moves up the right side of the arête with a few steep initial moves, before slightly easier climbing up to the next belay  point which is again bolted.<br><strong class=\"pitch-title\">Pitch 4 –2<span class=\"length\">5m</span> <span class=\"pitchGrade uiaa\">IV</span></strong><br>The penultimate pitch is broken up with some ledges. Initially it moves up and right to reach a pale grey flake / pinnacle, at which point the route cuts back left towards the edge and a bolted belay on a good ledge.<br><strong class=\"pitch-title\">Pitch 5 –2<span class=\"length\">5m</span> <span class=\"pitchGrade uiaa\">III</span></strong><br>The final dramatic pitch has the climber move up just left of the anchor before cutting back to the right climbing a short crack before moving onto the summit ridge. The ridge is traversed to the abseil stations on the opposite side, across from the Sabler Tower. There are a lot of options for descent (see above) but it can be done in two or more abseils.",
+ "pitches": [
+  {
+   "bolts_count": null,
+   "description": "For the first proper pitch, climb more or less directly up to the next obvious ledge with a bolted belay point. Modern guidebooks suggest this pitch is the technical crux at grade IV+, but older guides grade it the same as later pitches, at grade IV.",
+   "grade_system_code": "UIAA",
+   "length_m": 30,
+   "number": 1,
+   "original_grade": "IV"
+  }
+ ],
+ "pitches_count": 5,
+ "protection_code": "PG",
+ "protection_style": null,
+ "provenance": [],
+ "rack": null,
+ "references": [
+  {
+   "id": 185,
+   "prefix": "Accommodation",
+   "route_id": 252,
+   "text": "Accommodation: Rifugio Alberto",
+   "url": "https://www.rifugiorealberto.com/en/"
+  },
+  {
+   "id": 186,
+   "prefix": null,
+   "route_id": 252,
+   "text": "Weather: Vajolet Towers",
+   "url": "https://www.mountain-forecast.com/peaks/Vajolet-Towers/forecasts/2821"
+  }
+ ],
+ "rock_code": "dolomite",
+ "rope": null,
+ "stars": null,
+ "status": "publish",
+ "sun_window_code": null,
+ "tag_prov": {
+  "date": "2026-07-06",
+  "model": "claude-cli"
+ },
+ "tagged_by": "human",
+ "tags": {
+  "character": [
+   "exposed",
+   "sustained"
+  ],
+  "disciplines": [
+   "alpine",
+   "multi-pitch",
+   "trad"
+  ],
+  "features": [
+   "arête",
+   "crack",
+   "flake",
+   "ridge"
+  ]
+ },
+ "tech_grade": "4a",
+ "tile_image": {
+  "alt": "The Vejolet Towers rock climbing",
+  "atributionURL": "https://commons.wikimedia.org/wiki/File:Vajolett%C3%BCrme_1.jpg",
+  "attributionText": "X-Weinzar",
+  "url": "img/tiles/vejolet-towers-rock-climbing-dolomites.jpg"
+ },
+ "timezone": "Europe/Rome",
+ "topo": {
+  "alt": "The Vejolet Towers topo for Piaz Arete",
+  "atributionURL": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "attributionText": "Our own image",
+  "dataFile": 5,
+  "url": "img/topos/vejolet/vejolet-towers-piaz-arete-delagokante-topo.jpg"
+ },
+ "trad_grade": "HS",
+ "wind_exposed": null
+}

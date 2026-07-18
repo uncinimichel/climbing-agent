@@ -1,0 +1,241 @@
+{
+ "approach_difficulty": 1,
+ "approach_html": "<strong>Approach</strong>: Park in the National Trust Carpark by Carn Galver ruined tin mine building. This is a free car park with a donation box to support the national trust. Follow the path out towards the sea for less than 10 minutes. As you reach the first part of the top of Bosigran cliff you will be able to find a steep but good path down. Take this to the base of the crag then walk along another good path to the Bow Wall area. The black “coal face” wall makes an obvious feature to find the route. From the top you can follow a path back to parking.",
+ "approach_time_min": 10,
+ "area_id": 235,
+ "aspect": "W",
+ "belays": null,
+ "best_season": null,
+ "bolts_count": null,
+ "climatology": [
+  {
+   "month": 1,
+   "rainy_days": 15.0,
+   "temp_high": 9.0,
+   "temp_low": 5.0
+  },
+  {
+   "month": 2,
+   "rainy_days": 12.0,
+   "temp_high": 9.0,
+   "temp_low": 5.0
+  },
+  {
+   "month": 3,
+   "rainy_days": 11.0,
+   "temp_high": 9.0,
+   "temp_low": 6.0
+  },
+  {
+   "month": 4,
+   "rainy_days": 10.0,
+   "temp_high": 13.0,
+   "temp_low": 9.0
+  },
+  {
+   "month": 5,
+   "rainy_days": 9.0,
+   "temp_high": 16.0,
+   "temp_low": 11.0
+  },
+  {
+   "month": 6,
+   "rainy_days": 9.0,
+   "temp_high": 16.0,
+   "temp_low": 11.0
+  },
+  {
+   "month": 7,
+   "rainy_days": 8.0,
+   "temp_high": 18.0,
+   "temp_low": 13.0
+  },
+  {
+   "month": 8,
+   "rainy_days": 9.0,
+   "temp_high": 18.0,
+   "temp_low": 14.0
+  },
+  {
+   "month": 9,
+   "rainy_days": 9.0,
+   "temp_high": 16.0,
+   "temp_low": 12.0
+  },
+  {
+   "month": 10,
+   "rainy_days": 12.0,
+   "temp_high": 14.0,
+   "temp_low": 10.0
+  },
+  {
+   "month": 11,
+   "rainy_days": 14.0,
+   "temp_high": 11.0,
+   "temp_low": 8.0
+  },
+  {
+   "month": 12,
+   "rainy_days": 15.0,
+   "temp_high": 10.0,
+   "temp_low": 7.0
+  }
+ ],
+ "commitment_code": null,
+ "curated_at": null,
+ "curation_notes": null,
+ "data_grade": 4,
+ "descent_abseils": null,
+ "descent_method": null,
+ "descent_notes": null,
+ "elevation_m": null,
+ "escapable": null,
+ "external_refs": [
+  {
+   "external_id": "2",
+   "source_id": "multipitch",
+   "url": "https://multi-pitch.com/climbs/doorpost-on-bosigran/"
+  }
+ ],
+ "first_ascents": [],
+ "grade_system_code": "BAS",
+ "guidebooks": [
+  {
+   "id": 12,
+   "img_url": "img/guidebooks/classic-rock-by-ken-wilson.jpg",
+   "isbn": "9781898573708",
+   "kind": "guidebook",
+   "link": "https://amzn.to/3htOMjS",
+   "page": "129",
+   "rrp": "29.99",
+   "title": "Classic Rock"
+  },
+  {
+   "id": 1,
+   "img_url": "img/guidebooks/west-country-climbs.jpg",
+   "isbn": "9781873341377",
+   "kind": "guidebook",
+   "link": "https://amzn.to/2UxZN8z",
+   "page": "206",
+   "rrp": "24.99",
+   "title": "West Country Climbs"
+  }
+ ],
+ "hazards": [
+  {
+   "evidence_span": "multi-pitch.com curated flag",
+   "hazard_code": "seepage",
+   "source_url": "https://multi-pitch.com/climbs/doorpost-on-bosigran/"
+  }
+ ],
+ "id": 224,
+ "incline_code": "Vertical",
+ "intro_html": "Doorpost is a classic climb on the justifiably popular Bow Wall area of Bosigran. It has an easy approach and accessible grade. The climbing is interesting and varied but easy to protect. The route is on a part of the cliff surrounded by both harder and easier climbs. Check out the incredible Ledge Climb if you want easier or Little Brown Jug if you want to go harder. That said the crux of Ledge climb is arguably as hard as the crux of Doorpost. The granite here is solid and happily takes cams throughout the route. The route dries quickly after rain but the first pitch suffers some minor seepage.",
+ "last_update": "2021-10-15T01:01:42.339000+00:00",
+ "lat": 50.175784,
+ "left_right_index": null,
+ "length_m": 67,
+ "lon": -5.620379,
+ "map_img": {
+  "alt": "Bosigran's Location in Cornwall",
+  "url": "img/topos/bosigran/maps/"
+ },
+ "name": "Doorpost",
+ "needs_field_check": false,
+ "original_grade": "HS 4b",
+ "parkings": [],
+ "pitch_info_html": "Doorpost is a classic Bosigran route and one of the best Hard Severe multi-pitch climbs in the south of England. It’s easy to approach and offers interesting but easy to protect climbing on solid granite. Although it dries quickly after rain, part of the first pitch suffers some seepage in the middle. All things considered it’s one of the best climbs in it’s category. \r\n<br>\r\n<strong class=\"pitch-title\">Pitch 1 –<span class=\"length\">27m</span> <span class=\"pitchGrade brit\">4a</span></strong><br>\r\nThe first pitch starts with easy holds up into a corner before following the striking crack line across and up. There is some delicate footwork required but the hand holds are good and the crack will happily take one to two finger width cams. As the crack ends the climber can climb good holds to a ledge with an option for a sitting belay on the left hand side of the ledge (back to the sea) or you can move further right (back to the sea) for a standing  belay that is shared with the first pitch of the popular little brown jug.\r\n<br>\r\n<strong class=\"pitch-title\">Pitch 2 –<span class=\"length\">15m</span> <span class=\"pitchGrade brit\">4b</span></strong><br>\r\nThis is a short and interesting pitch. The goal is to climb the twin cracks to a ledge above. The pitch starts with moves out to the left crack. This is climbed up to the crux of the route which sits at the point where the climber has to move from the left crack, to the right crack. Once in the right crack move up to a good ledge with a belay in the corner.\r\n<br>\r\n<strong class=\"pitch-title\">Pitch 3 –<span class=\"length\">25m</span> <span class=\"pitchGrade brit\">4a</span></strong><br>\r\nA glorious and easy part of the climb with good protection and incredible exposure as the climb moves onto one of the highest points of the cliff at Bosigran. Follow a reasonably obvious path up good holds to the top, where a belay can be made by slinging a boulder and backed up by large gear if desired.",
+ "pitches": [
+  {
+   "bolts_count": null,
+   "description": "The first pitch starts with easy holds up into a corner before following the striking crack line across and up. There is some delicate footwork required but the hand holds are good and the crack will happily take one to two finger width cams. As the crack ends the climber can climb good holds to a ledge with an option for a sitting belay on the left hand side of the ledge (back to the sea) or you can move further right (back to the sea) for a standing  belay that is shared with the first pitch of the popular little brown jug.",
+   "grade_system_code": null,
+   "length_m": 27,
+   "number": 1,
+   "original_grade": "4a"
+  },
+  {
+   "bolts_count": null,
+   "description": "This is a short and interesting pitch. The goal is to climb the twin cracks to a ledge above. The pitch starts with moves out to the left crack. This is climbed up to the crux of the route which sits at the point where the climber has to move from the left crack, to the right crack. Once in the right crack move up to a good ledge with a belay in the corner.",
+   "grade_system_code": null,
+   "length_m": 15,
+   "number": 2,
+   "original_grade": "4b"
+  },
+  {
+   "bolts_count": null,
+   "description": "A glorious and easy part of the climb with good protection and incredible exposure as the climb moves onto one of the highest points of the cliff at Bosigran. Follow a reasonably obvious path up good holds to the top, where a belay can be made by slinging a boulder and backed up by large gear if desired.",
+   "grade_system_code": null,
+   "length_m": 25,
+   "number": 3,
+   "original_grade": "4a"
+  }
+ ],
+ "pitches_count": 3,
+ "protection_code": "G",
+ "protection_style": null,
+ "provenance": [],
+ "rack": null,
+ "references": [
+  {
+   "id": 173,
+   "prefix": null,
+   "route_id": 224,
+   "text": "UKC photo gallery",
+   "url": "https://www.ukclimbing.com/photos/item.php?nstart=24&crag=199&route=doorpost"
+  },
+  {
+   "id": 174,
+   "prefix": null,
+   "route_id": 224,
+   "text": "BMC Regional Access Database Page for Bosigran",
+   "url": "https://www.thebmc.co.uk/modules/rad/view.aspx?id=1878"
+  },
+  {
+   "id": 175,
+   "prefix": null,
+   "route_id": 224,
+   "text": "Climbers Climb Guide, Sample for Bosigran",
+   "url": "http://www.climbers-club.co.uk/cms/wp-content/uploads/2013/07/West-Cornwall-North-sampler.pdf"
+  }
+ ],
+ "rock_code": "granite",
+ "rope": null,
+ "stars": null,
+ "status": "publish",
+ "sun_window_code": null,
+ "tag_prov": {
+  "date": "2026-07-06",
+  "model": "claude-cli"
+ },
+ "tagged_by": "human",
+ "tags": {
+  "character": [
+   "delicate",
+   "exposed"
+  ],
+  "disciplines": [
+   "multi-pitch",
+   "trad"
+  ],
+  "features": [
+   "corner",
+   "crack"
+  ]
+ },
+ "tech_grade": "4b",
+ "tile_image": {
+  "alt": "Bosigran's Sea Cliffs offer accessible rock climbing",
+  "url": "img/tiles/bosigran-small.jpg"
+ },
+ "timezone": "Europe/London",
+ "topo": {
+  "alt": "Bosigran's Doorpost Multipitch Route Topo",
+  "atributionURL": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "attributionText": "Our own image",
+  "dataFile": 5,
+  "url": "img/topos/bosigran/bosigran-doorpost-climb-cornwall.jpg"
+ },
+ "trad_grade": "HS",
+ "wind_exposed": null
+}

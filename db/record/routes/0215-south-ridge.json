@@ -1,0 +1,176 @@
+{
+ "approach_difficulty": 2,
+ "approach_html": "The approach is long. The two main options are from the Glen Rosa Campsite or from Sannox Bay. See the Scottish Rock Volume 1 for more info.",
+ "approach_time_min": 140,
+ "area_id": 243,
+ "aspect": "S",
+ "belays": null,
+ "best_season": null,
+ "bolts_count": null,
+ "climatology": [
+  {
+   "month": 1,
+   "rainy_days": 19.0,
+   "temp_high": 6.0,
+   "temp_low": 4.0
+  },
+  {
+   "month": 2,
+   "rainy_days": 15.0,
+   "temp_high": 7.0,
+   "temp_low": 4.0
+  },
+  {
+   "month": 3,
+   "rainy_days": 18.0,
+   "temp_high": 8.0,
+   "temp_low": 5.0
+  },
+  {
+   "month": 4,
+   "rainy_days": 13.0,
+   "temp_high": 10.0,
+   "temp_low": 7.0
+  },
+  {
+   "month": 5,
+   "rainy_days": 12.0,
+   "temp_high": 13.0,
+   "temp_low": 10.0
+  },
+  {
+   "month": 6,
+   "rainy_days": 13.0,
+   "temp_high": 15.0,
+   "temp_low": 12.0
+  },
+  {
+   "month": 7,
+   "rainy_days": 14.0,
+   "temp_high": 17.0,
+   "temp_low": 13.0
+  },
+  {
+   "month": 8,
+   "rainy_days": 15.0,
+   "temp_high": 17.0,
+   "temp_low": 14.0
+  },
+  {
+   "month": 9,
+   "rainy_days": 16.0,
+   "temp_high": 15.0,
+   "temp_low": 12.0
+  },
+  {
+   "month": 10,
+   "rainy_days": 19.0,
+   "temp_high": 12.0,
+   "temp_low": 9.0
+  },
+  {
+   "month": 11,
+   "rainy_days": 19.0,
+   "temp_high": 9.0,
+   "temp_low": 6.0
+  },
+  {
+   "month": 12,
+   "rainy_days": 18.0,
+   "temp_high": 7.0,
+   "temp_low": 5.0
+  }
+ ],
+ "commitment_code": null,
+ "curated_at": null,
+ "curation_notes": null,
+ "data_grade": 5,
+ "descent_abseils": null,
+ "descent_method": null,
+ "descent_notes": null,
+ "elevation_m": null,
+ "escapable": null,
+ "external_refs": [
+  {
+   "external_id": "11",
+   "source_id": "multipitch",
+   "url": "https://multi-pitch.com/climbs/south-ridge-on-cir-mhor/"
+  }
+ ],
+ "first_ascents": [],
+ "grade_system_code": "BAS",
+ "guidebooks": [
+  {
+   "id": 3,
+   "img_url": "img/guidebooks/scottish-rock-volume-1.jpg",
+   "isbn": "9781906095581",
+   "kind": "guidebook",
+   "link": "https://amzn.to/2EmsTCn",
+   "page": "32",
+   "rrp": "25",
+   "title": "Scottish Rock, Volume 1, South"
+  }
+ ],
+ "hazards": [],
+ "id": 215,
+ "incline_code": "Slab",
+ "intro_html": "The South Ridge of Cir Mhor on the isle of Arran just off the coast of Scotland offers an interesting mix of climbing across a long route with a few challenging pitches which give it the VS 5a grade. The approach is long but this remains a reasonably popular route.",
+ "last_update": "2021-10-15T01:01:42.339000+00:00",
+ "lat": 55.636681,
+ "left_right_index": null,
+ "length_m": 330,
+ "lon": -5.22324,
+ "map_img": {
+  "alt": "Cir Mhor Ridge location",
+  "url": "img/topos/cir-mhor/maps/"
+ },
+ "name": "South Ridge",
+ "needs_field_check": false,
+ "original_grade": "VS 5a",
+ "parkings": [],
+ "pitch_info_html": null,
+ "pitches": [],
+ "pitches_count": 11,
+ "protection_code": "UNSPECIFIED",
+ "protection_style": null,
+ "provenance": [],
+ "rack": null,
+ "references": [],
+ "rock_code": "granite",
+ "rope": null,
+ "stars": null,
+ "status": "publish",
+ "sun_window_code": null,
+ "tag_prov": {
+  "date": "2026-07-06",
+  "model": "claude-cli"
+ },
+ "tagged_by": "human",
+ "tags": {
+  "character": [],
+  "disciplines": [
+   "multi-pitch",
+   "trad"
+  ],
+  "features": [
+   "ridge"
+  ]
+ },
+ "tech_grade": "5a",
+ "tile_image": {
+  "alt": "The South Ridge Direct Route on Cir Mhor",
+  "atributionURL": "https://www.geograph.org.uk/profile/24401",
+  "attributionText": "Raibeart MacAoidh",
+  "url": "img/tiles/cir-mhor-ridge-arran.jpg"
+ },
+ "timezone": "Europe/London",
+ "topo": {
+  "alt": "The South Ridge Direct Route on Cir Mhor",
+  "atributionURL": "http://beantinblog.blogspot.com/2016/08/south-ridge-direct-cir-mhor-arran.html",
+  "attributionText": "Louis at Beantin",
+  "dataFile": null,
+  "url": "img/topos/cir-mhor/south-ridge-direct-topo-maybe.jpg"
+ },
+ "trad_grade": "VS",
+ "wind_exposed": null
+}

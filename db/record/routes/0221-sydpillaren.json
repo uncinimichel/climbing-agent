@@ -1,0 +1,195 @@
+{
+ "approach_difficulty": 2,
+ "approach_html": "Follow the good path from the parking area up the left side of the stream (initially marked with red paint). This leads through birch forest and eventually out into open country. Ascend through boulders following a discontinuous path - fill  water bottles up here - to a level area on top of the moraine about a 100m above an iceberg filled lake. There is a big flat ‘gearing up’boulder at the saddle.",
+ "approach_time_min": 90,
+ "area_id": 300,
+ "aspect": null,
+ "belays": null,
+ "best_season": null,
+ "bolts_count": null,
+ "climatology": [
+  {
+   "month": 1,
+   "rainy_days": 15.0,
+   "temp_high": -8.0,
+   "temp_low": -15.0
+  },
+  {
+   "month": 2,
+   "rainy_days": 15.0,
+   "temp_high": -8.0,
+   "temp_low": -14.0
+  },
+  {
+   "month": 3,
+   "rainy_days": 17.0,
+   "temp_high": -6.0,
+   "temp_low": -13.0
+  },
+  {
+   "month": 4,
+   "rainy_days": 15.0,
+   "temp_high": -2.0,
+   "temp_low": -9.0
+  },
+  {
+   "month": 5,
+   "rainy_days": 17.0,
+   "temp_high": 3.0,
+   "temp_low": -4.0
+  },
+  {
+   "month": 6,
+   "rainy_days": 17.0,
+   "temp_high": 6.0,
+   "temp_low": -1.0
+  },
+  {
+   "month": 7,
+   "rainy_days": 16.0,
+   "temp_high": 9.0,
+   "temp_low": 2.0
+  },
+  {
+   "month": 8,
+   "rainy_days": 18.0,
+   "temp_high": 8.0,
+   "temp_low": 1.0
+  },
+  {
+   "month": 9,
+   "rainy_days": 19.0,
+   "temp_high": 5.0,
+   "temp_low": -2.0
+  },
+  {
+   "month": 10,
+   "rainy_days": 19.0,
+   "temp_high": -1.0,
+   "temp_low": -6.0
+  },
+  {
+   "month": 11,
+   "rainy_days": 15.0,
+   "temp_high": -5.0,
+   "temp_low": -10.0
+  },
+  {
+   "month": 12,
+   "rainy_days": 16.0,
+   "temp_high": -7.0,
+   "temp_low": -13.0
+  }
+ ],
+ "commitment_code": null,
+ "curated_at": null,
+ "curation_notes": null,
+ "data_grade": 7,
+ "descent_abseils": null,
+ "descent_method": null,
+ "descent_notes": null,
+ "elevation_m": null,
+ "escapable": null,
+ "external_refs": [
+  {
+   "external_id": "17",
+   "source_id": "multipitch",
+   "url": "https://multi-pitch.com/climbs/sydpillaren-on-stetind/"
+  }
+ ],
+ "first_ascents": [],
+ "grade_system_code": "N",
+ "guidebooks": [
+  {
+   "id": 9,
+   "img_url": "img/guidebooks/loften-climbs.jpg",
+   "isbn": "9781873341230",
+   "kind": "guidebook",
+   "link": "https://amzn.to/2S4G1A6",
+   "page": "354",
+   "rrp": "34.99",
+   "title": "Lofoten Climbs"
+  }
+ ],
+ "hazards": [
+  {
+   "evidence_span": "multi-pitch.com curated flag",
+   "hazard_code": "abseil",
+   "source_url": "https://multi-pitch.com/climbs/sydpillaren-on-stetind/"
+  }
+ ],
+ "id": 221,
+ "incline_code": "Slab & Vertical",
+ "intro_html": "Stetind is a huge granite pillar rising 1329 m out of Tysfjord. Voted Norways national Mountain it’s an iconic sight. The South Pilar route or Sydpillaren, offers some challenging climbing, especially towards the top with a couple of N6- graded pitches which roughly equate to HVS/E1. In total it’s a 14 pitch climb that is described as one of Norway’s finest climbs and it’s a classic alpine test piece. Getting down actually requires reversing the Original Route (graded n4),  it will require ropework in sections.",
+ "last_update": "2021-10-15T01:01:42.339000+00:00",
+ "lat": 68.162493,
+ "left_right_index": null,
+ "length_m": 575,
+ "lon": 16.590668,
+ "map_img": {
+  "alt": "Location of Stetind in Norway",
+  "url": "img/topos/stetind/maps/"
+ },
+ "name": "Sydpillaren",
+ "needs_field_check": false,
+ "original_grade": "N6-",
+ "parkings": [],
+ "pitch_info_html": null,
+ "pitches": [],
+ "pitches_count": 13,
+ "protection_code": "UNSPECIFIED",
+ "protection_style": null,
+ "provenance": [],
+ "rack": null,
+ "references": [
+  {
+   "id": 171,
+   "prefix": null,
+   "route_id": 221,
+   "text": "Climb Info: Stetind South Pillar Mini Guide 2003",
+   "url": "http://www.stetind.nu/uploads/6/1/8/8/6188415/stetind_sydpillaren.pdf"
+  }
+ ],
+ "rock_code": "granite",
+ "rope": null,
+ "stars": null,
+ "status": "publish",
+ "sun_window_code": null,
+ "tag_prov": {
+  "date": "2026-07-06",
+  "model": "claude-cli"
+ },
+ "tagged_by": "human",
+ "tags": {
+  "character": [
+   "exposed",
+   "sustained"
+  ],
+  "disciplines": [
+   "alpine",
+   "multi-pitch",
+   "trad"
+  ],
+  "features": [
+   "pillar",
+   "ridge"
+  ]
+ },
+ "tech_grade": "5b",
+ "tile_image": {
+  "alt": "Stetind Mountain offers incredible multi-pitch",
+  "atributionURL": "http://www.stetind.nu",
+  "attributionText": "image source",
+  "url": "img/tiles/stetind-mountain.jpg"
+ },
+ "timezone": "Europe/Oslo",
+ "topo": {
+  "alt": "The Classic South Pillar climb on Stetind Mountain",
+  "atributionURL": "http://northernalpine.blogspot.com/2010/08/stetind-sydpillaren-guiding-south.html",
+  "attributionText": "Seth Harry",
+  "dataFile": null,
+  "url": "img/topos/stetind/stetind-south-pillar-route-topo.jpg"
+ },
+ "trad_grade": "E1",
+ "wind_exposed": null
+}

@@ -1,0 +1,85 @@
+{
+ "approach_difficulty": 2,
+ "approach_html": null,
+ "approach_time_min": 25,
+ "area_id": 20,
+ "aspect": null,
+ "belays": "gear",
+ "best_season": [
+  5,
+  6,
+  7,
+  8,
+  9
+ ],
+ "bolts_count": null,
+ "climatology": [],
+ "commitment_code": null,
+ "curated_at": null,
+ "curation_notes": null,
+ "data_grade": 5,
+ "descent_abseils": null,
+ "descent_method": null,
+ "descent_notes": null,
+ "elevation_m": 100,
+ "escapable": null,
+ "external_refs": [
+  {
+   "external_id": "route:Girona",
+   "source_id": "dev-fixtures",
+   "url": null
+  }
+ ],
+ "first_ascents": [],
+ "grade_system_code": "BAS",
+ "guidebooks": [],
+ "hazards": [],
+ "id": 5,
+ "incline_code": "Vertical",
+ "intro_html": null,
+ "last_update": "2026-07-06T21:10:06.059979+00:00",
+ "lat": 55.222,
+ "left_right_index": null,
+ "length_m": 60,
+ "lon": -6.156,
+ "map_img": null,
+ "name": "Girona",
+ "needs_field_check": false,
+ "original_grade": "VS 4c",
+ "parkings": [],
+ "pitch_info_html": null,
+ "pitches": [],
+ "pitches_count": 1,
+ "protection_code": "G",
+ "protection_style": "gear",
+ "provenance": [],
+ "rack": null,
+ "references": [],
+ "rock_code": null,
+ "rope": null,
+ "stars": 2,
+ "status": "publish",
+ "sun_window_code": "shade",
+ "tag_prov": null,
+ "tagged_by": "human",
+ "tags": {
+  "character": [
+   "powerful",
+   "sustained"
+  ],
+  "disciplines": [
+   "single-pitch",
+   "trad"
+  ],
+  "features": [
+   "corner",
+   "crack"
+  ]
+ },
+ "tech_grade": "4c",
+ "tile_image": null,
+ "timezone": null,
+ "topo": null,
+ "trad_grade": "VS",
+ "wind_exposed": null
+}

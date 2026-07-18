@@ -1,0 +1,103 @@
+{
+ "approach_difficulty": 3,
+ "approach_html": null,
+ "approach_time_min": 120,
+ "area_id": 22,
+ "aspect": null,
+ "belays": "bolted",
+ "best_season": [
+  7,
+  8,
+  9
+ ],
+ "bolts_count": null,
+ "climatology": [
+  {
+   "month": 7,
+   "rainy_days": 9.0,
+   "temp_high": 14.0,
+   "temp_low": 4.0
+  },
+  {
+   "month": 8,
+   "rainy_days": 9.0,
+   "temp_high": 14.0,
+   "temp_low": 4.0
+  }
+ ],
+ "commitment_code": null,
+ "curated_at": null,
+ "curation_notes": null,
+ "data_grade": 4,
+ "descent_abseils": null,
+ "descent_method": null,
+ "descent_notes": null,
+ "elevation_m": 3130,
+ "escapable": null,
+ "external_refs": [
+  {
+   "external_id": "route:Voie Boell",
+   "source_id": "dev-fixtures",
+   "url": null
+  }
+ ],
+ "first_ascents": [],
+ "grade_system_code": "ALP",
+ "guidebooks": [],
+ "hazards": [
+  {
+   "evidence_span": "high alpine face, no quick retreat in afternoon storms",
+   "hazard_code": "stormExposed",
+   "source_url": "https://example.dev/fixture"
+  }
+ ],
+ "id": 7,
+ "incline_code": "Vertical",
+ "intro_html": null,
+ "last_update": "2026-07-06T21:10:06.059979+00:00",
+ "lat": 44.931,
+ "left_right_index": null,
+ "length_m": 350,
+ "lon": 6.274,
+ "map_img": null,
+ "name": "Voie Boell",
+ "needs_field_check": false,
+ "original_grade": "D",
+ "parkings": [],
+ "pitch_info_html": null,
+ "pitches": [],
+ "pitches_count": 10,
+ "protection_code": "PG",
+ "protection_style": "mixed",
+ "provenance": [],
+ "rack": null,
+ "references": [],
+ "rock_code": null,
+ "rope": null,
+ "stars": 3,
+ "status": "publish",
+ "sun_window_code": "all-day",
+ "tag_prov": null,
+ "tagged_by": "human",
+ "tags": {
+  "character": [
+   "exposed",
+   "sustained"
+  ],
+  "disciplines": [
+   "alpine",
+   "multi-pitch",
+   "trad"
+  ],
+  "features": [
+   "corner",
+   "face"
+  ]
+ },
+ "tech_grade": null,
+ "tile_image": null,
+ "timezone": null,
+ "topo": null,
+ "trad_grade": null,
+ "wind_exposed": null
+}

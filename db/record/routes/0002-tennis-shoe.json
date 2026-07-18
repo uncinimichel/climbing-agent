@@ -1,0 +1,85 @@
+{
+ "approach_difficulty": 1,
+ "approach_html": null,
+ "approach_time_min": 20,
+ "area_id": 17,
+ "aspect": null,
+ "belays": "gear",
+ "best_season": [
+  4,
+  5,
+  6,
+  7,
+  8,
+  9
+ ],
+ "bolts_count": null,
+ "climatology": [],
+ "commitment_code": null,
+ "curated_at": null,
+ "curation_notes": null,
+ "data_grade": 4,
+ "descent_abseils": null,
+ "descent_method": null,
+ "descent_notes": null,
+ "elevation_m": 450,
+ "escapable": null,
+ "external_refs": [
+  {
+   "external_id": "route:Tennis Shoe",
+   "source_id": "dev-fixtures",
+   "url": null
+  }
+ ],
+ "first_ascents": [],
+ "grade_system_code": "BAS",
+ "guidebooks": [],
+ "hazards": [],
+ "id": 2,
+ "incline_code": "Slab",
+ "intro_html": null,
+ "last_update": "2026-07-06T21:10:06.059979+00:00",
+ "lat": 53.114,
+ "left_right_index": null,
+ "length_m": 140,
+ "lon": -4.029,
+ "map_img": null,
+ "name": "Tennis Shoe",
+ "needs_field_check": false,
+ "original_grade": "HS 4a",
+ "parkings": [],
+ "pitch_info_html": null,
+ "pitches": [],
+ "pitches_count": 5,
+ "protection_code": "PG",
+ "protection_style": "gear",
+ "provenance": [],
+ "rack": null,
+ "references": [],
+ "rock_code": null,
+ "rope": null,
+ "stars": 3,
+ "status": "publish",
+ "sun_window_code": "morning",
+ "tag_prov": null,
+ "tagged_by": "human",
+ "tags": {
+  "character": [
+   "delicate",
+   "technical"
+  ],
+  "disciplines": [
+   "multi-pitch",
+   "trad"
+  ],
+  "features": [
+   "slab"
+  ]
+ },
+ "tech_grade": "4a",
+ "tile_image": null,
+ "timezone": null,
+ "topo": null,
+ "trad_grade": "HS",
+ "wind_exposed": null
+}

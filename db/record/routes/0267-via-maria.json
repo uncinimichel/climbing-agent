@@ -1,0 +1,264 @@
+{
+ "approach_difficulty": 2,
+ "approach_html": "<strong>Approach</strong>: Park at the large car park by the cable car station at Pordoi Pass (<a href=\" https://goo.gl/maps/dnyy3jH8a63yB8Da8\" target=\"blank\">46.488146,11.810553</a>). From here there are 2 options. Climbers can follow the path up to the south face of Sass Pordoi, veering left up a scree rib where the summit path would go right. This is a long and strenuous, if straight forwards hike. Allow at least an hour for this, longer if your fitness is questionable. The other option is to take the cable car up to the summit then take the path back down and cutting across to the climb after descending the scree fan.  <br /><strong>Descent</strong>: There are again the 2 options for descent back to the car park. The easy option is to take the cable car from the summit. The climb ends at the cable car station. You need to buy tickets in advance and the last cable car down in summer is at 5pm (at the time of writing – Aug 2020). This will be announced in the 30min lead up to 5pm. The alternative option is to reverse the summit path back down passing the Rifugio Forcella Pordoi. Allow a couple of hours for the walk off descent.",
+ "approach_time_min": 70,
+ "area_id": 291,
+ "aspect": "S",
+ "belays": null,
+ "best_season": null,
+ "bolts_count": null,
+ "climatology": [
+  {
+   "month": 1,
+   "rainy_days": 4.0,
+   "temp_high": 5.0,
+   "temp_low": -6.0
+  },
+  {
+   "month": 2,
+   "rainy_days": 4.0,
+   "temp_high": 8.0,
+   "temp_low": -3.0
+  },
+  {
+   "month": 3,
+   "rainy_days": 5.0,
+   "temp_high": 14.0,
+   "temp_low": 1.0
+  },
+  {
+   "month": 4,
+   "rainy_days": 7.0,
+   "temp_high": 18.0,
+   "temp_low": 4.0
+  },
+  {
+   "month": 5,
+   "rainy_days": 10.0,
+   "temp_high": 22.0,
+   "temp_low": 8.0
+  },
+  {
+   "month": 6,
+   "rainy_days": 9.0,
+   "temp_high": 26.0,
+   "temp_low": 12.0
+  },
+  {
+   "month": 7,
+   "rainy_days": 9.0,
+   "temp_high": 28.0,
+   "temp_low": 14.0
+  },
+  {
+   "month": 8,
+   "rainy_days": 9.0,
+   "temp_high": 26.0,
+   "temp_low": 14.0
+  },
+  {
+   "month": 9,
+   "rainy_days": 6.0,
+   "temp_high": 18.0,
+   "temp_low": 10.0
+  },
+  {
+   "month": 10,
+   "rainy_days": 6.0,
+   "temp_high": 18.0,
+   "temp_low": 5.0
+  },
+  {
+   "month": 11,
+   "rainy_days": 6.0,
+   "temp_high": 10.0,
+   "temp_low": 0.0
+  },
+  {
+   "month": 12,
+   "rainy_days": 4.0,
+   "temp_high": 6.0,
+   "temp_low": -5.0
+  }
+ ],
+ "commitment_code": null,
+ "curated_at": null,
+ "curation_notes": null,
+ "data_grade": 4,
+ "descent_abseils": null,
+ "descent_method": null,
+ "descent_notes": null,
+ "elevation_m": null,
+ "escapable": null,
+ "external_refs": [
+  {
+   "external_id": "42",
+   "source_id": "multipitch",
+   "url": "https://multi-pitch.com/climbs/via-maria-on-sass-pordoi-south-face/"
+  }
+ ],
+ "first_ascents": [],
+ "grade_system_code": "UIAA",
+ "guidebooks": [
+  {
+   "id": 30,
+   "img_url": "img/guidebooks/climbing-in-val-gardena-dolomites.jpg",
+   "isbn": "9788868392253",
+   "kind": "guidebook",
+   "link": "https://goo.gl/maps/spCT4ZUHZwQCA3UKA",
+   "page": "162",
+   "rrp": "24.99",
+   "title": "Clibing in Val Gardena, Dolomites"
+  },
+  {
+   "id": 19,
+   "img_url": "img/guidebooks/the-dolomites-climbing-guide.jpg",
+   "isbn": "9781873341971",
+   "kind": "guidebook",
+   "link": "https://amzn.to/2NdBIQw",
+   "page": "168",
+   "rrp": "29.95",
+   "title": "The Dolomites, Rock Climbs and Via Ferrata"
+  }
+ ],
+ "hazards": [
+  {
+   "evidence_span": "multi-pitch.com curated flag",
+   "hazard_code": "traverse",
+   "source_url": "https://multi-pitch.com/climbs/via-maria-on-sass-pordoi-south-face/"
+  }
+ ],
+ "id": 267,
+ "incline_code": "Vertical",
+ "intro_html": "The Route Via Maria offers an exceptional climb up a dramatic mountain face, finishing at an altitude of 2,950m. The climb is graded IV+ in <abbr title=\"Union International Alpine Association\">UIAA</abbr> grades which is roughly around Severe or Hard Severe in British grades. The route is consistent in difficulty until the last section near the summit. Many of the pitches are graded IV. The crux, whilst a little strenuous (IV+), is early in the route and more straightforward than some of the later sections. There are pitons in place thought-out the route and many of the belay points are bolted with a thick single cemented ring. However, taking a light rack with plenty of slings is essential. The route provides exceptional positions with glorious views out over the valleys with the Marmolada glacier visible to the south. The route has sustained interest with a mixture of climbing, mostly on good holds.",
+ "last_update": "2021-10-15T01:01:43.339000+00:00",
+ "lat": 46.499111,
+ "left_right_index": null,
+ "length_m": 370,
+ "lon": 11.808021,
+ "map_img": {
+  "alt": "Via Maria Climb is on the Sass Pordoi face in the Dolomites",
+  "url": "img/topos/pordoi/maps/"
+ },
+ "name": "Via Maria",
+ "needs_field_check": false,
+ "original_grade": "IV+",
+ "parkings": [],
+ "pitch_info_html": "Great rock, exposure and incredible views across the Dolomites. This climb is long, consistent in grade and offers a lot of Sun on the south face of Sass Pordoi. <br /><strong class=\"pitch-title\">Pitch 1 –<span class=\"length\">25m</span> <span class=\"pitchGrade UIAA\">IV</span></strong><br />The first pitch is just under 25m, and is polished at the start, but has mostly good holds. Starting just left of the big break, climb the short-polished wall, then move left slightly before heading up the cracked section to a large cemented bolt belay. <br /><strong class=\"pitch-title\">Pitch 2 –<span class=\"length\">35m</span> <span class=\"pitchGrade UIAA\">IV+</span></strong><br />The crux pitch of the route, moves into the gully a little before heading up the slab on the left. The pitch will steepen after a couple of pitons are passed and the crux will loosely follow a crack on good holds over steep ground protected by another couple of pitons. The pitch finishes on an obvious ledge below a crack, with a bolted belay. <br /><strong class=\"pitch-title\">Pitch 3 –<span class=\"length\">25m</span> <span class=\"pitchGrade UIAA\">IV</span></strong><br />A solid pitch that tackles the crack above the belay for 5m before moving left, up and then back right. After this an easier crack leads to a bolted belay on a ledge. Note, the Rockfax guide description is not completely accurate here, i.e. don’t climb 45m.<br /><strong class=\"pitch-title\">Pitch 4 –<span class=\"length\">40m</span> <span class=\"pitchGrade UIAA\">IV</span></strong><br />Follow a few pitons up the ramp towards the right side of the triangular roof. There is a bolted intermediate stance around the middle of this pitch, which is a bit of an awkward place to stop. Clipping the belay and moving on, following past a couple more pitons leads to a better belay on a bigger ledge. <br /><strong class=\"pitch-title\">Pitch 5 –<span class=\"length\">50m</span> <span class=\"pitchGrade UIAA\">III+</span></strong><br />Traverse right and then up on loose rock using natural protection (some good options for threads). Climb more or less any line up to the block between where the two parts of the mountain meet on the right. A belay can be created on the block next to the main wall where there may already be an in-situ thread. 50m rope will make the block assuming there isn’t lots of zig-zagging.  <br /><strong class=\"pitch-title\">Pitch 6 –<span class=\"length\">35m</span> <span class=\"pitchGrade UIAA\">IV</span></strong><br />Climb up the block slightly before crossing over to the main wall on good holds in an exposed an airy position. Make a rising traverse all the way out to the right edge, moving up past a niche on the right side (protected by a piton) to reach a belay on a good ledge. From the start of this pitch there will be 4 pocket looking niches higher up on the main wall, the climber is aiming to pass the right most of these on the right. <br /><strong class=\"pitch-title\">Pitch 7 –<span class=\"length\">50m</span> <span class=\"pitchGrade UIAA\">IV</span></strong><br />This pitch is likely best broken into two. First traverse right to reach a scoop / shallow cave type structure. Climb up the right side on good holds before moving back left to a position broadly above the last belay at about 25m (depending where protection was placed). A belay point can be created here on using threads and natural protection. If climbing all the way to the summit plateau, head up on good holds, heading for a large pillar above. Move left behind the smaller block (in front of the large pillar) then right up a short chimney to reach the summit plateau which is protected by a bolted anchor. <br /><strong class=\"pitch-title\">Pitch 8-10 –<span class=\"length\">120m</span> <span class=\"pitchGrade UIAA\">II to III</span></strong><br />There are multiple options to finish the route. The ground is loose under foot but the climbing / scrambling is easy. Essentially the line goes left around the tower before cutting back right and heading up to the cable car in roughly 3 pitches. Belays will need to be made using natural protection and threads. There is an option for a grade IV section on a short chimney after the tower. The cable car station is best approached on the left side climbing up and over the wall.",
+ "pitches": [
+  {
+   "bolts_count": null,
+   "description": "The first pitch is just under 25m, and is polished at the start, but has mostly good holds. Starting just left of the big break, climb the short-polished wall, then move left slightly before heading up the cracked section to a large cemented bolt belay.",
+   "grade_system_code": "UIAA",
+   "length_m": 25,
+   "number": 1,
+   "original_grade": "IV"
+  },
+  {
+   "bolts_count": null,
+   "description": "The crux pitch of the route, moves into the gully a little before heading up the slab on the left. The pitch will steepen after a couple of pitons are passed and the crux will loosely follow a crack on good holds over steep ground protected by another couple of pitons. The pitch finishes on an obvious ledge below a crack, with a bolted belay.",
+   "grade_system_code": "UIAA",
+   "length_m": 35,
+   "number": 2,
+   "original_grade": "IV+"
+  },
+  {
+   "bolts_count": null,
+   "description": "A solid pitch that tackles the crack above the belay for 5m before moving left, up and then back right. After this an easier crack leads to a bolted belay on a ledge. Note, the Rockfax guide description is not completely accurate here, i.e. don’t climb 45m.",
+   "grade_system_code": "UIAA",
+   "length_m": 25,
+   "number": 3,
+   "original_grade": "IV"
+  },
+  {
+   "bolts_count": null,
+   "description": "Follow a few pitons up the ramp towards the right side of the triangular roof. There is a bolted intermediate stance around the middle of this pitch, which is a bit of an awkward place to stop. Clipping the belay and moving on, following past a couple more pitons leads to a better belay on a bigger ledge.",
+   "grade_system_code": "UIAA",
+   "length_m": 40,
+   "number": 4,
+   "original_grade": "IV"
+  },
+  {
+   "bolts_count": null,
+   "description": "Traverse right and then up on loose rock using natural protection (some good options for threads). Climb more or less any line up to the block between where the two parts of the mountain meet on the right. A belay can be created on the block next to the main wall where there may already be an in-situ thread. 50m rope will make the block assuming there isn’t lots of zig-zagging.",
+   "grade_system_code": "UIAA",
+   "length_m": 50,
+   "number": 5,
+   "original_grade": "III+"
+  },
+  {
+   "bolts_count": null,
+   "description": "Climb up the block slightly before crossing over to the main wall on good holds in an exposed an airy position. Make a rising traverse all the way out to the right edge, moving up past a niche on the right side (protected by a piton) to reach a belay on a good ledge. From the start of this pitch there will be 4 pocket looking niches higher up on the main wall, the climber is aiming to pass the right most of these on the right.",
+   "grade_system_code": "UIAA",
+   "length_m": 35,
+   "number": 6,
+   "original_grade": "IV"
+  },
+  {
+   "bolts_count": null,
+   "description": "This pitch is likely best broken into two. First traverse right to reach a scoop / shallow cave type structure. Climb up the right side on good holds before moving back left to a position broadly above the last belay at about 25m (depending where protection was placed). A belay point can be created here on using threads and natural protection. If climbing all the way to the summit plateau, head up on good holds, heading for a large pillar above. Move left behind the smaller block (in front of the large pillar) then right up a short chimney to reach the summit plateau which is protected by a bolted anchor.",
+   "grade_system_code": "UIAA",
+   "length_m": 50,
+   "number": 7,
+   "original_grade": "IV"
+  }
+ ],
+ "pitches_count": 10,
+ "protection_code": "PG",
+ "protection_style": null,
+ "provenance": [],
+ "rack": null,
+ "references": [
+  {
+   "id": 212,
+   "prefix": null,
+   "route_id": 267,
+   "text": "Climb Info: UKC Page (including questionable pitch info)",
+   "url": "https://www.ukclimbing.com/logbook/crags/sass_pordoi-21063/via_mariamariakante-102096#photos"
+  }
+ ],
+ "rock_code": "dolomite",
+ "rope": null,
+ "stars": null,
+ "status": "publish",
+ "sun_window_code": null,
+ "tag_prov": {
+  "date": "2026-07-06",
+  "model": "claude-cli"
+ },
+ "tagged_by": "human",
+ "tags": {
+  "character": [
+   "exposed",
+   "sustained"
+  ],
+  "disciplines": [
+   "alpine",
+   "multi-pitch",
+   "trad"
+  ],
+  "features": [
+   "chimney",
+   "crack",
+   "face",
+   "pillar",
+   "roof",
+   "slab"
+  ]
+ },
+ "tech_grade": "4a",
+ "tile_image": {
+  "alt": "Via Maria Climb in the Dolomites on the South Face of Sass Pordoi",
+  "url": "img/tiles/via-maria-climb-in-dolomites-sass-pordoi.jpg"
+ },
+ "timezone": "Europe/Rome",
+ "topo": {
+  "alt": "Via Maria, Sass Pordoi in the Dolomites",
+  "atributionURL": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "attributionText": "our own image",
+  "dataFile": 5,
+  "url": "img/topos/pordoi/via-maria-on-sass-pordoi-south-face-in-the-dolomites.jpg"
+ },
+ "trad_grade": "HS",
+ "wind_exposed": null
+}

@@ -1,0 +1,241 @@
+{
+ "approach_difficulty": 3,
+ "approach_html": "<strong>Approach</strong>: Getting to the Island is not straight forwards as the boats are not regular. Once there the sea cliff is a couple of hours walk from the harbour. From the top of the cliff descend down the southern gully. At least one short abseil is required to pass an outcrop. The Blocks at the bottom of the slide can be reached mid-tide and below. Care should be taken as Lundy and the Bristol channel in general has one of the largest tidal ranges in the world. <br>",
+ "approach_time_min": 120,
+ "area_id": 217,
+ "aspect": "W",
+ "belays": null,
+ "best_season": null,
+ "bolts_count": null,
+ "climatology": [
+  {
+   "month": 1,
+   "rainy_days": 15.0,
+   "temp_high": 8.0,
+   "temp_low": 5.0
+  },
+  {
+   "month": 2,
+   "rainy_days": 11.0,
+   "temp_high": 7.0,
+   "temp_low": 5.0
+  },
+  {
+   "month": 3,
+   "rainy_days": 13.0,
+   "temp_high": 8.0,
+   "temp_low": 6.0
+  },
+  {
+   "month": 4,
+   "rainy_days": 11.0,
+   "temp_high": 10.0,
+   "temp_low": 7.0
+  },
+  {
+   "month": 5,
+   "rainy_days": 10.0,
+   "temp_high": 12.0,
+   "temp_low": 9.0
+  },
+  {
+   "month": 6,
+   "rainy_days": 9.0,
+   "temp_high": 15.0,
+   "temp_low": 12.0
+  },
+  {
+   "month": 7,
+   "rainy_days": 10.0,
+   "temp_high": 17.0,
+   "temp_low": 14.0
+  },
+  {
+   "month": 8,
+   "rainy_days": 11.0,
+   "temp_high": 17.0,
+   "temp_low": 14.0
+  },
+  {
+   "month": 9,
+   "rainy_days": 11.0,
+   "temp_high": 15.0,
+   "temp_low": 13.0
+  },
+  {
+   "month": 10,
+   "rainy_days": 16.0,
+   "temp_high": 13.0,
+   "temp_low": 11.0
+  },
+  {
+   "month": 11,
+   "rainy_days": 16.0,
+   "temp_high": 11.0,
+   "temp_low": 8.0
+  },
+  {
+   "month": 12,
+   "rainy_days": 15.0,
+   "temp_high": 9.0,
+   "temp_low": 7.0
+  }
+ ],
+ "commitment_code": null,
+ "curated_at": null,
+ "curation_notes": null,
+ "data_grade": 4,
+ "descent_abseils": null,
+ "descent_method": null,
+ "descent_notes": null,
+ "elevation_m": null,
+ "escapable": null,
+ "external_refs": [
+  {
+   "external_id": "8",
+   "source_id": "multipitch",
+   "url": "https://multi-pitch.com/climbs/the-devils-slide-on-lundy/"
+  }
+ ],
+ "first_ascents": [],
+ "grade_system_code": "BAS",
+ "guidebooks": [
+  {
+   "id": 12,
+   "img_url": "img/guidebooks/classic-rock-by-ken-wilson.jpg",
+   "isbn": "9781898573708",
+   "kind": "guidebook",
+   "link": "https://amzn.to/3htOMjS",
+   "page": "113",
+   "rrp": "29.99",
+   "title": "Classic Rock"
+  },
+  {
+   "id": 2,
+   "img_url": "img/guidebooks/south-west-climbs-guidebook.jpg",
+   "isbn": "9781898573470",
+   "kind": "guidebook",
+   "link": "https://amzn.to/2lT6FRL",
+   "page": "160",
+   "rrp": "19.99",
+   "title": "South West Climbs"
+  },
+  {
+   "id": 1,
+   "img_url": "img/guidebooks/west-country-climbs.jpg",
+   "isbn": "9781873341377",
+   "kind": "guidebook",
+   "link": "https://amzn.to/2UxZN8z",
+   "page": "104",
+   "rrp": "24.99",
+   "title": "West Country Climbs"
+  }
+ ],
+ "hazards": [
+  {
+   "evidence_span": "multi-pitch.com curated flag",
+   "hazard_code": "abseil",
+   "source_url": "https://multi-pitch.com/climbs/the-devils-slide-on-lundy/"
+  }
+ ],
+ "id": 283,
+ "incline_code": "Slab",
+ "intro_html": "The Devils slide was first climbed in the early 1960's. The face has been claimed to be the tallest granite slab in Europe. Whilst untrue, it is never the less one of the tallest slab climbs in England and certainly a must climb classic. It makes for an exceptional climb at an amenable grade. This popular route was climbed, or perhaps more accurately \"walked\", feet only by Jonny Dawes in 2017. Although Lundy (meaning Puffin Island in Norse) has climbing restrictions some of the year, the devils slide and a number of other areas are exempt. The slide doesn't have nesting birds, likely because it's so exposed, <span class=\"ILfuVd\" lang=\"en\"><span class=\"hgKElc\">bear </span></span>that in mind when planning. To get to Lundy a ferry can be taken from Ilfracombe in Devon. The route climbs up the right-hand side of the slab following the groove. The last pitch takes an obvious traverse left under the headwall. Whilst originally 5 pitches of climbing, it can be done in as few as three with long ropes and careful runner placements. See references below for more info.",
+ "last_update": "2021-10-15T01:01:47.339000+00:00",
+ "lat": 51.18856,
+ "left_right_index": null,
+ "length_m": 117,
+ "lon": -4.67622,
+ "map_img": {
+  "alt": "Map showing the location of the Tormore Sea Stacks",
+  "url": "img/topos/lundy/maps/"
+ },
+ "name": "The Devils Slide",
+ "needs_field_check": false,
+ "original_grade": "HS 4a",
+ "parkings": [],
+ "pitch_info_html": null,
+ "pitches": [],
+ "pitches_count": 5,
+ "protection_code": "UNSPECIFIED",
+ "protection_style": null,
+ "provenance": [],
+ "rack": null,
+ "references": [
+  {
+   "id": 233,
+   "prefix": null,
+   "route_id": 283,
+   "text": "Mountain Project Page",
+   "url": "https://www.mountainproject.com/area/106669941/the-devils-slide"
+  },
+  {
+   "id": 234,
+   "prefix": "Video",
+   "route_id": 283,
+   "text": "Video: Jonny Dawes cimbs the Devils Slide with only his feet",
+   "url": "https://www.youtube.com/watch?v=OuTOnNwLUbk"
+  },
+  {
+   "id": 235,
+   "prefix": "Travel",
+   "route_id": 283,
+   "text": "Travel: Lundy Ferry Timetable & Prices",
+   "url": "https://www.landmarktrust.org.uk/lundyisland/Timetable/"
+  },
+  {
+   "id": 236,
+   "prefix": "Info",
+   "route_id": 283,
+   "text": "Info: National Trust Page",
+   "url": "https://www.nationaltrust.org.uk/lundy/features/facilities-and-access-on-lundy"
+  },
+  {
+   "id": 237,
+   "prefix": "Article",
+   "route_id": 283,
+   "text": "Article: Lundy Island CircumSummit",
+   "url": "https://medium.com/@tommyoswin/lundy-island-circumsummit-3a1577bb7738"
+  }
+ ],
+ "rock_code": "granite",
+ "rope": null,
+ "stars": null,
+ "status": "publish",
+ "sun_window_code": null,
+ "tag_prov": {
+  "date": "2026-07-06",
+  "model": "claude-cli"
+ },
+ "tagged_by": "human",
+ "tags": {
+  "character": [
+   "exposed"
+  ],
+  "disciplines": [
+   "multi-pitch",
+   "trad"
+  ],
+  "features": [
+   "groove",
+   "slab"
+  ]
+ },
+ "tech_grade": "4a",
+ "tile_image": {
+  "alt": "The Devils slide On Lundy",
+  "atributionURL": "https://www.flickr.com/photos/geographyalltheway_photos/6843213186",
+  "attributionText": "Richard Allaway",
+  "url": "img/tiles/devils-slide-on-lundy.jpg"
+ },
+ "timezone": "Europe/London",
+ "topo": {
+  "alt": "The Devils Slide Route Topography",
+  "atributionURL": "https://shadthecat.com/tag/lundy-island/",
+  "attributionText": "Shadthecat",
+  "dataFile": 5,
+  "url": "img/topos/lundy/the-devils-slide-lundy-topo.jpg"
+ },
+ "trad_grade": "HS",
+ "wind_exposed": null
+}

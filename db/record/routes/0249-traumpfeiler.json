@@ -1,0 +1,203 @@
+{
+ "approach_difficulty": 1,
+ "approach_html": "Descent: Walk south along the top of the Heiliger Geist until you get to the southern end. Look for a single eyebolt to the left (east) that is in an obvious water runoff. Rappel down this water chute to the ground. Once on the ground head left (east) past a blue door that goes into a room in the rock and follow the obvious trail to town.",
+ "approach_time_min": 21,
+ "area_id": 262,
+ "aspect": "E",
+ "belays": null,
+ "best_season": null,
+ "bolts_count": null,
+ "climatology": [
+  {
+   "month": 1,
+   "rainy_days": 5.0,
+   "temp_high": 12.0,
+   "temp_low": 4.0
+  },
+  {
+   "month": 2,
+   "rainy_days": 6.0,
+   "temp_high": 13.0,
+   "temp_low": 4.0
+  },
+  {
+   "month": 3,
+   "rainy_days": 5.0,
+   "temp_high": 15.0,
+   "temp_low": 6.0
+  },
+  {
+   "month": 4,
+   "rainy_days": 5.0,
+   "temp_high": 19.0,
+   "temp_low": 9.0
+  },
+  {
+   "month": 5,
+   "rainy_days": 5.0,
+   "temp_high": 25.0,
+   "temp_low": 14.0
+  },
+  {
+   "month": 6,
+   "rainy_days": 3.0,
+   "temp_high": 29.0,
+   "temp_low": 19.0
+  },
+  {
+   "month": 7,
+   "rainy_days": 2.0,
+   "temp_high": 32.0,
+   "temp_low": 22.0
+  },
+  {
+   "month": 8,
+   "rainy_days": 2.0,
+   "temp_high": 32.0,
+   "temp_low": 22.0
+  },
+  {
+   "month": 9,
+   "rainy_days": 2.0,
+   "temp_high": 27.0,
+   "temp_low": 18.0
+  },
+  {
+   "month": 10,
+   "rainy_days": 5.0,
+   "temp_high": 22.0,
+   "temp_low": 14.0
+  },
+  {
+   "month": 11,
+   "rainy_days": 6.0,
+   "temp_high": 17.0,
+   "temp_low": 9.0
+  },
+  {
+   "month": 12,
+   "rainy_days": 6.0,
+   "temp_high": 13.0,
+   "temp_low": 6.0
+  }
+ ],
+ "commitment_code": null,
+ "curated_at": null,
+ "curation_notes": null,
+ "data_grade": 5,
+ "descent_abseils": null,
+ "descent_method": null,
+ "descent_notes": null,
+ "elevation_m": null,
+ "escapable": null,
+ "external_refs": [
+  {
+   "external_id": "23",
+   "source_id": "multipitch",
+   "url": "https://multi-pitch.com/climbs/traumpfeiler-on-heiliger-geist/"
+  }
+ ],
+ "first_ascents": [],
+ "grade_system_code": "UIAA",
+ "guidebooks": [
+  {
+   "id": 17,
+   "img_url": "img/guidebooks/rock-around-the-world.jpg",
+   "isbn": "9782952638876",
+   "kind": "guidebook",
+   "link": "https://amzn.to/2RmOhyX",
+   "page": "157",
+   "rrp": "35",
+   "title": "Rock Around The World"
+  },
+  {
+   "id": 16,
+   "img_url": "img/guidebooks/rock-climbing-europe.jpg",
+   "isbn": "9780762727179",
+   "kind": "guidebook",
+   "link": "https://amzn.to/2BwCB2b",
+   "page": "410",
+   "rrp": "10",
+   "title": "Rock Climbing Europe"
+  }
+ ],
+ "hazards": [
+  {
+   "evidence_span": "multi-pitch.com curated flag",
+   "hazard_code": "abseil",
+   "source_url": "https://multi-pitch.com/climbs/traumpfeiler-on-heiliger-geist/"
+  }
+ ],
+ "id": 249,
+ "incline_code": "Slab & Vertical",
+ "intro_html": "The Traumpfeiler route, or Pillar of Dreams in English, is one of the best routes in the area and is justifiably very popular. It sits on the Heiliger Geist cliff, or Holy Ghost in English. The route is a mixed sport trad with plenty of bolts but still worth of a standard rack of wires and cams. Expect to have to follow other parties if you don’t start very early. With a 60m rope and some extended quickdraws the route can be reduced to 5 pitches if you are so inclined. Clearly a classic of the area the route also offers stunning views and reasonably serious climbing.",
+ "last_update": "2021-10-15T01:01:42.339000+00:00",
+ "lat": 39.720133,
+ "left_right_index": null,
+ "length_m": 250,
+ "lon": 21.627803,
+ "map_img": {
+  "alt": "Location of Meteor climbing in Greece",
+  "url": "img/topos/meteor/maps/"
+ },
+ "name": "Traumpfeiler",
+ "needs_field_check": false,
+ "original_grade": "V+",
+ "parkings": [],
+ "pitch_info_html": null,
+ "pitches": [],
+ "pitches_count": 9,
+ "protection_code": "PG-13",
+ "protection_style": null,
+ "provenance": [],
+ "rack": null,
+ "references": [
+  {
+   "id": 183,
+   "prefix": null,
+   "route_id": 249,
+   "text": "Climb Info: Summit Post Page",
+   "url": "https://www.summitpost.org/traumpfeiler-pillar-of-dreams/292553"
+  }
+ ],
+ "rock_code": "conglomerate",
+ "rope": null,
+ "stars": null,
+ "status": "publish",
+ "sun_window_code": null,
+ "tag_prov": {
+  "date": "2026-07-06",
+  "model": "claude-cli"
+ },
+ "tagged_by": "human",
+ "tags": {
+  "character": [
+   "exposed"
+  ],
+  "disciplines": [
+   "multi-pitch",
+   "sport",
+   "trad"
+  ],
+  "features": [
+   "pillar"
+  ]
+ },
+ "tech_grade": "5a",
+ "tile_image": {
+  "alt": "Meteor crag in Greece - Holy Ghost Rock",
+  "atributionURL": "https://upload.wikimedia.org/wikipedia/commons/b/b0/Meteore.jpg",
+  "attributionText": "image source",
+  "url": "img/tiles/meteor-holy-ghost-cliff.jpg"
+ },
+ "timezone": "Europe/Athens",
+ "topo": {
+  "alt": "Holy-ghost-crag-pillar-of-dreams.jpg",
+  "atributionURL": "https://upload.wikimedia.org/wikipedia/commons/b/b0/Meteore.jpg",
+  "attributionText": "original img",
+  "dataFile": null,
+  "url": "img/topos/meteor/holy-ghost-crag-pillar-of-dreams-topo.jpg"
+ },
+ "trad_grade": "VS",
+ "wind_exposed": null
+}

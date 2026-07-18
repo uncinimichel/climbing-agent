@@ -1,0 +1,239 @@
+{
+ "approach_difficulty": 2,
+ "approach_html": "<strong>Approach</strong>: Head up the hill behind Rackwick Hostel until reaching the cottage at the top from which a well-constructed path will lead to the viewing promontory across from the Old Man of Hoy. Head North 120m from here and take the small well-worn path down to the rubble scramble to the stack at the base. \r\n</p><p>\r\n<strong>Descent</strong>: There are two options for descent. The first is to abseil each pitch. Typically, there will be slings left behind to rap from at each anchor point. The climber should come prepared to replace them if they are not in a suitable condition. There is also sometimes a rope in situ to help with the pitch two traverse. If the party is not using 60m ropes, and there is not a rope in situ on pitch two, then climbers should be prepared to leave a spare rope behind on ascent, in order to facilitate the descent here. Alternatively, if the party is using a pair of 60m ropes, these can be used to rappel to the end of pitch 3. Then a short rappel to the end of pitch two. Then a longer rappel, free hanging, should take the climbers to the base of the stack. It should go without saying, but climbers should have a pair of prusik cords during the abseil. One to back up the abseil, the other in case the climber needs to ascend the rope for some reason.",
+ "approach_time_min": 45,
+ "area_id": 280,
+ "aspect": "E",
+ "belays": null,
+ "best_season": null,
+ "bolts_count": null,
+ "climatology": [
+  {
+   "month": 1,
+   "rainy_days": 20.0,
+   "temp_high": 5.0,
+   "temp_low": 2.0
+  },
+  {
+   "month": 2,
+   "rainy_days": 14.0,
+   "temp_high": 5.0,
+   "temp_low": 2.0
+  },
+  {
+   "month": 3,
+   "rainy_days": 15.0,
+   "temp_high": 5.0,
+   "temp_low": 2.0
+  },
+  {
+   "month": 4,
+   "rainy_days": 13.0,
+   "temp_high": 7.0,
+   "temp_low": 4.0
+  },
+  {
+   "month": 5,
+   "rainy_days": 11.0,
+   "temp_high": 10.0,
+   "temp_low": 6.0
+  },
+  {
+   "month": 6,
+   "rainy_days": 10.0,
+   "temp_high": 12.0,
+   "temp_low": 8.0
+  },
+  {
+   "month": 7,
+   "rainy_days": 10.0,
+   "temp_high": 14.0,
+   "temp_low": 10.0
+  },
+  {
+   "month": 8,
+   "rainy_days": 12.0,
+   "temp_high": 14.0,
+   "temp_low": 10.0
+  },
+  {
+   "month": 9,
+   "rainy_days": 14.0,
+   "temp_high": 11.0,
+   "temp_low": 8.0
+  },
+  {
+   "month": 10,
+   "rainy_days": 17.0,
+   "temp_high": 9.0,
+   "temp_low": 7.0
+  },
+  {
+   "month": 11,
+   "rainy_days": 20.0,
+   "temp_high": 7.0,
+   "temp_low": 4.0
+  },
+  {
+   "month": 12,
+   "rainy_days": 19.0,
+   "temp_high": 5.0,
+   "temp_low": 3.0
+  }
+ ],
+ "commitment_code": null,
+ "curated_at": null,
+ "curation_notes": null,
+ "data_grade": 7,
+ "descent_abseils": null,
+ "descent_method": null,
+ "descent_notes": null,
+ "elevation_m": null,
+ "escapable": null,
+ "external_refs": [
+  {
+   "external_id": "34",
+   "source_id": "multipitch",
+   "url": "https://multi-pitch.com/climbs/original-route-on-old-man-of-hoy/"
+  }
+ ],
+ "first_ascents": [],
+ "grade_system_code": "BAS",
+ "guidebooks": [
+  {
+   "id": 23,
+   "img_url": "img/guidebooks/scottish-rock-volume-2.jpg",
+   "isbn": "9781906095468",
+   "kind": "guidebook",
+   "link": "https://amzn.to/2C1KKgp",
+   "page": "459",
+   "rrp": "25",
+   "title": "Scottish Rock, Volume 2, North"
+  }
+ ],
+ "hazards": [
+  {
+   "evidence_span": "multi-pitch.com curated flag",
+   "hazard_code": "abseil",
+   "source_url": "https://multi-pitch.com/climbs/original-route-on-old-man-of-hoy/"
+  },
+  {
+   "evidence_span": "multi-pitch.com curated flag",
+   "hazard_code": "tidal",
+   "source_url": "https://multi-pitch.com/climbs/original-route-on-old-man-of-hoy/"
+  },
+  {
+   "evidence_span": "multi-pitch.com curated flag",
+   "hazard_code": "traverse",
+   "source_url": "https://multi-pitch.com/climbs/original-route-on-old-man-of-hoy/"
+  }
+ ],
+ "id": 259,
+ "incline_code": null,
+ "intro_html": "The Original Route up The Old Man of Hoy is a classic climb amongst classic climbs. Originally climbed in 1966 by Rusty Baillie, Chris Bonington and Tom Patey, this iconic multi-pitch has been the centre of some of the most focused media attention around climbing in the late 1990’s. The route climbs the east landward face, of this northern Scottish sandstone stack. It’s technically not a sea stack (because it’s attached to the mainland), but is usually referred to as such. The route requires a mix of technical climbing, including a short down climb, a traverse, as well as crack climbing and bridging skills. The route is made harder by nesting Fulmars who don’t like climbers around their nests. Descent from the top requires abseiling back down the route. The Original Route is listed in Ken Wilsons Hard Rock book, sitting alongside other UK classics in the <abbr title=\"Very Severe\">HVS</abbr> to <abbr title=\"Extremely Severe\">E1</abbr> range. The route has seen some incredible accents over the years, including being climbed by Red Szell as the first blind man to climb up The Old Man of Hoy. In more recent years Jesse Dufton, also blind, went one step further and climbed it on lead. Chris Bonington also made recent repeat of this stack while in his 80’s, over 50 years after his first accent, he climbed the stack with Leo Holding. The climb was originally graded HVS, but most recent guidebooks list it as E1. Although some pitches are straightforward, it would be easy to underestimate the complexity of getting up and back down safely. The exposure is incredible.",
+ "last_update": "2021-10-15T01:01:42.339000+00:00",
+ "lat": 58.8836982,
+ "left_right_index": null,
+ "length_m": 137,
+ "lon": -3.4304736,
+ "map_img": {
+  "alt": "Old man of Hoy Located on the Isle of Hoy",
+  "url": "img/topos/hoy/maps/"
+ },
+ "name": "Original Route",
+ "needs_field_check": false,
+ "original_grade": "E1 5b",
+ "parkings": [],
+ "pitch_info_html": null,
+ "pitches": [],
+ "pitches_count": 5,
+ "protection_code": "UNSPECIFIED",
+ "protection_style": null,
+ "provenance": [],
+ "rack": null,
+ "references": [
+  {
+   "id": 199,
+   "prefix": null,
+   "route_id": 259,
+   "text": "Climb Info: Climbs on The Old Man of Hoy",
+   "url": "https://www.ukclimbing.com/articles/destinations/the_old_man_of_hoy-69"
+  },
+  {
+   "id": 200,
+   "prefix": "Video",
+   "route_id": 259,
+   "text": "Video: BBC documentry from 1992 focused on The Old Man of Hoy",
+   "url": "https://www.youtube.com/watch?v=wNzUtvy0lsI"
+  },
+  {
+   "id": 201,
+   "prefix": "Video",
+   "route_id": 259,
+   "text": "Video: Catherine Destivelle soloing The Old Man of Hoy",
+   "url": "https://www.youtube.com/watch?v=Ruvzhhg_B-s"
+  },
+  {
+   "id": 202,
+   "prefix": "Article",
+   "route_id": 259,
+   "text": "Article: The Blind Man of Hoy",
+   "url": "https://www.ukclimbing.com/articles/features/the_blind_man_of_hoy-5602"
+  },
+  {
+   "id": 203,
+   "prefix": "Article",
+   "route_id": 259,
+   "text": "Article: Blind Man Leads Old Man of Hoy",
+   "url": "https://www.independent.co.uk/news/uk/home-news/jesse-dufton-blind-climber-record-orkney-old-man-hoy-sheer-cliff-a8949946.html"
+  },
+  {
+   "id": 204,
+   "prefix": "Article",
+   "route_id": 259,
+   "text": "Article: 8 year old climbs Old Man of Hoy for charity",
+   "url": "https://www.thebmc.co.uk/eight-year-old-climbed-old-man-of-hoy-receives-award"
+  }
+ ],
+ "rock_code": "sandstone",
+ "rope": null,
+ "stars": null,
+ "status": "publish",
+ "sun_window_code": null,
+ "tag_prov": {
+  "date": "2026-07-06",
+  "model": "claude-cli"
+ },
+ "tagged_by": "human",
+ "tags": {
+  "character": [
+   "exposed",
+   "technical"
+  ],
+  "disciplines": [
+   "multi-pitch",
+   "trad"
+  ],
+  "features": [
+   "crack",
+   "face"
+  ]
+ },
+ "tech_grade": "5b",
+ "tile_image": {
+  "alt": "The Old Man of Hoy Rock Climbing Stack",
+  "atributionURL": "https://www.flickr.com/photos/p300njb/43950216932",
+  "attributionText": "Rab Lawrence",
+  "url": "img/tiles/old-man-of-hoy-climb.jpg"
+ },
+ "timezone": "Europe/London",
+ "topo": {
+  "alt": "The Old Man of Hoy Rock Climbing Stack",
+  "atributionURL": "https://www.flickr.com/photos/paul_stephenson/5927357279",
+  "attributionText": "originl: Paul Stephenson",
+  "dataFile": 4,
+  "url": "img/topos/hoy/the-original-route-on-the-old-man-of-hoy-stack.jpg"
+ },
+ "trad_grade": "E1",
+ "wind_exposed": null
+}

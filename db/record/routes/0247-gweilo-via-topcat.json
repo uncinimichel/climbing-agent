@@ -1,0 +1,182 @@
+{
+ "approach_difficulty": 2,
+ "approach_html": "Kowloon side: Take the MTR to Lok Fu Station and get a taxi to Lion Rock Country  Park (Sze Tsz San). Follow the road to the right of the park entrance gates for about 30 m before heading up the hill on a well signposted footpath. Upon reaching a small shelter on the ridge line take the upper right hand path (signposted to Lion Rock) and continue upwards. When approximately level with the toe of the crag a small dirt path breaks off right from the main track (by a small platform and a ‘Danger - Steep Cliffs’ signpost) and leads to the foot of the cliff. Approach time approx. 40 minutes. Sha Tin side: Take the MTR to Sha Tin Station and get a taxi to Mong Fu Shek BBQ. From here follow the obvious footpath up the hill towards the crag. From the shelter follow the left hand path up the ridge and approach as for Kowloon side. Approach time approx. 45 minutes.",
+ "approach_time_min": 40,
+ "area_id": 269,
+ "aspect": "W",
+ "belays": null,
+ "best_season": null,
+ "bolts_count": null,
+ "climatology": [
+  {
+   "month": 1,
+   "rainy_days": 6.0,
+   "temp_high": 18.0,
+   "temp_low": 14.0
+  },
+  {
+   "month": 2,
+   "rainy_days": 9.0,
+   "temp_high": 18.0,
+   "temp_low": 14.0
+  },
+  {
+   "month": 3,
+   "rainy_days": 10.0,
+   "temp_high": 21.0,
+   "temp_low": 17.0
+  },
+  {
+   "month": 4,
+   "rainy_days": 11.0,
+   "temp_high": 25.0,
+   "temp_low": 20.0
+  },
+  {
+   "month": 5,
+   "rainy_days": 15.0,
+   "temp_high": 28.0,
+   "temp_low": 24.0
+  },
+  {
+   "month": 6,
+   "rainy_days": 19.0,
+   "temp_high": 30.0,
+   "temp_low": 26.0
+  },
+  {
+   "month": 7,
+   "rainy_days": 17.0,
+   "temp_high": 31.0,
+   "temp_low": 27.0
+  },
+  {
+   "month": 8,
+   "rainy_days": 17.0,
+   "temp_high": 31.0,
+   "temp_low": 26.0
+  },
+  {
+   "month": 9,
+   "rainy_days": 14.0,
+   "temp_high": 30.0,
+   "temp_low": 25.0
+  },
+  {
+   "month": 10,
+   "rainy_days": 8.0,
+   "temp_high": 28.0,
+   "temp_low": 23.0
+  },
+  {
+   "month": 11,
+   "rainy_days": 6.0,
+   "temp_high": 24.0,
+   "temp_low": 19.0
+  },
+  {
+   "month": 12,
+   "rainy_days": 4.0,
+   "temp_high": 20.0,
+   "temp_low": 15.0
+  }
+ ],
+ "commitment_code": null,
+ "curated_at": null,
+ "curation_notes": null,
+ "data_grade": 6,
+ "descent_abseils": null,
+ "descent_method": null,
+ "descent_notes": null,
+ "elevation_m": null,
+ "escapable": null,
+ "external_refs": [
+  {
+   "external_id": "21",
+   "source_id": "multipitch",
+   "url": "https://multi-pitch.com/climbs/gweilo-via-topcat-on-lion-rock/"
+  }
+ ],
+ "first_ascents": [],
+ "grade_system_code": "BAS",
+ "guidebooks": [
+  {
+   "id": 4,
+   "img_url": "img/guidebooks/rock-climbs-in-hong-kong.jpg",
+   "isbn": "no ISBN",
+   "kind": "pdf",
+   "link": "https://hongkongclimbing.files.wordpress.com/2012/06/lionrock.pdf",
+   "page": "4",
+   "rrp": "FREE",
+   "title": "Lion Rock"
+  }
+ ],
+ "hazards": [],
+ "id": 247,
+ "incline_code": "Slab, Vertical & Overhanging",
+ "intro_html": "Lion Rock sits on the Kowloon Peninsular in Hong Kong on the border with the new territories. Whilst not a huge mountain crag, it does offer in excess if 70m of climbing, especially on the winding routes. Gweilo is a classic 3 star multipitch sport route graded 5+. Topcat swaps out the middle of this for a harder but reasonably well protected trad line graded HVS 5b. The views on this route are stunning and utterly unique in the world of climbing. Fun fact, Gwáilóu means Ghostly Man in Cantonese and is used to refer to white westerners.  Hong Kong can range from roasting hot with lots of mosquitos to typhoon season with howling winds so plan accordingly.",
+ "last_update": "2021-10-15T01:01:42.339000+00:00",
+ "lat": 22.351896,
+ "left_right_index": null,
+ "length_m": 80,
+ "lon": 114.185173,
+ "map_img": {
+  "alt": "Location of Lion Rock in Hong Kong China",
+  "url": "img/topos/lion-rock/maps/"
+ },
+ "name": "Gweilo via Topcat",
+ "needs_field_check": false,
+ "original_grade": "HVS 5b",
+ "parkings": [],
+ "pitch_info_html": null,
+ "pitches": [],
+ "pitches_count": 4,
+ "protection_code": "PG",
+ "protection_style": null,
+ "provenance": [],
+ "rack": null,
+ "references": [
+  {
+   "id": 178,
+   "prefix": null,
+   "route_id": 247,
+   "text": "Guid to climbing Lion Rock",
+   "url": "https://hongkongclimbing.files.wordpress.com/2012/06/lionrock.pdf"
+  }
+ ],
+ "rock_code": "granite",
+ "rope": null,
+ "stars": null,
+ "status": "publish",
+ "sun_window_code": null,
+ "tag_prov": {
+  "date": "2026-07-06",
+  "model": "claude-cli"
+ },
+ "tagged_by": "human",
+ "tags": {
+  "character": [],
+  "disciplines": [
+   "multi-pitch",
+   "trad"
+  ],
+  "features": []
+ },
+ "tech_grade": "5b",
+ "tile_image": {
+  "alt": "Lion Rock crag west face in Hong Kong",
+  "atributionURL": "https://www.flickr.com/photos/wza/352391496/in/photostream/",
+  "attributionText": "Warren R. M. Stuart",
+  "url": "img/tiles/lion-rock-west-face.jpg"
+ },
+ "timezone": "Asia/Hong_Kong",
+ "topo": {
+  "alt": "Lion Rock Topo for Topcat",
+  "atributionURL": "http://www.curiousatlas.com/hong-kong-lion-rock-hike-tai-wai/",
+  "attributionText": "img: thewisebackpacker.com",
+  "dataFile": null,
+  "url": "img/topos/lion-rock/lion-rock-topo-for-gweilo-via-topcat.jpg"
+ },
+ "trad_grade": "HVS",
+ "wind_exposed": null
+}

@@ -1,0 +1,254 @@
+{
+ "approach_difficulty": 1,
+ "approach_html": "<strong>Approach:</strong><br>Parking in Calpe and following the tourist path until under the climb would be recommended. There is a shorter scrappy scrambling path, used by climbers which cuts from the marina up to the tourist path avoiding the information center.<br><br><strong>Descent:</strong><br>The route finishes by the summit. From here follow the circuitous tourist path marked with large red dots. The path is very polished and slippery, so wearing good approach footwear is recommended.",
+ "approach_time_min": 20,
+ "area_id": 283,
+ "aspect": "N",
+ "belays": null,
+ "best_season": null,
+ "bolts_count": null,
+ "climatology": [
+  {
+   "month": 1,
+   "rainy_days": 4.0,
+   "temp_high": 15.0,
+   "temp_low": 6.0
+  },
+  {
+   "month": 2,
+   "rainy_days": 3.0,
+   "temp_high": 16.0,
+   "temp_low": 6.0
+  },
+  {
+   "month": 3,
+   "rainy_days": 4.0,
+   "temp_high": 18.0,
+   "temp_low": 8.0
+  },
+  {
+   "month": 4,
+   "rainy_days": 4.0,
+   "temp_high": 19.0,
+   "temp_low": 10.0
+  },
+  {
+   "month": 5,
+   "rainy_days": 4.0,
+   "temp_high": 23.0,
+   "temp_low": 13.0
+  },
+  {
+   "month": 6,
+   "rainy_days": 2.0,
+   "temp_high": 27.0,
+   "temp_low": 17.0
+  },
+  {
+   "month": 7,
+   "rainy_days": 1.0,
+   "temp_high": 29.0,
+   "temp_low": 20.0
+  },
+  {
+   "month": 8,
+   "rainy_days": 1.0,
+   "temp_high": 29.0,
+   "temp_low": 21.0
+  },
+  {
+   "month": 9,
+   "rainy_days": 3.0,
+   "temp_high": 27.0,
+   "temp_low": 18.0
+  },
+  {
+   "month": 10,
+   "rainy_days": 4.0,
+   "temp_high": 24.0,
+   "temp_low": 14.0
+  },
+  {
+   "month": 11,
+   "rainy_days": 4.0,
+   "temp_high": 18.0,
+   "temp_low": 9.0
+  },
+  {
+   "month": 12,
+   "rainy_days": 4.0,
+   "temp_high": 16.0,
+   "temp_low": 7.0
+  }
+ ],
+ "commitment_code": null,
+ "curated_at": null,
+ "curation_notes": null,
+ "data_grade": 5,
+ "descent_abseils": null,
+ "descent_method": null,
+ "descent_notes": null,
+ "elevation_m": null,
+ "escapable": null,
+ "external_refs": [
+  {
+   "external_id": "48",
+   "source_id": "multipitch",
+   "url": "https://multi-pitch.com/climbs/via-pany-on-peñón-de-ifach/"
+  }
+ ],
+ "first_ascents": [],
+ "grade_system_code": "UIAA",
+ "guidebooks": [
+  {
+   "id": 14,
+   "img_url": "img/guidebooks/costa-blanca.jpg",
+   "isbn": "9781873341954",
+   "kind": "guidebook",
+   "link": "https://amzn.to/2Emt6Wb",
+   "page": "267",
+   "rrp": "29.95",
+   "title": "Costa Blanca"
+  }
+ ],
+ "hazards": [
+  {
+   "evidence_span": "multi-pitch.com curated flag",
+   "hazard_code": "grassLedges",
+   "source_url": "https://multi-pitch.com/climbs/via-pany-on-peñón-de-ifach/"
+  },
+  {
+   "evidence_span": "multi-pitch.com curated flag",
+   "hazard_code": "polished",
+   "source_url": "https://multi-pitch.com/climbs/via-pany-on-peñón-de-ifach/"
+  },
+  {
+   "evidence_span": "multi-pitch.com curated flag",
+   "hazard_code": "traverse",
+   "source_url": "https://multi-pitch.com/climbs/via-pany-on-peñón-de-ifach/"
+  }
+ ],
+ "id": 273,
+ "incline_code": "Slab & Vertical",
+ "intro_html": "Via Pany was the first climbing route established up Penon Ifach (in 1955) and is, to this day, the easiest climbing route to the summit. It sits on the North face so it is in shade until late in the day. The North face also has a climbing ban due to nesting birds in April, May and June. The route is around the UIAA grade IV+. Roughy hard serve but often graded very severe (VS) in UK guides. The route has some great pitches with a variety of different styles needed making it a very accessible and very enjoyable route. Whilst it’s still a serious climb it's much more forgiving than the south face routes like Diedro UBSA because Via Pany has less sun, less loose rock, less polish and less sustained climbing, it is nevertheless, very worthwhile with incredible views looking back over Calpe throughout the route.",
+ "last_update": "2026-07-17T11:24:00.997394+00:00",
+ "lat": 38.635491775,
+ "left_right_index": null,
+ "length_m": 220,
+ "lon": 0.07455539474,
+ "map_img": {
+  "alt": "Costa Blanca climbing location",
+  "url": "img/topos/penon-north/maps/"
+ },
+ "name": "Via Pany",
+ "needs_field_check": false,
+ "original_grade": "IV+",
+ "parkings": [],
+ "pitch_info_html": "<strong class=\"pitch-title\">Pitch 1 – <span class=\"length\">30m</span> <span class=\"pitchGrade uiaa\">Grade IV</span></strong><br>Climb up the initial grove on the right hand side. Moving up and slightly left onto a block. Use both walls to gain the good handholds on the steep right hand wall and climb this until it eases and reaches a bolted belay.<br> <strong class=\"pitch-title\">Pitch 2 – <span class=\"length\">48m</span> <span class=\"pitchGrade uiaa\">Grade III+</span></strong><br> Initially a long and easy scramble sticking to the rock while passing through vegetation. The pitch approaches another bigger gully on the left and a steeper wall in-front/to the right. A belay can be made below the steep wall or this can be climbed directly (probably more like IV) to reach a large ledge with a pair of bolts for the belay.<br> <strong class=\"pitch-title\">Pitch 3 – <span class=\"length\">25m</span> <span class=\"pitchGrade uiaa\">Grade IV+</span></strong><br> A dog leg shaped pitch. Starting with easier moves up into a niche. This is passed with much harder moves to the right before moving up and doing a delicate traverse left to belay under the steeper overhang below the gully / chimney section. <br> <strong class=\"pitch-title\">Pitch 4 – <span class=\"length\">25m</span> <span class=\"pitchGrade uiaa\">Grade IV+</span></strong><br>Probably the crux of the route, this pitch is sometimes given the higher grade of V. It climbs the chimney directly before moving onto the steep right wall and then onto a good ledge along to the belay.<br> <strong class=\"pitch-title\">Pitch 5 – <span class=\"length\">~25m</span> <span class=\"pitchGrade uiaa\">Grade IV</span></strong><br>Move right stepping across a gap and moving around a corner, going up the slab to the belay.<br> <strong class=\"pitch-title\">Pitch 6 – <span class=\"length\">30m</span> <span class=\"pitchGrade uiaa\">Grade IV+</span></strong><br>Climb a wonderful slab above the belay to a crack system. Pass a bolt at around 7m. Pass an orange bulge on the right and move up and left to belay on a pair of bolts.<br> <strong class=\"pitch-title\">Pitch 7 – <span class=\"length\">~30m</span> <span class=\"pitchGrade uiaa\">IV+</span></strong><br>Climb leftwards with steep initial moves that ease as the pitch and route come to an end at the summit.",
+ "pitches": [
+  {
+   "bolts_count": null,
+   "description": "Climb up the initial grove on the right hand side. Moving up and slightly left onto a block. Use both walls to gain the good handholds on the steep right hand wall and climb this until it eases and reaches a bolted belay.",
+   "grade_system_code": "UIAA",
+   "length_m": 30,
+   "number": 1,
+   "original_grade": "Grade IV"
+  },
+  {
+   "bolts_count": null,
+   "description": "Initially a long and easy scramble sticking to the rock while passing through vegetation. The pitch approaches another bigger gully on the left and a steeper wall in-front/to the right. A belay can be made below the steep wall or this can be climbed directly (probably more like IV) to reach a large ledge with a pair of bolts for the belay.",
+   "grade_system_code": "UIAA",
+   "length_m": 48,
+   "number": 2,
+   "original_grade": "Grade III+"
+  },
+  {
+   "bolts_count": null,
+   "description": "A dog leg shaped pitch. Starting with easier moves up into a niche. This is passed with much harder moves to the right before moving up and doing a delicate traverse left to belay under the steeper overhang below the gully / chimney section.",
+   "grade_system_code": "UIAA",
+   "length_m": 25,
+   "number": 3,
+   "original_grade": "Grade IV+"
+  },
+  {
+   "bolts_count": null,
+   "description": "Probably the crux of the route, this pitch is sometimes given the higher grade of V. It climbs the chimney directly before moving onto the steep right wall and then onto a good ledge along to the belay.",
+   "grade_system_code": "UIAA",
+   "length_m": 25,
+   "number": 4,
+   "original_grade": "Grade IV+"
+  },
+  {
+   "bolts_count": null,
+   "description": "Climb a wonderful slab above the belay to a crack system. Pass a bolt at around 7m. Pass an orange bulge on the right and move up and left to belay on a pair of bolts.",
+   "grade_system_code": "UIAA",
+   "length_m": 30,
+   "number": 6,
+   "original_grade": "Grade IV+"
+  }
+ ],
+ "pitches_count": 7,
+ "protection_code": "UNSPECIFIED",
+ "protection_style": null,
+ "provenance": [],
+ "rack": null,
+ "references": [
+  {
+   "id": 221,
+   "prefix": null,
+   "route_id": 273,
+   "text": "Climb Info: Good Guide to Via Pany in Spanish",
+   "url": "https://www.calpe.es/sites/default/files/descubre_calpe_docs/2023-02/senderos_de_la_roca_-_penon_de_ifach_-_ruta_07_-_pany.pdf"
+  },
+  {
+   "id": 222,
+   "prefix": null,
+   "route_id": 273,
+   "text": "Climb Info: A very detailed guide to Pany in Spanish",
+   "url": "https://www.blogdeaventura.com/escalada-penon-de-ifach/"
+  }
+ ],
+ "rock_code": "limestone",
+ "rope": null,
+ "stars": null,
+ "status": "draft",
+ "sun_window_code": null,
+ "tag_prov": {
+  "date": "2026-07-06",
+  "model": "claude-cli"
+ },
+ "tagged_by": "llm",
+ "tags": {
+  "character": [
+   "delicate"
+  ],
+  "disciplines": [
+   "multi-pitch",
+   "trad"
+  ],
+  "features": [
+   "chimney",
+   "corner",
+   "crack",
+   "face",
+   "groove",
+   "roof",
+   "slab"
+  ]
+ },
+ "tech_grade": "4c",
+ "tile_image": {
+  "alt": "Peñón de Ifach rising out of Calpe offers great climbing on Via Pany",
+  "url": "img/tiles/via-pany-costa-blanca.jpg"
+ },
+ "timezone": "Europe/Madrid",
+ "topo": {
+  "alt": "Via Pany on the face of Penon Ifach, Calpe",
+  "atributionURL": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "attributionText": "Our own image",
+  "dataFile": null,
+  "url": "img/topos/penon-north/via-pany-topo.jpg"
+ },
+ "trad_grade": "VS",
+ "wind_exposed": null
+}

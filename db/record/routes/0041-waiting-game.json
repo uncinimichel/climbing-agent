@@ -1,0 +1,81 @@
+{
+ "approach_difficulty": null,
+ "approach_html": null,
+ "approach_time_min": null,
+ "area_id": 55,
+ "aspect": null,
+ "belays": null,
+ "best_season": null,
+ "bolts_count": null,
+ "climatology": [],
+ "commitment_code": null,
+ "curated_at": null,
+ "curation_notes": null,
+ "data_grade": null,
+ "descent_abseils": null,
+ "descent_method": null,
+ "descent_notes": null,
+ "elevation_m": null,
+ "escapable": null,
+ "external_refs": [
+  {
+   "external_id": "800193",
+   "source_id": "ukclimbing",
+   "url": "https://www.ukclimbing.com/logbook/crags/fair_head-17029/waiting_game-800193"
+  }
+ ],
+ "first_ascents": [],
+ "grade_system_code": "BAS",
+ "guidebooks": [],
+ "hazards": [],
+ "id": 41,
+ "incline_code": null,
+ "intro_html": null,
+ "last_update": "2026-07-15T20:33:05.249417+00:00",
+ "lat": null,
+ "left_right_index": null,
+ "length_m": 90,
+ "lon": null,
+ "map_img": null,
+ "name": "Waiting Game",
+ "needs_field_check": false,
+ "original_grade": "E4 6a",
+ "parkings": [],
+ "pitch_info_html": null,
+ "pitches": [],
+ "pitches_count": 3,
+ "protection_code": "G",
+ "protection_style": null,
+ "provenance": [],
+ "rack": null,
+ "references": [],
+ "rock_code": null,
+ "rope": null,
+ "stars": 3,
+ "status": "draft",
+ "sun_window_code": null,
+ "tag_prov": null,
+ "tagged_by": "source",
+ "tags": {
+  "character": [
+   "sustained"
+  ],
+  "disciplines": [
+   "multi-pitch",
+   "trad"
+  ],
+  "features": [
+   "corner",
+   "crack",
+   "groove",
+   "offwidth",
+   "roof"
+  ]
+ },
+ "tech_grade": "6a",
+ "tile_image": null,
+ "timezone": null,
+ "topo": null,
+ "trad_grade": "E4",
+ "wind_exposed": null
+}

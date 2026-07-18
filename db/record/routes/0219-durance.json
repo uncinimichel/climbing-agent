@@ -1,0 +1,201 @@
+{
+ "approach_difficulty": 1,
+ "approach_html": "<strong>Approch</strong>: Follow Tower Trail to the right until the historic wooden ladder \"viewing tubes\". Follow the climbers trail up switch backs to the base of the Bowling Alley. Climb approach pitch. Traverse left on ledge system to base of Leaning Column. The meadows rappels can be done with a single 70 m rope with 15 feet of 4th class down climbing on the last rappel. The Bailey Direct rappels require two 60 m ropes.\r\n</p><p>\r\n<strong>Descent</strong>: The meadows rappels can be done with a single 70 m rope with 15 feet of 4th class down climbing on the last rappel. The Bailey Direct rappels require two 60 m ropes.\r\n<br />\r\nNote: Thuderstorms are common in the summer months and are not easily seen coming from the Durrance area. Check the weather ahead of time!",
+ "approach_time_min": 5,
+ "area_id": 303,
+ "aspect": "S",
+ "belays": null,
+ "best_season": null,
+ "bolts_count": null,
+ "climatology": [
+  {
+   "month": 1,
+   "rainy_days": 4.0,
+   "temp_high": 4.2,
+   "temp_low": -7.8
+  },
+  {
+   "month": 2,
+   "rainy_days": 6.0,
+   "temp_high": 4.7,
+   "temp_low": -7.4
+  },
+  {
+   "month": 3,
+   "rainy_days": 8.0,
+   "temp_high": 8.6,
+   "temp_low": -4.2
+  },
+  {
+   "month": 4,
+   "rainy_days": 10.0,
+   "temp_high": 12.7,
+   "temp_low": -0.7
+  },
+  {
+   "month": 5,
+   "rainy_days": 12.0,
+   "temp_high": 18.2,
+   "temp_low": 4.6
+  },
+  {
+   "month": 6,
+   "rainy_days": 11.0,
+   "temp_high": 24.1,
+   "temp_low": 9.4
+  },
+  {
+   "month": 7,
+   "rainy_days": 10.0,
+   "temp_high": 28.6,
+   "temp_low": 13.1
+  },
+  {
+   "month": 8,
+   "rainy_days": 11.0,
+   "temp_high": 27.3,
+   "temp_low": 12.3
+  },
+  {
+   "month": 9,
+   "rainy_days": 8.0,
+   "temp_high": 22.1,
+   "temp_low": 7.1
+  },
+  {
+   "month": 10,
+   "rainy_days": 7.0,
+   "temp_high": 14.9,
+   "temp_low": 1.1
+  },
+  {
+   "month": 11,
+   "rainy_days": 6.0,
+   "temp_high": 8.1,
+   "temp_low": -4.3
+  },
+  {
+   "month": 12,
+   "rainy_days": 6.0,
+   "temp_high": 3.4,
+   "temp_low": -8.2
+  }
+ ],
+ "commitment_code": null,
+ "curated_at": null,
+ "curation_notes": null,
+ "data_grade": 5,
+ "descent_abseils": null,
+ "descent_method": null,
+ "descent_notes": null,
+ "elevation_m": null,
+ "escapable": null,
+ "external_refs": [
+  {
+   "external_id": "15",
+   "source_id": "multipitch",
+   "url": "https://multi-pitch.com/climbs/durance-on-the-devils-tower/"
+  }
+ ],
+ "first_ascents": [],
+ "grade_system_code": "YDS",
+ "guidebooks": [
+  {
+   "id": 6,
+   "img_url": "img/guidebooks/rock-climbing-wyoming.jpg",
+   "isbn": "9781493016129",
+   "kind": "guidebook",
+   "link": "https://amzn.to/2Ep6xjN",
+   "page": "?",
+   "rrp": "20",
+   "title": "Rock Climbing Wyoming"
+  }
+ ],
+ "hazards": [
+  {
+   "evidence_span": "multi-pitch.com curated flag",
+   "hazard_code": "abseil",
+   "source_url": "https://multi-pitch.com/climbs/durance-on-the-devils-tower/"
+  }
+ ],
+ "id": 219,
+ "incline_code": "Vertical",
+ "intro_html": "Durance Route on the Devils Tower in Wyoming is listed as one of the 50 classic climbs in North America. It's a 4-6 pitch route in which the harder sections are mainly off-width and hand-cracks with a few spots of chimney. Don't forget to register at the Visitor's Center before the climb or you risk a fine. This is a crowded route so get on super early or be ready to follow others and possibly do the abseil descent in the dark with headtorches.",
+ "last_update": "2021-10-15T01:01:42.339000+00:00",
+ "lat": 44.58968,
+ "left_right_index": null,
+ "length_m": 152,
+ "lon": -104.715252,
+ "map_img": {
+  "alt": "The Devils Tower Location USA",
+  "url": "img/topos/devils-tower/maps/"
+ },
+ "name": "Durance",
+ "needs_field_check": false,
+ "original_grade": "5.8",
+ "parkings": [],
+ "pitch_info_html": null,
+ "pitches": [],
+ "pitches_count": 6,
+ "protection_code": "UNSPECIFIED",
+ "protection_style": null,
+ "provenance": [],
+ "rack": null,
+ "references": [
+  {
+   "id": 166,
+   "prefix": null,
+   "route_id": 219,
+   "text": "Climb Info: Mountain Project Page",
+   "url": "https://www.mountainproject.com/area/105714267/devils-tower"
+  },
+  {
+   "id": 167,
+   "prefix": null,
+   "route_id": 219,
+   "text": "Blog: Guide to the Devils Tower",
+   "url": "https://www.lydiascapes.com/rock-climbing-devils-tower-guide-wyoming/"
+  }
+ ],
+ "rock_code": "phonolite",
+ "rope": null,
+ "stars": null,
+ "status": "publish",
+ "sun_window_code": null,
+ "tag_prov": {
+  "date": "2026-07-06",
+  "model": "claude-cli"
+ },
+ "tagged_by": "human",
+ "tags": {
+  "character": [
+   "exposed"
+  ],
+  "disciplines": [
+   "multi-pitch",
+   "trad"
+  ],
+  "features": [
+   "chimney",
+   "crack",
+   "offwidth"
+  ]
+ },
+ "tech_grade": "4c",
+ "tile_image": {
+  "alt": "The Back of the Devils tower Wyoming",
+  "atributionURL": "https://www.nps.gov/deto/planyourvisit/climbing.htm",
+  "attributionText": "National parks service",
+  "url": "img/tiles/devils-tower-wyoming.jpg"
+ },
+ "timezone": "America/Denver",
+ "topo": {
+  "alt": "The Back of the Devils tower",
+  "atributionURL": "https://www.nps.gov/deto/planyourvisit/index.htm",
+  "attributionText": "img: national parks service",
+  "dataFile": null,
+  "url": "img/topos/devils-tower/devils-tower-durance-climb-topo.jpg"
+ },
+ "trad_grade": "VS",
+ "wind_exposed": null
+}

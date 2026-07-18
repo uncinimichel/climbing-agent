@@ -22,3 +22,4 @@ credentials*.json
 agent/.venv/
 db/uploads/
 db/.raw_cache/
+db/topos.json
