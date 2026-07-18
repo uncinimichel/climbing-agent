@@ -105,7 +105,10 @@ async def upload_topo_photo(file: UploadFile = File(...), area_id: int = Form(..
     area = S.areas.get(area_id)
     if not area:
         raise HTTPException(404, "no such area")
-    dest = TOPO_DIR / f"a{area_id}-{int(time.time())}{ext}"
+    # photos co-locate with their crag (decision #40): …/crag/media/<file>
+    prefix, _ = S.crag_prefix(area_id)
+    dest = S.dir / prefix / "media" / f"a{area_id}-{int(time.time())}{ext}"
+    dest.parent.mkdir(parents=True, exist_ok=True)
     MAX = 30 * 1024 * 1024
     data = await file.read(MAX + 1)
     if len(data) > MAX:
@@ -121,7 +124,7 @@ async def upload_topo_photo(file: UploadFile = File(...), area_id: int = Form(..
     S.topos.append({
         "id": tid, "area_id": area_id, "area_name": area["name"],
         "title": title or area["name"], "status": "draft", "belay_size": 24,
-        "kind": "crag_photo", "uri": f"uploads/topos/studio/{dest.name}",
+        "kind": "crag_photo", "uri": f"record/{prefix}/media/{dest.name}",
         "width_px": w, "height_px": h, "credit": credit, "license": license,
         "permission_note": permission_note or None, "taken_at": None, "lines": []})
     S.save_topos()
@@ -134,7 +137,10 @@ def delete_topo(topo_id: int):
     t = _get_topo(topo_id)
     S.topos.remove(t)
     S.save_topos()
-    f = ROOT / "db" / t["uri"]           # uris are relative to db/ (the staging tree)
+    # uris: 'record/…' = co-located under db/record (decision #40);
+    # 'uploads/…' = the legacy staging tree
+    f = (S.dir / t["uri"].removeprefix("record/")) if t["uri"].startswith("record/") \
+        else ROOT / "db" / t["uri"]
     for p in [f, *images.variant_paths(f).values()]:
         try:
             p.unlink(missing_ok=True)

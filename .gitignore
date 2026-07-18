@@ -23,3 +23,4 @@ agent/.venv/
 db/uploads/
 db/.raw_cache/
 db/topos.json
+db/record/

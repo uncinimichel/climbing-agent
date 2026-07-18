@@ -68,7 +68,17 @@ class Store:
             self.area_refs = adoc.get("references", [])
             self.routes = {}
             self._route_files = {}
-            for f in sorted((self.dir / "routes").glob("*.json")):
+            # route documents live at hierarchical keys (decision #40:
+            # country/region/crag/route.json); the legacy flat routes/ dir is
+            # still read so the migration itself can load the old layout
+            ROOT_DOCS = {"taxonomies.json", "grades.json", "areas.json", "topos.json",
+                         "crawl-frontier.json", "external-refs-nonroute.json", "manifest.json"}
+            for f in sorted(self.dir.rglob("*.json")):
+                rel = f.relative_to(self.dir)
+                if (len(rel.parts) == 1 and rel.name in ROOT_DOCS) or "media" in rel.parts:
+                    continue
+                if not (rel.parts[0] == "routes" or len(rel.parts) >= 4):
+                    continue
                 r = json.loads(f.read_text())
                 for pk in r.get("parkings", []):       # legacy PostGIS geom → plain lat/lon
                     if pk.get("lat") is None and pk.get("geom"):
@@ -202,15 +212,55 @@ class Store:
             raise ValueError(f"area {route.get('area_id')} does not exist")
 
     # ── writes (atomic, validated) ─────────────────────────────────────────
+    # ── hierarchical keys (decision #40) ───────────────────────────────────
+    def crag_prefix(self, area_id):
+        """(country/region/crag slug prefix, sector name) for an area — the
+        crag is the TOPMOST sector/crag node below the region (kind labels
+        are unreliable); no such node ⇒ the region doubles as crag (Lundy)."""
+        ch = self.area_chain(area_id)
+        below = [a for a in ch if a["kind"] in ("sector", "crag")]
+        crag = below[-1] if below else next((a for a in ch if a["kind"] == "region"), None)
+        country = next((a for a in ch if a["kind"] == "country"), None)
+        region = next((a for a in ch if a["kind"] == "region"), None)
+        sector = below[0]["name"] if len(below) > 1 else None
+        return ("/".join([slug(country["name"]) if country else "unknown",
+                          slug(region["name"]) if region else "unsorted",
+                          slug(crag["name"]) if crag else "unknown"]), sector)
+
+    def route_rel(self, route) -> Path:
+        """The route's canonical file path. Filename collisions (duplicate
+        route names in one crag = the MP-vs-crawl dedup backlog) get the
+        UKC-style -<id> suffix; identity is the id INSIDE the document."""
+        prefix, _ = self.crag_prefix(route["area_id"])
+        base = self.dir / prefix / f"{slug(route['name'])}.json"
+        clash = next((rid for rid, f in self._route_files.items()
+                      if f == base and rid != route["id"]), None)
+        if clash is not None:
+            base = self.dir / prefix / f"{slug(route['name'])}-{route['id']}.json"
+        return base
+
     def save_route(self, route: dict):
         with _LOCK:
             self.validate(route)
             rid = route["id"]
-            f = self._route_files.get(rid) or (
-                self.dir / "routes" / f"{rid:04d}-{slug(route['name'])}.json")
-            _dump(f, route)
+            old = self.routes.get(rid)
+            target = self.route_rel(route)
+            current = self._route_files.get(rid)
+            _dump(target, route)
+            if current and current != target:      # renamed/moved: relocate the file
+                current.unlink(missing_ok=True)
+            if old and old.get("name") != route["name"]:
+                # topo lines key on route name — keep them pointing at this route
+                changed = False
+                for t in self.topos:
+                    for ln in t.get("lines", []):
+                        if ln.get("route_name") == old["name"]:
+                            ln["route_name"] = route["name"]
+                            changed = True
+                if changed:
+                    self.save_topos()
             self.routes[rid] = route
-            self._route_files[rid] = f
+            self._route_files[rid] = target
 
     def new_route_id(self) -> int:
         return (max(self.routes) + 1) if self.routes else 1
