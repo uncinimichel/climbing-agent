@@ -53,7 +53,10 @@ jobs:
           print("H=%s\nP=%s\nU=%s\nPW=%s" % (s["host"], s["port"], s["username"], s["password"]))')"
           curl -sf https://truststore.pki.rds.amazonaws.com/eu-west-2/eu-west-2-bundle.pem -o /tmp/rds-ca.pem
           STAMP=$(date -u +%Y%m%d-%H%M)
-          pg_dump "postgresql://$U:$PW@$H:$P/climbing?sslmode=verify-full&sslrootcert=/tmp/rds-ca.pem" \
+          # the versioned binary explicitly — Ubuntu's pg_wrapper picks its default
+          # (16) for remote hosts and aborts on the version mismatch
+          /usr/lib/postgresql/18/bin/pg_dump \
+            "postgresql://$U:$PW@$H:$P/climbing?sslmode=verify-full&sslrootcert=/tmp/rds-ca.pem" \
             --clean --if-exists | gzip > "/tmp/climbing-$STAMP.sql.gz"
           test "$(stat -c%s "/tmp/climbing-$STAMP.sql.gz")" -gt 20000  # refuse to archive an empty DB
           aws s3 cp "/tmp/climbing-$STAMP.sql.gz" "s3://$BUCKET/dumps/climbing-$STAMP.sql.gz"
