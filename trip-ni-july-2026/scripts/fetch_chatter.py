@@ -4,7 +4,7 @@ for the TOP-10 ranked venues, into cache/crag-chatter.json — which IS committe
 (unlike venue-env.json): it holds only what the site publishes anyway (title,
 link, short snippet, date), never raw API responses.
 
-Query design comes from the 2026-07-17 query shoot-out (db/.raw_cache/
+Query design comes from the 2026-07-17 query shoot-out (corpus/.raw_cache/
 serp-query-tests/): per venue, one broad query ("<crag>" climbing, google.co.uk)
 plus either the UKC/Reddit forums probe (UK & Ireland crags) or a local-language
 query on the crag's own Google domain (continental crags). Combined queries were

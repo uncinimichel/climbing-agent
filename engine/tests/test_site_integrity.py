@@ -22,7 +22,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 KDIR = ROOT / "knowledge"
-CORPUS = ROOT / "db" / "corpus.json"
+CORPUS = ROOT / "corpus" / "corpus.json"
 CORPUS_DEPLOYED = KDIR / "data" / "corpus.json"
 ASPECTS = {"N", "NE", "E", "SE", "S", "SW", "W", "NW"}
 
@@ -34,8 +34,8 @@ def _read(p):
 def taxonomy_enums():
     """Allowed code sets per lookup table, parsed from the taxonomy seed (the
     queryable mirror of taxonomy.md). Each row starts `('code', …)`."""
-    sql = _read(ROOT / "db" / "sql" / "100_seed_taxonomy.sql")
-    ext = ROOT / "db" / "sql" / "105_taxonomy_extensions.sql"
+    sql = _read(ROOT / "corpus" / "sql" / "100_seed_taxonomy.sql")
+    ext = ROOT / "corpus" / "sql" / "105_taxonomy_extensions.sql"
     if ext.exists():   # studio-managed values (decision #35) extend the base seed
         sql += "\n" + _read(ext)
     out = {}
@@ -136,7 +136,7 @@ class CorpusIntegrity(unittest.TestCase):
     def test_deployed_copy_has_no_drift(self):
         self.assertTrue(CORPUS_DEPLOYED.exists(), "served copy missing — run build_corpus.py")
         self.assertEqual(_read(CORPUS), _read(CORPUS_DEPLOYED),
-                         "db/corpus.json != knowledge/data/corpus.json — re-run build_corpus.py")
+                         "corpus/corpus.json != knowledge/data/corpus.json — re-run build_corpus.py")
 
 
 # ── B · link integrity ──────────────────────────────────────────────────────
@@ -257,7 +257,7 @@ class GeneratorsWired(unittest.TestCase):
             self.assertIn(href, src, f"{href} not wired into the homepage nav")
 
     def test_corpus_deploy_copy_is_wired(self):
-        src = _read(ROOT / "db" / "tools" / "build_corpus.py")
+        src = _read(ROOT / "corpus" / "tools" / "build_corpus.py")
         self.assertIn("DEPLOY_OUT", src)
         self.assertIn("knowledge", src, "build_corpus.py must also emit the served copy")
 

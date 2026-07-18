@@ -321,7 +321,7 @@ TITLES = {
     "data/route-weather-geometry": ("Route Geometry × Weather", "Why one forecast number can't cover a climb: lapse, traverses, abseils, honest claims."),
     "data/references": ("References & Authorities", "People, books & encyclopedias behind the taxonomy."),
     "data/external-models": ("External Models", "How UKC/theCrag/MP/OpenBeta model data — and what to adopt."),
-    "data/database": ("Database (Postgres)", "The relational schema for the taxonomy + route corpus (db/)."),
+    "data/database": ("Database (Postgres)", "The relational schema for the taxonomy + route corpus — legacy, see corpus/ (decision #39)."),
     "data/source-of-truth": ("Source of Truth", "Where climb/venue data lives — one authored corpus.json (decision #27)."),
     "data/governance": ("Data Governance", "Trust tiers (curated / seeded / AI-tagged) + the curated-only ranking rule (#32)."),
     "data-dependencies": ("Data Map", "Visual data-flow graph: where each source lives + where to add a new climb or venue (#27)."),

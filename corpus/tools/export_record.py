@@ -2,7 +2,7 @@
 """Export the COMPLETE corpus from Postgres into the JSON record (decision #39:
 JSON in git+S3 is the source of truth; databases are disposable tools).
 
-Layout written under db/record/:
+Layout written under corpus/record/:
     taxonomies.json        every vocabulary with its metadata (enums-with-meaning)
     grades.json            grade systems, ladders, conversions
     sources.json           the source registry
@@ -18,7 +18,7 @@ Layout written under db/record/:
                            lost at the Postgres retirement, never authoritative
 
 Deterministic output (sorted keys, stable ordering) so git diffs are honest.
-Run:  agent/.venv/bin/python db/tools/export_record.py
+Run:  agent/.venv/bin/python corpus/tools/export_record.py
 """
 import datetime
 import json
@@ -31,7 +31,7 @@ import psycopg
 from psycopg.rows import dict_row
 
 ROOT = Path(__file__).resolve().parents[2]
-REC = ROOT / "db" / "record"
+REC = ROOT / "corpus" / "record"
 DSN = os.environ.get("DATABASE_URL", "postgresql://climbing:climbing@localhost:5432/climbing")
 
 TAX_TABLES = ["discipline", "feature", "character", "hazard", "rock_type",
@@ -133,7 +133,7 @@ def main():
     # topos.json via the existing exporter (natural keys, includes credits) ------
     import subprocess
     subprocess.run([sys.executable, str(Path(__file__).with_name("export_topos.py"))], check=True)
-    (REC / "topos.json").write_text((ROOT / "db" / "topos.json").read_text())
+    (REC / "topos.json").write_text((ROOT / "corpus" / "topos.json").read_text())
 
     n = len(list((REC / "routes").glob("*.json")))
     total_kb = sum(f.stat().st_size for f in REC.rglob("*.json")) // 1024

@@ -12,9 +12,9 @@ re-runs and the daily build make ZERO LLM calls. You pay once per route, ever.
 
 Uses `claude -p` (decision #23: Claude Code CLI, subscription-billed, not API credit).
 
-    python3 db/tools/ai_tag.py --limit 5     # proof: tag up to 5 untagged
-    python3 db/tools/ai_tag.py               # tag all remaining untagged
-    python3 db/tools/ai_tag.py --retag mp-34 # force re-tag one id
+    python3 corpus/tools/ai_tag.py --limit 5     # proof: tag up to 5 untagged
+    python3 corpus/tools/ai_tag.py               # tag all remaining untagged
+    python3 corpus/tools/ai_tag.py --retag mp-34 # force re-tag one id
 """
 import argparse
 import hashlib
@@ -26,9 +26,9 @@ from datetime import date
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-MP = ROOT / "db" / "mp-climbs.json"
-CACHE = ROOT / "db" / "enrichment-cache.json"
-SEED = ROOT / "db" / "sql" / "100_seed_taxonomy.sql"
+MP = ROOT / "corpus" / "mp-climbs.json"
+CACHE = ROOT / "corpus" / "enrichment-cache.json"
+SEED = ROOT / "corpus" / "sql" / "100_seed_taxonomy.sql"
 LIVE_VALUES = ROOT / "knowledge" / "data" / "taxonomy-values.json"
 _FAMILY_BY_TABLE = {"feature": "feature", "character": "character",
                     "discipline": "discipline", "protection_grade": "protection"}

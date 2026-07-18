@@ -369,7 +369,11 @@
 <script>
 let ENUMS={}, QUEUE=[], ALLROWS=[], TREE=[], DRILL=[], COUNTS={}, STATUS='draft', curId=null, R=null, saveTimers={};
 const $=id=>document.getElementById(id);
-const api=(p,opt)=>fetch('/api'+p,opt).then(r=>{if(!r.ok)return r.json().then(e=>{throw e.detail||r.status});return r.json()});
+// API base: same-origin locally; the S3-hosted Studio sets window.API_BASE
+// to the Lambda URL (decision #40 phase B) — one UI, two homes.
+const API_BASE=window.API_BASE||'';
+const asset=u=>API_BASE+(String(u).startsWith('/')?u:'/'+u);
+const api=(p,opt)=>fetch(API_BASE+'/api'+p,opt).then(r=>{if(!r.ok)return r.json().then(e=>{throw e.detail||r.status});return r.json()});
 const toast=(m,ms)=>{const t=$('toast');t.textContent=m;t.style.opacity=1;
   clearTimeout(saveTimers._toast);
   saveTimers._toast=setTimeout(()=>t.style.opacity=0,ms||(String(m).startsWith('⚠')?4200:1500))};
@@ -710,7 +714,7 @@ function imgCell(kind,label,obj){
   const url=(obj||{}).url||'';
   const showable=url&&(url.startsWith('/uploads')||url.startsWith('http'));
   return `<div class="imgcell"><b>${label}</b>
-    ${showable?`<img src="${esc(url)}" alt="">`
+    ${showable?`<img src="${url.startsWith('/uploads')?asset(url):esc(url)}" alt="">`
       :url?`<div class="minor" style="word-break:break-all">📁 ${esc(url)}<br><small>file lives in the multi-pitch repo — upload to replace</small></div>`
       :'<div class="minor">no image yet</div>'}
     <label class="btn sm">⬆ upload image<input type="file" accept="image/*" style="display:none" onchange="uploadImg('${kind}',this)"></label></div>`;
@@ -1134,14 +1138,14 @@ $('q').addEventListener('input',()=>{clearTimeout(saveTimers._q);saveTimers._q=s
 const TLINE="rgba(204,25,29,0.95)",TLINE_DIM="rgba(204,25,29,0.35)",TBELAY="rgba(236,142,140,0.9)",TDESC="rgba(1,70,181,0.95)";
 let TPtopo=null,TPimg=null,TPline=[],TPitems=[],TPdesc=[],TPothers=[],TPm='line';
 let VS0=1,VZ=1,VTX=0,VTY=0,TPdirty=false,TPsel=-1,TPsegSel=0;
-const thumbUri=u=>'/'+u.replace(/(\.[a-z]+)$/i,'-thumb.webp');
+const thumbUri=u=>u.replace(/(\.[a-z]+)$/i,'-thumb.webp');
 async function refreshTopoSec(){
   const el=document.getElementById('topoSec');if(!el||!R)return;
   try{
     const info=await api('/route/'+R.id+'/topoinfo');
     el.innerHTML=(info.topos.map(t=>`
       <div class="topothumb${t.has_route?' has':''}" onclick="openTopoEditor(${t.id})" title="${esc(t.credit)} · ${esc(t.license)}">
-        <img src="${thumbUri(esc(t.uri))}" onerror="this.onerror=null;this.src='/${esc(t.uri)}'" loading="lazy">
+        <img src="${asset(thumbUri(esc(t.uri)))}" onerror="this.onerror=null;this.src=asset('${esc(t.uri)}')" loading="lazy">
         <span>${esc(t.title||'untitled')}<small>${t.has_route?'✓ this route drawn':t.lines+' line'+(t.lines==1?'':'s')} · ${t.status}</small></span>
       </div>`).join('')||'<span class="minor">no crag photos for this area yet — add one below.</span>')
       +`<div class="srcadd" style="grid-template-columns:1fr 1fr auto;align-items:center">
@@ -1194,7 +1198,7 @@ async function openTopoEditor(id){
   $('tpDescNotes').value=R.descent_notes||'';
   TPimg=new Image();
   TPimg.onload=()=>{tpFitView();tpPitchesUi()};
-  TPimg.src='/'+TPtopo.uri;
+  TPimg.src=asset(TPtopo.uri);
   document.getElementById('topoModal').classList.add('on');
   tpHint();
 }

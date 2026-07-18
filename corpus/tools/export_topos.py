@@ -7,7 +7,7 @@ the record lives as JSON in S3, Postgres is a disposable local working copy).
 Keyed by natural identifiers (media uri, route name+area) so import is
 idempotent and survives databases whose serial ids differ.
 
-Run:  agent/.venv/bin/python db/tools/export_topos.py
+Run:  agent/.venv/bin/python corpus/tools/export_topos.py
 """
 import json
 import os
@@ -18,7 +18,7 @@ import psycopg
 from psycopg.rows import dict_row
 
 ROOT = Path(__file__).resolve().parents[2]
-OUT = ROOT / "db" / "topos.json"
+OUT = ROOT / "corpus" / "topos.json"
 DSN = os.environ.get("DATABASE_URL", "postgresql://climbing:climbing@localhost:5432/climbing")
 
 

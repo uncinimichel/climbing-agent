@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Ingest db/corpus.json into Postgres — the Postgres-first switch (decision #34).
+"""Ingest corpus/corpus.json into Postgres — the Postgres-first switch (decision #34).
 
 Postgres is the working store the Curation Studio edits; corpus.json becomes the
 committed EXPORT/BACKUP written by build_corpus.py. This script is the restore /
@@ -15,7 +15,7 @@ committed EXPORT/BACKUP written by build_corpus.py. This script is the restore /
 IDEMPOTENT and HUMAN-SAFE: upserts key on (area_id, name); a row whose tagged_by is
 'human' is never overwritten (curated work always wins over re-ingest).
 
-Run:  python3 db/tools/ingest_corpus.py            # needs the climbing-db container up
+Run:  python3 corpus/tools/ingest_corpus.py            # needs the climbing-db container up
 """
 from __future__ import annotations
 
@@ -35,9 +35,9 @@ except ImportError:
     sys.exit("psycopg missing — run with agent/.venv/bin/python")
 
 ROOT = Path(__file__).resolve().parents[2]
-CORPUS = ROOT / "db" / "corpus.json"
-ENRICH_CACHE = ROOT / "db" / "enrichment-cache.json"
-MP_SNAPSHOT = ROOT / "db" / "mp-climbs.json"
+CORPUS = ROOT / "corpus" / "corpus.json"
+ENRICH_CACHE = ROOT / "corpus" / "enrichment-cache.json"
+MP_SNAPSHOT = ROOT / "corpus" / "mp-climbs.json"
 # Michel's own site source — the RICH per-climb record (intro, approach prose,
 # pitchInfo with per-pitch markup). Preferred over the flattened snapshot when
 # this checkout exists (local-only convenience; the snapshot is the fallback).

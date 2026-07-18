@@ -27,7 +27,7 @@ import images
 from store import store
 
 ROOT = Path(__file__).resolve().parents[2]
-TOPO_DIR = ROOT / "db" / "uploads" / "topos" / "studio"
+TOPO_DIR = ROOT / "corpus" / "uploads" / "topos" / "studio"
 
 S = store()
 
@@ -137,10 +137,10 @@ def delete_topo(topo_id: int):
     t = _get_topo(topo_id)
     S.topos.remove(t)
     S.save_topos()
-    # uris: 'record/…' = co-located under db/record (decision #40);
+    # uris: 'record/…' = co-located under corpus/record (decision #40);
     # 'uploads/…' = the legacy staging tree
     f = (S.dir / t["uri"].removeprefix("record/")) if t["uri"].startswith("record/") \
-        else ROOT / "db" / t["uri"]
+        else ROOT / "corpus" / t["uri"]
     for p in [f, *images.variant_paths(f).values()]:
         try:
             p.unlink(missing_ok=True)

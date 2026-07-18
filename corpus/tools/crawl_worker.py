@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """Crawl worker — claims pending `crawl_frontier` rows, fetches + mechanically
-filters + LLM-tags them, and writes state back (db/sql/040_crawl.sql, roadmap
+filters + LLM-tags them, and writes state back (corpus/sql/040_crawl.sql, roadmap
 Stage 5). Designed to run as a slow, unattended loop: every cycle claims a
 small batch, so the process can be started, stopped, or killed at any point
 with nothing lost — all state lives in the table, never in memory.
 
 Usage:
-    python db/tools/crawl_worker.py --source openbeta
-    python db/tools/crawl_worker.py --source thecrag --batch-size 5 --poll-interval 30
+    python corpus/tools/crawl_worker.py --source openbeta
+    python corpus/tools/crawl_worker.py --source thecrag --batch-size 5 --poll-interval 30
 
 Each cycle:
     1. Reclaim stale leases (a previous run crashed mid-batch).
@@ -115,7 +115,7 @@ def claim_tag_batch(conn, source_id: str, batch_size: int) -> list[dict]:
 # wired into insert_mechanical below, since the live coverage check found 0/89
 # corpus crags have real OpenBeta data (see the decision log) — nothing real
 # to write yet, so that mapping work is deferred until a source crag with
-# real OpenBeta coverage actually exists in db/corpus.json.
+# real OpenBeta coverage actually exists in corpus/corpus.json.
 # ---------------------------------------------------------------------------
 def fetch_item(item: dict, session) -> dict:
     source_id = item["source_id"]

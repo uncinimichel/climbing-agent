@@ -4,7 +4,7 @@
 Decision #35: enum VALUES are managed in the database (Curation Studio → Taxonomy page);
 this script keeps the repo dynamically linked to it by regenerating:
 
-  db/sql/105_taxonomy_extensions.sql   generated upsert re-seed — `apply.sh` replays
+  corpus/sql/105_taxonomy_extensions.sql   generated upsert re-seed — `apply.sh` replays
                                        100 (hand-written base) then 105, reproducing the
                                        live vocabulary exactly. Never edit by hand.
   knowledge/data/taxonomy-values.json  the served live values (+ meanings + flags +
@@ -16,7 +16,7 @@ the value LISTS there are documentation that may lag — this export is the live
 
 Dependency-free (stdlib; psql / docker exec). Run directly or let curate.py call it
 after every taxonomy write:
-    python3 db/tools/export_taxonomy.py
+    python3 corpus/tools/export_taxonomy.py
 """
 import json
 import subprocess
@@ -25,7 +25,7 @@ from datetime import date
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-SQL_OUT = ROOT / "db" / "sql" / "105_taxonomy_extensions.sql"
+SQL_OUT = ROOT / "corpus" / "sql" / "105_taxonomy_extensions.sql"
 JSON_OUT = ROOT / "knowledge" / "data" / "taxonomy-values.json"
 DB_DSN = "postgresql://climbing:climbing@localhost:5432/climbing"
 DB_CONTAINER = "climbing-db"
@@ -98,14 +98,14 @@ def main():
     SQL_OUT.write_text(
         "-- 105 — GENERATED taxonomy re-seed (decision #35). Do not edit by hand:\n"
         "-- values are managed in Postgres via the Curation Studio's Taxonomy page and\n"
-        "-- exported here by db/tools/export_taxonomy.py so apply.sh reproduces the live\n"
+        "-- exported here by corpus/tools/export_taxonomy.py so apply.sh reproduces the live\n"
         f"-- vocabulary. Exported {date.today().isoformat()}.\n"
         "SET search_path = climbing, public;\n\n" + "\n\n".join(sql_blocks) + "\n")
     JSON_OUT.write_text(json.dumps(
         {"generated": date.today().isoformat(),
          "note": "Live enum values exported from Postgres (decision #35). Semantic "
                  "definitions & tagging rules: taxonomy.md. Managed via the Curation "
-                 "Studio; regenerate with db/tools/export_taxonomy.py.",
+                 "Studio; regenerate with corpus/tools/export_taxonomy.py.",
          "families": data}, ensure_ascii=False, indent=1) + "\n")
     print(f"exported {sum(len(v) for v in data.values())} values across {len(data)} families "
           f"→ {SQL_OUT.relative_to(ROOT)} + {JSON_OUT.relative_to(ROOT)}")

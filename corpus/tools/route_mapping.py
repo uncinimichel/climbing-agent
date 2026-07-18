@@ -1,5 +1,5 @@
 """Shared mechanical mapping logic: the multi-pitch trad/alpine filter, the
-db/corpus.json area tree walk (source of area coords/rock/aspect/gradeContext
+corpus/corpus.json area tree walk (source of area coords/rock/aspect/gradeContext
 — decision #27), and the route-schema.md insert for mechanically-fetched
 routes. Used by crawl_worker.py's insert_mechanical/discover_children for
 every source.
@@ -54,7 +54,7 @@ def passes_multipitch_trad_alpine(pitches: int | None, length_m: int | None, dis
 
 
 def ensure_area(conn, corpus_area_id: str) -> int:
-    """Resolve a db/corpus.json area id to a Postgres `area.id`, creating the
+    """Resolve a corpus/corpus.json area id to a Postgres `area.id`, creating the
     country->region->crag chain from corpus.json's own parent links if it
     doesn't exist yet (corpus.json is the curated source of coords/rock/
     aspect/gradeContext — decision #27; nothing here is invented)."""

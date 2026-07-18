@@ -2,14 +2,14 @@
 """Curation Studio — the localhost admin that turns drafts into curated rows.
 
 Record-first (decision #39, supersedes #34's Postgres): this app reads AND
-WRITES the JSON record under db/record/ through store.py — one self-contained
+WRITES the JSON record under corpus/record/ through store.py — one self-contained
 document per route, validated against schemas generated from the taxonomy
-files. db/corpus.json stays a derived export (build_corpus.py), not the store.
+files. corpus/corpus.json stays a derived export (build_corpus.py), not the store.
 Governance (#32) is enforced here and by the store's schema: publishing flips
 tagged_by → 'human' (a publish row may never stay 'llm').
 
-Run:  ../../agent/.venv/bin/uvicorn curate:app --port 8890   (from db/tools/)
-  or: agent/.venv/bin/python db/tools/curate.py              (from repo root)
+Run:  ../../agent/.venv/bin/uvicorn curate:app --port 8890   (from corpus/tools/)
+  or: agent/.venv/bin/python corpus/tools/curate.py              (from repo root)
 
 Localhost only, single editor, no auth (same stance as the #33 trips admin).
 """
@@ -32,8 +32,8 @@ from store import store
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 UI = HERE / "curate_ui.html"
-ENRICH_CACHE = ROOT / "db" / "enrichment-cache.json"
-UPLOAD_DIR = ROOT / "db" / "uploads"          # staging area; the site build copies these out
+ENRICH_CACHE = ROOT / "corpus" / "enrichment-cache.json"
+UPLOAD_DIR = ROOT / "corpus" / "uploads"          # staging area; the site build copies these out
 TAX_VALUES_OUT = ROOT / "knowledge" / "data" / "taxonomy-values.json"
 
 S = store()
@@ -53,7 +53,7 @@ app.include_router(_topo_router)
 # hostile page resolving its own domain to 127.0.0.1 — caught by the Host
 # check) and cross-site "simple" POSTs driving mutations (caught by the
 # Origin check; browsers always attach Origin to cross-site POSTs).
-_OK_HOSTS = {"localhost", "127.0.0.1", "0.0.0.0", "db", "studio"}
+_OK_HOSTS = {"localhost", "127.0.0.1", "0.0.0.0", "api", "studio"}
 
 
 @app.middleware("http")
@@ -436,7 +436,7 @@ IMAGE_EXTS = {".jpg", ".jpeg", ".png", ".webp", ".gif"}
 
 @app.post("/api/route/{rid}/image/{kind}")
 async def upload_image(rid: int, kind: str, file: UploadFile = File(...)):
-    """Store an image in db/uploads/ and point the route's image blob at it.
+    """Store an image in corpus/uploads/ and point the route's image blob at it.
     Existing keys (alt, attribution…) are preserved; only url changes."""
     if kind not in IMAGE_KINDS:
         raise HTTPException(422, f"kind must be one of {sorted(IMAGE_KINDS)}")

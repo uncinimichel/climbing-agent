@@ -38,4 +38,4 @@ print(f"manifest.json: {len(entries)} published routes")
 EOF
 
 ./sync.sh push
-echo "== now commit the artifacts:  git add db/corpus.json knowledge/data/corpus.json && git commit"
+echo "== now commit the artifacts:  git add corpus/corpus.json knowledge/data/corpus.json && git commit"

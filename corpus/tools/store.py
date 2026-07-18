@@ -1,6 +1,6 @@
 """The JSON record store — what replaced Postgres (decision #39).
 
-The record under db/record/ IS the database: one self-contained JSON document
+The record under corpus/record/ IS the database: one self-contained JSON document
 per route, plus taxonomies/grades/areas/topos. This module loads it into
 memory, answers queries, validates writes against schemas generated FROM the
 taxonomy files (an off-vocabulary tag fails like an FK violation used to),
@@ -26,7 +26,7 @@ from pathlib import Path
 import jsonschema
 
 ROOT = Path(__file__).resolve().parents[2]
-REC_DIR = Path(os.environ.get("RECORD_DIR", ROOT / "db" / "record"))
+REC_DIR = Path(os.environ.get("RECORD_DIR", ROOT / "corpus" / "record"))
 
 _LOCK = threading.RLock()
 

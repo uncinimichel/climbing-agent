@@ -1,0 +1,13 @@
+{
+ "console": [
+  "error: Failed to load resource: the server responded with a status of 400 (Bad Request)"
+ ],
+ "pageerrors": [],
+ "reqfail": [],
+ "findings": [
+  "expected toast containing 'pitches saved', got 'saved stars'",
+  "expected empty-topo message, got: \n      \n        \n        North Tor, Slieve Binnian\u2713 this route drawn \u00b7 publish\n ",
+  "line still in DB after delete",
+  "thumbnail still says drawn after deletion"
+ ]
+}

@@ -3,11 +3,11 @@
 
 Dan's site already holds ~38 complete topoData records (photo + route line +
 per-pitch belay/label positions + descent path) — all owned content. This
-copies each base photo into db/uploads/topos/mp/ and lands the geometry as
+copies each base photo into corpus/uploads/topos/mp/ and lands the geometry as
 media / topo / topo_line rows, matching routes via external_ref
 (source 'multipitch'). Re-runnable: a photo already imported is skipped.
 
-Run:  agent/.venv/bin/python db/tools/import_mp_topos.py
+Run:  agent/.venv/bin/python corpus/tools/import_mp_topos.py
 """
 import json
 import os
@@ -25,7 +25,7 @@ from migrate_topo_coords import norm_descent, norm_pts, norm_xy  # noqa: E402
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 MP_SITE = Path(os.environ.get("MP_SITE", Path.home() / "dev/multi-pitch/website"))
-UPLOADS = ROOT / "db" / "uploads" / "topos" / "mp"
+UPLOADS = ROOT / "corpus" / "uploads" / "topos" / "mp"
 DSN = os.environ.get("DATABASE_URL", "postgresql://climbing:climbing@localhost:5432/climbing")
 
 

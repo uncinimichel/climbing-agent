@@ -10,7 +10,7 @@ consumes offline — so the enrichment is done once and lives in the repo, never
 re-read from a machine-specific path (decision #27).
 
 Re-run only when the multi-pitch source changes:
-    python3 db/tools/enrich_from_multipitch.py [/path/to/multi-pitch]
+    python3 corpus/tools/enrich_from_multipitch.py [/path/to/multi-pitch]
 """
 import json
 import re
@@ -18,7 +18,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-OUT = ROOT / "db" / "mp-climbs.json"
+OUT = ROOT / "corpus" / "mp-climbs.json"
 DEFAULT_SRC = Path("/Users/micheluncini/dev/multi-pitch/website/data/climbs")
 
 # MP hazard booleans → taxonomy hazard codes (knowledge/data/taxonomy.md)
@@ -57,7 +57,7 @@ def main():
     src = Path(sys.argv[1]) / "website" / "data" / "climbs" if len(sys.argv) > 1 else DEFAULT_SRC
     if not src.exists():
         print(f"[error] multi-pitch source not found: {src}\n"
-              f"Pass the repo path: python3 db/tools/enrich_from_multipitch.py /path/to/multi-pitch",
+              f"Pass the repo path: python3 corpus/tools/enrich_from_multipitch.py /path/to/multi-pitch",
               file=sys.stderr)
         sys.exit(1)
     climbs = []

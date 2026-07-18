@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """Coverage check + crawl_frontier seeding against OpenBeta, for the crags in
-db/corpus.json — the "seed from what we already trust" approach (roadmap
+corpus/corpus.json — the "seed from what we already trust" approach (roadmap
 Stage 5): search OpenBeta by name for each curated crag; a real match
 (totalClimbs > 0) gets enqueued into crawl_frontier for the worker to pick up;
 a miss is reported, never silently dropped (CONVENTIONS.md quota discipline).
 
 Run:
-    python db/tools/seed_openbeta_frontier.py            # seed + report
-    python db/tools/seed_openbeta_frontier.py --dry-run  # report only, no writes
+    python corpus/tools/seed_openbeta_frontier.py            # seed + report
+    python corpus/tools/seed_openbeta_frontier.py --dry-run  # report only, no writes
 """
 from __future__ import annotations
 
@@ -23,7 +23,7 @@ from search import connect, load_dotenv  # noqa: E402
 
 from openbeta_client import OpenBetaError, best_match  # noqa: E402
 
-CORPUS = ROOT / "db" / "corpus.json"
+CORPUS = ROOT / "corpus" / "corpus.json"
 SOURCE_ID = "openbeta"
 REQUEST_DELAY_S = 0.5  # politeness pacing between name lookups
 

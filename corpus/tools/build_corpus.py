@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Export db/corpus.json from the JSON record — the derived corpus the site reads.
+"""Export corpus/corpus.json from the JSON record — the derived corpus the site reads.
 
-Record-first (decision #39, supersedes #34's Postgres-first): db/record/ is the
+Record-first (decision #39, supersedes #34's Postgres-first): corpus/record/ is the
 source of truth — the Curation Studio (curate.py) edits it through store.py.
 This script is the read side: a faithful, git-diffable EXPORT of every area and
 route (draft, publish and quarantined alike), so
@@ -14,7 +14,7 @@ Governance fields (#32) ride along: status · source · taggedBy · tagProv ·
 curationNotes · needsFieldCheck. Prose rides along too: intro / approach /
 pitchInfo + structured pitches[].
 
-Run:  agent/.venv/bin/python db/tools/build_corpus.py
+Run:  agent/.venv/bin/python corpus/tools/build_corpus.py
 """
 import json
 import re
@@ -27,7 +27,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from store import Store  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
-OUT = ROOT / "db" / "corpus.json"
+OUT = ROOT / "corpus" / "corpus.json"
 # A deployed copy under knowledge/ (the only tree GitHub Pages serves), so the
 # corpus is fetchable by the Corpus Inspector and clickable from the data map.
 DEPLOY_OUT = ROOT / "knowledge" / "data" / "corpus.json"
@@ -213,7 +213,7 @@ def build():
     corpus = {
         "schemaVersion": "2.0",
         "generated": date.today().isoformat(),
-        "note": "EXPORT of the JSON record (decision #39: db/record/ is the source of "
+        "note": "EXPORT of the JSON record (decision #39: corpus/record/ is the source of "
                 "truth — edit via the Curation Studio, not this file). "
                 "Governance (#32): suggestions/ranking may only use status:publish + "
                 "taggedBy:human rows.",

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Full-fidelity dump of the corpus DB into db/backups/ — commit the result.
+# Full-fidelity dump of the corpus DB into corpus/backups/ — commit the result.
 #
 # Why this exists alongside corpus.json: the corpus export carries routes/
 # areas/pitches/taxonomies, but NOT the topo layer (media/topo/topo_line —

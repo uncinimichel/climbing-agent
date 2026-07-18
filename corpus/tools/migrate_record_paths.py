@@ -2,7 +2,7 @@
 """One-off (decision #40): restructure the record onto hierarchical keys.
 
   routes/NNNN-slug.json  →  country/region/crag/route-slug[-id].json
-  db/uploads/topos/**    →  country/region/crag/media/<file>   (co-location)
+  corpus/uploads/topos/**    →  country/region/crag/media/<file>   (co-location)
 
 Path rules live in store.crag_prefix()/route_rel() (topmost sector/crag node
 below the region = the crag; collisions -<id>-suffixed = the MP-vs-crawl
@@ -18,8 +18,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from store import Store  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
-REC = ROOT / "db" / "record"
-UPLOADS = ROOT / "db" / "uploads" / "topos"
+REC = ROOT / "corpus" / "record"
+UPLOADS = ROOT / "corpus" / "uploads" / "topos"
 
 
 def main():
@@ -42,7 +42,7 @@ def main():
         name = Path(uri).name
         dest_dir = REC / prefix / "media"
         if uri.startswith("uploads/topos/"):
-            src_dir = ROOT / "db" / Path(uri).parent
+            src_dir = ROOT / "corpus" / Path(uri).parent
             dest_dir.mkdir(parents=True, exist_ok=True)
             for f in src_dir.glob(f"{Path(name).stem}*"):   # original + variants
                 shutil.copy2(f, dest_dir / f.name)
@@ -52,7 +52,7 @@ def main():
             pass                              # already migrated
     s.save_topos()
     print(f"relocated {moved} routes, co-located {media} media files")
-    print("db/uploads/topos/ kept as a safety copy — delete after verifying")
+    print("corpus/uploads/topos/ kept as a safety copy — delete after verifying")
 
 
 if __name__ == "__main__":

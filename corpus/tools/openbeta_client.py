@@ -4,7 +4,7 @@ first, license-safe crawl source per ingestion-plan.md). Schema verified live
 against https://api.openbeta.io/graphql via introspection (2026-07-06); field
 names below are not guessed.
 
-Dependency-free (stdlib urllib), matching db/tools/build_corpus.py's convention.
+Dependency-free (stdlib urllib), matching corpus/tools/build_corpus.py's convention.
 """
 from __future__ import annotations
 
