@@ -82,6 +82,12 @@ the whole DB to `db/corpus.json` + the served copy under `knowledge/data/` — c
 diff; it is the backup `ingest_corpus.py` restores from, and the audit trail of who
 curated what.
 
+**Full-fidelity backups (`./backup.sh [cloud]` → `db/backups/*.sql.gz`, committed):**
+corpus.json does NOT carry the topo layer (media/topo/topo_line — the drawn lines);
+a pg_dump has literally everything at ~200KB compressed. Run after real curation
+sessions and commit. `infra/down.sh` refuses to destroy the cloud DB without taking
+one first, so cloud-side edits can never die with the cluster.
+
 ## Layout
 
 | Path | What |

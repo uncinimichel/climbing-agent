@@ -27,6 +27,17 @@ fi
 export PATH="$PWD/.venv/bin:$PATH"
 
 if aws cloudformation describe-stacks --stack-name ClimbingAgentCorpusDb --region "$REGION" >/dev/null 2>&1; then
+    # never destroy the cloud copy without a final dump — edits made against
+    # the CLOUD Studio would otherwise die with the cluster (corpus.json does
+    # not carry the topo layer; only a pg_dump has everything)
+    echo "== final dump of the cloud DB before destroying"
+    if ../db/backup.sh cloud; then
+        echo "   (commit db/backups/ — that file is now the last word from the cloud copy)"
+    else
+        echo "⚠ cloud dump FAILED — refusing to destroy without a backup."
+        echo "  If the cluster is genuinely broken/empty, delete the stack manually."
+        exit 1
+    fi
     echo "== destroying ClimbingAgentCorpusDb (takes a few minutes)"
     npx --yes aws-cdk@2 destroy ClimbingAgentCorpusDb --force
 else
