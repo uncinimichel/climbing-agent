@@ -618,6 +618,11 @@ taxonomy.md; ai_tag.py confirmed seeing the new values live.
 **Why:** Michel's guidebook idea, sharpened by a one-question-at-a-time grilling (17 Jul): identity = planner feature; empty-shelf answer = covered areas only; bar = classics-verified; topos = Studio tool ported from the proven multi-pitch editor; liability = disclaimer + provenance; sequencing = "I don't need it for this trip — build the topo studio + schema, no booklet yet."
 **Status:** ⚠️ Partial — schema live (applied additively; apply.sh untouched). Same-day follow-up per Michel ("I want it in the same studio… not at all a different tool"): the standalone Topo Studio was **merged into the Curation Studio** — `topo_api.py` is an APIRouter included by curate.py, and the route card gained section **⑤b drawn topo** (area-scoped photo thumbnails, rights-gated upload, modal canvas editor with pitch markers prefilled from the card's pitch rows; deep links `#r=<id>&topo=<id>`). Verified live on Sammy Higgins. Booklet renderer + coverage gate still deliberately not started.
 
+### #38 — The cloud DB is the database of record; laptops are disposable copies (2026-07-18)
+**Decision:** Michel: "I do not want my local to be the source of truth." Authority inverted from the #34-era local-first model: the **Aurora cluster is the database of record** (PG 18.3 serverless v2 scale-to-zero, encrypted at rest, 7-day PITR), `db/studio.sh` opens the Studio against it by default (local = explicit `./studio.sh local`, demoted to offline/dev copy), and durability is cloud-native: **nightly full pg_dump to a versioned, encrypted, 180-day-retention S3 bucket via GitHub Actions** (`db-backup.yml` — minimal-privilege IAM user `gh-db-backup`, runner IP allowed into the DB security group only for the seconds of the dump, revoked on exit even on failure). `infra/down.sh` refuses to destroy the cluster without a final dump. corpus.json remains the readable export; `db/backups/*.sql.gz` in git remain belt-and-braces.
+**Why:** a source of truth that dies with one Mac isn't one. Cost of always-on record ≈ £3–4/month (public IPv4 dominates; $5 budget alarm emails Michel), accepted over the £0 tear-down model.
+**Status:** ✅ Live — verified: Studio writes against the record, nightly workflow dispatched green, dump landed in S3.
+
 *Template for new entries:*
 ```
 ### #N — Title (date)

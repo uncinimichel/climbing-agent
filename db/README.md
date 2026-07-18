@@ -25,11 +25,14 @@ Notes for a fresh clone:
   [multi-pitch repo](https://github.com/dankni/multi-pitch): clone it, then
   `docker-compose run --rm -e MP_SITE=/mp -v /path/to/multi-pitch/website:/mp studio python import_mp_topos.py`.
   Or just upload new photos in the Studio — that works with nothing extra.
-- **Is Postgres local-only? Yes, deliberately** (16 Jul 2026): every clone runs its
-  own container, and the committed `corpus.json` is the shared source of truth
-  (export with the Studio's *Export corpus.json* button; share via git). A cloud
-  twin (Aurora, ~£0 idle) exists as proven, parked infrastructure — `infra/up.sh`
-  brings it up in ~35 min if a truly shared DB is ever wanted.
+- **The database of record is the CLOUD (decision #38, 18 Jul 2026)** — Aurora
+  PostgreSQL 18 (encrypted, 7-day PITR, nightly S3 dumps via GitHub Actions with
+  180-day retention). Nothing authoritative lives on any laptop. Day-to-day:
+  `./studio.sh` opens the Studio against the record; the local Docker DB is a
+  disposable offline/dev copy — refresh it any time with
+  `gunzip -c backups/<latest>.sql.gz | docker exec -i climbing-db psql -q -U climbing -d climbing`
+  or a fresh `./backup.sh cloud`. Cost of the record being always-on: ~£3–4/month
+  (public IPv4 + secret + storage), watched by a $5 budget alarm.
 
 ## Run it — on this Mac (the usual dev loop)
 
