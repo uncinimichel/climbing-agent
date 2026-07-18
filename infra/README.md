@@ -74,3 +74,12 @@ aws ec2 authorize-security-group-ingress --group-id "$SG" --protocol tcp --port 
 ```
 
 (then optionally revoke the old rule with `revoke-security-group-ingress`).
+
+
+## AWS identities (18 Jul 2026)
+
+Day-to-day CLI runs as the least-privilege user **`climbing-agent`**
+(`[default]` profile) — it can read/write the corpus S3 bucket and nothing
+else. Deploys and account administration use the **`admin`** profile
+(`asyncloop`): `AWS_PROFILE=admin ./up.sh` etc. The 2020 admin key is
+deactivated (kept ~a week for rollback, then delete); root MFA is enabled.
