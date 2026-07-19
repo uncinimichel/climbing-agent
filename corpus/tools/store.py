@@ -93,9 +93,12 @@ def media_url(uri: str, expires: int = 3600) -> str:
     (private bucket, no Lambda bandwidth, no 6MB cap), the local mount
     otherwise."""
     if RECORD_BUCKET:
+        # only ever presign media objects — a stray uri must not become a
+        # 1-hour public link to record JSONs or backups
+        if not (uri.startswith("record/") and "/media/" in uri and ".." not in uri):
+            return ""
         return s3().generate_presigned_url(
-            "get_object", Params={"Bucket": RECORD_BUCKET,
-                                  "Key": uri.replace("record/", "record/", 1)},
+            "get_object", Params={"Bucket": RECORD_BUCKET, "Key": uri},
             ExpiresIn=expires)
     return "/" + uri
 

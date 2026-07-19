@@ -61,8 +61,11 @@ class StudioStack(cdk.Stack):
         client = pool.add_client(
             "StudioWeb",
             auth_flows=cognito.AuthFlow(user_password=True, user_srp=True),
+            prevent_user_existence_errors=True,   # same error for wrong-user and wrong-password
             id_token_validity=cdk.Duration.hours(12),
-            refresh_token_validity=cdk.Duration.days(30),
+            # the UI never stores the refresh token (XSS blast radius), so
+            # keep it barely longer than the IdToken it could mint
+            refresh_token_validity=cdk.Duration.hours(24),
         )
 
         # UI: private bucket behind CloudFront (OAC)
@@ -98,7 +101,9 @@ class StudioStack(cdk.Stack):
                 "ALLOWED_ORIGIN": studio_origin,
             },
         )
-        record.grant_read_write(fn)
+        # record/* only: the bucket also holds backups/ and dumps the Studio
+        # has no business touching — even a bypassed authorizer can't reach them
+        record.grant_read_write(fn, "record/*")
 
         api = apigwv2.HttpApi(
             self, "Http",

@@ -17,6 +17,7 @@ integer ids the UI addresses are assigned by the store at load and stay put.
 """
 from __future__ import annotations
 
+import re
 import time
 from pathlib import Path
 
@@ -262,7 +263,13 @@ def finalize_upload(body: FinalizeBody):
     area = S.areas.get(body.area_id)
     if not area:
         raise HTTPException(404, "no such area")
-    if not body.key.startswith("record/") or "/media/" not in body.key:
+    # the client repeats the key back, but we only accept the one shape
+    # presign hands out: this area's own media dir + a plain filename —
+    # no `..`, no other crag, no non-media prefix
+    prefix, _ = S.crag_prefix(body.area_id)
+    expected = f"record/{prefix}/media/"
+    fname = body.key.removeprefix(expected)
+    if not body.key.startswith(expected) or not re.fullmatch(r"[A-Za-z0-9._-]+", fname):
         raise HTTPException(400, "bad key")
     local = S.dir / Path(body.key).relative_to("record")
     local.parent.mkdir(parents=True, exist_ok=True)

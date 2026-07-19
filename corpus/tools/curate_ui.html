@@ -431,7 +431,8 @@ async function doLogin(e){
       }
     }
     sessionStorage.setItem('idToken',d.AuthenticationResult.IdToken);
-    sessionStorage.setItem('refreshToken',d.AuthenticationResult.RefreshToken||'');
+    // the 30-day refresh token deliberately never touches JS-readable storage
+    // (XSS blast radius); when the 12h IdToken expires you just sign in again
     _challenge=null;
     document.getElementById('loginOvl').style.display='none';
     location.reload();
@@ -728,6 +729,23 @@ function renderCard(){
   refreshTopoSec();
 }
 const esc=s=>String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+// the *_html fields arrive from the scraping/enrichment pipeline — treat them
+// as hostile before they touch innerHTML (a crafted source page must not be
+// able to run script in a signed-in curator's session and lift the token)
+function san(h){
+  if(!h)return '';
+  const doc=new DOMParser().parseFromString(String(h),'text/html');
+  doc.querySelectorAll('script,style,iframe,object,embed,link,meta,form,base').forEach(n=>n.remove());
+  doc.querySelectorAll('*').forEach(n=>{
+    for(const a of [...n.attributes]){
+      const v=a.value.trim().toLowerCase();
+      if(a.name.toLowerCase().startsWith('on')||a.name.toLowerCase()==='formaction'
+         ||(['href','src','xlink:href'].includes(a.name.toLowerCase())
+            &&(v.startsWith('javascript:')||v.startsWith('data:text'))))n.removeAttribute(a.name);
+    }
+  });
+  return doc.body.innerHTML;
+}
 function pitchRowHtml(p,i){
   return `<div class="pitchrow" data-i="${i}">
     <input value="${p.number||i+1}" title="pitch number">
@@ -769,7 +787,7 @@ function insLink(id){
 }
 function togglePv(id){
   const ta=$(id),pv=$(id+'-pv'),show=pv.style.display==='none';
-  pv.innerHTML=ta.value||'<span class="minor">nothing yet</span>';
+  pv.innerHTML=san(ta.value)||'<span class="minor">nothing yet</span>';
   pv.style.display=show?'block':'none';ta.style.display=show?'none':'';
 }
 
@@ -854,7 +872,7 @@ function previewPage(){
   const pitches=(r.pitch_rows&&r.pitch_rows.length)
     ? '<p>'+r.pitch_rows.map(p=>`<strong>Pitch ${p.number} — <span class="pv-len">${p.length_m?p.length_m+'m':''}</span>
         <span class="pv-pg">${esc(p.original_grade)||''}</span></strong> ${esc(p.description)||''}<br><br>`).join('')+'</p>'
-    : (r.pitch_info_html||'<p class="minor">no pitch info yet</p>');
+    : (san(r.pitch_info_html)||'<p class="minor">no pitch info yet</p>');
   const gbs=(r.guidebooks||[]).map(g=>`<li><b>${esc(g.title)}</b>${g.page?' · p.'+esc(g.page):''}${g.kind==='pdf'?' · PDF':''}
       ${g.description?'<br><span>'+esc(g.description)+'</span>':''}</li>`).join('');
   const refs=(r.references||[]).map(x=>`<li><a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.text)}</a></li>`).join('');
@@ -870,14 +888,14 @@ function previewPage(){
     <div class="minor" style="margin-bottom:10px">how this record reads as a climb page — edits land after a save</div>
     <h1>${esc(r.name)}</h1>
     <div class="pv-crag">${esc((r.path_tokens||[]).join(' · '))}</div>
-    ${r.intro_html||'<p class="minor">no intro yet</p>'}
+    ${san(r.intro_html)||'<p class="minor">no intro yet</p>'}
     <div class="pv-rings">
       ${ring(r.original_grade,'grade')}${ring(r.length_m&&r.length_m+'m','length')}
       ${ring(r.pitches_count,'pitches')}${ring(r.approach_time_min&&r.approach_time_min+'min','approach')}
       ${ring(r.eff_aspect,'face')}${ring(r.eff_rock_code,'rock')}${ring(r.incline_code,'incline')}
     </div>
     <div>${hazChips}</div>
-    <h3>Approach &amp; Descent</h3>${r.approach_html||'<p class="minor">no approach yet</p>'}
+    <h3>Approach &amp; Descent</h3>${san(r.approach_html)||'<p class="minor">no approach yet</p>'}
     <h3>Pitch by Pitch</h3>${pitches}
     <h3>Guidebooks</h3>${gbs?'<ul>'+gbs+'</ul>':'<p class="minor">none</p>'}
     <h3>Weather &amp; Conditions</h3>${wx}
