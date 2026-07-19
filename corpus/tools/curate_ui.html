@@ -1096,24 +1096,29 @@ function saveParkings(){
 }
 
 // ── actions ─────────────────────────────
-async function statusFlip(call,msg){       // publish/quarantine: advance to the next route in place
+async function statusFlip(call,msg,newStatus){  // publish/quarantine: advance to the next route in place
   if(!R)return;
   commitFocus();
-  const i=QUEUE.findIndex(x=>x.id===curId);
+  const i=QUEUE.findIndex(x=>x.id===curId), doneId=curId, prevName=R.name;
   try{await api(call,{method:'POST'});toast(msg);}
   catch(e){toast('⚠ '+e);return}
-  const prevName=R.name;
-  R=null;curId=null;
-  await Promise.all([loadQueue(),loadTree()]);
+  // one route's status changed — patch it into the map/drill data in place
+  // instead of re-GETting all 221 routes from /map on every single publish
+  if(newStatus){const e=TREE.find(x=>x.id===doneId);if(e)e.status=newStatus;}
+  // keep R set across loadQueue so it doesn't waste a fetch auto-opening
+  // QUEUE[0]; we open the real next route explicitly right below
+  await loadQueue();          // re-renders list/grid/drill from the patched TREE
+  updateMapLayer();           // (loadQueue doesn't touch the map layer)
   const next=QUEUE[Math.min(Math.max(i,0),QUEUE.length-1)];
+  R=null;curId=null;
   if(next){await openRoute(next.id);
     // make the advance LOUD — a silent card swap once let edits land on the wrong route
     toast(`${msg} — “${prevName}” done · now editing: ${next.name}`,3600);
     document.querySelector('.rt-head')?.classList.add('flash');}
   else{$('main').innerHTML='<div class="card">all done here 🎉 — pick another place or status</div>';$('rail').innerHTML='';$('nexthint').textContent='';renderList();}
 }
-const publish=()=>R&&statusFlip('/route/'+R.id+'/publish','✓ published — tags now human');
-const quarantine=()=>R&&statusFlip('/route/'+R.id+'/status/quarantined','quarantined');
+const publish=()=>R&&statusFlip('/route/'+R.id+'/publish','✓ published — tags now human','publish');
+const quarantine=()=>R&&statusFlip('/route/'+R.id+'/status/quarantined','quarantined','quarantined');
 async function fieldcheck(){
   if(!R)return;
   commitFocus();
