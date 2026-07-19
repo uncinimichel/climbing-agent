@@ -1,3 +1,6 @@
 .venv/
 cdk.out/
 corpus-db-outputs.json
+lambda-build/
+ui-build/
+studio-outputs.json

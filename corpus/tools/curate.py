@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import copy
 import json
+import os
 import re
 import subprocess
 import sys
@@ -33,7 +34,7 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 UI = HERE / "curate_ui.html"
 ENRICH_CACHE = ROOT / "corpus" / "enrichment-cache.json"
-UPLOAD_DIR = ROOT / "corpus" / "uploads"          # staging area; the site build copies these out
+UPLOAD_DIR = Path(os.environ.get("UPLOAD_DIR", ROOT / "corpus" / "uploads"))  # /tmp/uploads in Lambda
 TAX_VALUES_OUT = ROOT / "knowledge" / "data" / "taxonomy-values.json"
 
 S = store()
@@ -41,8 +42,11 @@ S = store()
 app = FastAPI(title="Curation Studio")
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
-# the record's co-located media (country/region/crag/media/*, decision #40)
+# the record's co-located media (country/region/crag/media/*, decision #40);
+# in cloud mode the browser gets presigned S3 URLs instead, but the mount is
+# kept for any relative fallbacks (REC_DIR is /tmp/record there)
 from store import REC_DIR as _REC_DIR  # noqa: E402
+_REC_DIR.mkdir(parents=True, exist_ok=True)
 app.mount("/record", StaticFiles(directory=_REC_DIR), name="record")
 
 from topo_api import router as _topo_router  # noqa: E402 — drawn-topo endpoints (decision #37)
@@ -54,19 +58,25 @@ app.include_router(_topo_router)
 # check) and cross-site "simple" POSTs driving mutations (caught by the
 # Origin check; browsers always attach Origin to cross-site POSTs).
 _OK_HOSTS = {"localhost", "127.0.0.1", "0.0.0.0", "api", "studio"}
+# cloud mode (phase B): API Gateway's JWT authorizer is the real gate; the
+# Host check is meaningless there (the API domain varies) but the Origin
+# check tightens to the CloudFront domain from the environment.
+_CLOUD = bool(os.environ.get("RECORD_BUCKET"))
+_ALLOWED_ORIGIN = os.environ.get("ALLOWED_ORIGIN", "")
 
 
 @app.middleware("http")
-async def _local_only(request, call_next):
+async def _origin_guard(request, call_next):
+    from fastapi.responses import JSONResponse
     host = (request.headers.get("host") or "").split(":")[0].lower()
-    if host not in _OK_HOSTS:
-        from fastapi.responses import JSONResponse
+    if not _CLOUD and host not in _OK_HOSTS:
         return JSONResponse({"detail": "Studio answers localhost only"}, status_code=403)
     origin = request.headers.get("origin")
     if origin and request.method not in ("GET", "HEAD", "OPTIONS"):
         from urllib.parse import urlparse
-        if (urlparse(origin).hostname or "").lower() not in _OK_HOSTS:
-            from fastapi.responses import JSONResponse
+        oh = (urlparse(origin).hostname or "").lower()
+        ok = (oh in _OK_HOSTS) or (_CLOUD and _ALLOWED_ORIGIN and origin == _ALLOWED_ORIGIN)
+        if not ok:
             return JSONResponse({"detail": "cross-origin writes are not allowed"}, status_code=403)
     return await call_next(request)
 
@@ -188,6 +198,8 @@ def resync_taxonomy_files():
         families[fam] = [
             {"code": t["code"], **{c: t.get(c) for c in cols}, "usage": count(t["code"])}
             for t in sorted(S.tax[key], key=lambda t: t["code"])]
+    if not TAX_VALUES_OUT.parent.exists():   # Lambda: read-only bundle, no repo tree —
+        return                                # the file regenerates on the next local publish
     TAX_VALUES_OUT.write_text(json.dumps(
         {"generated": date.today().isoformat(),
          "note": "Live enum values exported from the JSON record (decision #39). Semantic "

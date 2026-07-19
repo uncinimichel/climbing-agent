@@ -372,8 +372,72 @@ const $=id=>document.getElementById(id);
 // API base: same-origin locally; the S3-hosted Studio sets window.API_BASE
 // to the Lambda URL (decision #40 phase B) — one UI, two homes.
 const API_BASE=window.API_BASE||'';
+const AUTH=window.COGNITO||null;   // {region, clientId} injected by the cloud deploy
 const asset=u=>API_BASE+(String(u).startsWith('/')?u:'/'+u);
-const api=(p,opt)=>fetch(API_BASE+'/api'+p,opt).then(r=>{if(!r.ok)return r.json().then(e=>{throw e.detail||r.status});return r.json()});
+const idTok=()=>sessionStorage.getItem('idToken');
+const api=(p,opt)=>{
+  opt=opt||{};
+  if(AUTH&&idTok())opt.headers={...(opt.headers||{}),Authorization:'Bearer '+idTok()};
+  return fetch(API_BASE+'/api'+p,opt).then(r=>{
+    if(r.status===401||r.status===403&&AUTH&&!idTok()){showLogin();throw 'sign in required'}
+    if(!r.ok)return r.json().then(e=>{throw e.detail||r.status});
+    return r.json()});
+};
+// ── Cognito email+password sign-in (decision #40: Michel + Dan) ──
+function showLogin(){
+  let o=document.getElementById('loginOvl');
+  if(!o){o=document.createElement('div');o.id='loginOvl';
+    o.style.cssText='position:fixed;inset:0;background:var(--paper);z-index:99999;display:flex;align-items:center;justify-content:center';
+    o.innerHTML=`<form id="loginForm" style="background:var(--panel);border:1px solid var(--line-2);border-radius:14px;box-shadow:var(--shadow);padding:26px 30px;display:flex;flex-direction:column;gap:10px;min-width:300px">
+      <div style="font:600 18px var(--serif)">Curation Studio</div>
+      <div class="minor">curators only — sign in</div>
+      <input id="lgEmail" type="email" placeholder="email" autocomplete="username" required
+        style="border:1px solid var(--line);border-radius:8px;background:var(--panel-2);color:var(--ink);padding:9px 11px">
+      <input id="lgPass" type="password" placeholder="password" autocomplete="current-password" required
+        style="border:1px solid var(--line);border-radius:8px;background:var(--panel-2);color:var(--ink);padding:9px 11px">
+      <input id="lgNew" type="password" placeholder="new password (first sign-in only)" style="display:none;border:1px solid var(--line);border-radius:8px;background:var(--panel-2);color:var(--ink);padding:9px 11px">
+      <button class="btn primary" type="submit">Sign in</button>
+      <div id="lgMsg" class="minor" style="color:var(--red);min-height:16px"></div></form>`;
+    document.body.appendChild(o);
+    document.getElementById('loginForm').onsubmit=doLogin;
+  }
+  o.style.display='flex';
+}
+async function cognito(target,body){
+  const r=await fetch(`https://cognito-idp.${AUTH.region}.amazonaws.com/`,{method:'POST',
+    headers:{'Content-Type':'application/x-amz-json-1.1','X-Amz-Target':'AWSCognitoIdentityProviderService.'+target},
+    body:JSON.stringify(body)});
+  const d=await r.json();
+  if(!r.ok)throw d.message||d.__type||'sign-in failed';
+  return d;
+}
+let _challenge=null;
+async function doLogin(e){
+  e.preventDefault();
+  const msg=document.getElementById('lgMsg');msg.textContent='';
+  try{
+    let d;
+    if(_challenge){
+      d=await cognito('RespondToAuthChallenge',{ClientId:AUTH.clientId,ChallengeName:'NEW_PASSWORD_REQUIRED',
+        Session:_challenge,ChallengeResponses:{USERNAME:document.getElementById('lgEmail').value,
+        NEW_PASSWORD:document.getElementById('lgNew').value}});
+    }else{
+      d=await cognito('InitiateAuth',{AuthFlow:'USER_PASSWORD_AUTH',ClientId:AUTH.clientId,
+        AuthParameters:{USERNAME:document.getElementById('lgEmail').value,PASSWORD:document.getElementById('lgPass').value}});
+      if(d.ChallengeName==='NEW_PASSWORD_REQUIRED'){
+        _challenge=d.Session;
+        document.getElementById('lgNew').style.display='block';
+        msg.textContent='set a new password to finish your first sign-in';return;
+      }
+    }
+    sessionStorage.setItem('idToken',d.AuthenticationResult.IdToken);
+    sessionStorage.setItem('refreshToken',d.AuthenticationResult.RefreshToken||'');
+    _challenge=null;
+    document.getElementById('loginOvl').style.display='none';
+    location.reload();
+  }catch(err){msg.textContent=String(err)}
+}
+if(AUTH&&!idTok())showLogin();
 const toast=(m,ms)=>{const t=$('toast');t.textContent=m;t.style.opacity=1;
   clearTimeout(saveTimers._toast);
   saveTimers._toast=setTimeout(()=>t.style.opacity=0,ms||(String(m).startsWith('⚠')?4200:1500))};
@@ -1145,7 +1209,7 @@ async function refreshTopoSec(){
     const info=await api('/route/'+R.id+'/topoinfo');
     el.innerHTML=(info.topos.map(t=>`
       <div class="topothumb${t.has_route?' has':''}" onclick="openTopoEditor(${t.id})" title="${esc(t.credit)} · ${esc(t.license)}">
-        <img src="${asset(thumbUri(esc(t.uri)))}" onerror="this.onerror=null;this.src=asset('${esc(t.uri)}')" loading="lazy">
+        <img src="${t.thumb_url?esc(t.thumb_url):asset(thumbUri(esc(t.uri)))}" onerror="this.onerror=null;this.src='${t.uri_url?esc(t.uri_url):""}'||asset('${esc(t.uri)}')" loading="lazy">
         <span>${esc(t.title||'untitled')}<small>${t.has_route?'✓ this route drawn':t.lines+' line'+(t.lines==1?'':'s')} · ${t.status}</small></span>
       </div>`).join('')||'<span class="minor">no crag photos for this area yet — add one below.</span>')
       +`<div class="srcadd" style="grid-template-columns:1fr 1fr auto;align-items:center">
@@ -1165,7 +1229,21 @@ async function uploadTopoPhoto(areaId){
   fd.append('file',f);fd.append('area_id',areaId);fd.append('title','');
   fd.append('credit',credit);fd.append('license',document.getElementById('tpLic').value);
   fd.append('permission_note',document.getElementById('tpPerm').value);
-  try{const r=await api('/topomedia',{method:'POST',body:fd});toast('photo added');await refreshTopoSec();openTopoEditor(r.topo_id)}
+  try{
+    let r;
+    if(AUTH){          // cloud: browser → S3 direct (Lambda can't carry an 8MB photo)
+      const pre=await api('/topomedia/presign',{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({area_id:areaId,filename:f.name})});
+      const put=await fetch(pre.upload_url,{method:'PUT',body:f});
+      if(!put.ok)throw 'photo upload to storage failed';
+      r=await api('/topomedia/finalize',{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({key:pre.key,area_id:areaId,credit,
+          license:document.getElementById('tpLic').value,
+          permission_note:document.getElementById('tpPerm').value,title:''})});
+    }else{
+      r=await api('/topomedia',{method:'POST',body:fd});
+    }
+    toast('photo added');await refreshTopoSec();openTopoEditor(r.topo_id)}
   catch(e){toast('⚠ '+e)}
 }
 function tpBuildItems(saved){
@@ -1198,7 +1276,7 @@ async function openTopoEditor(id){
   $('tpDescNotes').value=R.descent_notes||'';
   TPimg=new Image();
   TPimg.onload=()=>{tpFitView();tpPitchesUi()};
-  TPimg.src=asset(TPtopo.uri);
+  TPimg.src=TPtopo.uri_url||asset(TPtopo.uri);
   document.getElementById('topoModal').classList.add('on');
   tpHint();
 }

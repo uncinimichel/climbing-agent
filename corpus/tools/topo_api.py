@@ -24,6 +24,7 @@ from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 from pydantic import BaseModel
 
 import images
+from store import RECORD_BUCKET, media_url, s3 as _s3c
 from store import store
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -32,7 +33,8 @@ TOPO_DIR = ROOT / "corpus" / "uploads" / "topos" / "studio"
 S = store()
 
 router = APIRouter()
-TOPO_DIR.mkdir(parents=True, exist_ok=True)
+if not RECORD_BUCKET:      # legacy local staging tree; in Lambda ROOT is read-only
+    TOPO_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def _line_route(ln: dict) -> dict | None:
@@ -69,7 +71,8 @@ def route_topoinfo(rid: int):
                       "belay_size": t.get("belay_size"), "uri": t["uri"],
                       "width_px": t.get("width_px"), "height_px": t.get("height_px"),
                       "credit": t.get("credit"), "license": t.get("license"),
-                      "lines": len(t.get("lines", [])), "has_route": rid in drawn})
+                      "lines": len(t.get("lines", [])), "has_route": rid in drawn,
+                      **_media_fields(t["uri"])})
     topos.sort(key=lambda t: (t["has_route"], t["id"]), reverse=True)
     return {"area_id": a["id"], "topos": topos}
 
@@ -88,7 +91,8 @@ def topo_detail(topo_id: int):
     return {"id": t["id"], "title": t.get("title"), "status": t.get("status"),
             "belay_size": t.get("belay_size"), "area_id": t.get("area_id"),
             "uri": t["uri"], "width_px": t.get("width_px"), "height_px": t.get("height_px"),
-            "credit": t.get("credit"), "license": t.get("license"), "lines": lines}
+            "credit": t.get("credit"), "license": t.get("license"), "lines": lines,
+            **_media_fields(t["uri"])}
 
 
 @router.post("/api/topomedia")
@@ -206,3 +210,83 @@ def del_line(topo_id: int, route_id: int):
                   if not ((rr := _line_route(ln)) and rr["id"] == route_id)]
     S.save_topos()
     return {"ok": True}
+
+
+def _media_fields(uri: str) -> dict:
+    """Browser-loadable URLs for a photo + its thumb (presigned in cloud mode)."""
+    thumb = uri.rsplit(".", 1)[0] + "-thumb.webp"
+    web = uri.rsplit(".", 1)[0] + "-web.webp"
+    return {"uri_url": media_url(web if RECORD_BUCKET else uri),
+            "thumb_url": media_url(thumb)}
+
+
+class PresignBody(BaseModel):
+    area_id: int
+    filename: str
+
+
+@router.post("/api/topomedia/presign")
+def presign_upload(body: PresignBody):
+    """Step 1 of the cloud upload: the browser PUTs the photo straight to S3
+    (Lambda's 6MB payload cap can't carry a crag photo)."""
+    if not RECORD_BUCKET:
+        raise HTTPException(400, "presigned uploads are cloud-mode only — POST /api/topomedia directly")
+    ext = Path(body.filename or "x.jpg").suffix.lower()
+    if ext not in (".jpg", ".jpeg", ".png", ".webp"):
+        raise HTTPException(400, "jpg/png/webp only")
+    prefix, _ = S.crag_prefix(body.area_id)
+    key = f"record/{prefix}/media/a{body.area_id}-{int(time.time())}{ext}"
+    url = _s3c().generate_presigned_url(
+        "put_object", Params={"Bucket": RECORD_BUCKET, "Key": key}, ExpiresIn=600)
+    return {"upload_url": url, "key": key}
+
+
+class FinalizeBody(BaseModel):
+    key: str
+    area_id: int
+    credit: str
+    license: str = "owned"
+    permission_note: str = ""
+    title: str = ""
+
+
+@router.post("/api/topomedia/finalize")
+def finalize_upload(body: FinalizeBody):
+    """Step 2: normalize orientation, derive variants, register the topo."""
+    if not RECORD_BUCKET:
+        raise HTTPException(400, "cloud-mode only")
+    if body.license not in ("owned", "permission", "cc"):
+        raise HTTPException(400, "license must be owned|permission|cc")
+    if body.license != "owned" and not body.permission_note.strip():
+        raise HTTPException(400, "non-owned photos need a permission note (who granted it, when)")
+    area = S.areas.get(body.area_id)
+    if not area:
+        raise HTTPException(404, "no such area")
+    if not body.key.startswith("record/") or "/media/" not in body.key:
+        raise HTTPException(400, "bad key")
+    local = S.dir / Path(body.key).relative_to("record")
+    local.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        obj = _s3c().get_object(Bucket=RECORD_BUCKET, Key=body.key)
+        local.write_bytes(obj["Body"].read())
+        w, h = images.normalize(local)
+        variants = images.derive(local)
+        # push normalized original + variants back to the bucket
+        for f in [local, *[local.parent / v for v in variants.values()]]:
+            ctype = "image/webp" if f.suffix == ".webp" else "image/jpeg"
+            _s3c().put_object(Bucket=RECORD_BUCKET,
+                              Key=f"record/{f.relative_to(S.dir)}",
+                              Body=f.read_bytes(), ContentType=ctype)
+    except HTTPException:
+        raise
+    except Exception:
+        raise HTTPException(400, "could not read that image — is it a valid photo?")
+    tid = S.new_topo_id()
+    S.topos.append({
+        "id": tid, "area_id": body.area_id, "area_name": area["name"],
+        "title": body.title or area["name"], "status": "draft", "belay_size": 24,
+        "kind": "crag_photo", "uri": body.key,
+        "width_px": w, "height_px": h, "credit": body.credit, "license": body.license,
+        "permission_note": body.permission_note or None, "taken_at": None, "lines": []})
+    S.save_topos()
+    return {"topo_id": tid}

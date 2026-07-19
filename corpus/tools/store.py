@@ -26,7 +26,22 @@ from pathlib import Path
 import jsonschema
 
 ROOT = Path(__file__).resolve().parents[2]
-REC_DIR = Path(os.environ.get("RECORD_DIR", ROOT / "corpus" / "record"))
+# S3 mode (browser Studio, decision #40 phase B): RECORD_BUCKET set ⇒ the
+# record loads from and writes to S3; the local dir is a warm cache (/tmp in
+# Lambda). No bucket ⇒ pure local files, exactly as before.
+RECORD_BUCKET = os.environ.get("RECORD_BUCKET")
+REC_DIR = Path(os.environ.get("RECORD_DIR",
+               "/tmp/record" if RECORD_BUCKET else ROOT / "corpus" / "record"))
+
+_s3 = None
+
+
+def s3():
+    global _s3
+    if _s3 is None:
+        import boto3
+        _s3 = boto3.client("s3")
+    return _s3
 
 _LOCK = threading.RLock()
 
@@ -34,8 +49,55 @@ _LOCK = threading.RLock()
 def _dump(path: Path, obj) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     tmp = path.with_suffix(".tmp")
-    tmp.write_text(json.dumps(obj, ensure_ascii=False, indent=1, sort_keys=True) + "\n")
+    body = json.dumps(obj, ensure_ascii=False, indent=1, sort_keys=True) + "\n"
+    tmp.write_text(body)
     tmp.replace(path)
+    if RECORD_BUCKET:      # the bucket is the truth; local is the warm cache
+        s3().put_object(Bucket=RECORD_BUCKET,
+                        Key=f"record/{path.relative_to(REC_DIR)}",
+                        Body=body.encode(), ContentType="application/json")
+
+
+def _delete(path: Path) -> None:
+    path.unlink(missing_ok=True)
+    if RECORD_BUCKET:
+        s3().delete_object(Bucket=RECORD_BUCKET, Key=f"record/{path.relative_to(REC_DIR)}")
+
+
+def hydrate_from_s3() -> None:
+    """Cold start: pull every record JSON (not media) from S3 into the cache."""
+    from concurrent.futures import ThreadPoolExecutor
+    keys = []
+    token = None
+    while True:
+        kw = {"Bucket": RECORD_BUCKET, "Prefix": "record/"}
+        if token:
+            kw["ContinuationToken"] = token
+        resp = s3().list_objects_v2(**kw)
+        keys += [o["Key"] for o in resp.get("Contents", [])
+                 if o["Key"].endswith(".json") and "/media/" not in o["Key"]]
+        token = resp.get("NextContinuationToken")
+        if not token:
+            break
+
+    def fetch(k):
+        dest = REC_DIR / Path(k).relative_to("record")
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        dest.write_bytes(s3().get_object(Bucket=RECORD_BUCKET, Key=k)["Body"].read())
+    with ThreadPoolExecutor(16) as ex:
+        list(ex.map(fetch, keys))
+
+
+def media_url(uri: str, expires: int = 3600) -> str:
+    """Where the browser loads a photo from: presigned S3 GET in cloud mode
+    (private bucket, no Lambda bandwidth, no 6MB cap), the local mount
+    otherwise."""
+    if RECORD_BUCKET:
+        return s3().generate_presigned_url(
+            "get_object", Params={"Bucket": RECORD_BUCKET,
+                                  "Key": uri.replace("record/", "record/", 1)},
+            ExpiresIn=expires)
+    return "/" + uri
 
 
 def wkb_latlon(hexstr: str) -> tuple[float, float]:
@@ -61,6 +123,8 @@ class Store:
     # ── loading ────────────────────────────────────────────────────────────
     def reload(self):
         with _LOCK:
+            if RECORD_BUCKET and not (self.dir / "taxonomies.json").exists():
+                hydrate_from_s3()
             self.tax = json.loads((self.dir / "taxonomies.json").read_text())["taxonomies"]
             self.grades = json.loads((self.dir / "grades.json").read_text())
             adoc = json.loads((self.dir / "areas.json").read_text())
@@ -248,7 +312,7 @@ class Store:
             current = self._route_files.get(rid)
             _dump(target, route)
             if current and current != target:      # renamed/moved: relocate the file
-                current.unlink(missing_ok=True)
+                _delete(current)
             if old and old.get("name") != route["name"]:
                 # topo lines key on route name — keep them pointing at this route
                 changed = False

@@ -18,6 +18,7 @@ from stacks.api_stack import ApiStack
 from stacks.auth_stack import AuthStack
 from stacks.corpus_db_stack import CorpusDbStack
 from stacks.data_stack import DataStack
+from stacks.studio_stack import StudioStack
 from stacks.test_stack import TestStack
 
 # Region fixed by the plan (§2). The corpus-DB stack looks up the default VPC,
@@ -32,5 +33,6 @@ auth = AuthStack(app, "ClimbingAgentAuth", env=ENV)
 data = DataStack(app, "ClimbingAgentData", env=ENV)
 ApiStack(app, "ClimbingAgentApi", env=ENV, auth=auth, data=data)
 TestStack(app, "ClimbingAgentTest", env=ENV)
+StudioStack(app, "ClimbingAgentStudio", env=ENV)
 CorpusDbStack(app, "ClimbingAgentCorpusDb", env=ENV)
 app.synth()
