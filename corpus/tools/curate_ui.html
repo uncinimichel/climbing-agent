@@ -109,6 +109,10 @@
   .srcx{color:var(--red);cursor:pointer;font-size:11px}
   .srcadd{display:grid;grid-template-columns:auto 1fr auto;gap:6px;margin-top:9px;align-items:center}
   .srcadd select,.srcadd input{border:1px solid var(--line);border-radius:6px;background:var(--panel-2);color:var(--ink);padding:5px 7px;font:11.5px var(--sans)}
+  /* crag-photo upload: credit + license + note + button; note spans the row */
+  .tpupload{display:grid;grid-template-columns:1fr 1fr auto;gap:6px;margin-top:9px;align-items:center}
+  .tpupload #tpPerm{grid-column:1/3}
+  .tpupload select,.tpupload input{border:1px solid var(--line);border-radius:6px;background:var(--panel-2);color:var(--ink);padding:6px 8px;font:11.5px var(--sans);min-width:0}
   .minor{font-size:11.5px;color:var(--faint)}
   .btn{border:1px solid var(--line-2);background:var(--panel-2);color:var(--ink);border-radius:9px;padding:8px 15px;font:600 13px var(--sans);cursor:pointer}
   .btn:hover{border-color:var(--accent)}
@@ -253,10 +257,36 @@
     display:flex;align-items:center;justify-content:center;font:700 12px var(--sans)}
   .dotkey{display:inline-block;width:9px;height:9px;border-radius:50%;margin:0 2px 0 8px}
   @media (max-width:900px){.queue{grid-template-columns:1fr}.qlistwrap{display:none}}
+  /* ── phones: keep the paper/olive studio, just make it fit one thumb-width ── */
+  @media (max-width:640px){
+    .wrap{padding:12px 12px 200px}                  /* clear the taller wrapped action bar */
+    .mp-top{height:44px;padding:0 12px;gap:8px}
+    header.app h1{font-size:19px}
+    .rt-head h2{font-size:19px}
+    /* wide fixed grids → one field per line, so nothing runs off the edge */
+    .gbrow,.taxrow,.taxadd{grid-template-columns:1fr;gap:6px}
+    .tpupload{grid-template-columns:1fr}          /* file/credit/note/button each on own row — button no longer under the note */
+    .tpupload #tpPerm{grid-column:auto}
+    .tpupload .btn{width:100%}
+    .refrow{grid-template-columns:1fr 1fr 34px}
+    .imgs{grid-template-columns:1fr 1fr;gap:10px}
+    /* the taxonomy table already scrolls inside .tblwrap; just trim its floor */
+    table{min-width:600px}
+    /* the drawing editor goes full-screen — every pixel counts on the crag photo */
+    #topoModal{padding:0}
+    .tpbox{min-width:100vw;max-width:100vw;max-height:100vh;width:100vw;height:100dvh;border-radius:0;border:0}
+    /* comfortable thumb targets */
+    .btn{padding:9px 14px;font-size:13.5px}
+    .actions .in{padding:8px 12px;gap:7px}
+    .nexthint{display:none}                          /* the footer hint eats a whole row on a phone */
+  }
 
   /* shared multi-pitch Live header — same bar as every built knowledge page */
   .mp-top{position:relative;top:0;z-index:50;height:48px;background:#12141B;border-bottom:1px solid #252840;
-    display:flex;align-items:center;gap:12px;padding:0 18px}
+    display:flex;align-items:center;gap:12px;padding:0 18px;
+    overflow-x:auto;scrollbar-width:none}          /* scroll, never widen the page (mobile) */
+  .mp-top::-webkit-scrollbar{display:none}
+  .mp-top>*{flex:0 0 auto}                          /* items keep their size and scroll past the edge */
   .mp-top .mp-logo{font-size:16px;font-weight:800;color:#EAE6DD;letter-spacing:-.2px;text-decoration:none;font-family:system-ui,sans-serif}
   .mp-top .mp-live{color:#C4FF5C}
   .mp-top a.mp-btn{font-size:12px;color:#9B9890;text-decoration:none;border:1px solid #252840;border-radius:6px;padding:5px 12px;font-family:system-ui,sans-serif}
@@ -264,7 +294,7 @@
   .mp-top a.mp-btn.on{color:#C4FF5C;border-color:#5A5860}
 </style>
 
-<div class="mp-top"><a class="mp-logo" href="https://uncinimichel.github.io/climbing-agent/index.html" target="_blank">🧗 multi-pitch <span class="mp-live">Live</span></a><span class="mp-btn" style="border-style:dashed;cursor:default">✏ Curation Studio · localhost</span><span style="margin-left:auto"></span><a class="mp-btn" target="_blank" href="https://uncinimichel.github.io/climbing-agent/knowledge/index.html">📚 Knowledge</a><a class="mp-btn" target="_blank" href="https://uncinimichel.github.io/climbing-agent/knowledge/corpus-inspector.html">🧗 Inspector</a><a class="mp-btn" target="_blank" href="https://uncinimichel.github.io/climbing-agent/knowledge/data-dependencies.html">🗺 Data map</a><a class="mp-btn" target="_blank" href="https://uncinimichel.github.io/climbing-agent/index.html">▶ Dashboard</a></div>
+<div class="mp-top"><a class="mp-logo" href="https://uncinimichel.github.io/climbing-agent/index.html" target="_blank">🧗 multi-pitch <span class="mp-live">Live</span></a><span class="mp-btn" id="mpEnv" style="border-style:dashed;cursor:default">✏ Curation Studio</span><span style="margin-left:auto"></span><a class="mp-btn" target="_blank" href="https://uncinimichel.github.io/climbing-agent/knowledge/index.html">📚 Knowledge</a><a class="mp-btn" target="_blank" href="https://uncinimichel.github.io/climbing-agent/knowledge/corpus-inspector.html">🧗 Inspector</a><a class="mp-btn" target="_blank" href="https://uncinimichel.github.io/climbing-agent/knowledge/data-dependencies.html">🗺 Data map</a><a class="mp-btn" target="_blank" href="https://uncinimichel.github.io/climbing-agent/index.html">▶ Dashboard</a></div>
 <div class="wrap">
   <header class="app">
     <h1>🧗 Curation Studio</h1>
@@ -375,6 +405,7 @@ const $=id=>document.getElementById(id);
 // to the Lambda URL (decision #40 phase B) — one UI, two homes.
 const API_BASE=window.API_BASE||'';
 const AUTH=window.COGNITO||null;   // {region, clientId} injected by the cloud deploy
+{const _e=document.getElementById('mpEnv');if(_e)_e.textContent='✏ Curation Studio · '+(AUTH?'Live':'local');}
 const asset=u=>API_BASE+(String(u).startsWith('/')?u:'/'+u);
 const idTok=()=>sessionStorage.getItem('idToken');
 const api=(p,opt)=>{
@@ -1278,11 +1309,11 @@ async function refreshTopoSec(){
         <img src="${t.thumb_url?esc(t.thumb_url):asset(thumbUri(esc(t.uri)))}" onerror="this.onerror=null;this.src='${t.uri_url?esc(t.uri_url):""}'||asset('${esc(t.uri)}')" loading="lazy">
         <span>${esc(t.title||'untitled')}<small>${t.has_route?'✓ this route drawn':t.lines+' line'+(t.lines==1?'':'s')} · ${t.status}</small></span>
       </div>`).join('')||'<span class="minor">no crag photos for this area yet — add one below.</span>')
-      +`<div class="srcadd" style="grid-template-columns:1fr 1fr auto;align-items:center">
+      +`<div class="tpupload">
          <input type="file" id="tpFile" accept=".jpg,.jpeg,.png,.webp">
          <input id="tpCredit" placeholder="credit — photographer / rights holder">
          <select id="tpLic"><option value="owned">owned</option><option value="permission">permission</option><option value="cc">cc</option></select>
-         <input id="tpPerm" placeholder="permission note — who granted it, when (required unless owned)" style="grid-column:1/3">
+         <input id="tpPerm" placeholder="permission note — who granted it, when (required unless owned)">
          <button class="btn sm" onclick="uploadTopoPhoto(${info.area_id})">↑ add crag photo</button></div>`;
   }catch(e){el.innerHTML='<span class="minor">⚠ topo endpoints unavailable — '+esc(e)+'</span>'}
 }
