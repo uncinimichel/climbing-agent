@@ -332,6 +332,27 @@ class Store:
     def new_route_id(self) -> int:
         return (max(self.routes) + 1) if self.routes else 1
 
+    def remove_route(self, rid: int) -> bool:
+        """Delete a route's record file (local + S3) and its topo lines."""
+        with _LOCK:
+            r = self.routes.pop(rid, None)
+            if not r:
+                return False
+            f = self._route_files.pop(rid, None)
+            if f:
+                _delete(f)
+            aname = self.areas.get(r["area_id"], {}).get("name")
+            changed = False
+            for t in self.topos:
+                keep = [ln for ln in t.get("lines", [])
+                        if not (ln.get("route_name") == r["name"]
+                                and ln.get("route_area") in (aname, None))]
+                if len(keep) != len(t.get("lines", [])):
+                    t["lines"], changed = keep, True
+            if changed:
+                self.save_topos()
+            return True
+
     # ── topo lookups (lines are keyed by route NAME — the export's natural key) ─
     def topo(self, tid: int) -> dict | None:
         return next((t for t in self.topos if t.get("id") == tid), None)

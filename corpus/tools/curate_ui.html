@@ -270,6 +270,7 @@
     <h1>🧗 Curation Studio</h1>
     <div class="progress"><div class="pbar"><i id="pfill"></i></div><div class="plabel" id="plabel">loading…</div></div>
     <input class="search" id="q" placeholder="filter name / place…">
+    <button class="btn" onclick="newClimb()" title="add a climb by hand — not everything arrives via the crawl">＋ climb</button>
     <div class="views" id="statusSeg">
       <button id="sf-all" onclick="setStatus('all')">all</button>
       <button id="sf-draft" class="on" onclick="setStatus('draft')">drafts</button>
@@ -326,9 +327,10 @@
   <button class="btn primary" onclick="publish()">✓ Publish<kbd>⌘⏎</kbd></button>
   <button class="btn field" onclick="fieldcheck()">🥾 Field check<kbd>⌘F</kbd></button>
   <button class="btn danger" onclick="quarantine()">✕ Quarantine</button>
+  <button class="btn danger" onclick="delRoute()" title="remove this record file entirely — drafts only">🗑 Delete</button>
   <button class="btn" onclick="move(1)">Next<kbd>⌘→</kbd></button>
   <button class="btn" onclick="move(-1)">Prev<kbd>⌘←</kbd></button>
-  <button class="btn" onclick="exportCorpus()" title="write db/corpus.json from Postgres">⇩ Export corpus.json</button>
+  <button class="btn" onclick="exportCorpus()" title="write corpus/corpus.json — the published artifact">⇩ Export corpus.json</button>
   <span class="nexthint" id="nexthint"></span>
 </div></div>
 <div id="toast"></div>
@@ -473,6 +475,52 @@ async function boot(){
   else if(QUEUE.length)openRoute(QUEUE[0].id);
   if(location.hash==='#taxonomy')setView('t');
   if(location.hash==='#grid')setView('g');
+}
+// ── hand-entered climbs: create (＋ climb) and delete (🗑, drafts only) ──
+async function newClimb(){
+  let o=$('newOvl');
+  if(!o){
+    const areas=await api('/arealist');
+    o=document.createElement('div');o.id='newOvl';
+    o.style.cssText='position:fixed;inset:0;background:rgba(20,24,18,.45);z-index:9998;display:flex;align-items:center;justify-content:center';
+    o.onclick=e=>{if(e.target===o)o.style.display='none'};
+    const inp='border:1px solid var(--line);border-radius:8px;background:var(--panel-2);color:var(--ink);padding:9px 11px';
+    o.innerHTML=`<form id="newForm" style="background:var(--panel);border:1px solid var(--line-2);border-radius:14px;box-shadow:var(--shadow);padding:26px 30px;display:flex;flex-direction:column;gap:10px;min-width:340px">
+      <div style="font:600 18px var(--serif)">New climb</div>
+      <div class="minor">a draft record — grade, pitches and tags come after</div>
+      <input id="ncName" placeholder="route name" required style="${inp}">
+      <input id="ncArea" list="ncAreas" placeholder="crag — start typing" required autocomplete="off" style="${inp}">
+      <datalist id="ncAreas">${areas.map(a=>`<option value="${esc(a.label)}">`).join('')}</datalist>
+      <div style="display:flex;gap:8px;justify-content:flex-end">
+        <button type="button" class="btn" onclick="$('newOvl').style.display='none'">cancel</button>
+        <button class="btn primary" type="submit">Create draft</button></div>
+      <div id="ncMsg" class="minor" style="color:var(--red);min-height:16px"></div></form>`;
+    document.body.appendChild(o);
+    o._areas=areas;
+    $('newForm').onsubmit=async e=>{
+      e.preventDefault();
+      const a=o._areas.find(x=>x.label===$('ncArea').value);
+      if(!a){$('ncMsg').textContent='pick a crag from the list';return}
+      try{
+        const d=await api('/route',{method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({name:$('ncName').value.trim(),area_id:a.id})});
+        o.style.display='none';$('ncName').value='';
+        toast('draft created — curate away');
+        await loadTree();await loadQueue(d.id);
+      }catch(err){$('ncMsg').textContent=String(err)}
+    };
+  }
+  o.style.display='flex';
+  $('ncName').focus();
+}
+async function delRoute(){
+  if(!R)return;
+  if(R.status==='publish'){toast('⚠ unpublish first — this climb is on the site');return}
+  if(!confirm(`Delete "${R.name}" and its record file permanently?`))return;
+  await api('/route/'+curId,{method:'DELETE'});
+  toast('deleted');
+  R=null;curId=null;
+  await loadTree();await loadQueue();
 }
 async function loadTree(){        // all routes + status: drill counts & map (refresh after status flips)
   TREE=await api('/map');

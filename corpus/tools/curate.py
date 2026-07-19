@@ -359,6 +359,51 @@ def route_detail(rid: int):
     return out
 
 
+@app.get("/api/arealist")
+def arealist():
+    """Every area with its full breadcrumb — the new-climb picker's options."""
+    def chain(aid):
+        names, seen = [], set()
+        while aid and aid in S.areas and aid not in seen:
+            seen.add(aid)
+            names.append(S.areas[aid]["name"])
+            aid = S.areas[aid].get("parent_id")
+        return " › ".join(reversed(names))
+    out = [{"id": a["id"], "label": chain(a["id"]), "kind": a.get("kind")}
+           for a in S.areas.values()]
+    out.sort(key=lambda x: x["label"])
+    return out
+
+
+@app.post("/api/route")
+def create_route(body: dict):
+    """A hand-entered climb (not everything arrives via the crawl): the
+    minimal draft the schema accepts — everything else is curated in the card."""
+    name = str(body.get("name") or "").strip()
+    area_id = body.get("area_id")
+    if not name:
+        raise HTTPException(400, "a new climb needs a name")
+    if area_id not in S.areas:
+        raise HTTPException(404, "no such area")
+    if any(r["name"].lower() == name.lower() and r["area_id"] == area_id
+           for r in S.routes.values()):
+        raise HTTPException(409, "a route with that name already exists in this area")
+    rid = S.new_route_id()
+    r = {"id": rid, "name": name, "area_id": area_id, "status": "draft",
+         "tagged_by": "human", "tags": {}, "sources": [], "last_update": now()}
+    save_route(r)
+    return {"id": rid}
+
+
+@app.delete("/api/route/{rid}")
+def delete_route(rid: int):
+    r = get_route(rid)
+    if r.get("status") == "publish":
+        raise HTTPException(400, "unpublish first — published climbs are on the site")
+    S.remove_route(rid)
+    return {"ok": True}
+
+
 @app.patch("/api/route/{rid}")
 def patch_route(rid: int, body: dict):
     fields = {k: v for k, v in body.items() if k in PATCHABLE}
