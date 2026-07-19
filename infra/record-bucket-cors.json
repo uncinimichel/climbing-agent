@@ -1,0 +1,12 @@
+{
+  "_comment": "CORS for the record bucket's browser presigned PUT/GET (Studio photo upload). The record bucket is deliberately NOT a CDK resource (no stack can delete the data), so this is applied out-of-band: aws s3api put-bucket-cors --bucket climbing-agent-db-backups-166832185275 --cors-configuration file://infra/record-bucket-cors.json. Update AllowedOrigins if the CloudFront domain changes.",
+  "CORSRules": [
+    {
+      "AllowedOrigins": ["https://driuinui6do86.cloudfront.net"],
+      "AllowedMethods": ["PUT", "GET", "HEAD"],
+      "AllowedHeaders": ["*"],
+      "ExposeHeaders": ["ETag"],
+      "MaxAgeSeconds": 3000
+    }
+  ]
+}

@@ -25,7 +25,7 @@ from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 from pydantic import BaseModel
 
 import images
-from store import RECORD_BUCKET, media_url, s3 as _s3c
+from store import RECORD_BUCKET, REC_DIR, _delete, media_url, s3 as _s3c
 from store import store
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -148,10 +148,23 @@ def delete_topo(topo_id: int):
         else ROOT / "corpus" / t["uri"]
     for p in [f, *images.variant_paths(f).values()]:
         try:
-            p.unlink(missing_ok=True)
+            # under the record tree, _delete removes the local cache AND the S3
+            # object (cloud mode); a legacy uploads/ path is local-only
+            if RECORD_BUCKET and _under(p, REC_DIR):
+                _delete(p)
+            else:
+                p.unlink(missing_ok=True)
         except Exception:
             pass
     return {"ok": True}
+
+
+def _under(p: Path, root: Path) -> bool:
+    try:
+        p.resolve().relative_to(root.resolve())
+        return True
+    except ValueError:
+        return False
 
 
 class TopoPatch(BaseModel):
