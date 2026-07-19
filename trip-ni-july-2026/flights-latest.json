@@ -1,6 +1,6 @@
 {
   "comment": "Latest flight prices per combo (round-trip, 1 pax, GBP). Updated on demand by Claude or by an API script. null = not yet checked.",
-  "checked_at": "2026-07-19 18:11 UTC (Google Flights/SerpApi)",
+  "checked_at": "2026-07-19 19:28 UTC (Google Flights/SerpApi)",
   "currency": "GBP",
   "rep_combo": {
     "id": "fri-tue",
@@ -198,130 +198,6 @@
         "cached": true
       }
     },
-    "Mournes, NI": {
-      "michel": {
-        "mode": "fly",
-        "to": "BFS",
-        "options": [
-          {
-            "price": 204,
-            "airline": "easyJet",
-            "from": "STN",
-            "to": "BFS",
-            "dep": "22:10",
-            "arr": "23:25",
-            "stops": 0
-          },
-          {
-            "price": 209,
-            "airline": "easyJet",
-            "from": "LTN",
-            "to": "BFS",
-            "dep": "22:15",
-            "arr": "23:30",
-            "stops": 0
-          },
-          {
-            "price": 216,
-            "airline": "easyJet",
-            "from": "STN",
-            "to": "BFS",
-            "dep": "08:05",
-            "arr": "09:25",
-            "stops": 0
-          }
-        ],
-        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTA3LTI0agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDQkZTGkISCjIwMjYtMDctMjhqBwgBEgNCRlNyBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ",
-        "book_url": "https://www.skyscanner.net/transport/flights/stn/bfs/260724/260728/",
-        "cached": true
-      },
-      "dan": {
-        "mode": "local"
-      }
-    },
-    "Aladaglar": {
-      "michel": {
-        "mode": "fly",
-        "options": [],
-        "to": "ASR",
-        "book_url": "https://www.skyscanner.net/transport/flights/lgw/asr/260724/260728/"
-      },
-      "dan": {
-        "mode": "fly",
-        "options": [],
-        "to": "ASR",
-        "book_url": "https://www.skyscanner.net/transport/flights/bfs/asr/260724/260728/"
-      }
-    },
-    "West Cornwall (Bosigran)": {
-      "michel": {
-        "mode": "drive"
-      },
-      "dan": {
-        "mode": "fly",
-        "to": "NQY",
-        "options": [
-          {
-            "price": 148,
-            "airline": "Ryanair",
-            "from": "DUB",
-            "to": "NQY",
-            "dep": "13:55",
-            "arr": "15:00",
-            "stops": 0
-          },
-          {
-            "price": 179,
-            "airline": "Aer Lingus",
-            "from": "DUB",
-            "to": "NQY",
-            "dep": "15:40",
-            "arr": "16:55",
-            "stops": 0
-          },
-          {
-            "price": 591,
-            "airline": "Aer Lingus",
-            "from": "BHD",
-            "to": "NQY",
-            "dep": "07:00",
-            "arr": "16:55",
-            "stops": 2
-          }
-        ],
-        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDTlFZGjASCjIwMjYtMDctMjhqBwgBEgNOUVlyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
-        "book_url": "https://www.skyscanner.net/transport/flights/dub/nqy/260724/260728/",
-        "cached": true
-      }
-    },
-    "Fre\u00ffr": {
-      "michel": {
-        "mode": "fly",
-        "options": [],
-        "to": "BRU",
-        "book_url": "https://www.skyscanner.net/transport/flights/lgw/bru/260724/260728/"
-      },
-      "dan": {
-        "mode": "fly",
-        "options": [],
-        "to": "BRU",
-        "book_url": "https://www.skyscanner.net/transport/flights/bfs/bru/260724/260728/"
-      }
-    },
-    "Loften": {
-      "michel": {
-        "mode": "fly",
-        "options": [],
-        "to": "BOO",
-        "book_url": "https://www.skyscanner.net/transport/flights/lgw/boo/260724/260728/"
-      },
-      "dan": {
-        "mode": "fly",
-        "options": [],
-        "to": "BOO",
-        "book_url": "https://www.skyscanner.net/transport/flights/bfs/boo/260724/260728/"
-      }
-    },
     "Picos de Europa": {
       "michel": {
         "mode": "fly",
@@ -396,15 +272,142 @@
         "cached": true
       }
     },
-    "Snowdonia (Llanberis Pass)": {
+    "Mournes, NI": {
+      "michel": {
+        "mode": "fly",
+        "to": "BFS",
+        "options": [
+          {
+            "price": 204,
+            "airline": "easyJet",
+            "from": "STN",
+            "to": "BFS",
+            "dep": "22:10",
+            "arr": "23:25",
+            "stops": 0
+          },
+          {
+            "price": 209,
+            "airline": "easyJet",
+            "from": "LTN",
+            "to": "BFS",
+            "dep": "22:15",
+            "arr": "23:30",
+            "stops": 0
+          },
+          {
+            "price": 216,
+            "airline": "easyJet",
+            "from": "STN",
+            "to": "BFS",
+            "dep": "08:05",
+            "arr": "09:25",
+            "stops": 0
+          }
+        ],
+        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTA3LTI0agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDQkZTGkISCjIwMjYtMDctMjhqBwgBEgNCRlNyBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ",
+        "book_url": "https://www.skyscanner.net/transport/flights/stn/bfs/260724/260728/",
+        "cached": true
+      },
+      "dan": {
+        "mode": "local"
+      }
+    },
+    "West Cornwall (Bosigran)": {
       "michel": {
         "mode": "drive"
       },
       "dan": {
         "mode": "fly",
+        "to": "NQY",
+        "options": [
+          {
+            "price": 148,
+            "airline": "Ryanair",
+            "from": "DUB",
+            "to": "NQY",
+            "dep": "13:55",
+            "arr": "15:00",
+            "stops": 0
+          },
+          {
+            "price": 179,
+            "airline": "Aer Lingus",
+            "from": "DUB",
+            "to": "NQY",
+            "dep": "15:40",
+            "arr": "16:55",
+            "stops": 0
+          },
+          {
+            "price": 591,
+            "airline": "Aer Lingus",
+            "from": "BHD",
+            "to": "NQY",
+            "dep": "07:00",
+            "arr": "16:55",
+            "stops": 2
+          }
+        ],
+        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDTlFZGjASCjIwMjYtMDctMjhqBwgBEgNOUVlyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
+        "book_url": "https://www.skyscanner.net/transport/flights/dub/nqy/260724/260728/",
+        "cached": true
+      }
+    },
+    "Fre\u00ffr": {
+      "michel": {
+        "mode": "fly",
         "options": [],
-        "to": "MAN",
-        "book_url": "https://www.skyscanner.net/transport/flights/bfs/man/260724/260728/"
+        "to": "BRU",
+        "book_url": "https://www.skyscanner.net/transport/flights/lgw/bru/260724/260728/"
+      },
+      "dan": {
+        "mode": "fly",
+        "options": [],
+        "to": "BRU",
+        "book_url": "https://www.skyscanner.net/transport/flights/bfs/bru/260724/260728/"
+      }
+    },
+    "Aladaglar": {
+      "michel": {
+        "mode": "fly",
+        "options": [],
+        "to": "ASR",
+        "book_url": "https://www.skyscanner.net/transport/flights/lgw/asr/260724/260728/"
+      },
+      "dan": {
+        "mode": "fly",
+        "options": [],
+        "to": "ASR",
+        "book_url": "https://www.skyscanner.net/transport/flights/bfs/asr/260724/260728/"
+      }
+    },
+    "\u00c9crins (Aiguille Dibona)": {
+      "michel": {
+        "mode": "fly",
+        "options": [],
+        "to": "LYS",
+        "book_url": "https://www.skyscanner.net/transport/flights/lgw/lys/260724/260728/"
+      },
+      "dan": {
+        "mode": "fly",
+        "options": [],
+        "to": "LYS",
+        "book_url": "https://www.skyscanner.net/transport/flights/bfs/lys/260724/260728/"
+      }
+    },
+    "Setesdal": {
+      "michel": {
+        "mode": "fly",
+        "options": [],
+        "to": "KRS",
+        "book_url": "https://www.skyscanner.net/transport/flights/lgw/krs/260724/260728/"
+      },
+      "dan": {
+        "mode": "fly",
+        "options": [],
+        "to": "KRS",
+        "book_url": "https://www.skyscanner.net/transport/flights/bfs/krs/260724/260728/"
       }
     }
   },
