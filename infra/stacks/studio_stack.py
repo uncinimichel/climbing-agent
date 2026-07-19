@@ -11,6 +11,9 @@ managed by a stack so no teardown can touch the data). Photos flow browser↔S3
 via presigned URLs — Lambda's 6MB payload cap never sees a crag photo.
 Run infra/build_studio_assets.sh before deploying.
 """
+import os
+from pathlib import Path
+
 import aws_cdk as cdk
 from aws_cdk import aws_apigatewayv2 as apigwv2
 from aws_cdk import aws_apigatewayv2_authorizers as authz
@@ -24,6 +27,22 @@ from aws_cdk import aws_s3_deployment as s3deploy
 from constructs import Construct
 
 RECORD_BUCKET = "climbing-agent-db-backups-166832185275"
+
+INFRA = Path(__file__).resolve().parents[1]
+
+
+def _asset_dir(name: str) -> str:
+    """lambda-build/ and ui-build/ are gitignored build outputs. CI synth
+    (no credentials, never deploys) gets an empty stub; a local deploy
+    without building first must fail loudly, not ship a stub."""
+    d = INFRA / name
+    if not d.exists():
+        if os.environ.get("GITHUB_ACTIONS"):
+            d.mkdir(parents=True)
+            (d / ".ci-synth-stub").write_text("")
+        else:
+            raise RuntimeError(f"{d} missing — run infra/build_studio_assets.sh first")
+    return str(d)
 
 
 class StudioStack(cdk.Stack):
@@ -69,7 +88,7 @@ class StudioStack(cdk.Stack):
             function_name="ClimbingAgentStudioApi",
             runtime=lam.Runtime.PYTHON_3_12,
             architecture=lam.Architecture.X86_64,
-            code=lam.Code.from_asset("lambda-build"),
+            code=lam.Code.from_asset(_asset_dir("lambda-build")),
             handler="handler.handler",
             memory_size=1024,
             timeout=cdk.Duration.seconds(30),
@@ -107,7 +126,7 @@ class StudioStack(cdk.Stack):
             destination_bucket=ui_bucket,
             distribution=dist,               # invalidate on redeploy
             sources=[
-                s3deploy.Source.asset("ui-build"),
+                s3deploy.Source.asset(_asset_dir("ui-build")),
                 s3deploy.Source.data("config.js",
                     f"window.API_BASE='{api.api_endpoint}';"
                     f"window.COGNITO={{region:'eu-west-2',clientId:'{client.user_pool_client_id}'}};"),
