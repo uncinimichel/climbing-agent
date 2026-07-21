@@ -1,0 +1,107 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Curator Handbook · multi-pitch Live</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"><style>
+:root{--ink:#0C0D10;--ink2:#12141B;--ink3:#191C27;--ink4:#20243A;--seam:#252840;
+--chalk:#EAE6DD;--chalk2:#9B9890;--chalk3:#5A5860;--go:#6CB268;--amb:#C8A44A;
+--wet:#B94438;--spike:#C4FF5C;--r:6px;--r-lg:12px}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--ink);color:var(--chalk)}
+body{font-family:'Inter',system-ui,sans-serif;font-size:15px;line-height:1.65;
+-webkit-font-smoothing:antialiased}
+.top{position:sticky;top:0;z-index:10;height:48px;background:var(--ink2);
+border-bottom:1px solid var(--seam);display:flex;align-items:center;gap:12px;padding:0 18px}
+.logo{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--chalk);
+letter-spacing:-.2px;text-decoration:none}
+.top a.btn{margin-left:auto;font-size:12px;color:var(--chalk2);text-decoration:none;
+border:1px solid var(--seam);border-radius:var(--r);padding:5px 12px}
+.top a.btn:hover{color:var(--chalk);border-color:var(--chalk3)}
+.wrap{max-width:860px;margin:0 auto;padding:32px 22px 96px}
+.crumb{font-size:12px;color:var(--chalk3);margin-bottom:22px;font-family:'DM Mono',monospace}
+.crumb a{color:var(--chalk2);text-decoration:none}
+.crumb a:hover{color:var(--spike)}
+h1,h2,h3,h4{font-family:'Syne',sans-serif;letter-spacing:-.3px;line-height:1.25;
+scroll-margin-top:64px}
+h1{font-size:30px;font-weight:800;margin:.2em 0 .6em}
+h2{font-size:21px;font-weight:700;margin:1.8em 0 .5em;padding-top:.4em;
+border-top:1px solid var(--seam)}
+h3{font-size:16.5px;font-weight:700;margin:1.4em 0 .4em;color:var(--chalk)}
+h4{font-size:14px;font-weight:700;margin:1.2em 0 .3em;color:var(--chalk2)}
+p{margin:.7em 0}
+a{color:var(--amb);text-decoration:none;border-bottom:1px solid rgba(200,164,74,.28)}
+a:hover{color:var(--spike);border-bottom-color:var(--spike)}
+strong{color:#fff;font-weight:600}
+code{font-family:'DM Mono',ui-monospace,monospace;font-size:.86em;background:var(--ink3);
+border:1px solid var(--seam);border-radius:4px;padding:1px 5px;color:var(--amb)}
+pre{background:var(--ink2);border:1px solid var(--seam);border-radius:var(--r-lg);
+padding:16px 18px;overflow-x:auto;margin:1em 0}
+pre code{background:none;border:none;padding:0;color:var(--chalk2);font-size:12.5px;
+line-height:1.5;white-space:pre}
+blockquote{margin:1.1em 0;padding:.4em 16px;border-left:3px solid var(--amb);
+background:var(--amb-d,rgba(200,164,74,.07));border-radius:0 var(--r) var(--r) 0;
+color:var(--chalk2)}
+blockquote p{margin:.4em 0}
+hr{border:none;border-top:1px solid var(--seam);margin:2em 0}
+ul,ol{margin:.6em 0;padding-left:1.4em}
+li{margin:.28em 0}
+li>ul,li>ol{margin:.25em 0}
+.tw{overflow-x:auto;margin:1.1em 0;border:1px solid var(--seam);border-radius:var(--r-lg)}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--seam);
+vertical-align:top}
+th{background:var(--ink3);font-family:'Syne',sans-serif;font-weight:700;font-size:12px;
+color:var(--chalk);white-space:nowrap}
+tr:last-child td{border-bottom:none}
+td code{white-space:nowrap}
+.idx-group{margin:1.4em 0}
+.idx-group h3{border-bottom:1px solid var(--seam);padding-bottom:.3em}
+.idx-card{display:block;padding:12px 14px;margin:8px 0;background:var(--ink2);
+border:1px solid var(--seam);border-radius:var(--r-lg);color:var(--chalk);
+border-bottom:1px solid var(--seam)}
+.idx-card:hover{border-color:var(--chalk3);color:var(--chalk)}
+.idx-card b{font-family:'Syne',sans-serif}
+.idx-card span{display:block;color:var(--chalk2);font-size:13px;margin-top:2px}
+@media(max-width:600px){.wrap{padding:22px 15px 80px}h1{font-size:24px}body{font-size:14px}}
+</style></head><body><div class=top><a class=logo href="../index.html">🧗 multi-pitch <span style="color:var(--spike)">Live</span></a><a class=btn href="../" title="The live ranked dashboard">Dashboard</a><a class=btn href="../knowledge/index.html" title="The project knowledge base">Knowledge</a><a class=btn href="../knowledge/corpus-inspector.html" title="Browse every climb with its taxonomy + weather (reads corpus.json)">Inspector</a><a class=btn href="../knowledge/data-dependencies.html" title="How climb/venue data flows — the source of truth (decision #27)">Data map</a><a class=btn href="../knowledge/operations/serpapi-quota.html" title="Live SerpApi/flight-search quota and API cost status">API Status</a><a class=btn href="https://multi-pitch.com/map/" title="Every venue on the multi-pitch.com map" target=_blank rel=noopener>Map</a><a class=btn href="https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit" title="The curated venue spreadsheet" target=_blank rel=noopener>Spreadsheet</a><a class=btn href="https://github.com/uncinimichel/climbing-agent" title="Project source on GitHub" target=_blank rel=noopener>GitHub</a><a class=btn href="https://multi-pitch.com/" target=_blank rel=noopener>multi-pitch.com ↗</a></div><div class=wrap><div class=crumb><a href="index.html">📚 knowledge</a> / <b style='color:var(--chalk2)'>curator-handbook</b></div><h1 id="curator-s-handbook-first-draft-field-audit">Curator's Handbook — first draft (field audit)</h1>
+<blockquote><p>Status: <strong>draft for Michel + Dan to red-pen.</strong> This is not settled doctrine — it's me (Claude) auditing the Studio's fields against what they mean to a climber, so your corrections become the standard. Mark anything wrong. Companion to <a href="data/taxonomy.html">taxonomy.md</a> (which defines the tag vocabularies).</p></blockquote>
+<p>The trigger was <code>wind exposed: yes/no</code> — a field that reads like it's asking "is it windy," which of course depends on the day and the direction. It turned out the field is <em>right</em> and the <strong>label</strong> is wrong. That gap — a defensible field wearing nonsense words — is the pattern this audit hunts for.</p>
+<hr>
+<h2 id="the-one-rule">The one rule</h2>
+<p>Every field belongs in exactly one bucket. Get the bucket wrong and the field feels like AI slop even when the data is fine.</p>
+<div class="tw"><table><thead><tr><th>Bucket</th><th>What it is</th><th>Whose job</th></tr></thead><tbody><tr><td><strong>A · Fact</strong></td><td>A physical thing you can observe standing at the crag (aspect, rock, tidal, how many pitches). Doesn't change with the weather.</td><td>The curator records it.</td></tr><tr><td><strong>B · Derived</strong></td><td>Something the engine computes from facts + live weather (wind exposure on a given day, drying speed, "is it in condition this weekend").</td><td>The engine. <strong>A human should never toggle it.</strong></td></tr><tr><td><strong>C · Judgment</strong></td><td>A climber's opinion (quality, "why climb it", character).</td><td>The curator, but flagged as opinion.</td></tr></tbody></table></div>
+<p><strong>Corollary:</strong> <em>if the engine can compute a field from other fields, it is not a curator field.</em> Asking a human to hand-set a derived thing is a category error — it's laborious, it goes stale, and it can silently disagree with the live ranking. Most of the "silly" fields below are Bucket B masquerading as a toggle.</p>
+<hr>
+<h2 id="exhibit-a-wind-exposed">Exhibit A — <code>wind_exposed</code></h2>
+<p><strong>Verdict: right field, wrong label. Keep the data, rewrite the words.</strong></p>
+<p>It is <em>not</em> asking "is it windy." It's a <strong>Bucket A fact</strong>: does this crag have no hillside behind it to shelter it — a sea cliff, a summit tor, a standalone buttress — so wind reaches it from <em>any</em> direction? The engine (<code>engine/weather.py</code>) then does the real work: it holds a compass bearing for each aspect and computes <strong>wind-vs-face exposure against the forecast wind direction</strong> — a leeward wall is part-sheltered by its own hill, a windward one gets hammered — and scales drying speed off it. So the direction-dependence you (rightly) expected <em>is</em> handled; the boolean is just the one static fact the model can't infer.</p>
+<ul><li><strong>Label now:</strong> <code>wind exposed: yes / no</code></li><li><strong>Label should be:</strong> something like <strong>"Open to the wind?"</strong> with the hint</li></ul>
+<p>  <em>"a sea cliff, summit, or standalone buttress with no hillside behind it —   the ranking works out the rest from aspect + forecast direction."</em></p>
+<p>The lesson generalises: several fields below are real inputs with labels that make them look dumber than they are.</p>
+<hr>
+<h2 id="field-by-field">Field-by-field</h2>
+<p>Only the fields worth a comment are listed. Anything not here (name, grade, length, pitches, lat/lon, intro prose, images, guidebooks, references) is fine as-is.</p>
+<h3 id="category-errors-bucket-b-asked-as-a-human-toggle">Category errors — Bucket B asked as a human toggle</h3>
+<div class="tw"><table><thead><tr><th>Field</th><th>Now</th><th>Problem</th><th>Fix</th></tr></thead><tbody><tr><td><strong>best months</strong></td><td>12 clickable months</td><td>The engine already scores conditions from aspect + climate + live weather. Hand-toggling 12 months is laborious, goes stale, and can contradict the live ranking.</td><td>Derive it and show it <strong>read-only</strong> ("typically Apr–Sep"), with an optional human <em>override</em> for local knowledge the data misses. Don't ask it blank.</td></tr><tr><td><strong>sun window</strong></td><td>enum (human)</td><td>Largely a function of <strong>aspect</strong> (a NE face gets morning sun, a SW face evening). You already store aspect.</td><td>Derive the default from aspect; let the human override only where topography shadows it (deep gorge, north-facing in a south-facing cove).</td></tr><tr><td><strong>approach diff 1–5</strong></td><td>bare number</td><td>An <strong>unanchored scale</strong>. What is a 3? Nobody can tag consistently and no reader can decode it.</td><td>Replace with a described enum: <em>flat path · uphill walk · steep/rough · scramble · technical approach</em>. Anchored words beat a naked number.</td></tr></tbody></table></div>
+<h3 id="labels-or-scope-that-mislead">Labels or scope that mislead</h3>
+<div class="tw"><table><thead><tr><th>Field</th><th>Now</th><th>Problem</th><th>Fix</th></tr></thead><tbody><tr><td><strong>protection</strong></td><td>Erickson <code>G/PG/PG-13/R/X</code></td><td>That's the <strong>US seriousness scale</strong>. In British trad, seriousness is already baked into the <strong>E-grade</strong> (E1 5a vs HVS 5a <em>is</em> the danger signal). Asking both risks double-counting or confusing curators on UK routes.</td><td>Confirm the rule: on British-adjectival routes, is protection redundant with the E-grade? If so, hide it for that grade system.</td></tr><tr><td><strong>commitment</strong></td><td>alpine grade <code>I–VII</code></td><td>Meaningful for alpine/big-wall; <strong>noise on a single-pitch roadside VS</strong>, which is most of the corpus.</td><td>Show only when discipline is alpine/big-wall/multi-pitch.</td></tr><tr><td><strong>abseils</strong></td><td>number</td><td>Only relevant if the descent <em>is</em> abseils.</td><td>Show only when <code>descent method = abseil</code>.</td></tr><tr><td><strong>rope</strong></td><td>free text</td><td>Unclear what it wants — length? number? Overlaps with <strong>rack</strong> ("60m ropes").</td><td>Decide: fold into rack, or make it structured (single/half/twin + length).</td></tr><tr><td><strong>escapable</strong></td><td>yes/no + good hint</td><td>Actually fine — a real Bucket A fact, well-worded ("can you bail mid-route without topping out?"). Keep.</td><td>—</td></tr></tbody></table></div>
+<h3 id="the-bigger-editorial-problem-the-form-asks-everything-of-everything">The bigger editorial problem — the form asks everything of everything</h3>
+<p>The info-ring row shows <strong>~18 fields for every climb</strong>, regardless of what it is. A single-pitch roadside VS gets asked for <em>commitment grade</em>, <em>abseils</em>, <em>escapable</em>, <em>descent method</em> — all noise; a curator either leaves them blank (and the row looks unfinished) or guesses. <strong>Fields should appear conditionally on discipline and pitch count.</strong> This single change would remove most of the "why is it asking me this" feeling.</p>
+<h3 id="naming-collision">Naming collision</h3>
+<p><code>character</code> tags include <strong>"exposed"</strong> (the climber's sense — airy, committing) while a separate field is <strong>"wind exposed"</strong>. Two unrelated meanings of one word on the same card. Rename one (e.g. wind → "open to the wind", per Exhibit A).</p>
+<hr>
+<h2 id="gaps-facts-the-engine-needs-that-you-can-t-enter">Gaps — facts the engine needs that you <em>can't</em> enter</h2>
+<p>The ranking engine reads these, but <strong>none are editable in the Studio</strong>:</p>
+<ul><li><code>tidal</code> — can you even reach the base at high water? (binary, changes the day)</li><li><code>coastal</code> / <code>drying</code> — how fast the rock comes back into nick after rain</li><li><code>seepage</code> — does it stay wet after dry weather?</li><li><code>cliff_height_m</code> — used in exposure/commitment</li></ul>
+<p>Right now the ranking depends on facts a curator has no way to set. Either surface them (they're Bucket A facts, mostly crag-level), or document where they <em>are</em> set today so the gap is intentional, not accidental.</p>
+<hr>
+<h2 id="what-well-curated-looks-like-the-c-bucket-standard">What "well-curated" looks like (the C-bucket standard)</h2>
+<p>The prose is the product. A good entry:</p>
+<ol><li><strong>Intro</strong> answers <em>why climb it</em> — the line, the crux, the character — in a</li></ol>
+<p>   climber's voice, not a spec sheet. (Ground the voice in the guidebook/UKC    prose you already have rights to; that's the house style, not invented copy.)</p>
+<ol><li><strong>Facts</strong> are the ones that apply, filled honestly; blanks left blank, not</li></ol>
+<p>   fudged to look complete.</p>
+<ol><li><strong>Hazards</strong> carry evidence — a safety-critical hazard <em>requires</em> a source</li></ol>
+<p>   span (the schema enforces this). No decorative danger tags.</p>
+<ol><li><strong>Judgment is marked as judgment</strong> — stars and character are opinion; the</li></ol>
+<p>   entry shouldn't launder them as fact.</p>
+<hr>
+<h2 id="open-questions-for-you-to-red-pen">Open questions for you to red-pen</h2>
+<ol><li><strong>best months / sun window</strong> — derive-with-override, or keep human? (I lean derive.)</li><li><strong>protection vs the E-grade</strong> — redundant on British routes? Hide it there?</li><li><strong>approach difficulty</strong> — adopt the described-enum, and what are the words?</li><li><strong>conditional fields</strong> — agree fields should hide by discipline/pitches? Which stay always-on?</li><li><strong>tidal / coastal / drying / seepage</strong> — where should these be set: route, crag, or a new "conditions" panel?</li><li>Any field here you'd <strong>cut entirely</strong> as never-useful?</li></ol>
+<p>Answer these (even one line each) and I'll turn this from an audit into the working handbook, and reshape the Studio fields to match.</p></div></body></html>
