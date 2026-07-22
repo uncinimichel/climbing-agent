@@ -1,6 +1,6 @@
 {
   "comment": "Latest flight prices per combo (round-trip, 1 pax, GBP). Updated on demand by Claude or by an API script. null = not yet checked.",
-  "checked_at": "2026-07-21 08:17 UTC (Google Flights/SerpApi)",
+  "checked_at": "2026-07-22 08:20 UTC (Google Flights/SerpApi)",
   "currency": "GBP",
   "rep_combo": {
     "id": "fri-tue",
@@ -198,47 +198,6 @@
         "cached": true
       }
     },
-    "West Cornwall (Bosigran)": {
-      "michel": {
-        "mode": "drive"
-      },
-      "dan": {
-        "mode": "fly",
-        "to": "NQY",
-        "options": [
-          {
-            "price": 148,
-            "airline": "Ryanair",
-            "from": "DUB",
-            "to": "NQY",
-            "dep": "13:55",
-            "arr": "15:00",
-            "stops": 0
-          },
-          {
-            "price": 179,
-            "airline": "Aer Lingus",
-            "from": "DUB",
-            "to": "NQY",
-            "dep": "15:40",
-            "arr": "16:55",
-            "stops": 0
-          },
-          {
-            "price": 591,
-            "airline": "Aer Lingus",
-            "from": "BHD",
-            "to": "NQY",
-            "dep": "07:00",
-            "arr": "16:55",
-            "stops": 2
-          }
-        ],
-        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDTlFZGjASCjIwMjYtMDctMjhqBwgBEgNOUVlyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
-        "book_url": "https://www.skyscanner.net/transport/flights/dub/nqy/260724/260728/",
-        "cached": true
-      }
-    },
     "Picos de Europa": {
       "michel": {
         "mode": "fly",
@@ -313,18 +272,87 @@
         "cached": true
       }
     },
-    "Elbsandstein": {
+    "Aladaglar": {
       "michel": {
         "mode": "fly",
         "options": [],
-        "to": "PRG",
-        "book_url": "https://www.skyscanner.net/transport/flights/lgw/prg/260724/260728/"
+        "to": "ASR",
+        "book_url": "https://www.skyscanner.net/transport/flights/lgw/asr/260724/260728/"
       },
       "dan": {
         "mode": "fly",
         "options": [],
-        "to": "PRG",
-        "book_url": "https://www.skyscanner.net/transport/flights/bfs/prg/260724/260728/"
+        "to": "ASR",
+        "book_url": "https://www.skyscanner.net/transport/flights/bfs/asr/260724/260728/"
+      }
+    },
+    "West Cornwall (Bosigran)": {
+      "michel": {
+        "mode": "drive"
+      },
+      "dan": {
+        "mode": "fly",
+        "to": "NQY",
+        "options": [
+          {
+            "price": 148,
+            "airline": "Ryanair",
+            "from": "DUB",
+            "to": "NQY",
+            "dep": "13:55",
+            "arr": "15:00",
+            "stops": 0
+          },
+          {
+            "price": 179,
+            "airline": "Aer Lingus",
+            "from": "DUB",
+            "to": "NQY",
+            "dep": "15:40",
+            "arr": "16:55",
+            "stops": 0
+          },
+          {
+            "price": 591,
+            "airline": "Aer Lingus",
+            "from": "BHD",
+            "to": "NQY",
+            "dep": "07:00",
+            "arr": "16:55",
+            "stops": 2
+          }
+        ],
+        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDTlFZGjASCjIwMjYtMDctMjhqBwgBEgNOUVlyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
+        "book_url": "https://www.skyscanner.net/transport/flights/dub/nqy/260724/260728/",
+        "cached": true
+      }
+    },
+    "Campanile Basso": {
+      "michel": {
+        "mode": "fly",
+        "options": [],
+        "to": "VRN",
+        "book_url": "https://www.skyscanner.net/transport/flights/lgw/vrn/260724/260728/"
+      },
+      "dan": {
+        "mode": "fly",
+        "options": [],
+        "to": "VRN",
+        "book_url": "https://www.skyscanner.net/transport/flights/bfs/vrn/260724/260728/"
+      }
+    },
+    "Paklenica (Anica Kuk)": {
+      "michel": {
+        "mode": "fly",
+        "options": [],
+        "to": "ZAD",
+        "book_url": "https://www.skyscanner.net/transport/flights/lgw/zad/260724/260728/"
+      },
+      "dan": {
+        "mode": "fly",
+        "options": [],
+        "to": "ZAD",
+        "book_url": "https://www.skyscanner.net/transport/flights/bfs/zad/260724/260728/"
       }
     },
     "Devon": {
@@ -338,40 +366,18 @@
         "book_url": "https://www.skyscanner.net/transport/flights/bfs/ext/260724/260728/"
       }
     },
-    "Fre\u00ffr": {
+    "\u00c9crins (Aiguille Dibona)": {
       "michel": {
         "mode": "fly",
         "options": [],
-        "to": "BRU",
-        "book_url": "https://www.skyscanner.net/transport/flights/lgw/bru/260724/260728/"
+        "to": "LYS",
+        "book_url": "https://www.skyscanner.net/transport/flights/lgw/lys/260724/260728/"
       },
       "dan": {
         "mode": "fly",
         "options": [],
-        "to": "BRU",
-        "book_url": "https://www.skyscanner.net/transport/flights/bfs/bru/260724/260728/"
-      }
-    },
-    "Isle of White": {
-      "michel": {
-        "mode": "drive"
-      },
-      "dan": {
-        "mode": "fly",
-        "options": [],
-        "to": "SOU",
-        "book_url": "https://www.skyscanner.net/transport/flights/bfs/sou/260724/260728/"
-      }
-    },
-    "Mournes, NI": {
-      "michel": {
-        "mode": "fly",
-        "options": [],
-        "to": "BFS",
-        "book_url": "https://www.skyscanner.net/transport/flights/lgw/bfs/260724/260728/"
-      },
-      "dan": {
-        "mode": "local"
+        "to": "LYS",
+        "book_url": "https://www.skyscanner.net/transport/flights/bfs/lys/260724/260728/"
       }
     }
   },
@@ -379,12 +385,6 @@
     "venue": "Tenerife",
     "travellers": {
       "michel": [
-        {
-          "shift": -2,
-          "out": "2026-07-22",
-          "back": "2026-07-26",
-          "book_url": "https://www.skyscanner.net/transport/flights/lgw/tfs/260722/260726/"
-        },
         {
           "shift": -1,
           "out": "2026-07-23",
@@ -405,12 +405,6 @@
         }
       ],
       "dan": [
-        {
-          "shift": -2,
-          "out": "2026-07-22",
-          "back": "2026-07-26",
-          "book_url": "https://www.skyscanner.net/transport/flights/bfs/tfs/260722/260726/"
-        },
         {
           "shift": -1,
           "out": "2026-07-23",
