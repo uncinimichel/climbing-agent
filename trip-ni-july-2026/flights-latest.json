@@ -1,6 +1,6 @@
 {
   "comment": "Latest flight prices per combo (round-trip, 1 pax, GBP). Updated on demand by Claude or by an API script. null = not yet checked.",
-  "checked_at": "2026-07-23 08:22 UTC (Google Flights/SerpApi)",
+  "checked_at": "2026-07-24 08:17 UTC (Google Flights/SerpApi)",
   "currency": "GBP",
   "rep_combo": {
     "id": "fri-tue",
@@ -80,47 +80,6 @@
         ],
         "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDVEZTGjASCjIwMjYtMDctMjhqBwgBEgNURlNyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
         "book_url": "https://www.skyscanner.net/transport/flights/dub/tfs/260724/260728/",
-        "cached": true
-      }
-    },
-    "Lundy": {
-      "michel": {
-        "mode": "drive"
-      },
-      "dan": {
-        "mode": "fly",
-        "to": "BRS",
-        "options": [
-          {
-            "price": 38,
-            "airline": "Ryanair",
-            "from": "DUB",
-            "to": "BRS",
-            "dep": "07:00",
-            "arr": "08:05",
-            "stops": 0
-          },
-          {
-            "price": 43,
-            "airline": "Ryanair",
-            "from": "DUB",
-            "to": "BRS",
-            "dep": "21:50",
-            "arr": "22:55",
-            "stops": 0
-          },
-          {
-            "price": 86,
-            "airline": "easyJet",
-            "from": "BFS",
-            "to": "BRS",
-            "dep": "21:45",
-            "arr": "22:55",
-            "stops": 0
-          }
-        ],
-        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQlJTGjASCjIwMjYtMDctMjhqBwgBEgNCUlNyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
-        "book_url": "https://www.skyscanner.net/transport/flights/dub/brs/260724/260728/",
         "cached": true
       }
     },
@@ -212,6 +171,47 @@
         "book_url": "https://www.skyscanner.net/transport/flights/bfs/asr/260724/260728/"
       }
     },
+    "Lundy": {
+      "michel": {
+        "mode": "drive"
+      },
+      "dan": {
+        "mode": "fly",
+        "to": "BRS",
+        "options": [
+          {
+            "price": 38,
+            "airline": "Ryanair",
+            "from": "DUB",
+            "to": "BRS",
+            "dep": "07:00",
+            "arr": "08:05",
+            "stops": 0
+          },
+          {
+            "price": 43,
+            "airline": "Ryanair",
+            "from": "DUB",
+            "to": "BRS",
+            "dep": "21:50",
+            "arr": "22:55",
+            "stops": 0
+          },
+          {
+            "price": 86,
+            "airline": "easyJet",
+            "from": "BFS",
+            "to": "BRS",
+            "dep": "21:45",
+            "arr": "22:55",
+            "stops": 0
+          }
+        ],
+        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQlJTGjASCjIwMjYtMDctMjhqBwgBEgNCUlNyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
+        "book_url": "https://www.skyscanner.net/transport/flights/dub/brs/260724/260728/",
+        "cached": true
+      }
+    },
     "West Cornwall (Bosigran)": {
       "michel": {
         "mode": "drive"
@@ -253,17 +253,6 @@
         "cached": true
       }
     },
-    "Devon": {
-      "michel": {
-        "mode": "drive"
-      },
-      "dan": {
-        "mode": "fly",
-        "options": [],
-        "to": "EXT",
-        "book_url": "https://www.skyscanner.net/transport/flights/bfs/ext/260724/260728/"
-      }
-    },
     "Campanile Basso": {
       "michel": {
         "mode": "fly",
@@ -278,78 +267,29 @@
         "book_url": "https://www.skyscanner.net/transport/flights/bfs/vrn/260724/260728/"
       }
     },
-    "Picos de Europa": {
+    "Devon": {
       "michel": {
-        "mode": "fly",
-        "to": "BIO",
-        "options": [
-          {
-            "price": 129,
-            "airline": "Wizz Air",
-            "from": "LTN",
-            "to": "BIO",
-            "dep": "18:00",
-            "arr": "21:00",
-            "stops": 0
-          },
-          {
-            "price": 139,
-            "airline": "Vueling",
-            "from": "LGW",
-            "to": "BIO",
-            "dep": "16:20",
-            "arr": "19:25",
-            "stops": 0
-          },
-          {
-            "price": 169,
-            "airline": "Vueling",
-            "from": "LHR",
-            "to": "BIO",
-            "dep": "15:30",
-            "arr": "18:35",
-            "stops": 0
-          }
-        ],
-        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTA3LTI0agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDQklPGkISCjIwMjYtMDctMjhqBwgBEgNCSU9yBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ",
-        "book_url": "https://www.skyscanner.net/transport/flights/ltn/bio/260724/260728/",
-        "cached": true
+        "mode": "drive"
       },
       "dan": {
         "mode": "fly",
-        "to": "BIO",
-        "options": [
-          {
-            "price": 336,
-            "airline": "Lufthansa",
-            "from": "DUB",
-            "to": "BIO",
-            "dep": "08:45",
-            "arr": "23:10",
-            "stops": 1
-          },
-          {
-            "price": 352,
-            "airline": "KLM",
-            "from": "DUB",
-            "to": "BIO",
-            "dep": "05:55",
-            "arr": "16:30",
-            "stops": 1
-          },
-          {
-            "price": 329,
-            "airline": "SWISS",
-            "from": "DUB",
-            "to": "BIO",
-            "dep": "20:15",
-            "arr": "08:20",
-            "stops": 2
-          }
-        ],
-        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQklPGjASCjIwMjYtMDctMjhqBwgBEgNCSU9yBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
-        "book_url": "https://www.skyscanner.net/transport/flights/dub/bio/260724/260728/",
-        "cached": true
+        "options": [],
+        "to": "EXT",
+        "book_url": "https://www.skyscanner.net/transport/flights/bfs/ext/260724/260728/"
+      }
+    },
+    "Dolomites (Cortina)": {
+      "michel": {
+        "mode": "fly",
+        "options": [],
+        "to": "VCE",
+        "book_url": "https://www.skyscanner.net/transport/flights/lgw/vce/260724/260728/"
+      },
+      "dan": {
+        "mode": "fly",
+        "options": [],
+        "to": "VCE",
+        "book_url": "https://www.skyscanner.net/transport/flights/bfs/vce/260724/260728/"
       }
     },
     "Elbsandstein": {
@@ -366,15 +306,18 @@
         "book_url": "https://www.skyscanner.net/transport/flights/bfs/prg/260724/260728/"
       }
     },
-    "Mournes, NI": {
+    "Fre\u00ffr": {
       "michel": {
         "mode": "fly",
         "options": [],
-        "to": "BFS",
-        "book_url": "https://www.skyscanner.net/transport/flights/lgw/bfs/260724/260728/"
+        "to": "BRU",
+        "book_url": "https://www.skyscanner.net/transport/flights/lgw/bru/260724/260728/"
       },
       "dan": {
-        "mode": "local"
+        "mode": "fly",
+        "options": [],
+        "to": "BRU",
+        "book_url": "https://www.skyscanner.net/transport/flights/bfs/bru/260724/260728/"
       }
     }
   },
