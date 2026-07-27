@@ -1,6 +1,6 @@
 {
   "comment": "Latest flight prices per combo (round-trip, 1 pax, GBP). Updated on demand by Claude or by an API script. null = not yet checked.",
-  "checked_at": "2026-07-26 08:16 UTC (Google Flights/SerpApi)",
+  "checked_at": "2026-07-27 09:43 UTC (Google Flights/SerpApi)",
   "currency": "GBP",
   "rep_combo": {
     "id": "fri-tue",
@@ -9,6 +9,20 @@
     "nights": 4
   },
   "venues": {
+    "\u00c9crins (Aiguille Dibona)": {
+      "michel": {
+        "mode": "fly",
+        "options": [],
+        "to": "LYS",
+        "book_url": "https://www.skyscanner.net/transport/flights/lgw/lys/260724/260728/"
+      },
+      "dan": {
+        "mode": "fly",
+        "options": [],
+        "to": "LYS",
+        "book_url": "https://www.skyscanner.net/transport/flights/bfs/lys/260724/260728/"
+      }
+    },
     "Picos de Europa": {
       "michel": {
         "mode": "fly",
@@ -61,6 +75,94 @@
         ],
         "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQlJTGjASCjIwMjYtMDctMjhqBwgBEgNCUlNyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
         "book_url": "https://www.skyscanner.net/transport/flights/dub/brs/260724/260728/",
+        "cached": true
+      }
+    },
+    "Aladaglar": {
+      "michel": {
+        "mode": "fly",
+        "options": [],
+        "to": "ASR",
+        "book_url": "https://www.skyscanner.net/transport/flights/lgw/asr/260724/260728/"
+      },
+      "dan": {
+        "mode": "fly",
+        "options": [],
+        "to": "ASR",
+        "book_url": "https://www.skyscanner.net/transport/flights/bfs/asr/260724/260728/"
+      }
+    },
+    "Tenerife": {
+      "michel": {
+        "mode": "fly",
+        "to": "TFS",
+        "options": [
+          {
+            "price": 211,
+            "airline": "easyJet",
+            "from": "LGW",
+            "to": "TFS",
+            "dep": "17:10",
+            "arr": "21:40",
+            "stops": 0
+          },
+          {
+            "price": 215,
+            "airline": "Jet2",
+            "from": "STN",
+            "to": "TFS",
+            "dep": "17:15",
+            "arr": "21:45",
+            "stops": 0
+          },
+          {
+            "price": 222,
+            "airline": "easyJet",
+            "from": "LGW",
+            "to": "TFS",
+            "dep": "14:00",
+            "arr": "18:35",
+            "stops": 0
+          }
+        ],
+        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTA3LTI0agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDVEZTGkISCjIwMjYtMDctMjhqBwgBEgNURlNyBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ",
+        "book_url": "https://www.skyscanner.net/transport/flights/lgw/tfs/260724/260728/",
+        "cached": true
+      },
+      "dan": {
+        "mode": "fly",
+        "to": "TFS",
+        "options": [
+          {
+            "price": 443,
+            "airline": "Tap Air Portugal",
+            "from": "DUB",
+            "to": "TFS",
+            "dep": "18:50",
+            "arr": "12:15",
+            "stops": 1
+          },
+          {
+            "price": 595,
+            "airline": "Aer Lingus",
+            "from": "DUB",
+            "to": "TFS",
+            "dep": "15:00",
+            "arr": "19:35",
+            "stops": 0
+          },
+          {
+            "price": 616,
+            "airline": "Aer Lingus",
+            "from": "DUB",
+            "to": "TFS",
+            "dep": "07:15",
+            "arr": "11:55",
+            "stops": 0
+          }
+        ],
+        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDVEZTGjASCjIwMjYtMDctMjhqBwgBEgNURlNyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
+        "book_url": "https://www.skyscanner.net/transport/flights/dub/tfs/260724/260728/",
         "cached": true
       }
     },
@@ -138,108 +240,6 @@
         "cached": true
       }
     },
-    "Tenerife": {
-      "michel": {
-        "mode": "fly",
-        "to": "TFS",
-        "options": [
-          {
-            "price": 211,
-            "airline": "easyJet",
-            "from": "LGW",
-            "to": "TFS",
-            "dep": "17:10",
-            "arr": "21:40",
-            "stops": 0
-          },
-          {
-            "price": 215,
-            "airline": "Jet2",
-            "from": "STN",
-            "to": "TFS",
-            "dep": "17:15",
-            "arr": "21:45",
-            "stops": 0
-          },
-          {
-            "price": 222,
-            "airline": "easyJet",
-            "from": "LGW",
-            "to": "TFS",
-            "dep": "14:00",
-            "arr": "18:35",
-            "stops": 0
-          }
-        ],
-        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTA3LTI0agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDVEZTGkISCjIwMjYtMDctMjhqBwgBEgNURlNyBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ",
-        "book_url": "https://www.skyscanner.net/transport/flights/lgw/tfs/260724/260728/",
-        "cached": true
-      },
-      "dan": {
-        "mode": "fly",
-        "to": "TFS",
-        "options": [
-          {
-            "price": 443,
-            "airline": "Tap Air Portugal",
-            "from": "DUB",
-            "to": "TFS",
-            "dep": "18:50",
-            "arr": "12:15",
-            "stops": 1
-          },
-          {
-            "price": 595,
-            "airline": "Aer Lingus",
-            "from": "DUB",
-            "to": "TFS",
-            "dep": "15:00",
-            "arr": "19:35",
-            "stops": 0
-          },
-          {
-            "price": 616,
-            "airline": "Aer Lingus",
-            "from": "DUB",
-            "to": "TFS",
-            "dep": "07:15",
-            "arr": "11:55",
-            "stops": 0
-          }
-        ],
-        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDVEZTGjASCjIwMjYtMDctMjhqBwgBEgNURlNyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
-        "book_url": "https://www.skyscanner.net/transport/flights/dub/tfs/260724/260728/",
-        "cached": true
-      }
-    },
-    "Aladaglar": {
-      "michel": {
-        "mode": "fly",
-        "options": [],
-        "to": "ASR",
-        "book_url": "https://www.skyscanner.net/transport/flights/lgw/asr/260724/260728/"
-      },
-      "dan": {
-        "mode": "fly",
-        "options": [],
-        "to": "ASR",
-        "book_url": "https://www.skyscanner.net/transport/flights/bfs/asr/260724/260728/"
-      }
-    },
-    "\u00c9crins (Aiguille Dibona)": {
-      "michel": {
-        "mode": "fly",
-        "options": [],
-        "to": "LYS",
-        "book_url": "https://www.skyscanner.net/transport/flights/lgw/lys/260724/260728/"
-      },
-      "dan": {
-        "mode": "fly",
-        "options": [],
-        "to": "LYS",
-        "book_url": "https://www.skyscanner.net/transport/flights/bfs/lys/260724/260728/"
-      }
-    },
     "Devon": {
       "michel": {
         "mode": "drive"
@@ -292,6 +292,20 @@
         "cached": true
       }
     },
+    "Loften": {
+      "michel": {
+        "mode": "fly",
+        "options": [],
+        "to": "BOO",
+        "book_url": "https://www.skyscanner.net/transport/flights/lgw/boo/260724/260728/"
+      },
+      "dan": {
+        "mode": "fly",
+        "options": [],
+        "to": "BOO",
+        "book_url": "https://www.skyscanner.net/transport/flights/bfs/boo/260724/260728/"
+      }
+    },
     "Mont Blonc": {
       "michel": {
         "mode": "fly",
@@ -304,17 +318,6 @@
         "options": [],
         "to": "GVA",
         "book_url": "https://www.skyscanner.net/transport/flights/bfs/gva/260724/260728/"
-      }
-    },
-    "Isle of White": {
-      "michel": {
-        "mode": "drive"
-      },
-      "dan": {
-        "mode": "fly",
-        "options": [],
-        "to": "SOU",
-        "book_url": "https://www.skyscanner.net/transport/flights/bfs/sou/260724/260728/"
       }
     }
   },
