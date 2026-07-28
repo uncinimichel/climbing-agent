@@ -5,11 +5,35 @@
 > throughput** the bottleneck: 50 draft routes today, 176 crawled Fair Head routes already
 > in Postgres behind them, hundreds more as the crawler scales. The Corpus Inspector is
 > read-only; this is the plan for the tool that *writes*.
-> **Status:** ✅ **Built** (2026-07-13, decision [#34](decisions.md)) — **Postgres-first**,
-> per Michel ("no merge, let's do Postgres-first"). Run it:
-> `agent/.venv/bin/python db/tools/curate.py` → **http://localhost:8890** (needs
-> `colima start` + the climbing-db container). The mockup that seeded the design stays at
-> `prototypes/curation-studio.html` (local-only).
+> **Status:** ✅ **Built and deployed to the cloud.** The Postgres-first design below
+> (decision [#34](decisions.md), 2026-07-13) shipped, then the storage layer was migrated
+> out from under it — see the banner. The **UI, endpoints, and queue/grid/topo/taxonomy
+> workflow are unchanged**; only the store moved (Postgres → JSON record). The mockup that
+> seeded the design stays at `prototypes/curation-studio.html` (local-only).
+>
+> ---
+> ### ⚠️ ARCHITECTURE MOVED — read this before trusting the Postgres details below
+>
+> Decisions **[#38](decisions.md) → [#39](decisions.md) → [#40](decisions.md)** (18–19 Jul)
+> replaced Postgres entirely. The Studio now runs in **two homes over the same FastAPI app
+> (`corpus/tools/curate.py`)**:
+>
+> - **Cloud (live):** static UI on S3/CloudFront (`https://driuinui6do86.cloudfront.net`),
+>   **Cognito** auth (Michel + Dan, email/password), **Lambda** (Mangum) API, reading and
+>   writing the **JSON record in S3**. Reachable from any device.
+> - **Local:** `corpus/studio.sh` → `localhost:8890`, same app and UI. No Docker, no
+>   Postgres, no `colima` — the record is plain JSON in `corpus/record/`.
+>
+> Every "Postgres", "`db/`", "corpus.json export", "`apply.sh`", "`ingest_corpus.py`" and
+> "colima container" reference **below is historical**. The equivalents today:
+> `db/tools/curate.py` → `corpus/tools/curate.py`; the DB write path → `corpus/tools/store.py`
+> (in-memory JSON store, validates against JSON Schemas generated from the taxonomy files,
+> keeps the publish⇒human CHECK as an if/then, lints referential integrity via
+> `lint_record.py`); DB restore → `corpus/sync.sh push|pull` against the S3 record bucket.
+> The Postgres path is kept dormant as the documented escape hatch (see #39). Read the
+> rest of this doc for the *product* design (queue-first, receipts, field-check, evidence
+> rail) — that all still holds. Just mentally swap the storage nouns.
+> ---
 
 ## Requirements (Michel, 2026-07-13)
 
