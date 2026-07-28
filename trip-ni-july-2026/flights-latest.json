@@ -1,6 +1,6 @@
 {
   "comment": "Latest flight prices per combo (round-trip, 1 pax, GBP). Updated on demand by Claude or by an API script. null = not yet checked.",
-  "checked_at": "2026-07-27 09:43 UTC (Google Flights/SerpApi)",
+  "checked_at": "2026-07-28 08:23 UTC (Google Flights/SerpApi)",
   "currency": "GBP",
   "rep_combo": {
     "id": "fri-tue",
@@ -21,20 +21,6 @@
         "options": [],
         "to": "LYS",
         "book_url": "https://www.skyscanner.net/transport/flights/bfs/lys/260724/260728/"
-      }
-    },
-    "Picos de Europa": {
-      "michel": {
-        "mode": "fly",
-        "options": [],
-        "to": "BIO",
-        "book_url": "https://www.skyscanner.net/transport/flights/lgw/bio/260724/260728/"
-      },
-      "dan": {
-        "mode": "fly",
-        "options": [],
-        "to": "BIO",
-        "book_url": "https://www.skyscanner.net/transport/flights/bfs/bio/260724/260728/"
       }
     },
     "Lundy": {
@@ -76,6 +62,20 @@
         "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQlJTGjASCjIwMjYtMDctMjhqBwgBEgNCUlNyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
         "book_url": "https://www.skyscanner.net/transport/flights/dub/brs/260724/260728/",
         "cached": true
+      }
+    },
+    "Picos de Europa": {
+      "michel": {
+        "mode": "fly",
+        "options": [],
+        "to": "BIO",
+        "book_url": "https://www.skyscanner.net/transport/flights/lgw/bio/260724/260728/"
+      },
+      "dan": {
+        "mode": "fly",
+        "options": [],
+        "to": "BIO",
+        "book_url": "https://www.skyscanner.net/transport/flights/bfs/bio/260724/260728/"
       }
     },
     "Aladaglar": {
@@ -251,45 +251,15 @@
         "book_url": "https://www.skyscanner.net/transport/flights/bfs/ext/260724/260728/"
       }
     },
-    "West Cornwall (Bosigran)": {
+    "Mournes, NI": {
       "michel": {
-        "mode": "drive"
+        "mode": "fly",
+        "options": [],
+        "to": "BFS",
+        "book_url": "https://www.skyscanner.net/transport/flights/lgw/bfs/260724/260728/"
       },
       "dan": {
-        "mode": "fly",
-        "to": "NQY",
-        "options": [
-          {
-            "price": 148,
-            "airline": "Ryanair",
-            "from": "DUB",
-            "to": "NQY",
-            "dep": "13:55",
-            "arr": "15:00",
-            "stops": 0
-          },
-          {
-            "price": 179,
-            "airline": "Aer Lingus",
-            "from": "DUB",
-            "to": "NQY",
-            "dep": "15:40",
-            "arr": "16:55",
-            "stops": 0
-          },
-          {
-            "price": 591,
-            "airline": "Aer Lingus",
-            "from": "BHD",
-            "to": "NQY",
-            "dep": "07:00",
-            "arr": "16:55",
-            "stops": 2
-          }
-        ],
-        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTA3LTI0agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDTlFZGjASCjIwMjYtMDctMjhqBwgBEgNOUVlyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
-        "book_url": "https://www.skyscanner.net/transport/flights/dub/nqy/260724/260728/",
-        "cached": true
+        "mode": "local"
       }
     },
     "Loften": {
