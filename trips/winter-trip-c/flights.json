@@ -1,0 +1,69 @@
+{
+  "comment": "Winter trip — multi-destination. Route origins drive the distance-from-home ranking signal; per-venue airports come from the sheet/gazetteer. Priced only when this is the nearest live trip (policy); estimates otherwise.",
+  "route": {
+    "origin_city": "London",
+    "origin_airports": [
+      "LGW",
+      "LHR",
+      "LTN",
+      "STN",
+      "LCY"
+    ],
+    "dest_city": "",
+    "dest_airports": [],
+    "traveller_origins": {
+      "michel": [
+        "LGW",
+        "LHR",
+        "LTN",
+        "STN",
+        "LCY"
+      ],
+      "dan": [
+        "BFS",
+        "BHD",
+        "DUB"
+      ]
+    },
+    "traveller_coords": {
+      "michel": [
+        [
+          51.5074,
+          -0.1278
+        ]
+      ],
+      "dan": [
+        [
+          54.607,
+          -5.926
+        ],
+        [
+          53.349,
+          -6.26
+        ]
+      ]
+    },
+    "passengers": 1
+  },
+  "rules": {
+    "depart_days": [
+      "Fri",
+      "Sat"
+    ],
+    "return_days": [
+      "Sun",
+      "Mon"
+    ],
+    "min_nights": 2,
+    "max_nights": 3
+  },
+  "combos": [
+    {
+      "id": "fri-sun",
+      "out": "2026-12-11",
+      "back": "2026-12-13",
+      "nights": 2
+    }
+  ],
+  "target_price_gbp": 200
+}

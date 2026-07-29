@@ -87,14 +87,14 @@ def build_banner(ctx, ranked):
                 f"Live forecast reaches your dates on {reaches_start:%-d %b}.")
 
 
-def run_trip(trip, repo_root, shared, serpapi_key=None, site_root=False,
+def run_trip(trip, repo_root, shared, serpapi_key=None,
              quota_guard=None, flight_cache=None, now=None):
-    """Render one trip completely. site_root=True keeps the legacy layout
-    (repo_root/index.html + venues/ + sitemap — the NI trip until M4);
-    otherwise the dashboard goes to trips/<slug>/index.html with no per-venue
-    pages or SEO files (M4 decides their multi-trip shape). Per-trip state
-    (flights-latest, rank-history, daily report, history/) always lives in
-    the trip's own directory. Returns the ranked list."""
+    """Render one trip completely to trips/<slug>/index.html. The repo root is
+    the trip picker (see render_index), so every trip — including the one that
+    owns the repo-root legacy dir — renders to its own trips/<slug>/ page.
+    Per-trip state (flights-latest, rank-history, daily report, history/) always
+    lives in the trip's own directory. Returns (ranked, data) so the caller can
+    build the picker from the same in-memory render data."""
     ctx = trip_context(trip, repo_root, serpapi_key=serpapi_key)
     d = trips.trip_dir(repo_root, trip)
     quota_guard = quota_guard or quota.AlwaysAllowQuotaGuard()
@@ -152,17 +152,11 @@ def run_trip(trip, repo_root, shared, serpapi_key=None, site_root=False,
     tag_spec = shared["tag_spec"]
 
     data = render.build_data(ranked, now, banner, ctx, mp_climbs, guidebooks, extra_climbing_data, tag_spec)
-    if site_root:
-        (repo_root / "index.html").write_text(render.render_page(data, tag_spec))
-        slugs = render.write_venue_pages(data, repo_root, tag_spec)
-        n_urls = render.write_seo_files(slugs, today, repo_root)
-        where = f"index.html, {len(slugs)} venue pages, sitemap ({n_urls} urls)"
-    else:
-        out = repo_root / "trips" / trip["slug"]
-        out.mkdir(parents=True, exist_ok=True)
-        (out / "index.html").write_text(render.render_page(
-            data, tag_spec, depth=2, canonical_path=f"trips/{trip['slug']}/"))
-        where = f"trips/{trip['slug']}/index.html"
+    out = repo_root / "trips" / trip["slug"]
+    out.mkdir(parents=True, exist_ok=True)
+    (out / "index.html").write_text(render.render_page(
+        data, tag_spec, depth=2, canonical_path=f"trips/{trip['slug']}/"))
+    where = f"trips/{trip['slug']}/index.html"
     md = render.build_md(ranked, now, banner, ctx, mp_climbs,
                           match_sheet_row=lambda name: sheet_venues.match_sheet_row(name, shared["sheet_rows"]))
     (d / "daily-report.md").write_text(md)
@@ -171,4 +165,12 @@ def run_trip(trip, repo_root, shared, serpapi_key=None, site_root=False,
     print(f"[{trip['slug']}] wrote {where}, daily-report.md, history/{today}.md")
     print(f"[{trip['slug']}] ranking:",
           " > ".join(r["venue"]["name"] for r in ranked if r.get("ok") and r["score"] >= 0))
-    return ranked
+    return ranked, data
+
+
+def render_index(repo_root, summaries, now=None):
+    """Write the repo-root trip picker from already-rendered trips.
+    `summaries` is a list of (trip registry dict, render `data`) pairs, in the
+    order to display. Delegates to engine.site_index."""
+    from . import site_index
+    return site_index.render_index(repo_root, summaries, now=now)

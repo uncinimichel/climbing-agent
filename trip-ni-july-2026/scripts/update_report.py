@@ -1,20 +1,15 @@
 #!/usr/bin/env python3
 """Daily build entrypoint (see knowledge/roadmap/decisions.md #25/#33).
 
-The whole pipeline lives in engine/driver.py — this script just resolves
-which trips to render:
+The whole pipeline lives in engine/driver.py. This script renders EVERY trip in
+trips.json to its own trips/<slug>/index.html, then writes the repo-root trip
+picker linking to them. There is no feature flag — the pipeline always follows
+the registry, so adding a trip to trips.json is all it takes to make it appear.
 
-  default        — the trip owning this directory (NI), to the site root.
-                   Exactly the pre-M3 behavior.
-  MULTI_TRIP=1   — every `live` trip in trips.json, nearest departure first.
-                   The nearest trip spends SerpApi quota; the others run
-                   keyless (distance estimates + last-known prices). The trip
-                   owning this directory keeps the site root; the rest render
-                   to trips/<slug>/index.html. Off in the cron until the NI
-                   trip ends (28 Jul) — decision #33 M3.
-
-Outputs per trip: index.html (root or trips/<slug>/), daily-report.md,
-history/<date>.md, flights-latest.json, rank-history.json.
+Flight quota: only the nearest-departing `live` trip spends SerpApi quota; every
+other trip (and any `ended` trip) renders keyless — distance estimates + last
+known prices. Per trip we also write daily-report.md, history/<date>.md,
+flights-latest.json and rank-history.json into the trip's own directory.
 """
 import os
 import sys
@@ -44,17 +39,21 @@ SERPAPI_KEY = os.environ.get("SERPAPI_KEY")
 def main():
     shared = driver.load_shared(REPO_ROOT)
     print(f"multi-pitch climbs loaded: {len(shared['mp_climbs'])}")
-    home = trips.trip_for_dir(REPO_ROOT, ROOT)
 
-    if os.environ.get("MULTI_TRIP") == "1":
-        live = sorted((t for t in trips.load_trips(REPO_ROOT) if t["status"] == "live"),
-                      key=lambda t: t["start"])
-        for i, t in enumerate(live):
-            driver.run_trip(t, REPO_ROOT, shared,
-                            serpapi_key=SERPAPI_KEY if i == 0 else None,
-                            site_root=(t["slug"] == home["slug"]))
-    else:
-        driver.run_trip(home, REPO_ROOT, shared, serpapi_key=SERPAPI_KEY, site_root=True)
+    all_trips = trips.load_trips(REPO_ROOT)
+    live = sorted((t for t in all_trips if t["status"] == "live"), key=lambda t: t["start"])
+    nearest = live[0]["slug"] if live else None  # only the soonest live trip prices flights
+
+    # display order: soonest first, live before ended
+    ordered = sorted(all_trips, key=lambda t: (t["status"] == "ended", t["start"]))
+    summaries = []
+    for t in ordered:
+        _, data = driver.run_trip(
+            t, REPO_ROOT, shared,
+            serpapi_key=SERPAPI_KEY if t["slug"] == nearest else None)
+        summaries.append((t, data))
+
+    driver.render_index(REPO_ROOT, summaries)
 
 
 if __name__ == "__main__":

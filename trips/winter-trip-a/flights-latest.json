@@ -1,0 +1,110 @@
+{
+  "flex": null,
+  "rep_combo": {
+    "id": "fri-sun",
+    "out": "2026-11-27",
+    "back": "2026-11-29",
+    "nights": 2
+  },
+  "venues": {
+    "Llanberis": {
+      "michel": {
+        "mode": "fly",
+        "options": [],
+        "to": "",
+        "book_url": "https://www.skyscanner.net/transport/flights/lgw//261127/261129/"
+      },
+      "dan": {
+        "mode": "fly",
+        "options": [],
+        "to": "",
+        "book_url": "https://www.skyscanner.net/transport/flights/bfs//261127/261129/"
+      }
+    },
+    "Montserrat": {
+      "michel": {
+        "mode": "fly",
+        "options": [],
+        "to": "BCN",
+        "book_url": "https://www.skyscanner.net/transport/flights/lgw/bcn/261127/261129/"
+      },
+      "dan": {
+        "mode": "fly",
+        "options": [],
+        "to": "BCN",
+        "book_url": "https://www.skyscanner.net/transport/flights/bfs/bcn/261127/261129/"
+      }
+    },
+    "Buzzards Roost": {
+      "michel": {
+        "mode": "unknown"
+      },
+      "dan": {
+        "mode": "unknown"
+      }
+    },
+    "Slieve Lamagan": {
+      "michel": {
+        "mode": "unknown"
+      },
+      "dan": {
+        "mode": "unknown"
+      }
+    },
+    "Penya Roc": {
+      "michel": {
+        "mode": "unknown"
+      },
+      "dan": {
+        "mode": "unknown"
+      }
+    },
+    "Dinorwic Quarry": {
+      "michel": {
+        "mode": "unknown"
+      },
+      "dan": {
+        "mode": "unknown"
+      }
+    },
+    "Costa Blanca": {
+      "michel": {
+        "mode": "fly",
+        "options": [],
+        "to": "ALC",
+        "book_url": "https://www.skyscanner.net/transport/flights/lgw/alc/261127/261129/"
+      },
+      "dan": {
+        "mode": "fly",
+        "options": [],
+        "to": "ALC",
+        "book_url": "https://www.skyscanner.net/transport/flights/bfs/alc/261127/261129/"
+      }
+    },
+    "Bosigran": {
+      "michel": {
+        "mode": "unknown"
+      },
+      "dan": {
+        "mode": "unknown"
+      }
+    },
+    "Chair Ladder": {
+      "michel": {
+        "mode": "unknown"
+      },
+      "dan": {
+        "mode": "unknown"
+      }
+    },
+    "Slieve Beg": {
+      "michel": {
+        "mode": "unknown"
+      },
+      "dan": {
+        "mode": "unknown"
+      }
+    }
+  },
+  "checked_at": "2026-07-29 06:13 UTC (no key \u2014 links only)"
+}

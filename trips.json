@@ -4,7 +4,7 @@
     {
       "slug": "ni-july-2026",
       "name": "Northern Ireland",
-      "status": "live",
+      "status": "ended",
       "start": "2026-07-24",
       "end": "2026-07-28",
       "flex_days": 2,
@@ -51,6 +51,162 @@
       ],
       "title": "Climbing trip ~24 July 2026 — Michel & Dan",
       "dir": "trip-ni-july-2026",
+      "sheet_merge": true
+    },
+    {
+      "slug": "winter-trip-a",
+      "name": "Winter Trip A",
+      "status": "live",
+      "start": "2026-11-27",
+      "end": "2026-11-29",
+      "flex_days": 3,
+      "travellers": [
+        {
+          "key": "michel",
+          "name": "Michel",
+          "homes": [
+            {
+              "city": "London",
+              "lat": 51.5074,
+              "lon": -0.1278
+            }
+          ],
+          "airports": [
+            "LGW",
+            "LHR",
+            "LTN",
+            "STN",
+            "LCY"
+          ]
+        },
+        {
+          "key": "dan",
+          "name": "Dan",
+          "homes": [
+            {
+              "city": "Belfast",
+              "lat": 54.607,
+              "lon": -5.926
+            },
+            {
+              "city": "Dublin",
+              "lat": 53.349,
+              "lon": -6.26
+            }
+          ],
+          "airports": [
+            "BFS",
+            "BHD",
+            "DUB"
+          ]
+        }
+      ],
+      "title": "Winter Trip A — best winter destination (Michel & Dan)",
+      "dir": "trips/winter-trip-a",
+      "sheet_merge": true
+    },
+    {
+      "slug": "winter-trip-b",
+      "name": "Winter Trip B",
+      "status": "live",
+      "start": "2026-12-04",
+      "end": "2026-12-06",
+      "flex_days": 3,
+      "travellers": [
+        {
+          "key": "michel",
+          "name": "Michel",
+          "homes": [
+            {
+              "city": "London",
+              "lat": 51.5074,
+              "lon": -0.1278
+            }
+          ],
+          "airports": [
+            "LGW",
+            "LHR",
+            "LTN",
+            "STN",
+            "LCY"
+          ]
+        },
+        {
+          "key": "dan",
+          "name": "Dan",
+          "homes": [
+            {
+              "city": "Belfast",
+              "lat": 54.607,
+              "lon": -5.926
+            },
+            {
+              "city": "Dublin",
+              "lat": 53.349,
+              "lon": -6.26
+            }
+          ],
+          "airports": [
+            "BFS",
+            "BHD",
+            "DUB"
+          ]
+        }
+      ],
+      "title": "Winter Trip B — best winter destination (Michel & Dan)",
+      "dir": "trips/winter-trip-b",
+      "sheet_merge": true
+    },
+    {
+      "slug": "winter-trip-c",
+      "name": "Winter Trip C",
+      "status": "live",
+      "start": "2026-12-11",
+      "end": "2026-12-13",
+      "flex_days": 3,
+      "travellers": [
+        {
+          "key": "michel",
+          "name": "Michel",
+          "homes": [
+            {
+              "city": "London",
+              "lat": 51.5074,
+              "lon": -0.1278
+            }
+          ],
+          "airports": [
+            "LGW",
+            "LHR",
+            "LTN",
+            "STN",
+            "LCY"
+          ]
+        },
+        {
+          "key": "dan",
+          "name": "Dan",
+          "homes": [
+            {
+              "city": "Belfast",
+              "lat": 54.607,
+              "lon": -5.926
+            },
+            {
+              "city": "Dublin",
+              "lat": 53.349,
+              "lon": -6.26
+            }
+          ],
+          "airports": [
+            "BFS",
+            "BHD",
+            "DUB"
+          ]
+        }
+      ],
+      "title": "Winter Trip C — best winter destination (Michel & Dan)",
+      "dir": "trips/winter-trip-c",
       "sheet_merge": true
     }
   ]

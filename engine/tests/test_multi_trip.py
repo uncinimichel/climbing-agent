@@ -1,12 +1,13 @@
-"""End-to-end test for MULTI_TRIP=1 (#33 M3 stage 3): a scratch second trip
-is added to the real registry, the real entrypoint runs once, and both
-dashboards must come out right — NI still owns the site root, the scratch
-trip renders to trips/<slug>/, keyless. The registry and scratch dir are
-restored/removed afterwards no matter what.
+"""End-to-end test for the flagless multi-trip pipeline (#33 M3/M4).
 
-The scratch trip reuses two NI venues and the NI dates so every weather
-lookup hits the shared repo-root cache/ — the test proves the sharing layer
-(no fresh fetches for a brand-new trip) as well as the loop.
+The registry is temporarily set to two trips — NI (ended) + a scratch live
+trip — the real entrypoint runs once, and everything must come out right:
+each trip renders to trips/<slug>/index.html (NI no longer owns the root), the
+repo root becomes the trip picker linking to both, and the scratch trip is
+keyless. The registry and scratch dir are restored/removed afterwards.
+
+The scratch trip reuses two NI venues and the NI dates so every weather lookup
+hits the shared repo-root cache/ — proving the sharing layer as well as the loop.
 """
 import json
 import os
@@ -20,6 +21,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 UPDATE_REPORT = REPO_ROOT / "trip-ni-july-2026" / "scripts" / "update_report.py"
 TRIPS_F = REPO_ROOT / "trips.json"
 SCRATCH = REPO_ROOT / "trips" / "test-mt"
+NI_OUT = REPO_ROOT / "trips" / "ni-july-2026"
 
 SCRATCH_TRIP = {
     "slug": "test-mt", "name": "Test MT", "status": "live",
@@ -36,10 +38,13 @@ def _window_data(html):
     return json.loads(m.group(1))
 
 
-def test_multi_trip_renders_both_dashboards():
+def test_multi_trip_renders_picker_and_dashboards():
     registry_before = TRIPS_F.read_text()
+    root_before = (REPO_ROOT / "index.html").read_text()
     ni_venues = json.loads((REPO_ROOT / "trip-ni-july-2026" / "venues.json").read_text())["venues"]
     picks = [v for v in ni_venues if v["name"] in ("Fair Head, NI", "Mournes, NI")] or ni_venues[:2]
+    ni = json.loads(registry_before)
+    ni_entry = {**next(t for t in ni["trips"] if t["slug"] == "ni-july-2026"), "status": "ended"}
     try:
         SCRATCH.mkdir(parents=True, exist_ok=True)
         (SCRATCH / "venues.json").write_text(json.dumps(
@@ -48,22 +53,30 @@ def test_multi_trip_renders_both_dashboards():
             "route": {"passengers": 1, "traveller_origins": {"rob": ["MAN"]},
                       "traveller_coords": {"rob": [[53.383, -1.4659]]}},
             "combos": [{"out": "2026-07-24", "back": "2026-07-28", "nights": 4}]}, indent=2))
-        reg = json.loads(registry_before)
-        reg["trips"].append(SCRATCH_TRIP)
-        TRIPS_F.write_text(json.dumps(reg, indent=2))
+        TRIPS_F.write_text(json.dumps({"schema": 1, "trips": [ni_entry, SCRATCH_TRIP]}, indent=2))
 
         result = subprocess.run(
             [sys.executable, str(UPDATE_REPORT)], cwd=REPO_ROOT,
-            env={**os.environ, "SERPAPI_KEY": "", "MULTI_TRIP": "1"},
+            env={**os.environ, "SERPAPI_KEY": ""},
             capture_output=True, text=True, timeout=300)
         assert result.returncode == 0, f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}"
-        assert "[ni-july-2026] wrote index.html" in result.stdout
+        assert "[ni-july-2026] wrote trips/ni-july-2026/index.html" in result.stdout
         assert "[test-mt] wrote trips/test-mt/index.html" in result.stdout
+        assert "[picker] wrote index.html" in result.stdout
 
-        # site root still belongs to NI, untouched shape
-        root = _window_data((REPO_ROOT / "index.html").read_text())
-        assert len(root["venues"]) > 30
-        assert root["trip"]["pills"][0] == "✈ Michel · London"
+        # root is now the trip picker, not a dashboard — links to both trips
+        root = (REPO_ROOT / "index.html").read_text()
+        assert "window.DATA" not in root
+        assert 'href="trips/ni-july-2026/index.html"' in root
+        assert 'href="trips/test-mt/index.html"' in root
+        assert "Northern Ireland" in root and "Test MT" in root
+
+        # NI dashboard moved to trips/ni-july-2026/, keeps its shape + traveller
+        ni_dash = _window_data((NI_OUT / "index.html").read_text())
+        assert len(ni_dash["venues"]) > 30
+        assert ni_dash["trip"]["pills"][0] == "✈ Michel · London"
+        ni_html = (NI_OUT / "index.html").read_text()
+        assert 'canonical" href="https://uncinimichel.github.io/climbing-agent/trips/ni-july-2026/"' in ni_html
 
         # the scratch trip got its own full dashboard, keyless, its own traveller
         mt = _window_data((SCRATCH / "index.html").read_text())
@@ -76,17 +89,17 @@ def test_multi_trip_renders_both_dashboards():
         assert 'href="../../venues/' in html               # footer venue links
         assert 'canonical" href="https://uncinimichel.github.io/climbing-agent/trips/test-mt/"' in html
         fl = json.loads((SCRATCH / "flights-latest.json").read_text())
-        assert "no key" in fl["checked_at"]           # secondary trips never spend quota
+        assert "no key" in fl["checked_at"]           # keyless run never spends quota
         assert (SCRATCH / "daily-report.md").exists()
-        # no per-venue pages / sitemap for secondary trips (M4 decides their shape)
-        assert not (SCRATCH / "venues").exists()
+        assert not (SCRATCH / "venues").exists()       # no per-venue pages for trip dashboards
     finally:
         TRIPS_F.write_text(registry_before)
+        (REPO_ROOT / "index.html").write_text(root_before)
         shutil.rmtree(SCRATCH, ignore_errors=True)
         if SCRATCH.parent.exists() and not any(SCRATCH.parent.iterdir()):
             SCRATCH.parent.rmdir()
 
 
 if __name__ == "__main__":
-    test_multi_trip_renders_both_dashboards()
+    test_multi_trip_renders_picker_and_dashboards()
     print("OK")
