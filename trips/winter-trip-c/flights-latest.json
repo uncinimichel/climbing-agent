@@ -1,85 +1,5 @@
 {
-  "flex": {
-    "venue": "Fre\u00ffr",
-    "travellers": {
-      "michel": [
-        {
-          "shift": -3,
-          "out": "2026-12-08",
-          "back": "2026-12-10",
-          "book_url": "https://www.skyscanner.net/transport/flights/lgw/bru/261208/261210/"
-        },
-        {
-          "shift": -2,
-          "out": "2026-12-09",
-          "back": "2026-12-11",
-          "book_url": "https://www.skyscanner.net/transport/flights/lgw/bru/261209/261211/"
-        },
-        {
-          "shift": -1,
-          "out": "2026-12-10",
-          "back": "2026-12-12",
-          "book_url": "https://www.skyscanner.net/transport/flights/lgw/bru/261210/261212/"
-        },
-        {
-          "shift": 1,
-          "out": "2026-12-12",
-          "back": "2026-12-14",
-          "book_url": "https://www.skyscanner.net/transport/flights/lgw/bru/261212/261214/"
-        },
-        {
-          "shift": 2,
-          "out": "2026-12-13",
-          "back": "2026-12-15",
-          "book_url": "https://www.skyscanner.net/transport/flights/lgw/bru/261213/261215/"
-        },
-        {
-          "shift": 3,
-          "out": "2026-12-14",
-          "back": "2026-12-16",
-          "book_url": "https://www.skyscanner.net/transport/flights/lgw/bru/261214/261216/"
-        }
-      ],
-      "dan": [
-        {
-          "shift": -3,
-          "out": "2026-12-08",
-          "back": "2026-12-10",
-          "book_url": "https://www.skyscanner.net/transport/flights/bfs/bru/261208/261210/"
-        },
-        {
-          "shift": -2,
-          "out": "2026-12-09",
-          "back": "2026-12-11",
-          "book_url": "https://www.skyscanner.net/transport/flights/bfs/bru/261209/261211/"
-        },
-        {
-          "shift": -1,
-          "out": "2026-12-10",
-          "back": "2026-12-12",
-          "book_url": "https://www.skyscanner.net/transport/flights/bfs/bru/261210/261212/"
-        },
-        {
-          "shift": 1,
-          "out": "2026-12-12",
-          "back": "2026-12-14",
-          "book_url": "https://www.skyscanner.net/transport/flights/bfs/bru/261212/261214/"
-        },
-        {
-          "shift": 2,
-          "out": "2026-12-13",
-          "back": "2026-12-15",
-          "book_url": "https://www.skyscanner.net/transport/flights/bfs/bru/261213/261215/"
-        },
-        {
-          "shift": 3,
-          "out": "2026-12-14",
-          "back": "2026-12-16",
-          "book_url": "https://www.skyscanner.net/transport/flights/bfs/bru/261214/261216/"
-        }
-      ]
-    }
-  },
+  "flex": null,
   "rep_combo": {
     "id": "fri-sun",
     "out": "2026-12-11",
@@ -87,28 +7,6 @@
     "nights": 2
   },
   "venues": {
-    "Fre\u00ffr": {
-      "michel": {
-        "mode": "fly",
-        "options": [],
-        "to": "BRU",
-        "book_url": "https://www.skyscanner.net/transport/flights/lgw/bru/261211/261213/"
-      },
-      "dan": {
-        "mode": "fly",
-        "options": [],
-        "to": "BRU",
-        "book_url": "https://www.skyscanner.net/transport/flights/bfs/bru/261211/261213/"
-      }
-    },
-    "Avon Gorge": {
-      "michel": {
-        "mode": "unknown"
-      },
-      "dan": {
-        "mode": "unknown"
-      }
-    },
     "Bosigran": {
       "michel": {
         "mode": "unknown"
@@ -125,6 +23,17 @@
         "mode": "unknown"
       }
     },
+    "Isle of White": {
+      "michel": {
+        "mode": "drive"
+      },
+      "dan": {
+        "mode": "fly",
+        "options": [],
+        "to": "SOU",
+        "book_url": "https://www.skyscanner.net/transport/flights/bfs/sou/261211/261213/"
+      }
+    },
     "Carcassonne": {
       "michel": {
         "mode": "fly",
@@ -137,14 +46,6 @@
         "options": [],
         "to": "CCF",
         "book_url": "https://www.skyscanner.net/transport/flights/bfs/ccf/261211/261213/"
-      }
-    },
-    "Old Man of Hoy": {
-      "michel": {
-        "mode": "unknown"
-      },
-      "dan": {
-        "mode": "unknown"
       }
     },
     "Puig Campana": {
@@ -178,7 +79,29 @@
       "dan": {
         "mode": "unknown"
       }
+    },
+    "Anti Atlas": {
+      "michel": {
+        "mode": "fly",
+        "options": [],
+        "to": "AGA",
+        "book_url": "https://www.skyscanner.net/transport/flights/lgw/aga/261211/261213/"
+      },
+      "dan": {
+        "mode": "fly",
+        "options": [],
+        "to": "AGA",
+        "book_url": "https://www.skyscanner.net/transport/flights/bfs/aga/261211/261213/"
+      }
+    },
+    "Avon Gorge": {
+      "michel": {
+        "mode": "unknown"
+      },
+      "dan": {
+        "mode": "unknown"
+      }
     }
   },
-  "checked_at": "2026-07-29 06:15 UTC (no key \u2014 links only)"
+  "checked_at": "2026-07-29 09:29 UTC (no key \u2014 links only)"
 }

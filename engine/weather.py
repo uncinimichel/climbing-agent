@@ -19,7 +19,10 @@ CLIMO_VER = "v3"   # bump to re-fetch every venue once (v3: + cloud_cover_mean)
 # Named so the client-side weather-chart colouring (rainColor/windColor/
 # tempColor in render.py's PAGE_JS) can share these exact numbers instead of
 # guessing its own.
-COLD_C = 8            # numb-fingers threshold (climo_score)
+COLD_C = 12           # numb-fingers threshold (climo_score): hands lose grip on
+                      # cold rock well before 8°C; below ~12°C felt costs points.
+                      # Bites cold/winter conditions (any season); summer venues
+                      # sit above it, so the warm-season order is barely touched.
 HEAT_WARM_C = 18       # heat_penalty: gentle slope starts (top of the ideal band)
 HEAT_HOT_C = 24        # heat_penalty: steep slope starts
 HEAT_BRUTAL_C = 28     # heat_penalty: brutal slope starts

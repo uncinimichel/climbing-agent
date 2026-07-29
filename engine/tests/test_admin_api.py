@@ -20,7 +20,11 @@ REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(REPO_ROOT / "admin"))
 server = importlib.import_module("server")
 
-NI = json.loads((REPO_ROOT / "trips.json").read_text())
+# Seed a controlled NI-only registry — the live trips.json also carries the
+# winter trips now, and these tests assert on an exact trip list.
+_FULL = json.loads((REPO_ROOT / "trips.json").read_text())
+NI = {"schema": _FULL.get("schema", 1),
+      "trips": [t for t in _FULL["trips"] if t["slug"] == "ni-july-2026"]}
 
 
 @pytest.fixture()
@@ -96,7 +100,7 @@ def test_update_invalid_is_rejected_and_registry_untouched(client, tmp_path):
     r = client.put("/api/trips/ni-july-2026", json=bad)
     assert r.status_code == 400 and "live/draft/ended" in r.json()["detail"]
     reg = json.loads((tmp_path / "trips.json").read_text())
-    assert reg["trips"][0]["status"] == "live"      # unchanged
+    assert reg["trips"][0]["status"] == NI["trips"][0]["status"]   # unchanged
 
 
 def test_delete_keeps_dir_and_refuses_last_trip(client, tmp_path):

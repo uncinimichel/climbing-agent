@@ -23,7 +23,8 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 UPDATE_REPORT = REPO_ROOT / "trip-ni-july-2026" / "scripts" / "update_report.py"
-INDEX_HTML = REPO_ROOT / "index.html"
+INDEX_HTML = REPO_ROOT / "index.html"                       # now the trip picker
+NI_DASH = REPO_ROOT / "trips" / "ni-july-2026" / "index.html"  # NI dashboard
 
 
 def _extract_window_data(html):
@@ -39,14 +40,18 @@ def test_update_report_runs_clean_and_shape_matches():
         env={**os.environ, "SERPAPI_KEY": ""},
         capture_output=True,
         text=True,
-        timeout=180,
+        timeout=300,   # the real cron now renders every trip in trips.json
     )
     assert result.returncode == 0, (
         f"update_report.py exited {result.returncode}\nstdout:\n{result.stdout}\nstderr:\n{result.stderr}"
     )
-    assert "wrote index.html" in result.stdout
+    assert "[ni-july-2026] wrote trips/ni-july-2026/index.html" in result.stdout
+    assert "[picker] wrote index.html" in result.stdout
 
-    data = _extract_window_data(INDEX_HTML.read_text(encoding="utf-8"))
+    # root is the trip picker (no dashboard blob); the NI dashboard moved to trips/
+    root = INDEX_HTML.read_text(encoding="utf-8")
+    assert "window.DATA" not in root
+    data = _extract_window_data(NI_DASH.read_text(encoding="utf-8"))
     venues = data["venues"]
     assert len(venues) > 30, f"expected a few dozen venues, got {len(venues)}"
 

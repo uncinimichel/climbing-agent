@@ -1,85 +1,5 @@
 {
-  "flex": {
-    "venue": "Montserrat",
-    "travellers": {
-      "michel": [
-        {
-          "shift": -3,
-          "out": "2026-12-01",
-          "back": "2026-12-03",
-          "book_url": "https://www.skyscanner.net/transport/flights/lgw/bcn/261201/261203/"
-        },
-        {
-          "shift": -2,
-          "out": "2026-12-02",
-          "back": "2026-12-04",
-          "book_url": "https://www.skyscanner.net/transport/flights/lgw/bcn/261202/261204/"
-        },
-        {
-          "shift": -1,
-          "out": "2026-12-03",
-          "back": "2026-12-05",
-          "book_url": "https://www.skyscanner.net/transport/flights/lgw/bcn/261203/261205/"
-        },
-        {
-          "shift": 1,
-          "out": "2026-12-05",
-          "back": "2026-12-07",
-          "book_url": "https://www.skyscanner.net/transport/flights/lgw/bcn/261205/261207/"
-        },
-        {
-          "shift": 2,
-          "out": "2026-12-06",
-          "back": "2026-12-08",
-          "book_url": "https://www.skyscanner.net/transport/flights/lgw/bcn/261206/261208/"
-        },
-        {
-          "shift": 3,
-          "out": "2026-12-07",
-          "back": "2026-12-09",
-          "book_url": "https://www.skyscanner.net/transport/flights/lgw/bcn/261207/261209/"
-        }
-      ],
-      "dan": [
-        {
-          "shift": -3,
-          "out": "2026-12-01",
-          "back": "2026-12-03",
-          "book_url": "https://www.skyscanner.net/transport/flights/bfs/bcn/261201/261203/"
-        },
-        {
-          "shift": -2,
-          "out": "2026-12-02",
-          "back": "2026-12-04",
-          "book_url": "https://www.skyscanner.net/transport/flights/bfs/bcn/261202/261204/"
-        },
-        {
-          "shift": -1,
-          "out": "2026-12-03",
-          "back": "2026-12-05",
-          "book_url": "https://www.skyscanner.net/transport/flights/bfs/bcn/261203/261205/"
-        },
-        {
-          "shift": 1,
-          "out": "2026-12-05",
-          "back": "2026-12-07",
-          "book_url": "https://www.skyscanner.net/transport/flights/bfs/bcn/261205/261207/"
-        },
-        {
-          "shift": 2,
-          "out": "2026-12-06",
-          "back": "2026-12-08",
-          "book_url": "https://www.skyscanner.net/transport/flights/bfs/bcn/261206/261208/"
-        },
-        {
-          "shift": 3,
-          "out": "2026-12-07",
-          "back": "2026-12-09",
-          "book_url": "https://www.skyscanner.net/transport/flights/bfs/bcn/261207/261209/"
-        }
-      ]
-    }
-  },
+  "flex": null,
   "rep_combo": {
     "id": "fri-sun",
     "out": "2026-12-04",
@@ -87,35 +7,7 @@
     "nights": 2
   },
   "venues": {
-    "Montserrat": {
-      "michel": {
-        "mode": "fly",
-        "options": [],
-        "to": "BCN",
-        "book_url": "https://www.skyscanner.net/transport/flights/lgw/bcn/261204/261206/"
-      },
-      "dan": {
-        "mode": "fly",
-        "options": [],
-        "to": "BCN",
-        "book_url": "https://www.skyscanner.net/transport/flights/bfs/bcn/261204/261206/"
-      }
-    },
-    "Costa Blanca": {
-      "michel": {
-        "mode": "fly",
-        "options": [],
-        "to": "ALC",
-        "book_url": "https://www.skyscanner.net/transport/flights/lgw/alc/261204/261206/"
-      },
-      "dan": {
-        "mode": "fly",
-        "options": [],
-        "to": "ALC",
-        "book_url": "https://www.skyscanner.net/transport/flights/bfs/alc/261204/261206/"
-      }
-    },
-    "Penya Roc": {
+    "Puig Campana": {
       "michel": {
         "mode": "unknown"
       },
@@ -139,6 +31,42 @@
         "mode": "unknown"
       }
     },
+    "Costa Blanca": {
+      "michel": {
+        "mode": "fly",
+        "options": [],
+        "to": "ALC",
+        "book_url": "https://www.skyscanner.net/transport/flights/lgw/alc/261204/261206/"
+      },
+      "dan": {
+        "mode": "fly",
+        "options": [],
+        "to": "ALC",
+        "book_url": "https://www.skyscanner.net/transport/flights/bfs/alc/261204/261206/"
+      }
+    },
+    "Montserrat": {
+      "michel": {
+        "mode": "fly",
+        "options": [],
+        "to": "BCN",
+        "book_url": "https://www.skyscanner.net/transport/flights/lgw/bcn/261204/261206/"
+      },
+      "dan": {
+        "mode": "fly",
+        "options": [],
+        "to": "BCN",
+        "book_url": "https://www.skyscanner.net/transport/flights/bfs/bcn/261204/261206/"
+      }
+    },
+    "Lower Eagle Crag": {
+      "michel": {
+        "mode": "unknown"
+      },
+      "dan": {
+        "mode": "unknown"
+      }
+    },
     "Pe\u00f1\u00f3n de Ifach": {
       "michel": {
         "mode": "unknown"
@@ -147,62 +75,36 @@
         "mode": "unknown"
       }
     },
-    "Anti Atlas": {
+    "Ksar Rock": {
       "michel": {
-        "mode": "fly",
-        "options": [],
-        "to": "AGA",
-        "book_url": "https://www.skyscanner.net/transport/flights/lgw/aga/261204/261206/"
+        "mode": "unknown"
       },
       "dan": {
-        "mode": "fly",
-        "options": [],
-        "to": "AGA",
-        "book_url": "https://www.skyscanner.net/transport/flights/bfs/aga/261204/261206/"
+        "mode": "unknown"
       }
     },
-    "Mournes": {
+    "Penya Roc": {
       "michel": {
-        "mode": "fly",
-        "options": [],
-        "to": "",
-        "book_url": "https://www.skyscanner.net/transport/flights/lgw//261204/261206/"
+        "mode": "unknown"
       },
       "dan": {
-        "mode": "fly",
-        "options": [],
-        "to": "",
-        "book_url": "https://www.skyscanner.net/transport/flights/bfs//261204/261206/"
+        "mode": "unknown"
       }
     },
-    "Hoy": {
+    "Carcassonne": {
       "michel": {
         "mode": "fly",
         "options": [],
-        "to": "KOI",
-        "book_url": "https://www.skyscanner.net/transport/flights/lgw/koi/261204/261206/"
+        "to": "CCF",
+        "book_url": "https://www.skyscanner.net/transport/flights/lgw/ccf/261204/261206/"
       },
       "dan": {
         "mode": "fly",
         "options": [],
-        "to": "KOI",
-        "book_url": "https://www.skyscanner.net/transport/flights/bfs/koi/261204/261206/"
-      }
-    },
-    "Mallorca": {
-      "michel": {
-        "mode": "fly",
-        "options": [],
-        "to": "PMI",
-        "book_url": "https://www.skyscanner.net/transport/flights/lgw/pmi/261204/261206/"
-      },
-      "dan": {
-        "mode": "fly",
-        "options": [],
-        "to": "PMI",
-        "book_url": "https://www.skyscanner.net/transport/flights/bfs/pmi/261204/261206/"
+        "to": "CCF",
+        "book_url": "https://www.skyscanner.net/transport/flights/bfs/ccf/261204/261206/"
       }
     }
   },
-  "checked_at": "2026-07-29 06:14 UTC (no key \u2014 links only)"
+  "checked_at": "2026-07-29 09:28 UTC (no key \u2014 links only)"
 }
