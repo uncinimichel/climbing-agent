@@ -64,12 +64,13 @@ def test_multi_trip_renders_picker_and_dashboards():
         assert "[test-mt] wrote trips/test-mt/index.html" in result.stdout
         assert "[picker] wrote index.html" in result.stdout
 
-        # root is now the trip picker, not a dashboard — links to both trips
+        # root is the trip picker. It lists only LIVE trips — the ended NI trip
+        # is excluded (its dashboard still renders below), the live one is listed.
         root = (REPO_ROOT / "index.html").read_text()
         assert "window.DATA" not in root
-        assert 'href="trips/ni-july-2026/index.html"' in root
-        assert 'href="trips/test-mt/index.html"' in root
-        assert "Northern Ireland" in root and "Test MT" in root
+        assert 'href="trips/test-mt/index.html"' in root and "Test MT" in root
+        assert 'href="trips/ni-july-2026/index.html"' not in root
+        assert "Northern Ireland" not in root
 
         # NI dashboard moved to trips/ni-july-2026/, keeps its shape + traveller
         ni_dash = _window_data((NI_OUT / "index.html").read_text())

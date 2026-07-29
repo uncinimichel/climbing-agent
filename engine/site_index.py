@@ -104,9 +104,11 @@ def build_index(summaries, now=None):
         if sc is not None and sc > best_score:
             best_score, best_slug = sc, t["slug"]
 
+    # the picker is for weekends you can still choose — only live trips.
+    # ended/draft trips keep their dashboard at trips/<slug>/ but aren't listed.
     stops = "\n".join(
-        _stop(t, d, is_best=(t["slug"] == best_slug and t.get("status") == "live"))
-        for t, d in summaries)
+        _stop(t, d, is_best=(t["slug"] == best_slug))
+        for t, d in live)
 
     return (_PAGE.replace("__CANON__", PAGES_BASE)
                  .replace("__STOPS__", stops)
