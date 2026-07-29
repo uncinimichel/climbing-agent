@@ -101,7 +101,7 @@ PATCHABLE = {
     "name", "length_m", "pitches_count", "incline_code", "grade_system_code",
     "original_grade", "trad_grade", "tech_grade", "data_grade",
     "protection_code", "protection_style", "belays", "rack", "rope",
-    "approach_time_min", "approach_difficulty",
+    "approach_time_min", "approach_difficulty", "approach_style",
     "descent_method", "descent_abseils", "descent_notes",
     "elevation_m", "sun_window_code", "wind_exposed", "best_season", "stars",
     "intro_html", "approach_html", "pitch_info_html", "curation_notes",

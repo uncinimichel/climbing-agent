@@ -148,9 +148,10 @@ The prose is the product. A good entry:
 
 ## Still open
 
-3. **approach difficulty** — adopt the described-enum instead of a naked 1–5,
-   and **what are the words?** (Audit's straw-man: *flat path · uphill walk ·
-   steep/rough · scramble · technical approach*.) Confirm or replace the words.
+3. **approach difficulty** — the described-enum is now **live** with the
+   straw-man words (*flat path · uphill walk · steep/rough · scramble ·
+   technical*); legacy 1–5 ghost-mapped. **Only the words are still open** —
+   confirm them, or hand me replacements and I'll swap the one line.
 6. Any field here you'd **cut entirely** as never-useful?
 
 ### Resulting Studio work (from the resolutions above)
@@ -178,4 +179,10 @@ The prose is the product. A good entry:
   against a Python port of the curve (identical output). *Caveat:* the JS curve is
   a copy of the engine's — if the engine's constants change, update both.
 - **No change** to protection or field-visibility — explicitly kept as-is.
-- 🔜 **`approach diff`** — blocked on question 3's words.
+- ⚠️ **`approach diff`** — implemented with the audit's **provisional** words
+  (`flat path · uphill walk · steep/rough · scramble · technical`) as the
+  `approach_style` enum, replacing the naked 1–5. The legacy number is
+  ghost-mapped (1→flat path … 5→technical) so the 58 routes that had it keep
+  their data, shown as an accept/override suggestion. **Question 3 is still open
+  on the *words*** — they live in one place (`APPROACH_VALS`) and are a one-line
+  change once you confirm or rewrite them.

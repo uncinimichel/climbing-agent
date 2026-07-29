@@ -247,6 +247,10 @@ class Store:
                 "seepage": optbool,
                 "drying": opt(["fast", "medium", "slow"]),
                 "cliff_height_m": optnum,
+                # approach difficulty as an anchored enum (handbook Q3) — replaces
+                # the naked 1–5 approach_difficulty (kept for legacy data)
+                "approach_style": opt(["flat path", "uphill walk", "steep/rough",
+                                       "scramble", "technical"]),
                 "tags": {
                     "type": "object",
                     "properties": {

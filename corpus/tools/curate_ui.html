@@ -701,6 +701,21 @@ function boolFact(label,field,val,hint){
     <select onchange="save('${field}',this.value||null)"><option value=""></option>
       <option ${v==='yes'?'selected':''}>yes</option><option ${v==='no'?'selected':''}>no</option></select></div>`;
 }
+// approach difficulty: an anchored word-enum replaces the naked 1–5 (handbook Q3).
+// Words are the audit's straw-man — provisional until Michel confirms Q3. The
+// legacy numeric approach_difficulty is ghost-mapped so 58 routes keep their data.
+const APPROACH_VALS=['flat path','uphill walk','steep/rough','scramble','technical'];
+const _APPROACH_FROM_NUM={1:'flat path',2:'uphill walk',3:'steep/rough',4:'scramble',5:'technical'};
+function acceptApproach(v){const s=$('apprSel');if(s)s.value=v;save('approach_style',v);const h=$('apprHint');if(h)h.innerHTML='◐ set from the old 1–5 scale';}
+function approachFact(r){
+  const val=r.approach_style, der=_APPROACH_FROM_NUM[r.approach_difficulty];
+  const sel=`<select id="apprSel" onchange="save('approach_style',this.value||null)"><option value=""></option>`+
+    APPROACH_VALS.map(o=>`<option ${o==val?'selected':''}>${o}</option>`).join('')+`</select>`;
+  let hint='';
+  if(!val&&der) hint=`◐ old scale said ${r.approach_difficulty} → <b>${der}</b> · <a onclick="acceptApproach('${der}')" style="cursor:pointer;text-decoration:underline">use</a> or override`;
+  return `<div class="fact" title="how hard is it to reach the base — anchored words beat a naked 1–5"><b>approach diff</b>${sel}`+
+    (hint?`<small id="apprHint" class="minor" style="display:block;margin-top:3px;line-height:1.3">${hint}</small>`:'')+`</div>`;
+}
 function statusChipHtml(r){
   const s=r.status;
   return `<span class="statuschip ${s==='publish'?'pub':s==='quarantined'?'quar':r.needs_field_check?'field':''}" id="statusChip">
@@ -813,7 +828,7 @@ function renderCard(){
       ${factInput('commitment','commitment_code',r.commitment_code,ENUMS.commitment)}
       ${factInput('abseils','descent_abseils',r.descent_abseils,null,true)}
       ${factInput('rope','rope',r.rope,null,true)}
-      ${factInput('appr. diff 1-5','approach_difficulty',r.approach_difficulty)}
+      ${approachFact(r)}
       <div class="fact${r.lat?'':' miss'}" title="decimal degrees — both fields save together"><b>lat</b>
         <input id="latIn" value="${r.lat??''}" placeholder="54.178" onchange="saveCoords()"></div>
       <div class="fact${r.lat?'':' miss'}" title="decimal degrees — both fields save together"><b>lon</b>
