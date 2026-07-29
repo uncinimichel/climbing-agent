@@ -114,14 +114,17 @@ border-bottom:1px solid var(--seam)}
 <ol><li><strong>tidal / coastal / drying / seepage / cliff-height</strong> → ✅ <strong>per-route</strong>,</li></ol>
 <p>   made editable in the Studio.</p>
 <h2 id="still-open">Still open</h2>
-<ol><li><strong>approach difficulty</strong> — adopt the described-enum instead of a naked 1–5,</li></ol>
-<p>   and <strong>what are the words?</strong> (Audit's straw-man: <em>flat path · uphill walk ·    steep/rough · scramble · technical approach</em>.) Confirm or replace the words.</p>
+<ol><li><strong>approach difficulty</strong> — the described-enum is now <strong>live</strong> with the</li></ol>
+<p>   straw-man words (<em>flat path · uphill walk · steep/rough · scramble ·    technical</em>); legacy 1–5 ghost-mapped. <strong>Only the words are still open</strong> —    confirm them, or hand me replacements and I'll swap the one line.</p>
 <ol><li>Any field here you'd <strong>cut entirely</strong> as never-useful?</li></ol>
 <h3 id="resulting-studio-work-from-the-resolutions-above">Resulting Studio work (from the resolutions above)</h3>
-<ul><li><strong>Derive</strong> best-months + sun-window from aspect/climate; render read-only with</li></ul>
-<p>  an optional override control. (Engine + UI.)</p>
-<ul><li><strong>Add per-route inputs</strong> for <code>tidal</code>, <code>coastal</code>/<code>drying</code>, <code>seepage</code>,</li></ul>
-<p>  <code>cliff_height_m</code>. (UI + store/schema.)</p>
-<ul><li><strong>No change</strong> to protection or field-visibility — explicitly keep both as-is.</li><li><strong><code>wind_exposed</code> relabel</strong> (Exhibit A) — still stands: "Open to the wind?"</li></ul>
-<p>  with the hint. Low-risk, unblocked.</p>
-<ul><li><strong><code>approach diff</code></strong> — blocked on question 3's words.</li></ul></div></body></html>
+<ul><li>✅ <strong><code>wind_exposed</code> relabel</strong> (Exhibit A) — now "Open to the wind?" with the</li></ul>
+<p>  full hint. (<code>curate_ui.html</code>.)</p>
+<ul><li>✅ <strong>Derive sun-window from aspect</strong> — <code>sun_window</code> is suggested from the</li></ul>
+<p>  crag's aspect (the vocabulary's own meanings fix the map: E→morning, S→all-day,   W→afternoon, N→shade), shown read-only with a one-click <em>use</em> + free override.   No schema change; the curator accepts or overrides. (<code>curate_ui.html</code>.)</p>
+<ul><li>✅ <strong>Per-route conditions inputs</strong> — <code>tidal</code>, <code>coastal</code>, <code>seepage</code> (yes/no),</li></ul>
+<p>  <code>drying</code> (fast/medium/slow), <code>cliff_height_m</code> (m) added to the card under a new   <strong>conditions</strong> group; whitelisted + typed in the PATCH path; validated in the   JSON Schema (off-enum/wrong-type → readable 422). (<code>curate_ui.html</code>, <code>curate.py</code>,   <code>store.py</code>.) <em>Note:</em> these are captured on the route record now; wiring the   <strong>ranking engine to consume per-route values</strong> (it reads venue-level today) is a   separate follow-on.</p>
+<ul><li>✅ <strong>Derive best-months</strong> — done. Routes already carry a per-route monthly</li></ul>
+<p>  <code>climatology</code> array (temp_high, rainy_days); best-season is derived client-side   using the <strong>engine's own felt-temp curve verbatim</strong> (COLD 12 · heat 18/24/28 ·   rain 12/40 · ASPECT_ADJ, from <code>engine/weather.py</code>), so the suggestion matches   the ranking rather than inventing a heuristic. Derived months show <strong>dashed</strong>;   one-click <em>use</em> copies them into <code>best_season</code>, and any manual month overrides.   Routes without climatology fall back to the hand-set toggle. Cross-checked   against a Python port of the curve (identical output). <em>Caveat:</em> the JS curve is   a copy of the engine's — if the engine's constants change, update both.</p>
+<ul><li><strong>No change</strong> to protection or field-visibility — explicitly kept as-is.</li><li>⚠️ <strong><code>approach diff</code></strong> — implemented with the audit's <strong>provisional</strong> words</li></ul>
+<p>  (<code>flat path · uphill walk · steep/rough · scramble · technical</code>) as the   <code>approach_style</code> enum, replacing the naked 1–5. The legacy number is   ghost-mapped (1→flat path … 5→technical) so the 58 routes that had it keep   their data, shown as an accept/override suggestion. **Question 3 is still open   on the *words*** — they live in one place (<code>APPROACH_VALS</code>) and are a one-line   change once you confirm or rewrite them.</p></div></body></html>
