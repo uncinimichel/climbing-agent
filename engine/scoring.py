@@ -22,7 +22,8 @@ from .stays import STAY_ADULTS, stay_options
 
 # Weather leads the destination choice; travel is a tiebreak, not a proximity
 # bonus that lets a nearby-but-poor venue out-rank a far-but-excellent one.
-W_WEATHER, W_TRAVEL, W_FIT = 65, 15, 20
+# Defined in engine.models so render.py can show the same numbers (no drift).
+from .models import W_WEATHER, W_TRAVEL, W_FIT  # noqa: E402
 TIME_BAND = {"< 4": 95, "2-4": 95, "4-6": 85, "6-8": 70, "8-10": 55, "10-12": 45, "12-24": 30}
 VOL_BAND = {"vast": 100, "large": 85, "moderate": 65, "smaller": 45}
 DIFF_BAND = {"full range": 100, "moderate": 90, "medium to hard": 75, "hard": 50}

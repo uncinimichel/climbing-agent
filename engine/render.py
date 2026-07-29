@@ -20,6 +20,7 @@ from datetime import date, timedelta
 from . import flights as flights_mod
 from .climbs import SITE_URL, grade_range, nearby_climb_cards, nearby_climbs, venue_is_tidal
 from .flights import skyscanner_url
+from .models import W_WEATHER, W_TRAVEL, W_FIT
 from .stays import STAY_ADULTS, STAY_RADIUS_KM
 from .weather import ASPECT_ADJ
 
@@ -1015,7 +1016,7 @@ PAGE_BODY = """<body>
   <aside class="board" aria-label="Climbing areas ranked by trip weather">
     <div class="board-hd">
       <div class="eyebrow">Ranked · best weather first</div>
-      <div class="board-sub">Score /100 = weather (55%) + travel (25%) + venue fit (20%).
+      <div class="board-sub">Score /100 = weather (%%WWEATHER%%%) + travel (%%WTRAVEL%%%) + venue fit (%%WFIT%%%).
         <a href="#" class="lk" onclick="help(1);return false">How the ranking works ?</a></div>
     </div>
     <div id="rows"></div>
@@ -1028,7 +1029,7 @@ PAGE_BODY = """<body>
     <div class="hhd"><span class="eyebrow">How the ranking works</span><button class="tl" onclick="help(0)">✕ Close</button></div>
     <div class="hbody">
       <p>Every area gets a <b>trip score out of 100</b> — the donut in each header shows the split:</p>
-      <p><b style="color:var(--rain)">Weather · 55%</b> — rain and heat are now penalised
+      <p><b style="color:var(--rain)">Weather · %%WWEATHER%%%</b> — rain and heat are now penalised
       <b>symmetrically</b>, so the sweet spot is genuinely <b>cool and dry</b> and <i>neither</i>
       a wet venue nor a baking-hot one can sit near the top. Wet days follow a curve that
       mirrors the heat one: dry climates (under ~12% wet days) pay nothing, then it slopes up
@@ -1051,14 +1052,14 @@ PAGE_BODY = """<body>
       day (per-crag drying notes — Cornwall's dries-in-minutes granite, Snowdonia's slow
       rhyolite — override the derivation). Once the trip is inside the 16-day forecast,
       friction terms (dew point, drying sun, gusts) join in.</p>
-      <p><b style="color:var(--temp)">Travel · 25%</b> — real return-flight prices for both
+      <p><b style="color:var(--temp)">Travel · %%WTRAVEL%%%</b> — real return-flight prices for both
       of you when priced (now the <b>top 10</b> venues each day), and for anything not yet
       priced a <b>distance-based fare estimate</b> stands in so a far-flung venue can't hide
       behind a neutral score. Local/drivable venues score near-perfect. The <b>cheapest
       realistic bed near the crag</b> counts too (from OpenStreetMap): an area with a campsite
       stays cheap, a hotel-only area costs points — using typical nightly prices per type of
       stay, not live quotes.</p>
-      <p><b style="color:var(--dry)">Venue fit · 20%</b> — from the spreadsheet's judgment
+      <p><b style="color:var(--dry)">Venue fit · %%WFIT%%%</b> — from the spreadsheet's judgment
       columns: how much multi-pitch there is, its difficulty spread, and whether the
       minimum sensible trip fits your dates — plus <b>distance from home</b>
       (%%TRAVELLER_HOMES%%), so nearby European crags edge out ones in Africa or
@@ -2000,6 +2001,9 @@ def render_page(data, tag_spec, depth=0, canonical_path=""):
                             f'<link rel="canonical" href="{PAGES_BASE}{canonical_path}">')
     body = (PAGE_BODY.replace("%%TRAVELLER_HOMES%%", homes or "each traveller's home")
                      .replace("%%NAV%%", nav_html(depth))
+                     .replace("%%WWEATHER%%", str(W_WEATHER))
+                     .replace("%%WTRAVEL%%", str(W_TRAVEL))
+                     .replace("%%WFIT%%", str(W_FIT))
                      .replace('href="knowledge/', f'href="{pre}knowledge/'))
     js = PAGE_JS.replace('href="knowledge/', f'href="{pre}knowledge/')
     return (head

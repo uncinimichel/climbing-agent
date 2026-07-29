@@ -19,6 +19,12 @@ from dataclasses import dataclass, field
 from functools import cached_property
 from datetime import date, timedelta
 
+# Composite weights — the single source of truth shared by the scorer
+# (engine.scoring) and the dashboard's methodology copy (engine.render), so the
+# displayed percentages can never drift from the maths. Weather leads the
+# destination choice; travel is a tiebreak, not a proximity bonus.
+W_WEATHER, W_TRAVEL, W_FIT = 65, 15, 20
+
 
 def md_range(start, end):
     """Set of (month, day) tuples covered by [start, end] inclusive — so window
