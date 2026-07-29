@@ -171,7 +171,7 @@ The prose is the product. A good entry:
   separate follow-on.
 - ✅ **Derive best-months** — done. Routes already carry a per-route monthly
   `climatology` array (temp_high, rainy_days); best-season is derived client-side
-  using the **engine's own felt-temp curve verbatim** (COLD 8 · heat 18/24/28 ·
+  using the **engine's own felt-temp curve verbatim** (COLD 12 · heat 18/24/28 ·
   rain 12/40 · ASPECT_ADJ, from `engine/weather.py`), so the suggestion matches
   the ranking rather than inventing a heuristic. Derived months show **dashed**;
   one-click *use* copies them into `best_season`, and any manual month overrides.
