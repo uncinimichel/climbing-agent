@@ -106,6 +106,9 @@ PATCHABLE = {
     "elevation_m", "sun_window_code", "wind_exposed", "best_season", "stars",
     "intro_html", "approach_html", "pitch_info_html", "curation_notes",
     "escapable", "commitment_code",
+    # conditions — per-route (handbook Q5, 2026-07-28): how the crag behaves,
+    # read by the ranking engine for felt-temp / drying
+    "tidal", "coastal", "seepage", "drying", "cliff_height_m",
 }
 TAG_KEYS = ("disciplines", "features", "character")
 # the pieces of a route document the API serves under their own (differently
@@ -116,8 +119,9 @@ EMBEDDED = {"tags", "hazards", "pitches", "guidebooks", "references", "parkings"
 # typed PATCH fields → validated server-side with a clear 422 instead of the
 # raw 500 a curator used to get for typing "ninety" into length m
 NUMERIC_PATCH = {"length_m", "pitches_count", "approach_time_min", "elevation_m",
-                 "descent_abseils", "approach_difficulty", "stars", "data_grade"}
-BOOL_PATCH = {"wind_exposed", "escapable"}
+                 "descent_abseils", "approach_difficulty", "stars", "data_grade",
+                 "cliff_height_m"}
+BOOL_PATCH = {"wind_exposed", "escapable", "tidal", "coastal", "seepage"}
 
 
 def now() -> str:

@@ -662,7 +662,29 @@ function saveTags(){
 // ── queue card ─────────────────────────────
 const FAMS=[['disciplines',''],['features',''],['character',''],['hazards','haz']];
 // mirror of the server's typed-PATCH sets — reject garbage before it travels
-const NUM_F=new Set(['length_m','pitches_count','approach_time_min','elevation_m','descent_abseils','approach_difficulty','stars','data_grade']);
+const NUM_F=new Set(['length_m','pitches_count','approach_time_min','elevation_m','descent_abseils','approach_difficulty','stars','data_grade','cliff_height_m']);
+// sun window is largely a function of aspect (handbook Q1: derive + override).
+// The vocabulary's own meanings fix the mapping: E→morning, S→all-day, W→afternoon, N→shade.
+function deriveSunWindow(aspect){
+  return ({N:'shade',NE:'morning',E:'morning',SE:'morning',S:'all-day',
+           SW:'afternoon',W:'afternoon',NW:'afternoon'})[(aspect||'').toUpperCase()]||null;
+}
+function acceptSun(v){
+  const s=$('sunSel');if(s)s.value=v;
+  save('sun_window_code',v);
+  const h=$('sunHint');if(h)h.innerHTML=`◐ matches ${esc(R.eff_aspect)} aspect`;
+}
+function sunWindowFact(r){
+  const val=r.sun_window_code, der=deriveSunWindow(r.eff_aspect), opts=ENUMS.sun_window||[];
+  const sel=`<select id="sunSel" onchange="save('sun_window_code',this.value||null)"><option value=""></option>`+
+    opts.map(o=>`<option ${o==val?'selected':''}>${o}</option>`).join('')+`</select>`;
+  let hint='';
+  if(der&&!val)      hint=`◐ derived <b>${der}</b> from ${esc(r.eff_aspect)} aspect · <a onclick="acceptSun('${der}')" style="cursor:pointer;text-decoration:underline">use</a> or override`;
+  else if(der&&val!==der) hint=`◐ aspect (${esc(r.eff_aspect)}) suggests <b>${der}</b>; you set <b>${esc(val)}</b>`;
+  else if(der)       hint=`◐ matches ${esc(r.eff_aspect)} aspect`;
+  else if(!val)      hint=`set the crag aspect to derive this`;
+  return `<div class="fact${(!val&&!der)?' miss':''}" title="derived from aspect; override only where topography shadows it (deep gorge, north-facing cove)"><b>sun window</b>${sel}<small id="sunHint" class="minor" style="display:block;margin-top:3px;line-height:1.3">${hint}</small></div>`;
+}
 function factInput(label,field,val,opts,missing){
   const cls='fact'+(missing&&(val===null||val===undefined||val==='')?' miss':'');
   if(opts){
@@ -742,10 +764,10 @@ function renderCard(){
       ${factInput('prot. style','protection_style',r.protection_style,ENUMS.protection_style,true)}
       ${factInput('belays','belays',r.belays,ENUMS.belays,true)}
       ${factInput('elevation m','elevation_m',r.elevation_m,null,true)}
-      ${factInput('sun window','sun_window_code',r.sun_window_code,ENUMS.sun_window,true)}
+      ${sunWindowFact(r)}
       ${factInput('approach min','approach_time_min',r.approach_time_min)}
       ${factInput('descent','descent_method',r.descent_method,ENUMS.descent_method,true)}
-      ${boolFact('wind exposed','wind_exposed',r.wind_exposed,'sea cliff / summit ridge — gusts bite harder')}
+      ${boolFact('open to the wind?','wind_exposed',r.wind_exposed,'a sea cliff, summit, or standalone buttress with no hillside behind it — the ranking works out the rest from aspect + forecast direction')}
       ${boolFact('escapable','escapable',r.escapable,'can you bail mid-route without topping out?')}
       ${factInput('commitment','commitment_code',r.commitment_code,ENUMS.commitment)}
       ${factInput('abseils','descent_abseils',r.descent_abseils,null,true)}
@@ -755,6 +777,14 @@ function renderCard(){
         <input id="latIn" value="${r.lat??''}" placeholder="54.178" onchange="saveCoords()"></div>
       <div class="fact${r.lat?'':' miss'}" title="decimal degrees — both fields save together"><b>lon</b>
         <input id="lonIn" value="${r.lon??''}" placeholder="-5.98" onchange="saveCoords()"></div>
+    </div>
+    <div class="sec">conditions <small>— how the crag behaves; per-route, feeds the ranking engine (felt temp · drying)</small></div>
+    <div class="facts">
+      ${boolFact('tidal','tidal',r.tidal,'base cut off at high water — reachable only around low tide')}
+      ${boolFact('coastal','coastal',r.coastal,'sea air — salt humidity, slower to dry')}
+      ${boolFact('seepage','seepage',r.seepage,'weeps / stays wet for days after rain, even in a dry spell')}
+      ${factInput('drying','drying',r.drying,['fast','medium','slow'],false)}
+      ${factInput('cliff height m','cliff_height_m',r.cliff_height_m,null,true)}
     </div>
     <div id="gradeHintBox">${gradeHint(r)}</div>
     <div id="gradeWarnBox">${warnHtml(r)}</div>

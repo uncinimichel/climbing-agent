@@ -155,11 +155,23 @@ The prose is the product. A good entry:
 
 ### Resulting Studio work (from the resolutions above)
 
-- **Derive** best-months + sun-window from aspect/climate; render read-only with
-  an optional override control. (Engine + UI.)
-- **Add per-route inputs** for `tidal`, `coastal`/`drying`, `seepage`,
-  `cliff_height_m`. (UI + store/schema.)
-- **No change** to protection or field-visibility — explicitly keep both as-is.
-- **`wind_exposed` relabel** (Exhibit A) — still stands: "Open to the wind?"
-  with the hint. Low-risk, unblocked.
-- **`approach diff`** — blocked on question 3's words.
+- ✅ **`wind_exposed` relabel** (Exhibit A) — now "Open to the wind?" with the
+  full hint. (`curate_ui.html`.)
+- ✅ **Derive sun-window from aspect** — `sun_window` is suggested from the
+  crag's aspect (the vocabulary's own meanings fix the map: E→morning, S→all-day,
+  W→afternoon, N→shade), shown read-only with a one-click *use* + free override.
+  No schema change; the curator accepts or overrides. (`curate_ui.html`.)
+- ✅ **Per-route conditions inputs** — `tidal`, `coastal`, `seepage` (yes/no),
+  `drying` (fast/medium/slow), `cliff_height_m` (m) added to the card under a new
+  **conditions** group; whitelisted + typed in the PATCH path; validated in the
+  JSON Schema (off-enum/wrong-type → readable 422). (`curate_ui.html`, `curate.py`,
+  `store.py`.) *Note:* these are captured on the route record now; wiring the
+  **ranking engine to consume per-route values** (it reads venue-level today) is a
+  separate follow-on.
+- 🔜 **Derive best-months** — deferred. Honest derivation needs aspect **+
+  climate + live weather** (what the engine computes at venue level); the Studio's
+  route payload has no climatology plane yet. Deriving from aspect alone would be
+  the slop this handbook warns against, so best-months stays the hand-set 12-month
+  toggle until the climatology is wired in.
+- **No change** to protection or field-visibility — explicitly kept as-is.
+- 🔜 **`approach diff`** — blocked on question 3's words.

@@ -223,6 +223,8 @@ class Store:
             "source": self._codes("source"),
         }
         opt = lambda vals: {"anyOf": [{"type": "null"}, {"enum": vals}]}  # noqa: E731
+        optbool = {"anyOf": [{"type": "null"}, {"type": "boolean"}]}
+        optnum = {"anyOf": [{"type": "null"}, {"type": "number"}]}
         return {
             "$schema": "https://json-schema.org/draft/2020-12/schema",
             "type": "object",
@@ -239,6 +241,12 @@ class Store:
                 "protection_code": opt(enum["protection"] + ["UNSPECIFIED"]),
                 "commitment_code": opt(enum["commitment"]),
                 "grade_system_code": opt(enum["grade_system"]),
+                # conditions — per-route (handbook Q5, 2026-07-28)
+                "tidal": optbool,
+                "coastal": optbool,
+                "seepage": optbool,
+                "drying": opt(["fast", "medium", "slow"]),
+                "cliff_height_m": optnum,
                 "tags": {
                     "type": "object",
                     "properties": {
