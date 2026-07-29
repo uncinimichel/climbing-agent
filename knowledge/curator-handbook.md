@@ -168,10 +168,14 @@ The prose is the product. A good entry:
   `store.py`.) *Note:* these are captured on the route record now; wiring the
   **ranking engine to consume per-route values** (it reads venue-level today) is a
   separate follow-on.
-- 🔜 **Derive best-months** — deferred. Honest derivation needs aspect **+
-  climate + live weather** (what the engine computes at venue level); the Studio's
-  route payload has no climatology plane yet. Deriving from aspect alone would be
-  the slop this handbook warns against, so best-months stays the hand-set 12-month
-  toggle until the climatology is wired in.
+- ✅ **Derive best-months** — done. Routes already carry a per-route monthly
+  `climatology` array (temp_high, rainy_days); best-season is derived client-side
+  using the **engine's own felt-temp curve verbatim** (COLD 8 · heat 18/24/28 ·
+  rain 12/40 · ASPECT_ADJ, from `engine/weather.py`), so the suggestion matches
+  the ranking rather than inventing a heuristic. Derived months show **dashed**;
+  one-click *use* copies them into `best_season`, and any manual month overrides.
+  Routes without climatology fall back to the hand-set toggle. Cross-checked
+  against a Python port of the curve (identical output). *Caveat:* the JS curve is
+  a copy of the engine's — if the engine's constants change, update both.
 - **No change** to protection or field-visibility — explicitly kept as-is.
 - 🔜 **`approach diff`** — blocked on question 3's words.
