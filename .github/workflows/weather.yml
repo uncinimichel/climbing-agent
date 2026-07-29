@@ -79,6 +79,7 @@ jobs:
           git config user.email "actions@github.com"
           git add index.html .nojekyll climbing-trips.csv \
                   venues/ sitemap.xml robots.txt \
+                  trips/ \
                   trip-ni-july-2026/daily-report.md \
                   trip-ni-july-2026/history/ trip-ni-july-2026/flights-latest.json \
                   trip-ni-july-2026/rank-history.json \
@@ -103,6 +104,7 @@ jobs:
           cp .nojekyll site/ 2>/dev/null || true
           cp robots.txt sitemap.xml site/ 2>/dev/null || true
           cp -R venues site/venues 2>/dev/null || true
+          cp -R trips site/trips 2>/dev/null || true   # per-trip dashboards (root index.html is the picker)
           cp -R knowledge site/knowledge
 
       - name: Upload page artifact
