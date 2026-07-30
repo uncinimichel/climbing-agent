@@ -75,7 +75,7 @@ committing real drafts.
 - ✅ `sources/openbeta.py` + `map.py` + `tag.py` + `worker.py` + `drafts.py` — the vertical, verified live (Yosemite → validated drafts; `--tag` inference confirmed).
 - ✅ `sources/thecrag.py` + `sources/ukc.py` — verified live (Fair Head: theCrag route + UKC 460 routes → 102 multipitch-trad kept).
 - 🔜 SerpAPI-social discovery source; a "force re-survey" flag (re-crawl a done URL).
-- 🎨 `map-mockup.html` — design mockup of the **ingestion survey map** (draw a region → crawl+tag → amber → curate → green; zoom to route pins; hand-add guidebook finds). Open it in a browser, or the shared Artifact.
+- 🎨 `map-mockup.html` — design mockup of the **ingestion survey map**: a real terrain map (Leaflet + OpenTopoMap, with satellite/streets/dark layers), mouse-wheel zoom. Draw a region → crawl+tag → amber (ingested) → curate crags → green, route pins on zoom, hand-add guidebook finds; deduped by the unique key. Open in a browser (needs internet for map tiles): `open ingest/map-mockup.html`. Not an Artifact — the shareable sandbox blocks external map tiles.
 
 Replaces the retired Postgres crawler (`corpus/tools/crawl_worker.py`,
 `route_mapping.py`, `llm_tag.py`, `seed_openbeta_frontier.py`) — those get removed with
