@@ -20,6 +20,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "corpus" / "tools")
 import openbeta_client as ob  # noqa: E402  (standalone, stdlib-only — no Postgres import)
 
 SOURCE_ID = "openbeta"
+NEEDS_BROWSER = False  # keyless GraphQL — the browser sources (thecrag/ukc) set this True
 
 # OpenBeta `type` booleans → our discipline enum (taxonomies.json). "multi-pitch"
 # is derived (pitch count), not an OpenBeta type.
@@ -44,9 +45,10 @@ def seed_area(name: str, country: str = "USA") -> dict | None:
     return ob.best_match(name, country)
 
 
-def fetch(uuid: str) -> dict:
-    """Raw OpenBeta area: meta + children (for discovery) + climbs (leaf only)."""
-    return ob.fetch_area(uuid)
+def fetch(external_id: str, session=None) -> dict:
+    """Raw OpenBeta area: meta + children (for discovery) + climbs (leaf only).
+    `session` is unused (keyless GraphQL — kept for the uniform source interface)."""
+    return ob.fetch_area(external_id)
 
 
 def to_area(raw: dict) -> dict:
@@ -63,9 +65,16 @@ def to_area(raw: dict) -> dict:
 
 
 def children(raw: dict) -> list[dict]:
-    """Child areas to enqueue for breadth-first descent (area → crag → route)."""
-    return [{"uuid": c["uuid"], "name": c["areaName"], "totalClimbs": c.get("totalClimbs", 0)}
+    """Child areas to enqueue for breadth-first descent (area → crag → route),
+    in the uniform {external_id, name, total} shape the worker expects."""
+    return [{"external_id": c["uuid"], "name": c["areaName"], "total": c.get("totalClimbs", 0)}
             for c in (raw.get("children") or [])]
+
+
+def map_routes(raw: dict) -> list[dict]:
+    """This area's climbs → mapped route dicts (leaf areas only carry climbs)."""
+    gc = raw.get("gradeContext")
+    return [to_route(climb, gc) for climb in (raw.get("climbs") or [])]
 
 
 def _grade(climb: dict, grade_context: str | None) -> tuple[str | None, str | None]:
