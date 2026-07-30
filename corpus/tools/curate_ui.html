@@ -1158,7 +1158,7 @@ let MAP=null;
 function initMap(r){
   if(MAP){MAP.remove();MAP=null}
   MAP=L.map('livemap',{scrollWheelZoom:false}).setView([r.lat,r.lon],14);
-  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OSM'}).addTo(MAP);
+  L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',{maxZoom:17,attribution:'© OSM · © OpenTopoMap (CC-BY-SA)'}).addTo(MAP);
   L.marker([r.lat,r.lon],{title:'route'}).addTo(MAP).bindPopup('route: '+r.name);
   (r.parkings||[]).forEach((pk,i)=>{
     const m=L.marker([pk.lat,pk.lon],{draggable:true,
@@ -1326,7 +1326,11 @@ let BIGMAP=null, MAPLAYER=null;
 function initBigMap(){
   if(!BIGMAP){
     BIGMAP=L.map('bigmap').setView([47,5],5);
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OSM'}).addTo(BIGMAP);
+    const terr=L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',{maxZoom:17,attribution:'© OSM · SRTM · style © OpenTopoMap (CC-BY-SA)'});
+    const sat=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:18,attribution:'Imagery © Esri'});
+    const streets=L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{subdomains:'abcd',maxZoom:20,attribution:'© OSM © CARTO'});
+    terr.addTo(BIGMAP);                                   // terrain is the default layer
+    L.control.layers({'Terrain':terr,'Satellite':sat,'Streets':streets},null,{position:'topright'}).addTo(BIGMAP);
   }
   setTimeout(()=>BIGMAP.invalidateSize(),60);
   updateMapLayer();

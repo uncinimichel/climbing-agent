@@ -104,9 +104,12 @@ def to_route(climb: dict, grade_context: str | None) -> dict:
     original_grade, grade_system_code = _grade(climb, grade_context)
     safety = (climb.get("safety") or "").upper()
     content = climb.get("content") or {}
+    meta = climb.get("metadata") or {}
 
     route = {
         "name": climb["name"],
+        "lat": meta.get("lat"),          # OpenBeta gives per-climb coords — keep them
+        "lon": meta.get("lng"),
         "original_grade": original_grade,
         "grade_system_code": grade_system_code,
         "length_m": length_m,
