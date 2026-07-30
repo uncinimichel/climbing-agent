@@ -71,10 +71,11 @@ committing real drafts.
 ## Status
 
 - ✅ `frontier.py` — JSON-native, verified (enqueue/dedup/claim/complete/fail/resume).
-- ✅ `sources.json`, this README.
-- 🔜 `sources/openbeta.py`, `map.py`, `tag.py`, `worker.py` — the OpenBeta vertical.
-- 🔜 store-loader hardening (skip non-route JSON instead of crashing).
-- ⏸ theCrag/UKC fetchers (port off Postgres), SerpAPI-social discovery source.
+- ✅ `sources.json`, this README, store-loader hardening.
+- ✅ `sources/openbeta.py` + `map.py` + `tag.py` + `worker.py` + `drafts.py` — the vertical, verified live (Yosemite → validated drafts; `--tag` inference confirmed).
+- ✅ `sources/thecrag.py` + `sources/ukc.py` — verified live (Fair Head: theCrag route + UKC 460 routes → 102 multipitch-trad kept).
+- 🔜 SerpAPI-social discovery source; a "force re-survey" flag (re-crawl a done URL).
+- 🎨 `map-mockup.html` — design mockup of the **ingestion survey map** (draw a region → crawl+tag → amber → curate → green; zoom to route pins; hand-add guidebook finds). Open it in a browser, or the shared Artifact.
 
 Replaces the retired Postgres crawler (`corpus/tools/crawl_worker.py`,
 `route_mapping.py`, `llm_tag.py`, `seed_openbeta_frontier.py`) — those get removed with

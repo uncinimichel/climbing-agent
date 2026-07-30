@@ -1,0 +1,598 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Benchmark — ingestion survey map (mockup)</title>
+<style>*{margin:0}</style>
+</head>
+<body>
+<style>
+  :root{
+    /* night chart (default) */
+    --ground:#0e1719; --ground-2:#0a1113;
+    --panel:#132022; --panel-2:#0c1618; --panel-edge:#22383b;
+    --land:#26373d; --land-edge:#3d565e;
+    --grid:rgba(130,172,177,.12); --grid-strong:rgba(130,172,177,.24);
+    --ink:#e2eae7; --ink-dim:#93a7a3; --ink-faint:#5e716e;
+    --accent:#5cb2d8;                 /* signal blue — active + surveying */
+    --q:#7c8f8c;                      /* queued */
+    --survey:#5cb2d8;                 /* surveying */
+    --ingested:#e2a33c;               /* ingested, uncurated */
+    --curated:#59a56c;                /* curated */
+    --manual:#c98bd6;                 /* hand-added */
+    --danger:#d76a4c;
+    --shadow:0 1px 0 rgba(255,255,255,.03),0 12px 30px -18px rgba(0,0,0,.7);
+    --font-ui:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --font-mono:ui-monospace,"SF Mono","JetBrains Mono","Cascadia Code",Menlo,Consolas,monospace;
+  }
+  @media (prefers-color-scheme: light){
+    :root{
+      --ground:#cedadd; --ground-2:#c1d0d4;
+      --panel:#f3f4ee; --panel-2:#e9ebe1; --panel-edge:#cdd0c1;
+      --land:#e8dfc8; --land-edge:#c9bb98;
+      --grid:rgba(52,86,92,.16); --grid-strong:rgba(52,86,92,.3);
+      --ink:#182524; --ink-dim:#54635e; --ink-faint:#8a978f;
+      --accent:#2b7fa8; --q:#7a8a84; --survey:#2b7fa8;
+      --ingested:#bc7e21; --curated:#3d8851; --manual:#9a52ab;
+      --shadow:0 1px 0 rgba(255,255,255,.6),0 14px 34px -20px rgba(30,45,40,.45);
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#0e1719; --ground-2:#0a1113; --panel:#132022; --panel-2:#0c1618; --panel-edge:#22383b;
+    --land:#20302f; --land-edge:#33484a; --grid:rgba(120,158,155,.10); --grid-strong:rgba(120,158,155,.20);
+    --ink:#e2eae7; --ink-dim:#93a7a3; --ink-faint:#5e716e; --accent:#5cb2d8; --q:#7c8f8c;
+    --survey:#5cb2d8; --ingested:#e2a33c; --curated:#59a56c; --manual:#c98bd6;
+    --shadow:0 1px 0 rgba(255,255,255,.03),0 12px 30px -18px rgba(0,0,0,.7);
+  }
+  :root[data-theme="light"]{
+    --ground:#cedadd; --ground-2:#c1d0d4; --panel:#f3f4ee; --panel-2:#e9ebe1; --panel-edge:#cdd0c1;
+    --land:#e8dfc8; --land-edge:#c9bb98; --grid:rgba(52,86,92,.16); --grid-strong:rgba(52,86,92,.3);
+    --ink:#182524; --ink-dim:#54635e; --ink-faint:#8a978f; --accent:#2b7fa8; --q:#7a8a84;
+    --survey:#2b7fa8; --ingested:#bc7e21; --curated:#3d8851; --manual:#9a52ab;
+    --shadow:0 1px 0 rgba(255,255,255,.6),0 14px 34px -20px rgba(30,45,40,.45);
+  }
+
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;background:
+      radial-gradient(120% 90% at 78% -10%, color-mix(in srgb,var(--accent) 8%, transparent), transparent 60%),
+      linear-gradient(var(--ground),var(--ground-2));
+    color:var(--ink);font-family:var(--font-ui);
+    -webkit-font-smoothing:antialiased;
+  }
+  .app{display:grid;grid-template-rows:auto 1fr;height:100vh;height:100dvh}
+
+  /* ── header ─────────────────────────────────────────── */
+  header{
+    display:flex;align-items:center;gap:18px;padding:12px 18px;
+    border-bottom:1px solid var(--panel-edge);background:color-mix(in srgb,var(--panel) 60%, transparent);
+    backdrop-filter:blur(6px);
+  }
+  .brand{display:flex;align-items:baseline;gap:12px;min-width:0}
+  .mark{font-family:var(--font-mono);font-weight:600;letter-spacing:.02em;font-size:17px}
+  .mark b{color:var(--accent)}
+  .tag{font-size:12px;color:var(--ink-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .coverage{margin-left:auto;display:flex;gap:22px;align-items:center}
+  .cov{display:flex;flex-direction:column;line-height:1.15}
+  .cov .n{font-family:var(--font-mono);font-size:16px;font-variant-numeric:tabular-nums}
+  .cov .k{font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-faint)}
+  .cov .n b{color:var(--curated)}
+  .theme{border:1px solid var(--panel-edge);background:var(--panel);color:var(--ink-dim);
+    width:34px;height:34px;border-radius:8px;cursor:pointer;font-size:15px;display:grid;place-items:center}
+  .theme:hover{color:var(--ink)}
+
+  /* ── body split ─────────────────────────────────────── */
+  .body{display:grid;grid-template-columns:1fr 340px;min-height:0}
+  .stage{position:relative;min-width:0;overflow:hidden}
+  svg.map{width:100%;height:100%;display:block;cursor:crosshair;touch-action:none}
+  svg.map.inspecting{cursor:default}
+
+  .land{fill:var(--land);stroke:var(--land-edge);stroke-width:.35;stroke-linejoin:round}
+  .grid line{stroke:var(--grid);stroke-width:.2}
+  .grid line.axis{stroke:var(--grid-strong);stroke-width:.32}
+  .glabel{fill:var(--ink-faint);font-family:var(--font-mono);font-size:2.1px;letter-spacing:.04em}
+  .contlabel{fill:var(--ink-faint);font-family:var(--font-ui);font-size:3.4px;letter-spacing:.18em;
+    text-transform:uppercase;opacity:.5;text-anchor:middle}
+  /* decorative layers never eat pointer input — only markers/pins are interactive */
+  .grid,.land,#contlabels,#draw,.plot,.plot-fill{pointer-events:none}
+  .marker,.pin{pointer-events:auto}
+  .marker .tag-bg{fill:var(--panel);opacity:.9;stroke:var(--panel-edge);stroke-width:.2;rx:1}
+
+  /* survey plots */
+  .plot{fill:var(--st);fill-opacity:.10;stroke:var(--st);stroke-width:.5;transition:fill-opacity .2s}
+  .plot.sel{fill-opacity:.20;stroke-width:.9}
+  .plot-fill{fill:var(--curated);fill-opacity:.24}       /* curated green rising from bottom */
+  .plot-surveying{stroke-dasharray:2 1.6;animation:march 1s linear infinite}
+  @keyframes march{to{stroke-dashoffset:-3.6}}
+  .marker{cursor:pointer}
+  .marker .halo{fill:var(--st);opacity:.14}
+  .marker .dot{fill:var(--st);stroke:var(--ground);stroke-width:.5}
+  .marker.surveying .halo{animation:pulse 1.7s ease-out infinite}
+  @keyframes pulse{0%{opacity:.28;transform:scale(.6)}70%{opacity:0;transform:scale(1.9)}100%{opacity:0}}
+  .marker .mlabel{fill:var(--ink);font-family:var(--font-ui);font-size:3px;font-weight:600}
+  .marker .msub{fill:var(--ink-dim);font-family:var(--font-mono);font-size:2.4px}
+  .ring-bg{fill:none;stroke:var(--ink-faint);stroke-opacity:.35;stroke-width:.9}
+  .ring-fg{fill:none;stroke:var(--curated);stroke-width:.9;stroke-linecap:round;transform:rotate(-90deg);transform-box:fill-box;transform-origin:center}
+
+  /* route pins (focused) */
+  .pin{cursor:pointer}
+  .pin .p{stroke:var(--ground);stroke-width:.14}
+  .pin .plabel{fill:var(--ink);font-family:var(--font-ui);font-size:1.5px;font-weight:600}
+  .pin .pgrade{fill:var(--ink-dim);font-family:var(--font-mono);font-size:1.25px}
+
+  .drawrect{fill:var(--accent);fill-opacity:.12;stroke:var(--accent);stroke-width:.5;stroke-dasharray:1.5 1.2}
+
+  /* floating chrome */
+  .toolbar{position:absolute;left:14px;bottom:14px;display:flex;flex-direction:column;gap:6px;
+    background:color-mix(in srgb,var(--panel) 82%,transparent);border:1px solid var(--panel-edge);
+    border-radius:12px;padding:7px;box-shadow:var(--shadow);backdrop-filter:blur(8px)}
+  .tool{display:flex;align-items:center;gap:9px;border:0;background:transparent;color:var(--ink-dim);
+    font-family:var(--font-ui);font-size:12.5px;padding:7px 10px;border-radius:8px;cursor:pointer;text-align:left;width:100%}
+  .tool:hover{background:var(--panel-2);color:var(--ink)}
+  .tool.active{background:color-mix(in srgb,var(--accent) 20%,transparent);color:var(--ink)}
+  .tool svg{width:15px;height:15px;flex:none;stroke:currentColor;fill:none;stroke-width:1.6}
+  .tool kbd{margin-left:auto;font-family:var(--font-mono);font-size:10px;color:var(--ink-faint);
+    border:1px solid var(--panel-edge);border-radius:4px;padding:0 4px}
+  .tdiv{height:1px;background:var(--panel-edge);margin:2px 4px}
+
+  .legend{position:absolute;right:14px;bottom:14px;background:color-mix(in srgb,var(--panel) 82%,transparent);
+    border:1px solid var(--panel-edge);border-radius:12px;padding:10px 12px;box-shadow:var(--shadow);backdrop-filter:blur(8px)}
+  .legend h4{margin:0 0 7px;font-size:10px;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-faint);font-weight:600}
+  .legend .row{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink-dim);padding:2px 0}
+  .sw{width:11px;height:11px;border-radius:3px;flex:none}
+
+  .hint{position:absolute;left:50%;top:16px;transform:translateX(-50%);
+    background:color-mix(in srgb,var(--panel) 88%,transparent);border:1px solid var(--panel-edge);
+    color:var(--ink-dim);font-size:12.5px;padding:8px 14px;border-radius:99px;box-shadow:var(--shadow);
+    display:flex;gap:8px;align-items:center;pointer-events:none;transition:opacity .4s}
+  .hint b{color:var(--ink)}
+  .hint.gone{opacity:0}
+
+  .backbtn{position:absolute;left:14px;top:14px;display:none;align-items:center;gap:7px;
+    background:color-mix(in srgb,var(--panel) 88%,transparent);border:1px solid var(--panel-edge);
+    color:var(--ink);border-radius:9px;padding:7px 12px;font-size:12.5px;cursor:pointer;box-shadow:var(--shadow)}
+  .backbtn.show{display:flex}
+  .backbtn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:1.8}
+
+  /* ── field book (right rail) ─────────────────────────── */
+  aside{border-left:1px solid var(--panel-edge);background:var(--panel);display:flex;flex-direction:column;min-height:0}
+  .rail-h{padding:14px 16px 10px;border-bottom:1px solid var(--panel-edge)}
+  .rail-h .ey{font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-faint)}
+  .rail-h h2{margin:3px 0 0;font-size:16px;font-weight:600;letter-spacing:.01em}
+  .rail-body{overflow:auto;padding:14px 16px;display:flex;flex-direction:column;gap:16px;flex:1}
+
+  .empty{color:var(--ink-dim);font-size:13px;line-height:1.55}
+  .empty .k{font-family:var(--font-mono);color:var(--ink-faint)}
+
+  .keyline{font-family:var(--font-mono);font-size:11.5px;color:var(--ink-dim);
+    background:var(--panel-2);border:1px solid var(--panel-edge);border-radius:8px;padding:8px 10px;
+    display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+  .keyline .v{color:var(--ink)}
+
+  .status-chip{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:600;
+    padding:5px 11px;border-radius:99px;background:color-mix(in srgb,var(--st) 16%,transparent);color:var(--ink)}
+  .status-chip .d{width:8px;height:8px;border-radius:50%;background:var(--st)}
+
+  .prog{height:8px;border-radius:99px;background:var(--panel-2);overflow:hidden;border:1px solid var(--panel-edge)}
+  .prog i{display:block;height:100%;background:var(--curated);width:0;transition:width .5s ease}
+  .progcap{display:flex;justify-content:space-between;font-size:11.5px;color:var(--ink-dim);margin-top:6px;font-family:var(--font-mono)}
+
+  .stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--panel-edge);
+    border:1px solid var(--panel-edge);border-radius:10px;overflow:hidden}
+  .stat{background:var(--panel);padding:10px}
+  .stat .n{font-family:var(--font-mono);font-size:18px;font-variant-numeric:tabular-nums;line-height:1}
+  .stat .k{font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-faint);margin-top:4px}
+
+  .sect-h{font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-faint);font-weight:600}
+  .src{display:flex;align-items:center;gap:10px;font-size:12.5px;padding:6px 0;border-bottom:1px dashed var(--panel-edge)}
+  .src:last-child{border-bottom:0}
+  .src .nm{font-weight:600}
+  .src .c{margin-left:auto;font-family:var(--font-mono);color:var(--ink-dim)}
+  .src .lic{font-size:10.5px;color:var(--ink-faint)}
+
+  .actions{display:flex;flex-direction:column;gap:8px}
+  .btn{display:flex;align-items:center;justify-content:center;gap:8px;border:1px solid var(--panel-edge);
+    background:var(--panel-2);color:var(--ink);border-radius:9px;padding:10px;font-size:13px;font-weight:600;
+    cursor:pointer;font-family:var(--font-ui)}
+  .btn:hover{border-color:var(--ink-faint)}
+  .btn.primary{background:var(--accent);border-color:var(--accent);color:#04171e}
+  .btn.primary:hover{filter:brightness(1.06)}
+  .btn.green{background:var(--curated);border-color:var(--curated);color:#04170c}
+  .btn:disabled{opacity:.45;cursor:not-allowed}
+  .btn svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.7}
+
+  .addform{display:none;flex-direction:column;gap:8px;background:var(--panel-2);border:1px solid var(--panel-edge);
+    border-radius:10px;padding:12px;margin-top:2px}
+  .addform.show{display:flex}
+  .addform label{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint)}
+  .addform input,.addform select{background:var(--panel);border:1px solid var(--panel-edge);color:var(--ink);
+    border-radius:7px;padding:8px;font-size:13px;font-family:var(--font-ui);width:100%}
+  .addform .r2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .note{font-size:11.5px;color:var(--ink-faint);line-height:1.5}
+  .note code{font-family:var(--font-mono);color:var(--ink-dim)}
+
+  @media (max-width:820px){
+    .body{grid-template-columns:1fr;grid-template-rows:1fr auto}
+    aside{border-left:0;border-top:1px solid var(--panel-edge);max-height:44vh}
+    .coverage{gap:14px}.cov .k{display:none}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important}
+  }
+</style>
+
+<div class="app">
+  <header>
+    <div class="brand">
+      <span class="mark"><b>◈</b> BENCHMARK</span>
+      <span class="tag">ingestion survey · trad multi-pitch, worldwide</span>
+    </div>
+    <div class="coverage">
+      <div class="cov"><span class="n" id="cov-regions">4</span><span class="k">regions surveyed</span></div>
+      <div class="cov"><span class="n" id="cov-routes">519</span><span class="k">routes ingested</span></div>
+      <div class="cov"><span class="n"><b id="cov-cur">27%</b></span><span class="k">curated</span></div>
+      <button class="theme" id="theme" title="Toggle light / dark" aria-label="Toggle theme">◑</button>
+    </div>
+  </header>
+
+  <div class="body">
+    <div class="stage">
+      <svg class="map" id="map" viewBox="0 0 360 180" preserveAspectRatio="xMidYMid meet" aria-label="World ingestion map">
+        <g class="grid" id="grid"></g>
+        <g class="land" id="land"></g>
+        <g id="contlabels"></g>
+        <g id="plots"></g>
+        <g id="pins"></g>
+        <rect id="draw" class="drawrect" style="display:none"></rect>
+      </svg>
+
+      <div class="hint" id="hint"><span>Drag anywhere to <b>survey a new region</b> — or click a marker to inspect it</span></div>
+
+      <button class="backbtn" id="back"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg> World view</button>
+
+      <div class="toolbar" role="toolbar" aria-label="Map tools">
+        <button class="tool active" id="t-survey"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M4 9h16M9 4v16"/></svg> Survey a region <kbd>S</kbd></button>
+        <button class="tool" id="t-add"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg> Add climb by hand <kbd>A</kbd></button>
+        <div class="tdiv"></div>
+        <button class="tool" id="t-zoomin"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M11 8v6M8 11h6M20 20l-3.5-3.5"/></svg> Zoom to selection</button>
+        <button class="tool" id="t-reset"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7M3 4v4h4"/></svg> Reset view</button>
+      </div>
+
+      <div class="legend">
+        <h4>Plot status</h4>
+        <div class="row"><span class="sw" style="background:var(--survey)"></span> Surveying (crawl + tag)</div>
+        <div class="row"><span class="sw" style="background:var(--ingested)"></span> Ingested — needs curation</div>
+        <div class="row"><span class="sw" style="background:var(--curated)"></span> Curated &amp; published</div>
+        <div class="row"><span class="sw" style="background:var(--manual)"></span> Hand-added (guidebook)</div>
+      </div>
+    </div>
+
+    <aside>
+      <div class="rail-h">
+        <div class="ey" id="rail-ey">Field book</div>
+        <h2 id="rail-title">Select a plot</h2>
+      </div>
+      <div class="rail-body" id="rail"></div>
+    </aside>
+  </div>
+</div>
+
+<script>
+(function(){
+  const NS="http://www.w3.org/2000/svg";
+  const X = lon => lon+180, Y = lat => 90-lat;      // equirectangular → viewBox units
+  const el = (t,a={},p)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);if(p!=null)e.textContent=p;return e;};
+  const $ = s=>document.querySelector(s);
+
+  /* ---- stylised world (positioned right; a survey generalisation, not a coastline) ---- */
+  const CONTINENTS = {
+    "N AMERICA":[[-165,60],[-153,68],[-125,69],[-100,67],[-88,60],[-80,52],[-76,60],[-64,60],[-56,50],[-66,45],[-70,41],[-76,35],[-81,25],[-92,29],[-98,24],[-106,23],[-112,30],[-119,33],[-124,41],[-126,49],[-140,58],[-153,57]],
+    "":[[-45,60],[-22,64],[-20,70],[-32,83],[-52,82],[-56,72],[-52,64]],
+    "S AMERICA":[[-78,9],[-68,11],[-58,6],[-50,0],[-42,-3],[-35,-7],[-38,-15],[-48,-24],[-56,-34],[-66,-40],[-73,-50],[-76,-52],[-72,-43],[-70,-30],[-72,-18],[-77,-13],[-81,-5],[-80,3]],
+    "EUROPE":[[-10,36],[-8,44],[-2,43],[4,43],[9,44],[15,40],[20,40],[26,41],[30,45],[27,48],[14,54],[9,58],[16,65],[26,71],[12,66],[5,61],[-2,59],[-6,55],[-10,50],[-11,43]],
+    "AFRICA":[[-16,14],[-17,21],[-8,32],[3,36],[12,34],[22,32],[32,31],[35,28],[43,12],[51,11],[44,2],[41,-5],[40,-13],[35,-23],[27,-34],[20,-35],[16,-28],[12,-16],[9,-2],[8,5],[-6,5],[-13,9]],
+    "ASIA":[[28,44],[40,47],[52,46],[62,44],[74,40],[82,36],[92,30],[100,24],[104,10],[110,20],[118,24],[122,32],[128,35],[135,36],[142,45],[138,44],[150,52],[160,60],[178,66],[176,71],[150,71],[128,72],[104,77],[80,73],[66,69],[58,66],[50,68],[42,66],[34,58],[28,52]],
+    "INDIA":[[68,25],[74,20],[78,9],[81,10],[89,22],[85,26],[76,30],[70,28]],
+    "AUSTRALIA":[[114,-22],[123,-18],[131,-12],[138,-11],[143,-13],[147,-20],[153,-28],[150,-37],[141,-38],[135,-35],[129,-32],[118,-35],[113,-30],[113,-25]]
+  };
+  const ISLES = [
+    [[-8,55],[-5,58],[-2,58],[0,54],[-2,51],[-6,50],[-10,52],[-10,54]],   // UK/Ireland
+    [[130,31],[136,36],[141,40],[140,35],[137,34],[132,33]],              // Japan
+    [[44,-12],[50,-16],[47,-25],[45,-22],[43,-16]],                       // Madagascar
+    [[167,-45],[174,-41],[178,-38],[176,-46],[170,-46]]                   // NZ
+  ];
+
+  const gridG=$("#grid"), landG=$("#land"), contG=$("#contlabels");
+  for(let lon=-180;lon<=180;lon+=30){const l=el("line",{x1:X(lon),y1:0,x2:X(lon),y2:180});if(lon===0)l.classList.add("axis");gridG.appendChild(l);}
+  for(let lat=-90;lat<=90;lat+=30){const l=el("line",{x1:0,y1:Y(lat),x2:360,y2:Y(lat)});if(lat===0)l.classList.add("axis");gridG.appendChild(l);}
+  gridG.appendChild(el("text",{class:"glabel",x:X(0)+1,y:Y(0)-1},"0°"));
+  const poly=pts=>pts.map(p=>X(p[0])+","+Y(p[1])).join(" ");
+  for(const[name,pts]of Object.entries(CONTINENTS)){
+    landG.appendChild(el("polygon",{points:poly(pts)}));
+    if(name){const cx=pts.reduce((s,p)=>s+X(p[0]),0)/pts.length, cy=pts.reduce((s,p)=>s+Y(p[1]),0)/pts.length;
+      contG.appendChild(el("text",{class:"contlabel",x:cx,y:cy},name));}
+  }
+  ISLES.forEach(pts=>landG.appendChild(el("polygon",{points:poly(pts)})));
+  landG.appendChild(el("polygon",{points:`0,${Y(-72)} 360,${Y(-72)} 360,180 0,180`,style:"opacity:.5"}));
+
+  /* ---- seed plots (real numbers from the live pipeline) ---- */
+  const uid=(()=>{let n=100;return()=>++n;})();
+  const PLOTS = [
+    {id:uid(),name:"Antrim Coast",region:"Northern Ireland",bbox:[-6.7,-5.8,54.9,55.4],status:"curated",
+     crags:3,curated:3,routes:118,sources:[["UKClimbing","scrape",84],["theCrag","scrape",34]],
+     pins:[["Nobody Move","E4 6a","curated"],["Poor Relation","E1 5b","curated"],["Girona","VS 4c","curated"],["Above the Prow","E2 5c","curated"]]},
+    {id:uid(),name:"Yosemite Valley",region:"California, USA",bbox:[-119.8,-119.3,37.6,37.95],status:"ingested",
+     crags:41,curated:0,routes:205,sources:[["OpenBeta","CC0",205]],
+     pins:[["The Nose","5.9 C2","draft"],["Serenity Crack","5.10d","draft"],["Snake Dike","5.7 R","draft"],["Royal Arches","5.10b","draft"]]},
+    {id:uid(),name:"Costa Blanca",region:"Valencia, Spain",bbox:[-0.4,0.4,38.4,38.9],status:"ingested",
+     crags:40,curated:18,routes:96,sources:[["theCrag","scrape",61],["UKClimbing","scrape",35]],
+     pins:[["Espolón Central","UIAA IV+","curated"],["Aristotles","UIAA V","curated"],["Diedro UBSA","V+","draft"],["Costa Blanca Ridge","MD","draft"]]},
+    {id:uid(),name:"Mont Blanc massif",region:"Chamonix, France",bbox:[6.8,7.15,45.75,46.0],status:"surveying",
+     crags:0,curated:0,routes:0,sources:[["OpenBeta","CC0",0],["theCrag","scrape",0]],pins:[],_progress:0}
+  ];
+
+  const map=$("#map"), plotsG=$("#plots"), pinsG=$("#pins"), rail=$("#rail");
+  let selected=null, focused=null, tool="survey", vb=[0,0,360,180];
+
+  const centroid=b=>[(b[0]+b[1])/2,(b[2]+b[3])/2];
+  const STLABEL={queued:"Queued",surveying:"Surveying",ingested:"Ingested — needs curation",curated:"Curated & published"};
+  const stColor=s=>`var(--${({queued:"q",surveying:"survey"}[s])||s})`;
+
+  /* ---- world markers ---- */
+  function markerNode(p){
+    const cx=X(centroid(p.bbox)[0]), cy=Y(centroid(p.bbox)[1]);
+    const isSel=p===selected;
+    const g=el("g",{class:"marker "+(p.status==="surveying"?"surveying":""),tabindex:0,role:"button","aria-label":p.name+" — "+STLABEL[p.status]});
+    g.style.setProperty("--st",stColor(p.status));
+    const lx=cx+5, sub = p.status==="surveying"?"surveying…":p.status==="curated"?`${p.routes} routes · done`:`${p.routes} routes · ${p.curated}/${p.crags} crags`;
+    const chipW=Math.max(p.name.length*1.62, isSel?sub.length*1.32:0)+3.4;
+    // full transparent hit area so a click anywhere on the marker selects it
+    // (an SVG <g> only catches clicks on painted pixels — gaps would fall through)
+    g.appendChild(el("rect",{x:cx-4.5,y:cy-4.5,width:(lx-1.6+chipW)-(cx-4.5),height:isSel?9.5:8,fill:"none","pointer-events":"all"}));
+    g.appendChild(el("circle",{class:"halo",cx,cy,r:4.5,style:"transform-box:fill-box;transform-origin:center"}));
+    const R=3.2, C=2*Math.PI*R, frac=p.crags?p.curated/p.crags:0;    // curation ring
+    g.appendChild(el("circle",{class:"ring-bg",cx,cy,r:R}));
+    if(frac>0)g.appendChild(el("circle",{class:"ring-fg",cx,cy,r:R,"stroke-dasharray":`${C*frac} ${C}`}));
+    g.appendChild(el("circle",{class:"dot",cx,cy,r:isSel?2.4:1.9}));
+    // field-tag label: name always; the data sub-line only when selected (declutters dense areas)
+    g.appendChild(el("rect",{class:"tag-bg",x:lx-1.6,y:cy-3.5,width:chipW,height:isSel?7.6:5.2,rx:1.1}));
+    g.appendChild(el("text",{class:"mlabel",x:lx,y:cy-0.2},p.name));
+    if(isSel)g.appendChild(el("text",{class:"msub",x:lx,y:cy+3},sub));
+    g.addEventListener("click",e=>{e.stopPropagation();select(p);});
+    g.addEventListener("keydown",e=>{if(e.key==="Enter")select(p);});
+    return g;
+  }
+  function renderPlots(){
+    plotsG.innerHTML="";
+    PLOTS.filter(p=>p!==selected).forEach(p=>plotsG.appendChild(markerNode(p)));
+    if(selected&&PLOTS.includes(selected))plotsG.appendChild(markerNode(selected)); // selected drawn on top
+  }
+
+  /* ---- focused view: plot rect + route pins ---- */
+  function renderFocus(){
+    pinsG.innerHTML=""; plotsG.innerHTML="";
+    if(!focused)return;
+    const p=focused, [w,e,s,n]=p.bbox;
+    const g=el("g"); g.style.setProperty("--st",stColor(p.status));
+    const rect=el("rect",{class:"plot sel",x:X(w),y:Y(n),width:X(e)-X(w),height:Y(s)-Y(n),rx:.4});
+    g.appendChild(rect);
+    const frac=p.crags?p.curated/p.crags:0, fh=(Y(s)-Y(n))*frac;
+    if(frac>0)g.appendChild(el("rect",{class:"plot-fill",x:X(w),y:Y(s)-fh,width:X(e)-X(w),height:fh,rx:.4}));
+    plotsG.appendChild(g);
+    // scatter pins deterministically inside bbox
+    p.pins.forEach((pin,i)=>{
+      const rx=(Math.sin(i*97.13)*0.5+0.5), ry=(Math.cos(i*57.7)*0.5+0.5);
+      const px=X(w)+(X(e)-X(w))*(0.16+0.68*rx), py=Y(n)+(Y(s)-Y(n))*(0.18+0.64*ry);
+      const col=pin[2]==="curated"?"var(--curated)":pin[2]==="manual"?"var(--manual)":"var(--ingested)";
+      const pg=el("g",{class:"pin",tabindex:0,role:"button","aria-label":pin[0]+" "+pin[1]});
+      pg.appendChild(el("circle",{class:"p",cx:px,cy:py,r:.9,fill:col}));
+      pg.appendChild(el("text",{class:"plabel",x:px+1.4,y:py-0.2},pin[0]));
+      pg.appendChild(el("text",{class:"pgrade",x:px+1.4,y:py+1.5},pin[1]+(pin[2]==="manual"?" · hand-added":"")));
+      pinsG.appendChild(pg);
+    });
+  }
+
+  /* ---- view box tween ---- */
+  function tweenTo(target,cb){
+    const from=vb.slice(), t0=performance.now(), dur=520;
+    const reduce=matchMedia("(prefers-reduced-motion:reduce)").matches;
+    if(reduce){vb=target.slice();map.setAttribute("viewBox",vb.join(" "));cb&&cb();return;}
+    (function step(now){
+      const k=Math.min(1,(now-t0)/dur), e=1-Math.pow(1-k,3);
+      vb=from.map((v,i)=>v+(target[i]-v)*e);
+      map.setAttribute("viewBox",vb.join(" "));
+      if(k<1)requestAnimationFrame(step); else cb&&cb();
+    })(t0);
+  }
+  function focusPlot(p){
+    focused=p; map.classList.add("inspecting"); $("#back").classList.add("show");
+    const [w,e,s,n]=p.bbox, padX=(X(e)-X(w))*0.6+2, padY=(Y(s)-Y(n))*0.6+2;
+    tweenTo([X(w)-padX,Y(n)-padY,(X(e)-X(w))+padX*2,(Y(s)-Y(n))+padY*2],renderFocus);
+    hideHint();
+  }
+  function toWorld(){
+    focused=null; map.classList.remove("inspecting"); $("#back").classList.remove("show");
+    pinsG.innerHTML="";
+    tweenTo([0,0,360,180],renderPlots);
+  }
+  $("#back").addEventListener("click",toWorld);
+  $("#t-reset").addEventListener("click",toWorld);
+  $("#t-zoomin").addEventListener("click",()=>{if(selected)focusPlot(selected);});
+
+  /* ---- selection → field book ---- */
+  function select(p){selected=p; if(focused)renderFocus(); else renderPlots(); renderRail();}
+  function money(n){return n.toLocaleString();}
+  function renderRail(){
+    const p=selected;
+    if(!p){ $("#rail-ey").textContent="Field book"; $("#rail-title").textContent="Select a plot";
+      rail.innerHTML=`<p class="empty">Nothing selected. <b>Drag on the map</b> to survey a new region, or click an existing plot to see its coordinates, sources and curation progress.<br><br>Every route is keyed by <span class="k">source:external_id</span> — re-surveying a region never creates a duplicate.</p>`;
+      return;
+    }
+    $("#rail-ey").textContent=p.region;
+    $("#rail-title").textContent=p.name;
+    const [w,e,s,n]=p.bbox, frac=p.crags?Math.round(100*p.curated/p.crags):0;
+    const key=`${Math.abs(s).toFixed(2)}°${s<0?"S":"N"} ${Math.abs(w).toFixed(2)}°${w<0?"W":"E"} → ${Math.abs(n).toFixed(2)}°${n<0?"S":"N"} ${Math.abs(e).toFixed(2)}°${e<0?"W":"E"}`;
+    rail.style.setProperty("--st",stColor(p.status));
+
+    const surveying = p.status==="surveying", queued = p.status==="queued";
+    const done = p.curated>=p.crags;
+    const sources = p.sources.map(([nm,lic,c])=>
+      `<div class="src"><span class="nm">${nm}</span><span class="lic">${lic}</span><span class="c">${c} routes</span></div>`).join("");
+    const actions = (queued||surveying)
+      ? `<div class="actions"><button class="btn primary" ${surveying?"disabled":""} id="a-survey"><svg viewBox="0 0 24 24"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg>${surveying?"Surveying…":"Start survey"}</button></div>`
+      : `<div class="actions">
+           <button class="btn ${done?'':'green'}" id="a-cur" ${done?'disabled':''}><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>${done?'All crags curated':'Curate next crag'}</button>
+           <button class="btn" id="a-inspect"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>${focused===p?'Zoom to pins ✓':'Inspect routes'}</button>
+           <button class="btn" id="a-add"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add climb by hand</button>
+         </div>`;
+
+    // one HTML write — rail content is HTML, so never build it with the SVG-namespaced el()
+    rail.innerHTML =
+      `<div class="status-chip"><span class="d"></span>${STLABEL[p.status]}</div>
+       <div class="keyline"><span>plot key</span><span class="v">${key}</span></div>`
+      + (surveying ? `<div><div class="sect-h" style="margin-bottom:8px">Live crawl</div><div class="note" id="ticker" style="color:var(--ink)"></div></div>` : ``)
+      + `<div class="stats">
+           <div class="stat"><div class="n" id="st-routes">${money(p.routes)}</div><div class="k">routes</div></div>
+           <div class="stat"><div class="n" id="st-crags">${p.crags}</div><div class="k">crags</div></div>
+           <div class="stat"><div class="n" style="color:var(--curated)">${p.curated}</div><div class="k">curated</div></div>
+         </div>
+         <div><div class="prog"><i style="width:${frac}%"></i></div>
+           <div class="progcap"><span>${frac}% curated</span><span>${p.curated}/${p.crags} crags green</span></div></div>
+         <div><div class="sect-h" style="margin-bottom:6px">Sources · deduped by unique key</div>${sources}</div>`
+      + actions
+      + `<form class="addform" id="addform">
+           <div class="note">Found it in a guidebook but the crawl missed it? Add it as a <b>draft</b> — it lands under this plot with a <code>manual:</code> key, no duplicate risk.</div>
+           <div><label>Route name</label><input id="f-name" placeholder="e.g. Recess Route" autocomplete="off"></div>
+           <div class="r2">
+             <div><label>Grade</label><input id="f-grade" placeholder="VS 4c"></div>
+             <div><label>Discipline</label><select id="f-disc"><option>trad</option><option>alpine</option><option>trad · multi-pitch</option></select></div>
+           </div>
+           <button class="btn primary" type="submit"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add draft pin</button>
+         </form>`;
+
+    wireActions(p);
+    if(surveying)runTicker(p);
+  }
+
+  function wireActions(p){
+    const cur=$("#a-cur"), insp=$("#a-inspect"), add=$("#a-add"), form=$("#addform"), sv=$("#a-survey");
+    if(sv)sv.onclick=()=>runSurvey(p);
+    if(cur)cur.onclick=()=>{
+      if(p.curated<p.crags){p.curated++; if(p.curated>=p.crags)p.status="curated";
+        // flip a draft pin to curated
+        const d=p.pins.find(x=>x[2]==="draft"); if(d)d[2]="curated";
+        refresh(); renderRail(); pulseCov();}
+    };
+    if(insp)insp.onclick=()=>focusPlot(p);
+    if(add)add.onclick=()=>{ if(focused!==p)focusPlot(p); form.classList.toggle("show"); $("#f-name").focus(); };
+    if(form)form.onsubmit=ev=>{ev.preventDefault();
+      const nm=$("#f-name").value.trim()||"Unnamed line"; const gr=$("#f-grade").value.trim()||"—";
+      p.pins.push([nm,gr,"manual"]); p.routes++; p.crags++;
+      form.reset(); form.classList.remove("show");
+      refresh(); renderFocus(); renderRail(); pulseCov();
+    };
+  }
+
+  /* ---- simulate a crawl ---- */
+  function runSurvey(p){
+    p.status="surveying"; p._progress=0; refresh(); renderRail();
+    const found={routes:0,crags:0}, target={crags:8+Math.floor(Math.random()*22),routes:60+Math.floor(Math.random()*220)};
+    const t0=performance.now(), dur=2600;
+    (function step(now){
+      const k=Math.min(1,(now-t0)/dur);
+      p.routes=Math.round(target.routes*k); p.crags=Math.round(target.crags*k);
+      if(selected===p)renderRailCounts(p);
+      if(k<1)requestAnimationFrame(step);
+      else { p.status="ingested"; p.curated=0;
+        p.sources=[["OpenBeta","CC0",Math.round(p.routes*.4)],["theCrag","scrape",Math.round(p.routes*.38)],["UKClimbing","scrape",Math.round(p.routes*.22)]];
+        p.pins=[["Direttissima","TD","draft"],["North Buttress","HVS 5a","draft"],["Central Groove","E1 5b","draft"]];
+        refresh(); renderRail(); pulseCov();
+      }
+    })(t0);
+  }
+  function renderRailCounts(p){
+    const st=rail.querySelector(".stats"); if(!st)return;
+    st.children[0].querySelector(".n").textContent=money(p.routes);
+    st.children[1].querySelector(".n").textContent=p.crags;
+  }
+  function runTicker(p){
+    const box=$("#ticker"); if(!box)return;
+    const steps=["seeding frontier for the plot bbox…","OpenBeta · walking area → crag → route…","theCrag · fetching leaf areas…","LLM-tagging protection · hazards · character…","validating against the taxonomy schema…"];
+    let i=0; (function tick(){ if(!document.body.contains(box))return; box.textContent="→ "+steps[i%steps.length]; i++; if(p.status==="surveying")setTimeout(tick,620); })();
+  }
+
+  /* ---- draw a new plot ---- */
+  let drawing=null, suppressClick=false; const drawRect=$("#draw");
+  function svgPt(evt){const pt=map.createSVGPoint();pt.x=evt.clientX;pt.y=evt.clientY;const m=map.getScreenCTM().inverse();const q=pt.matrixTransform(m);return[q.x,q.y];}
+  map.addEventListener("pointerdown",evt=>{
+    if(tool!=="survey"||focused)return;
+    if(evt.target.closest && evt.target.closest(".marker,.pin"))return; // let markers handle their own click
+    const[x,y]=svgPt(evt); drawing={x0:x,y0:y}; drawRect.style.display="block";
+    map.setPointerCapture(evt.pointerId); hideHint();
+  });
+  map.addEventListener("pointermove",evt=>{
+    if(!drawing)return; const[x,y]=svgPt(evt);
+    const x0=Math.min(drawing.x0,x),y0=Math.min(drawing.y0,y),w=Math.abs(x-drawing.x0),h=Math.abs(y-drawing.y0);
+    drawRect.setAttribute("x",x0);drawRect.setAttribute("y",y0);drawRect.setAttribute("width",w);drawRect.setAttribute("height",h);
+  });
+  map.addEventListener("pointerup",evt=>{
+    if(!drawing)return; const[x,y]=svgPt(evt); drawRect.style.display="none";
+    suppressClick=true;   // swallow the click the browser fires after a drag, so it can't deselect
+    const lon0=Math.min(drawing.x0,x)-180, lon1=Math.max(drawing.x0,x)-180;
+    const lat0=90-Math.max(drawing.y0,y), lat1=90-Math.min(drawing.y0,y);
+    drawing=null;
+    if(Math.abs(lon1-lon0)<1.2||Math.abs(lat1-lat0)<1.2)return; // ignore tiny/mis-clicks
+    const cLat=((lat0+lat1)/2).toFixed(1), cLon=((lon0+lon1)/2).toFixed(1);
+    const p={id:uid(),name:`Survey ${Math.abs(cLat)}°${cLat<0?"S":"N"} ${Math.abs(cLon)}°${cLon<0?"W":"E"}`,
+      region:"New plot · unnamed",bbox:[lon0,lon1,lat0,lat1],status:"queued",crags:0,curated:0,routes:0,
+      sources:[["OpenBeta","CC0",0],["theCrag","scrape",0],["UKClimbing","scrape",0]],pins:[]};
+    PLOTS.push(p); selected=p; refresh(); renderRail();
+    runSurvey(p);   // auto-start the survey the moment you finish drawing
+  });
+
+  /* ---- tools + shortcuts ---- */
+  function setTool(t){tool=t; $("#t-survey").classList.toggle("active",t==="survey"); $("#t-add").classList.toggle("active",t==="add");
+    map.style.cursor = t==="survey"&&!focused ? "crosshair":"default";
+    if(t==="add"){ if(!focused&&selected)focusPlot(selected); const f=$("#addform"); if(f){f.classList.add("show");$("#f-name").focus();} }
+  }
+  $("#t-survey").onclick=()=>setTool("survey");
+  $("#t-add").onclick=()=>setTool("add");
+  addEventListener("keydown",e=>{ if(e.target.tagName==="INPUT"||e.target.tagName==="SELECT")return;
+    if(e.key==="s"||e.key==="S")setTool("survey"); if(e.key==="a"||e.key==="A")setTool("add");
+    if(e.key==="Escape"){if(focused)toWorld();} });
+  map.addEventListener("click",e=>{
+    if(suppressClick){suppressClick=false;return;}
+    if(e.target===map&&!focused){selected=null;renderRail();renderPlots();}
+  });
+
+  /* ---- coverage header ---- */
+  function updateCoverage(){
+    const surveyed=PLOTS.filter(p=>p.status!=="queued").length;
+    const routes=PLOTS.reduce((s,p)=>s+p.routes,0);
+    const crags=PLOTS.reduce((s,p)=>s+p.crags,0), cur=PLOTS.reduce((s,p)=>s+p.curated,0);
+    $("#cov-regions").textContent=surveyed;
+    $("#cov-routes").textContent=money(routes);
+    $("#cov-cur").textContent=(crags?Math.round(100*cur/crags):0)+"%";
+  }
+  function pulseCov(){updateCoverage();}
+  function refresh(){ if(focused)renderFocus(); else renderPlots(); updateCoverage(); }
+
+  /* ---- hint + theme ---- */
+  let hintGone=false;
+  function hideHint(){if(!hintGone){hintGone=true;$("#hint").classList.add("gone");}}
+  setTimeout(hideHint,9000);
+  const root=document.documentElement;
+  $("#theme").onclick=()=>{
+    const cur=root.getAttribute("data-theme")|| (matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light");
+    root.setAttribute("data-theme",cur==="dark"?"light":"dark");
+  };
+
+  renderPlots(); updateCoverage(); renderRail();
+  select(PLOTS[0]);
+})();
+</script>
+
+</body>
+</html>
