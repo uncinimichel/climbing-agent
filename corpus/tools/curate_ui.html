@@ -362,6 +362,7 @@
 <div class="actions"><div class="in">
   <button class="btn primary" onclick="publish()">✓ Publish<kbd>⌘⏎</kbd></button>
   <button class="btn field" onclick="fieldcheck()">🥾 Field check<kbd>⌘F</kbd></button>
+  <button class="btn" onclick="retag()" title="Re-run the LLM tagger on this route's prose">🏷 Re-tag</button>
   <button class="btn danger" onclick="quarantine()">✕ Quarantine</button>
   <button class="btn danger" onclick="delRoute()" title="remove this record file entirely — drafts only">🗑 Delete</button>
   <button class="btn" onclick="move(1)">Next<kbd>⌘→</kbd></button>
@@ -1211,6 +1212,16 @@ async function statusFlip(call,msg,newStatus){  // publish/quarantine: advance t
 }
 const publish=()=>R&&statusFlip('/route/'+R.id+'/publish','✓ published — tags now human','publish');
 const quarantine=()=>R&&statusFlip('/route/'+R.id+'/status/quarantined','quarantined','quarantined');
+async function retag(){
+  if(!R)return;
+  commitFocus();
+  toast('re-tagging with the LLM…');
+  try{
+    const d=await api('/route/'+R.id+'/retag',{method:'POST'});
+    toast('🏷 re-tagged'+(d.flagged&&d.flagged.length?` · ${d.flagged.length} field(s) flagged`:''));
+    await openRoute(R.id);   // re-render editor with the new tags/protection/hazards
+  }catch(e){ toast('re-tag failed: '+e); }
+}
 async function fieldcheck(){
   if(!R)return;
   commitFocus();
@@ -1364,17 +1375,14 @@ async function runDiscover(bbox){
   let job;
   try{ job=(await (await fetch('/api/discover',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({bbox})})).json()).job; }
   catch(e){ $('surveyLog').textContent='⚠ '+e; return; }
-  if(!DISCLAYER)DISCLAYER=L.layerGroup().addTo(BIGMAP);
   const poll=setInterval(async()=>{
     let j; try{ j=await (await fetch('/api/discover/'+job)).json(); }catch(e){ return; }
     $('surveyLog').textContent=(j.log||[]).slice(-1)[0]||j.status;
     if(!j.done)return; clearInterval(poll);
     if(j.status==='error'){ $('surveyLog').textContent='⚠ '+esc(j.error||'failed'); return; }
-    (j.pins||[]).forEach(p=>L.circleMarker([p.lat,p.lon],{radius:6,weight:2,color:'#fff',fillColor:'#C08A1E',fillOpacity:.9})
-      .addTo(DISCLAYER)
-      .bindPopup(`<b>${esc(p.name)}</b> ${esc(p.grade)||''}<br><span style="font-size:11px">${esc(p.crag)||''} · web-discovered draft · verify &amp; place</span>`));
     const rn=(j.region||{}).name||'the region';
-    $('surveyLog').textContent=`✓ ${j.drafts} draft route(s) in ${esc(rn)}`+(j.deduped?` · ${j.deduped} already known`:'')+(j.drafts?' — saved to the holding pen (S3)':'');
+    if(j.drafts){ await loadTree(); }   // discovered drafts are real record routes now — refresh map + queue
+    $('surveyLog').textContent=`✓ ${j.drafts} draft route(s) added in ${esc(rn)}`+(j.deduped?` · ${j.deduped} already known`:'')+(j.drafts?' — drill in / open the queue to curate':'');
   },1500);
 }
 function updateMapLayer(){

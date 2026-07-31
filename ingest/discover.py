@@ -136,12 +136,13 @@ def _candidate_to_routes(geo: dict, crag: dict) -> list[dict]:
     return out
 
 
-def discover_region(bbox: list[float], on_progress=None, dry_run: bool = False,
-                    max_queries: int = 2) -> dict:
-    """bbox = [south, west, north, east]. Geocode → search → extract → land drafts.
-    Returns a summary; calls on_progress(msg) as it goes (drives the Studio poll)."""
+def discover_candidates(bbox: list[float], on_progress=None, max_queries: int = 2) -> dict:
+    """The read-only half: geocode → SerpAPI search → LLM-extract. Returns
+    {region, center:[lat,lon], crags:[{crag, routes, source_url, confidence, lat, lon}]}.
+    No persistence — the caller decides where drafts land (the Studio writes them
+    into the curated record as drafts; the CLI uses the holding pen)."""
     s, w, n, e = bbox
-    clat, clon = (s + n) / 2, (w + e) / 2
+    clat, clon = round((s + n) / 2, 5), round((w + e) / 2, 5)
     prog = (lambda m: on_progress(m)) if on_progress else (lambda m: None)
 
     geo = reverse_geocode(clat, clon)
@@ -150,34 +151,39 @@ def discover_region(bbox: list[float], on_progress=None, dry_run: bool = False,
     candidates: list[dict] = []
     key = os.environ.get("SERPAPI_KEY")
     if key:
-        queries = [f'"{geo["name"]}" trad multi-pitch climbing routes',
-                   f'{geo["name"]} classic multipitch trad climbing crag'][:max_queries]
-        for q in queries:
+        for q in [f'"{geo["name"]}" trad multi-pitch climbing routes',
+                  f'{geo["name"]} classic multipitch trad climbing crag'][:max_queries]:
             prog(f"searching: {q}")
             try:
-                results = serp_search(q, key)
-                found = extract_crags(geo["name"], results)
+                found = extract_crags(geo["name"], serp_search(q, key))
                 candidates += found
                 prog(f"  found {len(found)} crag candidate(s)")
             except Exception as ex:  # one query failing must not kill the job
                 prog(f"  ! query failed: {ex}")
     else:
-        prog("no SERPAPI_KEY set — skipping web search (OpenBeta only)")
+        prog("no SERPAPI_KEY set — skipping web search")
 
-    # dedup extracted crags by slug (the LLM may repeat across queries)
     seen, uniq = set(), []
-    for c in candidates:
+    for c in candidates:                      # dedup crags by slug (LLM repeats across queries)
         k = slug(c.get("crag") or "")
         if k and k not in seen:
             seen.add(k)
+            c["lat"], c["lon"] = clat, clon    # approx: region centroid (curator places precisely)
             uniq.append(c)
+    return {"region": geo, "center": [clat, clon], "crags": uniq}
 
+
+def discover_region(bbox: list[float], on_progress=None, dry_run: bool = False,
+                    max_queries: int = 2) -> dict:
+    """CLI path: discover + land drafts in the S3 holding pen (deduped)."""
+    got = discover_candidates(bbox, on_progress, max_queries)
+    geo, prog = got["region"], (on_progress or (lambda m: None))
     store = Store()
     ds = DraftStore(store)
     existing = {tuple(x.get("external_id") for x in r.get("external_refs", []))
                 for r in store.routes.values()}
     saved, skipped, crags, pins = 0, 0, [], []
-    for c in uniq:
+    for c in got["crags"]:
         routes = _candidate_to_routes(geo, c)
         if not routes:
             continue
@@ -187,7 +193,7 @@ def discover_region(bbox: list[float], on_progress=None, dry_run: bool = False,
             if (ext,) in existing:                 # unique-key dedup — never re-add
                 skipped += 1
                 continue
-            route["lat"], route["lon"] = round(clat, 5), round(clon, 5)  # approx: region centroid
+            route["lat"], route["lon"] = c["lat"], c["lon"]   # approx: region centroid
             route["area_id"] = None
             route["id"] = abs(hash(ext)) % (10 ** 8)   # deterministic-ish holding-pen id
             if not dry_run:
