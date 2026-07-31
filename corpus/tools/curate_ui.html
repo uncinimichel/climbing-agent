@@ -339,6 +339,7 @@
     <div class="mappane">
       <div class="maptools">
         <button class="btn sm" id="surveyBtn" onclick="toggleSurvey()">▭ Survey a region</button>
+        <button class="btn sm" onclick="resetMap()" title="clear the place filter and re-frame the map">⟳ Reset</button>
         <span class="minor" id="surveyLog" style="margin-left:auto;font-family:ui-monospace,monospace"></span>
       </div>
       <div class="drillbar" id="drillbar"></div>
@@ -1355,6 +1356,7 @@ function setView(v){
 }
 function toggleView(v){ setView($('v'+v).classList.contains('on')?'':v); }
 function pickRoute(id,status){ if(status&&status!==STATUS){STATUS=status;syncSeg();} loadQueue(id); }
+function resetMap(){ DRILL=[]; $('q').value=''; lastFitKey=null; refreshDrill(); loadQueue(); const l=$('surveyLog'); if(l)l.textContent=''; }
 // draggable splitter: resize the two panes, or drag to an edge to give one the whole screen
 (function(){
   const sp=$('splitter'), ws=$('workspace'); if(!sp||!ws)return;
@@ -1422,8 +1424,11 @@ async function runDiscover(bbox){
       const first=(j.pins||[])[0], row=first&&ALLROWS.find(r=>r.name===first.name);
       if(row){ DRILL=(row.path_tokens||[]).slice(0,3); refreshDrill(); openRoute(row.id); }  // focus the new region + open a draft
       BIGMAP.fitBounds([[bbox[0],bbox[1]],[bbox[2],bbox[3]]],{padding:[36,36],maxZoom:12});   // fly to what you just surveyed
+      $('surveyLog').textContent=`✓ ${j.drafts} draft route(s) added in ${esc(rn)}`+(j.deduped?` · ${j.deduped} already known`:'')+' — open one to curate →';
+    } else {
+      $('surveyLog').textContent='⚠ '+esc(j.note||('no new routes found in '+rn));   // say WHY it's empty
+      if(S_RECT){S_RECT.remove();S_RECT=null;}
     }
-    $('surveyLog').textContent=`✓ ${j.drafts} draft route(s) added in ${esc(rn)}`+(j.deduped?` · ${j.deduped} already known`:'')+(j.drafts?' — open one to curate →':'');
   },1500);
 }
 function updateMapLayer(){

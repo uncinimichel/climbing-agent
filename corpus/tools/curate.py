@@ -805,7 +805,7 @@ def _run_discover(job_id: str, bbox: list, dry_run: bool):
         j["log"].append(f"done · {saved} draft route(s) in the record"
                         + (f", {skipped} already known" if skipped else ""))
         j.update(region=geo, pins=pins, crags=[c.get("crag") for c in got["crags"]],
-                 drafts=saved, deduped=skipped, status="done", done=True)
+                 drafts=saved, deduped=skipped, note=got.get("note"), status="done", done=True)
     except Exception as e:  # noqa: BLE001 — surface the error, don't crash the thread
         j.update(status="error", error=str(e), done=True)
 

@@ -150,6 +150,7 @@ def discover_candidates(bbox: list[float], on_progress=None, max_queries: int = 
 
     candidates: list[dict] = []
     key = os.environ.get("SERPAPI_KEY")
+    errors, rate_limited = 0, False
     if key:
         for q in [f'"{geo["name"]}" trad multi-pitch climbing routes',
                   f'{geo["name"]} classic multipitch trad climbing crag'][:max_queries]:
@@ -159,6 +160,8 @@ def discover_candidates(bbox: list[float], on_progress=None, max_queries: int = 
                 candidates += found
                 prog(f"  found {len(found)} crag candidate(s)")
             except Exception as ex:  # one query failing must not kill the job
+                errors += 1
+                rate_limited = rate_limited or "429" in str(ex)
                 prog(f"  ! query failed: {ex}")
     else:
         prog("no SERPAPI_KEY set — skipping web search")
@@ -170,7 +173,17 @@ def discover_candidates(bbox: list[float], on_progress=None, max_queries: int = 
             seen.add(k)
             c["lat"], c["lon"] = clat, clon    # approx: region centroid (curator places precisely)
             uniq.append(c)
-    return {"region": geo, "center": [clat, clon], "crags": uniq}
+
+    # explain an empty result so the UI doesn't just say a hollow "0"
+    note = None
+    if not uniq:
+        if not key:
+            note = "web search is off (no SERPAPI_KEY set) — add crags by hand instead"
+        elif rate_limited or errors:
+            note = "web search is rate-limited right now (SerpAPI quota) — try later, or add crags by hand"
+        else:
+            note = f"no multi-pitch climbing found on the web for {geo['name']}"
+    return {"region": geo, "center": [clat, clon], "crags": uniq, "note": note}
 
 
 def discover_region(bbox: list[float], on_progress=None, dry_run: bool = False,
