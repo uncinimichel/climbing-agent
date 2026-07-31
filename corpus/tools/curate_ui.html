@@ -331,6 +331,11 @@
 
   <div id="mapview" style="display:none">
     <div class="card" style="padding:12px">
+      <div style="display:flex;gap:9px;align-items:center;margin-bottom:8px;flex-wrap:wrap">
+        <button class="btn sm" id="surveyBtn" onclick="toggleSurvey()">▭ Survey a region</button>
+        <span class="minor" id="surveyHint">— click, then drag a box on the map to discover climbing there (all sources + LLM tag → drafts)</span>
+        <span class="minor" id="surveyLog" style="margin-left:auto;font-family:ui-monospace,monospace"></span>
+      </div>
       <div id="bigmap"></div>
       <div class="minor" style="margin-top:7px">rings = one area per circle, green share is curated — click a ring to
         drill in · dots = routes (<span class="dotkey" style="background:var(--accent)"></span> published
@@ -1333,7 +1338,44 @@ function initBigMap(){
     L.control.layers({'Terrain':terr,'Satellite':sat,'Streets':streets},null,{position:'topright'}).addTo(BIGMAP);
   }
   setTimeout(()=>BIGMAP.invalidateSize(),60);
+  wireSurvey();
   updateMapLayer();
+}
+// ── "Survey a region": draw a box → background discover job → draft pins ────
+let SURVEYON=false, S_DRAW=null, S_RECT=null, DISCLAYER=null;
+function toggleSurvey(force){
+  SURVEYON = force!==undefined ? force : !SURVEYON;
+  $('surveyBtn').classList.toggle('on',SURVEYON);
+  if(BIGMAP){BIGMAP.dragging[SURVEYON?'disable':'enable']();BIGMAP.getContainer().style.cursor=SURVEYON?'crosshair':''}
+  $('surveyHint').textContent=SURVEYON?'— drag a box on the map to survey it':'— click, then drag a box on the map to discover climbing there (all sources + LLM tag → drafts)';
+}
+function wireSurvey(){
+  if(!BIGMAP||BIGMAP._surveyWired)return; BIGMAP._surveyWired=true;
+  BIGMAP.on('mousedown',e=>{ if(!SURVEYON)return; S_DRAW=e.latlng;
+    S_RECT=L.rectangle([e.latlng,e.latlng],{color:'#3fa7d6',weight:2,dashArray:'5 4',fillColor:'#3fa7d6',fillOpacity:.1}).addTo(BIGMAP);});
+  BIGMAP.on('mousemove',e=>{ if(S_DRAW&&S_RECT)S_RECT.setBounds(L.latLngBounds(S_DRAW,e.latlng)); });
+  BIGMAP.on('mouseup',e=>{ if(!S_DRAW)return; const b=L.latLngBounds(S_DRAW,e.latlng); S_DRAW=null; toggleSurvey(false);
+    if(b.getNorth()-b.getSouth()<.01||b.getEast()-b.getWest()<.01){S_RECT&&S_RECT.remove();S_RECT=null;return;}
+    S_RECT.setStyle({color:'#C08A1E',fillColor:'#C08A1E',dashArray:null,className:''});   // blue draw → amber survey
+    runDiscover([b.getSouth(),b.getWest(),b.getNorth(),b.getEast()]); });
+}
+async function runDiscover(bbox){
+  $('surveyLog').textContent='starting survey…';
+  let job;
+  try{ job=(await (await fetch('/api/discover',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({bbox})})).json()).job; }
+  catch(e){ $('surveyLog').textContent='⚠ '+e; return; }
+  if(!DISCLAYER)DISCLAYER=L.layerGroup().addTo(BIGMAP);
+  const poll=setInterval(async()=>{
+    let j; try{ j=await (await fetch('/api/discover/'+job)).json(); }catch(e){ return; }
+    $('surveyLog').textContent=(j.log||[]).slice(-1)[0]||j.status;
+    if(!j.done)return; clearInterval(poll);
+    if(j.status==='error'){ $('surveyLog').textContent='⚠ '+esc(j.error||'failed'); return; }
+    (j.pins||[]).forEach(p=>L.circleMarker([p.lat,p.lon],{radius:6,weight:2,color:'#fff',fillColor:'#C08A1E',fillOpacity:.9})
+      .addTo(DISCLAYER)
+      .bindPopup(`<b>${esc(p.name)}</b> ${esc(p.grade)||''}<br><span style="font-size:11px">${esc(p.crag)||''} · web-discovered draft · verify &amp; place</span>`));
+    const rn=(j.region||{}).name||'the region';
+    $('surveyLog').textContent=`✓ ${j.drafts} draft route(s) in ${esc(rn)}`+(j.deduped?` · ${j.deduped} already known`:'')+(j.drafts?' — saved to the holding pen (S3)':'');
+  },1500);
 }
 function updateMapLayer(){
   if(!BIGMAP)return;

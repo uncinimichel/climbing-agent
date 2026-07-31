@@ -738,6 +738,50 @@ def taxonomy_delete(family: str, code: str):
     return {"ok": True}
 
 
+# ── region discovery (the map's "Survey a region") ────────────────────────
+# Draw a bbox → a background thread runs ingest/discover.py (reverse-geocode +
+# SerpAPI web search + LLM crag/route extraction) and lands drafts in the S3
+# holding pen. Local + in-process for now (AWS/Lambda later, per Michel).
+import threading as _threading  # noqa: E402
+import uuid as _uuid  # noqa: E402
+
+sys.path.insert(0, str(ROOT / "ingest"))
+import discover as _discover  # noqa: E402
+
+_JOBS: dict = {}
+
+
+def _run_discover(job_id: str, bbox: list, dry_run: bool):
+    j = _JOBS[job_id]
+    try:
+        out = _discover.discover_region(bbox, on_progress=lambda m: j["log"].append(m), dry_run=dry_run)
+        j.update(region=out["region"], pins=out["pins"], crags=out["crags"],
+                 drafts=out["drafts"], deduped=out["deduped"], status="done", done=True)
+    except Exception as e:  # noqa: BLE001 — surface the error, don't crash the thread
+        j.update(status="error", error=str(e), done=True)
+
+
+@app.post("/api/discover")
+def start_discover(body: dict):
+    bbox = body.get("bbox")
+    if not (isinstance(bbox, list) and len(bbox) == 4):
+        raise HTTPException(400, "bbox=[south, west, north, east] required")
+    jid = _uuid.uuid4().hex[:8]
+    _JOBS[jid] = {"status": "running", "done": False, "log": [], "pins": [],
+                  "crags": [], "drafts": 0, "deduped": 0, "error": None, "bbox": bbox}
+    _threading.Thread(target=_run_discover, args=(jid, bbox, bool(body.get("dry_run"))),
+                      daemon=True).start()
+    return {"job": jid}
+
+
+@app.get("/api/discover/{jid}")
+def discover_status(jid: str):
+    j = _JOBS.get(jid)
+    if not j:
+        raise HTTPException(404, "no such job")
+    return j
+
+
 @app.post("/api/export")
 def export():
     """Regenerate the committed corpus.json export from the record."""
