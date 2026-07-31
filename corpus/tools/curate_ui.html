@@ -26,7 +26,21 @@
     --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 22px rgba(0,0,0,.28);}}
   *{box-sizing:border-box}
   body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.45;font-size:14px;-webkit-font-smoothing:antialiased}
-  .wrap{max-width:1240px;margin:0 auto;padding:18px 20px 130px}
+  .wrap{max-width:1480px;margin:0 auto;padding:18px 20px 130px}
+  /* the persistent workspace: map on the left, the route editor on the right */
+  .workspace{display:grid;grid-template-columns:minmax(360px,42%) minmax(0,1fr);gap:16px;align-items:start}
+  .mappane{position:sticky;top:14px}
+  .editorpane{min-width:0}
+  .editorpane .rail{margin-top:12px}
+  .maptools{display:flex;gap:9px;align-items:center;margin-bottom:8px;flex-wrap:wrap}
+  .scopewrap{margin-top:10px;background:var(--panel);border:1px solid var(--line-2);border-radius:12px;padding:5px 12px}
+  .scopewrap>summary{cursor:pointer;font:600 12px var(--sans);color:var(--muted);padding:5px 2px;list-style:none;user-select:none}
+  .scopewrap>summary::-webkit-details-marker{display:none}
+  .scopewrap>summary::before{content:'▸ ';color:var(--faint)}
+  .scopewrap[open]>summary::before{content:'▾ '}
+  .scopewrap[open]>summary{color:var(--ink)}
+  #qlist{max-height:32vh;overflow:auto;margin-top:4px}
+  @media (max-width:920px){.workspace{grid-template-columns:1fr}.mappane{position:static}}
   header.app{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:14px}
   h1{font-family:var(--serif);font-size:22px;font-weight:600;margin:0;white-space:nowrap}
   .progress{flex:1;min-width:200px}
@@ -251,7 +265,7 @@
   .loc small{color:var(--muted);font-size:10px;margin-left:5px}
   .loc:hover{border-color:var(--accent)}
   .loc.crumb{border-style:solid;border-color:var(--accent);background:var(--accent-soft);color:var(--accent-ink)}
-  #bigmap{width:100%;height:calc(100vh - 300px);min-height:420px;border:1px solid var(--line-2);border-radius:10px;z-index:1}
+  #bigmap{width:100%;height:calc(100vh - 250px);min-height:480px;border:1px solid var(--line-2);border-radius:10px;z-index:1}
   .ring-ico{border-radius:50%;display:flex;align-items:center;justify-content:center;
     border:2px solid #fff;box-shadow:0 1px 6px rgba(0,0,0,.35);cursor:pointer}
   .ring-ico span{background:var(--panel);color:var(--ink);border-radius:50%;width:calc(100% - 12px);height:calc(100% - 12px);
@@ -309,42 +323,35 @@
       <button id="sf-quarantined" onclick="setStatus('quarantined')">quarantined</button>
     </div>
     <div class="views">
-      <button id="vq" class="on" onclick="setView('q')">Queue</button>
-      <button id="vg" onclick="setView('g')">Grid</button>
-      <button id="vm" onclick="setView('m')">Map</button>
-      <button id="vt" onclick="setView('t')">Taxonomy</button>
+      <button id="vg" onclick="toggleView('g')">▦ Grid</button>
+      <button id="vt" onclick="toggleView('t')">🏷 Taxonomy</button>
     </div>
   </header>
 
-  <div class="drillbar" id="drillbar"></div>
-
-  <div class="queue" id="queueview">
-    <div class="qlistwrap card">
-      <div class="minor" id="qcount">loading…</div>
-      <div id="qlist"></div>
+  <!-- persistent workspace: map (left) drills + discovers; the editor (right) opens on click -->
+  <div class="workspace" id="workspace">
+    <div class="mappane">
+      <div class="maptools">
+        <button class="btn sm" id="surveyBtn" onclick="toggleSurvey()">▭ Survey a region</button>
+        <span class="minor" id="surveyLog" style="margin-left:auto;font-family:ui-monospace,monospace"></span>
+      </div>
+      <div class="drillbar" id="drillbar"></div>
+      <div id="bigmap"></div>
+      <div class="minor" id="surveyHint" style="margin-top:7px">rings = areas (green = curated share) · click to drill in ·
+        dots = routes (<span class="dotkey" style="background:var(--accent)"></span> published
+        <span class="dotkey" style="background:var(--amber)"></span> draft
+        <span class="dotkey" style="background:var(--red)"></span> quarantined) · <b>click a route to edit it →</b></div>
+      <details class="scopewrap"><summary id="qcount">routes in scope</summary><div id="qlist"></div></details>
     </div>
-    <div id="main"><div class="card">loading…</div></div>
-    <div class="rail" id="rail"></div>
+    <div class="editorpane">
+      <div id="main"><div class="card minor">Pick a route on the map (or drill into a place) to edit it here.</div></div>
+      <div class="rail" id="rail"></div>
+    </div>
   </div>
 
   <div class="taxview" id="taxview" style="display:none"></div>
 
-  <div id="mapview" style="display:none">
-    <div class="card" style="padding:12px">
-      <div style="display:flex;gap:9px;align-items:center;margin-bottom:8px;flex-wrap:wrap">
-        <button class="btn sm" id="surveyBtn" onclick="toggleSurvey()">▭ Survey a region</button>
-        <span class="minor" id="surveyHint">— click, then drag a box on the map to discover climbing there (all sources + LLM tag → drafts)</span>
-        <span class="minor" id="surveyLog" style="margin-left:auto;font-family:ui-monospace,monospace"></span>
-      </div>
-      <div id="bigmap"></div>
-      <div class="minor" style="margin-top:7px">rings = one area per circle, green share is curated — click a ring to
-        drill in · dots = routes (<span class="dotkey" style="background:var(--accent)"></span> published
-        <span class="dotkey" style="background:var(--amber)"></span> draft
-        <span class="dotkey" style="background:var(--red)"></span> quarantined) · a hollow dot borrowed its crag's pin</div>
-    </div>
-  </div>
-
-  <div class="gridview" id="gridview">
+  <div class="gridview" id="gridview" style="display:none">
     <div class="bulk">
       <span id="selcount">0 selected</span> —
       <select id="bulkField"><option value="sun_window_code">sunWindow</option><option value="stars">stars</option><option value="protection_style">protectionStyle</option><option value="belays">belays</option></select>
@@ -504,6 +511,7 @@ async function boot(){
   [ENUMS,SOURCES]=await Promise.all([api('/enums'),api('/sources')]);
   bulkFieldChanged();
   await Promise.all([loadQueue(),loadTree()]);
+  initBigMap();                                // the map is always on-screen now
   const rm=location.hash.match(/^#r=(\d+)/);   // deep link straight to a route's card
   if(rm){
     await openRoute(+rm[1]);
@@ -1324,18 +1332,21 @@ async function taxDel(fam,code){
   try{await api(`/taxonomy/${fam}/${encodeURIComponent(code)}`,{method:'DELETE'});toast('removed '+code);ENUMS=await api('/enums');renderTax()}
   catch(e){toast('⚠ '+e)}
 }
+// The map+editor workspace is always on screen; Grid & Taxonomy open as overlays.
 function setView(v){
-  $('queueview').style.display=v==='q'?'grid':'none';
-  $('gridview').style.display=v==='g'?'block':'none';
-  $('taxview').style.display=v==='t'?'block':'none';
-  $('mapview').style.display=v==='m'?'block':'none';
-  $('drillbar').style.display=(v==='q'||v==='g'||v==='m')?'flex':'none';
-  document.querySelector('.actions').style.display=(v==='t'||v==='m')?'none':'block';
-  ['q','g','m','t'].forEach(x=>$('v'+x).classList.toggle('on',v===x));
-  if(v==='t')renderTax();
-  if(v==='m')initBigMap();
-  if(v==='q'&&R)openRoute(R.id);  // re-render with possibly grown ENUMS
+  const grid=v==='g', tax=v==='t';
+  $('workspace').style.display=(grid||tax)?'none':'grid';
+  $('gridview').style.display=grid?'block':'none';
+  $('taxview').style.display=tax?'block':'none';
+  $('vg').classList.toggle('on',grid);
+  $('vt').classList.toggle('on',tax);
+  document.querySelector('.actions').style.display=tax?'none':'block';
+  if(grid)renderGrid();
+  if(tax)renderTax();
+  if(!grid&&!tax)setTimeout(()=>BIGMAP&&BIGMAP.invalidateSize(),50);
 }
+function toggleView(v){ setView($('v'+v).classList.contains('on')?'':v); }
+function pickRoute(id,status){ if(status&&status!==STATUS){STATUS=status;syncSeg();} loadQueue(id); }
 
 // ── the map: progress rings per area, route dots when focused ──────────────
 let BIGMAP=null, MAPLAYER=null;
@@ -1398,7 +1409,7 @@ function updateMapLayer(){
         .addTo(MAPLAYER)
         .bindPopup(`<b>${esc(p.name)}</b> ${esc(p.original_grade)||''}<br>
           <span style="font-size:11px">${esc((p.path_tokens||[]).join(' › '))} · ${p.status}${p.approx?' · pin borrowed from the crag':''}</span><br>
-          <a href="#" onclick="jumpTo(${p.id},'${p.status}');return false">✏ open in queue</a>`);
+          <a href="#" onclick="pickRoute(${p.id},'${p.status}');return false">✏ edit this route →</a>`);
       bounds.push([p.lat,p.lon]);
     });
   } else {                                      // one progress ring per next level down
