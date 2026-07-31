@@ -141,6 +141,7 @@
   .btn.danger{color:var(--red);border-color:var(--red)}
   .btn.field{color:var(--blue);border-color:var(--blue)}
   .btn.sm{padding:4px 10px;font-size:11.5px;border-radius:7px}
+  .btn.on{background:var(--accent);border-color:var(--accent);color:#fff}
   kbd{font-family:var(--mono);font-size:10px;background:var(--paper);border:1px solid var(--line-2);border-bottom-width:2px;border-radius:4px;padding:1px 4px;margin-left:5px;color:var(--muted)}
 
   .rail .card{padding:12px 14px}
@@ -339,6 +340,8 @@
     <div class="mappane">
       <div class="maptools">
         <button class="btn sm" id="surveyBtn" onclick="toggleSurvey()">▭ Survey a region</button>
+        <button class="btn sm on" id="msyncBtn" onclick="toggleMapSync()"
+                title="Zoom or pan the map and the route list narrows to what you can see">⊞ List follows map</button>
         <button class="btn sm" onclick="resetMap()" title="clear the place filter and re-frame the map">⟳ Reset</button>
         <span class="minor" id="surveyLog" style="margin-left:auto;font-family:ui-monospace,monospace"></span>
       </div>
@@ -422,6 +425,11 @@
 
 <script>
 let ENUMS={}, QUEUE=[], ALLROWS=[], TREE=[], DRILL=[], COUNTS={}, STATUS='draft', curId=null, R=null, saveTimers={};
+// "List follows map": the visible map bounds are a second, live filter on the
+// list. PTS is id → [lat,lon] taken from the map feed (every route has a pin,
+// borrowed from its crag when it has none of its own), so a route can always be
+// tested against the viewport. MAPBOX is null until the map first settles.
+let MAPSYNC=true, MAPBOX=null, PTS={};
 const $=id=>document.getElementById(id);
 // API base: same-origin locally; the S3-hosted Studio sets window.API_BASE
 // to the Lambda URL (decision #40 phase B) — one UI, two homes.
@@ -578,6 +586,7 @@ async function delRoute(){
 }
 async function loadTree(){        // all routes + status: drill counts & map (refresh after status flips)
   TREE=await api('/map');
+  PTS={}; TREE.forEach(p=>{if(p.lat!=null)PTS[p.id]=[p.lat,p.lon]});
   renderDrill();updateMapLayer();
 }
 let qseq=0;
@@ -587,7 +596,7 @@ async function loadQueue(keepId){
   const d=await api(`/queue?status=${STATUS}&q=${encodeURIComponent(q)}`);
   if(my!==qseq)return;            // superseded by a newer request — drop stale result
   ALLROWS=d.rows; COUNTS=d.counts;
-  QUEUE=drillFilter(ALLROWS);
+  applyScope();
   updateCounts();
   renderList();renderGrid();renderDrill();
   if(keepId)openRoute(keepId);
@@ -604,20 +613,30 @@ function updateCounts(){
 function syncSeg(){['all','draft','publish','quarantined'].forEach(x=>$('sf-'+x).classList.toggle('on',x===STATUS))}
 function setStatus(s){STATUS=s;syncSeg();loadQueue()}
 function renderList(){
-  const n=QUEUE.length;
-  $('qcount').textContent=n?`${n} route${n===1?'':'s'} in scope`:'';
+  const n=QUEUE.length, byMap=MAPSYNC&&MAPBOX, hidden=byMap?drillFilter(ALLROWS).length-n:0;
+  $('qcount').textContent=n?`${n} route${n===1?'':'s'} ${byMap?'in view':'in scope'}`
+    +(hidden>0?` · ${hidden} outside the map`:''):'';
   $('qlist').innerHTML=n?QUEUE.map(r=>`
     <div class="qrow ${r.id===curId?'on':''}" onclick="openRoute(${r.id})">
       <span class="dot ${r.status==='publish'?'p':r.status==='quarantined'?'x':'d'}"></span>
       <div class="qtxt"><b>${esc(r.name)}</b>
         <small>${esc((r.path_tokens||[]).slice(-1)[0]||'')} · ${esc(r.original_grade)||'—'}</small></div>
     </div>`).join('')
-   :'<div class="minor" style="padding:8px 2px">no matches here — clear the filter, pick another place, or switch status</div>';
+   :`<div class="minor" style="padding:8px 2px">${MAPSYNC&&MAPBOX
+       ?'nothing in this part of the map — zoom out, pan, or turn off “List follows map”'
+       :'no matches here — clear the filter, pick another place, or switch status'}</div>`;
 }
 
 // ── location drill-down — country › region › crag, guidebook-index style ──
 const tok=(r,i)=>((r.path_tokens||[])[i]||'');
 function drillFilter(rows){return rows.filter(r=>DRILL.every((t,i)=>tok(r,i)===t))}
+// The two live filters on the list: the place drill-down, then the map viewport.
+// A route with no pin at all is never hidden by the map — it can't be judged.
+function viewFilter(rows){
+  if(!MAPSYNC||!MAPBOX)return rows;
+  return rows.filter(r=>{const p=PTS[r.id];return p?MAPBOX.contains(p):true});
+}
+function applyScope(){QUEUE=viewFilter(drillFilter(ALLROWS))}
 function renderDrill(){
   const scope=drillFilter(TREE), lvl=DRILL.length;
   const groups={};
@@ -636,7 +655,7 @@ function renderDrill(){
 function drillDown(t){DRILL.push(t);refreshDrill()}
 function drillTo(i){DRILL=DRILL.slice(0,i);refreshDrill()}
 function refreshDrill(){
-  QUEUE=drillFilter(ALLROWS);
+  applyScope();
   renderDrill();renderList();renderGrid();updateMapLayer();
   if(!R&&QUEUE.length)openRoute(QUEUE[0].id);   // never replace an open editor uninvited
 }
@@ -1356,7 +1375,22 @@ function setView(v){
 }
 function toggleView(v){ setView($('v'+v).classList.contains('on')?'':v); }
 function pickRoute(id,status){ if(status&&status!==STATUS){STATUS=status;syncSeg();} loadQueue(id); }
-function resetMap(){ DRILL=[]; $('q').value=''; lastFitKey=null; refreshDrill(); loadQueue(); const l=$('surveyLog'); if(l)l.textContent=''; }
+function resetMap(){ DRILL=[]; $('q').value=''; lastFitKey=null; MAPBOX=null; refreshDrill(); loadQueue(); const l=$('surveyLog'); if(l)l.textContent=''; }
+let mvTimer=null;
+function onMapMove(){
+  if(!MAPSYNC||!BIGMAP)return;
+  clearTimeout(mvTimer);                       // one recount per gesture, not per frame
+  mvTimer=setTimeout(()=>{
+    MAPBOX=BIGMAP.getBounds();
+    applyScope(); renderList(); renderGrid();  // list only — the editor stays put
+  },120);
+}
+function toggleMapSync(){
+  MAPSYNC=!MAPSYNC;
+  $('msyncBtn').classList.toggle('on',MAPSYNC);
+  MAPBOX=MAPSYNC&&BIGMAP?BIGMAP.getBounds():null;
+  applyScope(); renderList(); renderGrid();
+}
 // draggable splitter: resize the two panes, or drag to an edge to give one the whole screen
 (function(){
   const sp=$('splitter'), ws=$('workspace'); if(!sp||!ws)return;
@@ -1385,6 +1419,9 @@ function initBigMap(){
     const streets=L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{subdomains:'abcd',maxZoom:20,attribution:'© OSM © CARTO'});
     terr.addTo(BIGMAP);                                   // terrain is the default layer
     L.control.layers({'Terrain':terr,'Satellite':sat,'Streets':streets},null,{position:'topright'}).addTo(BIGMAP);
+    // Zoom/pan narrows the list. This touches the LIST ONLY — never the pins and
+    // never the open editor — so it cannot feed back into fitBounds and loop.
+    BIGMAP.on('moveend zoomend',onMapMove);
   }
   setTimeout(()=>BIGMAP.invalidateSize(),60);
   wireSurvey();
@@ -1408,15 +1445,43 @@ function wireSurvey(){
     S_RECT.setStyle({color:'#C08A1E',fillColor:'#C08A1E',dashArray:null,className:''});   // blue draw → amber survey
     runDiscover([b.getSouth(),b.getWest(),b.getNorth(),b.getEast()]); });
 }
+let POLL=null;
 async function runDiscover(bbox){
   $('surveyLog').textContent='starting survey…';
+  if(POLL){clearInterval(POLL);POLL=null;}   // never leave a previous survey polling
   let job;
-  try{ job=(await (await fetch('/api/discover',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({bbox})})).json()).job; }
-  catch(e){ $('surveyLog').textContent='⚠ '+e; return; }
-  const poll=setInterval(async()=>{
-    let j; try{ j=await (await fetch('/api/discover/'+job)).json(); }catch(e){ return; }
+  // fetch() only rejects on a network error, so a 400/500 still resolves — read
+  // the status and the job id explicitly, or we would poll /discover/undefined
+  // every 1.5s for the life of the page (the stray 404s in the console).
+  try{
+    const res=await fetch('/api/discover',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({bbox})});
+    const d=await res.json().catch(()=>({}));
+    if(!res.ok||!d.job)throw new Error(d.detail||`survey could not start (HTTP ${res.status})`);
+    job=d.job;
+  }catch(e){
+    $('surveyLog').textContent='⚠ '+esc(e.message||e);
+    if(S_RECT){S_RECT.remove();S_RECT=null;}
+    return;
+  }
+  const t0=Date.now(), STALL_MS=15*60*1000;
+  POLL=setInterval(async()=>{
+    let j;
+    try{
+      const res=await fetch('/api/discover/'+job);
+      if(!res.ok){                            // the job is gone (server restarted?) — stop, don't spin
+        clearInterval(POLL);POLL=null;
+        $('surveyLog').textContent=`⚠ lost the survey job (HTTP ${res.status}) — run it again`;
+        return;
+      }
+      j=await res.json();
+    }catch(e){ return; }                      // transient blip — keep polling
     $('surveyLog').textContent=(j.log||[]).slice(-1)[0]||j.status;
-    if(!j.done)return; clearInterval(poll);
+    if(!j.done){
+      if(Date.now()-t0>STALL_MS){ clearInterval(POLL);POLL=null;
+        $('surveyLog').textContent='⚠ survey stalled — run it again'; }
+      return;
+    }
+    clearInterval(POLL);POLL=null;
     if(j.status==='error'){ $('surveyLog').textContent='⚠ '+esc(j.error||'failed'); return; }
     const rn=(j.region||{}).name||'the region';
     if(j.drafts){

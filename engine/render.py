@@ -999,6 +999,30 @@ a.xlink:hover{border-color:var(--muted)}
   .uvr{width:18px;height:18px;font-size:8.5px}
   .irow{gap:3px}
 }
+/* "Where it is" — a self-contained locator built from OpenStreetMap raster
+   tiles (plain <img>, so it lives inside the strict CSP: no map JS, no iframe).
+   The tiles are cooled to the dashboard palette and dissolve into the panel at
+   the edges (radial scrim), so the crag reads as a lit point in a wide dark
+   landscape rather than a pasted-in map card. */
+.loc-hd{display:flex;align-items:center;gap:8px 14px;flex-wrap:wrap;margin-bottom:12px}
+.loc-hd .eyebrow{margin-bottom:0}
+.loc-coord{font-family:var(--mono);font-size:11px;letter-spacing:.03em;color:var(--muted)}
+.loc-toggle{margin-left:auto;display:inline-flex;border:1px solid var(--line2);border-radius:7px;overflow:hidden}
+.loc-toggle button{font:inherit;font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:5px 11px;background:var(--card);color:var(--muted);border:0;cursor:pointer;line-height:1}
+.loc-toggle button+button{border-left:1px solid var(--line2)}
+.loc-toggle button.on{background:var(--ink);color:var(--bg)}
+.loc-map{position:relative;height:236px;max-width:720px;border:1px solid var(--line2);border-radius:12px;overflow:hidden;background:var(--card);isolation:isolate}
+.loc-tiles{position:absolute;inset:0}
+.loc-tiles img{position:absolute;width:256px;height:256px;filter:saturate(.68) brightness(.9) contrast(1.05);-webkit-user-drag:none;user-select:none}
+.loc-scrim{position:absolute;inset:0;pointer-events:none;z-index:1;background:radial-gradient(120% 130% at 50% 50%,rgba(20,22,26,0) 40%,rgba(20,22,26,.35) 72%,rgba(20,22,26,.82) 100%);box-shadow:inset 0 0 0 1px rgba(0,0,0,.35)}
+.loc-halo{position:absolute;left:50%;top:50%;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;background:var(--rain);opacity:.22;z-index:2}
+@media(prefers-reduced-motion:no-preference){.loc-halo{animation:locpulse 2.8s ease-out infinite}}
+@keyframes locpulse{0%{transform:scale(.55);opacity:.5}70%{transform:scale(2.7);opacity:0}100%{transform:scale(2.7);opacity:0}}
+.loc-pin{position:absolute;left:50%;top:50%;transform:translate(-50%,-100%);z-index:3;pointer-events:none;filter:drop-shadow(0 2px 3px rgba(0,0,0,.55))}
+.loc-empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;color:var(--faint);z-index:2}
+.loc-ft{display:flex;justify-content:space-between;align-items:center;gap:8px 14px;flex-wrap:wrap;margin-top:9px;font-family:var(--mono);font-size:10.5px;color:var(--faint)}
+.loc-ft a{color:var(--faint);text-decoration:none}
+.loc-ft a:hover{color:var(--ink);text-decoration:underline}
 </style></head>"""
 
 PAGE_BODY = """<body>
@@ -1870,6 +1894,62 @@ function secWrap(sec,v,inner){
   if(!inner)return '';
   return '<div class="deep" id="s-'+sec+'"><a class="secanchor" href="#'+slugify(v.shortName)+'/'+sec+'" title="Link to this section">🔗</a>'+inner+'</div>';
 }
+// "Where it is" — a Slippy-tile locator with no map library. We compute which
+// OpenStreetMap tiles cover the box and place each <img> by pixel offset so the
+// venue's lat/lon sits dead-centre (under the pin). Web-Mercator maths only;
+// tiles load straight from the OSM CDN, which is all the CSP's img-src allows.
+var LOC_Z={region:6,close:12};
+var _locWhich='region';
+function mapHtml(v){
+  if(v.lat==null||v.lon==null)return '';
+  var coord=Math.abs(v.lat).toFixed(4)+'° '+(v.lat>=0?'N':'S')+', '+Math.abs(v.lon).toFixed(4)+'° '+(v.lon>=0?'E':'W');
+  var open=safeUrl(v.maps)?'<a target="_blank" rel="noopener" href="'+safeUrl(v.maps)+'">Open in Google Maps ↗</a>':'';
+  var pin='<div class="loc-pin"><svg width="26" height="34" viewBox="0 0 26 34" aria-hidden="true">'
+    +'<path d="M13 1C6.4 1 1 6.4 1 13c0 8.6 12 20 12 20s12-11.4 12-20C25 6.4 19.6 1 13 1Z" style="fill:var(--ink);stroke:var(--bg);stroke-width:2;stroke-linejoin:round"/>'
+    +'<circle cx="13" cy="12.6" r="4.4" style="fill:var(--rain)"/></svg></div>';
+  return '<div class="sec loc">'
+    +'<div class="loc-hd"><div class="eyebrow">Where it is</div>'
+    +'<span class="loc-coord">'+esc(coord)+'</span>'
+    +'<div class="loc-toggle" role="group" aria-label="Map zoom">'
+      +'<button type="button" data-z="region" onclick="_locSet(\'region\')">Region</button>'
+      +'<button type="button" data-z="close" onclick="_locSet(\'close\')">Close-up</button></div>'
+    +'</div>'
+    +'<div class="loc-map" id="locMap"><div class="loc-tiles" id="locTiles"></div>'
+    +'<div class="loc-scrim"></div><div class="loc-halo"></div>'+pin+'</div>'
+    +'<div class="loc-ft"><span>'+esc(v.flag)+' '+esc(v.country)+' · map © OpenStreetMap contributors</span>'+open+'</div>'
+    +'</div>';
+}
+function _locTiles(v,which){
+  var box=document.getElementById('locMap');
+  var tiles=document.getElementById('locTiles');
+  if(!box||!tiles||!v||v.lat==null||v.lon==null)return;
+  _locWhich=which;
+  var z=LOC_Z[which]||LOC_Z.region, n=Math.pow(2,z);
+  var W=box.clientWidth||box.offsetWidth, H=box.clientHeight||236;
+  var xf=(v.lon+180)/360*n;
+  var lr=v.lat*Math.PI/180;
+  var yf=(1-Math.log(Math.tan(lr)+1/Math.cos(lr))/Math.PI)/2*n;
+  var cx=xf*256, cy=yf*256;              // venue position in world pixels at zoom z
+  var x0=Math.floor((cx-W/2)/256)-1, x1=Math.floor((cx+W/2)/256)+1;
+  var y0=Math.floor((cy-H/2)/256)-1, y1=Math.floor((cy+H/2)/256)+1;
+  var html='';
+  for(var ty=y0;ty<=y1;ty++){
+    if(ty<0||ty>=n)continue;
+    for(var tx=x0;tx<=x1;tx++){
+      var wx=((tx%n)+n)%n;               // wrap longitude at the date line
+      var px=Math.round(tx*256-cx+W/2), py=Math.round(ty*256-cy+H/2);
+      html+='<img alt="" src="https://tile.openstreetmap.org/'+z+'/'+wx+'/'+ty+'.png"'
+        +' style="left:'+px+'px;top:'+py+'px" onerror="this.style.display=\'none\'">';
+    }
+  }
+  tiles.innerHTML=html;
+  var bs=document.querySelectorAll('.loc-toggle button');
+  for(var k=0;k<bs.length;k++)bs[k].classList.toggle('on',bs[k].getAttribute('data-z')===which);
+}
+function _locSet(which){_locTiles(V[_cur],which);}
+var _locRz;
+window.addEventListener('resize',function(){clearTimeout(_locRz);_locRz=setTimeout(function(){_locTiles(V[_cur],_locWhich);},150);});
+
 function detailHtml(v){
   var chips=(v.facts||[]).map(function(f){
     return '<div class="chip"><div class="chip-l">'+esc(f.lbl)+'</div><div class="chip-v">'+esc(f.val)+'</div><div class="chip-s">'+esc(f.sub)+'</div></div>';
@@ -1881,6 +1961,7 @@ function detailHtml(v){
     :(hl?'':'<div class="empty">multi-pitch.com has not indexed routes here yet — <a class="lk" target="_blank" rel="noopener" href="'+safeUrl(v.mpMap)+'">browse the map ↗</a></div>');
   return bandHtml(v)
     +tagsHtml(v)
+    +secWrap('where',v,mapHtml(v))
     +secWrap('weather',v,wxHtml(v))
     +hl
     +secWrap('verdict',v,verdictHtml(v))
@@ -1919,7 +2000,7 @@ function sel(i){
   var rows=document.querySelectorAll('.row');
   for(var k=0;k<rows.length;k++)rows[k].classList.toggle('active',+rows[k].getAttribute('data-i')===i);
   document.getElementById('detail').innerHTML=detailHtml(V[i]);
-  renderBrk(V[i]);renderWx(V[i]);tickCragClock();
+  renderBrk(V[i]);renderWx(V[i]);_locTiles(V[i],_locWhich);tickCragClock();
   if(_booted)try{history.replaceState(null,'','#'+slugify(V[i].shortName));}catch(e){}
   if(_booted&&window.innerWidth<900)document.getElementById('detail').scrollIntoView({behavior:'smooth',block:'start'});
 }
