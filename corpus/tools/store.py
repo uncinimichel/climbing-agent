@@ -144,9 +144,20 @@ class Store:
                 rel = f.relative_to(self.dir)
                 if (len(rel.parts) == 1 and rel.name in ROOT_DOCS) or "media" in rel.parts:
                     continue
+                # `_`-prefixed top dirs are reserved holding pens (ingest/drafts.py's
+                # _ingest/ draft keyspace) — uncurated, never loaded as curated routes
+                if rel.parts[0].startswith("_"):
+                    continue
                 if not (rel.parts[0] == "routes" or len(rel.parts) >= 4):
                     continue
                 r = json.loads(f.read_text())
+                # A route document is a dict with an integer id + name + area_id.
+                # Anything else at a route-shaped path (a crawler scratch file
+                # like ukc-routes.json, an export, a list) is skipped, not loaded
+                # — a stray JSON here used to crash the whole loader.
+                if not (isinstance(r, dict) and isinstance(r.get("id"), int)
+                        and "name" in r and "area_id" in r):
+                    continue
                 for pk in r.get("parkings", []):       # legacy PostGIS geom → plain lat/lon
                     if pk.get("lat") is None and pk.get("geom"):
                         pk["lat"], pk["lon"] = wkb_latlon(pk["geom"])

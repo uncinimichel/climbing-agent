@@ -1,0 +1,76 @@
+{
+  "schema": 1,
+  "note": "Source registry (config-as-truth, roadmap ingestion-plan.md M0). Every ingestion source is a row here, never hard-coded. `wired` = a fetcher exists in ingest/sources/ and the worker can run it today; the rest are declared-but-pending so the roadmap is legible in one place. `family`: catalog = structured route DB (area→crag→route tree); discovery = finds uncatalogued climbs (social/search), emits draft candidates.",
+  "sources": [
+    {
+      "id": "openbeta",
+      "name": "OpenBeta",
+      "family": "catalog",
+      "method": "graphql",
+      "endpoint": "https://api.openbeta.io/graphql",
+      "license": "CC0-1.0 (data, public domain); AGPL-3.0 (their code, N/A to us)",
+      "tos": "ingestion-encouraged",
+      "regions": ["USA"],
+      "cadence": "monthly",
+      "wired": true,
+      "notes": "First source — cleanest licence, keyless, live. US-only in practice (0/89 of our crags matched — it's ~US data). The CC0 bulk repo (github.com/OpenBeta/climbing-data) has the routes dump temporarily pulled + last pushed 2024-11, so we use the live API, not a clone. The clone's live-useful asset is per-US-state star ratings (enrichment), not the corpus.",
+      "teaches": "hierarchical areas, cascading gradeContext, all-systems grade object, composable disciplines, structured pitches"
+    },
+    {
+      "id": "thecrag",
+      "name": "theCrag",
+      "family": "catalog",
+      "method": "browser-scrape",
+      "endpoint": "https://www.thecrag.com",
+      "license": "ToS-restricted (public pages only, no login-walled data)",
+      "tos": "grey-area — rate-limit, cache, robots-respecting; scraped with Michel's permission, raw stays off the public site",
+      "regions": ["*"],
+      "cadence": "on-demand",
+      "wired": false,
+      "notes": "~1M routes, worldwide — the real path to non-US coverage. Cloudflare-fronted, needs browser_fetch. 154 rows already crawled once (2026-07-06). Port the old thecrag_client.py fetcher into ingest/sources/ off Postgres.",
+      "teaches": "grade context at any level, cascading tag-sets, 0-100 quality score -> editorial 0-3 stars"
+    },
+    {
+      "id": "ukclimbing",
+      "name": "UKClimbing",
+      "family": "catalog",
+      "method": "browser-scrape",
+      "endpoint": "https://www.ukclimbing.com",
+      "license": "ToS-restricted (public pages only)",
+      "tos": "grey-area — rate-limit, cache, robots-respecting; scraped with Michel's permission, raw stays off the public site",
+      "regions": ["GB", "IE"],
+      "cadence": "on-demand",
+      "wired": false,
+      "notes": "~150k routes, best UK/Ireland coverage + first-class access notes. 103 rows crawled once. KNOWN BUG: its scratch ukc-routes.json files were written into corpus/record/ and crash the store loader — the new module writes raw captures to ingest/.cache/ (gitignored), never the record.",
+      "teaches": "faceted crag search by rocktype/aspect/type, first-class access notes"
+    },
+    {
+      "id": "mountainproject",
+      "name": "Mountain Project",
+      "family": "catalog",
+      "method": "browser-scrape",
+      "endpoint": "https://www.mountainproject.com",
+      "license": "ToS-restricted (API deprecated)",
+      "tos": "grey-area — public pages only",
+      "regions": ["USA", "*"],
+      "cadence": "on-demand",
+      "wired": false,
+      "notes": "No fetcher yet. grade-system auto-detection from leading chars (5.->YDS, V->V-scale, WI->ice, M->mixed) is worth adopting as a cheap deterministic pre-classifier.",
+      "teaches": "multi-discipline route type, grade-system leading-char detection"
+    },
+    {
+      "id": "serp-social",
+      "name": "SerpAPI social discovery",
+      "family": "discovery",
+      "method": "serpapi-google",
+      "endpoint": "https://serpapi.com/search.json",
+      "license": "SerpAPI ToS; results aggregated, no raw PII stored (GDPR)",
+      "tos": "query public Google results; keep place+route+timestamp, discard the person",
+      "regions": ["*"],
+      "cadence": "on-demand (per watched region/crag, recent window)",
+      "wired": false,
+      "notes": "Michel's idea: trad climbers post new lines to Instagram/Reddit/YouTube/forums, not always to route DBs. Query Google per region/crag with a recent-time filter (qdr:w / qdr:m) -> LLM extracts place+route mention -> draft CANDIDATE for curation. Reuses the SERPAPI_KEY plumbing already in engine/flights.py + fetch_chatter.py. Roadmap: social job #1 = discovery.",
+      "teaches": "uncatalogued lines; conditions/buzz signal (low-confidence, kept separate from the weather score)"
+    }
+  ]
+}

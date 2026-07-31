@@ -25,8 +25,28 @@
     --red:#D08573; --red-soft:#3A211C;
     --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 22px rgba(0,0,0,.28);}}
   *{box-sizing:border-box}
-  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.45;font-size:14px;-webkit-font-smoothing:antialiased}
-  .wrap{max-width:1240px;margin:0 auto;padding:18px 20px 130px}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.45;font-size:14px;-webkit-font-smoothing:antialiased;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+  /* full-screen: header on top, then a workspace that fills the rest */
+  .wrap{box-sizing:border-box;max-width:none;margin:0;padding:12px 16px 0;flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden}
+  header.app{flex:none;margin-bottom:10px}
+  /* map (left) | draggable splitter | route editor (right) — either can go full-width */
+  .workspace{flex:1;display:flex;min-height:0}
+  .mappane{flex:none;width:var(--split,44%);min-width:0;display:flex;flex-direction:column;min-height:0;overflow:hidden}
+  .maptools{display:flex;gap:9px;align-items:center;margin-bottom:7px;flex-wrap:wrap;flex:none}
+  .mappane .drillbar{flex:none;max-height:19vh;overflow:auto}
+  .splitter{flex:none;width:9px;margin:0 4px;align-self:stretch;cursor:col-resize;border-radius:6px;background:var(--line-2)}
+  .splitter:hover,.splitter.drag{background:var(--accent)}
+  .editorpane{flex:1;min-width:0;overflow:auto;padding:0 6px 20px 12px}
+  .editorpane .rail{margin-top:12px}
+  .gridview,.taxview{flex:1;min-height:0;overflow:auto;padding-bottom:84px}
+  .scopewrap{flex:none;margin-top:8px;background:var(--panel);border:1px solid var(--line-2);border-radius:12px;padding:5px 12px}
+  .scopewrap>summary{cursor:pointer;font:600 12px var(--sans);color:var(--muted);padding:5px 2px;list-style:none;user-select:none}
+  .scopewrap>summary::-webkit-details-marker{display:none}
+  .scopewrap>summary::before{content:'▸ ';color:var(--faint)}
+  .scopewrap[open]>summary::before{content:'▾ '}
+  .scopewrap[open]>summary{color:var(--ink)}
+  #qlist{max-height:28vh;overflow:auto;margin-top:4px}
+  @media (max-width:820px){.workspace{flex-direction:column}.mappane{width:auto!important;height:50vh}.splitter{display:none}}
   header.app{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:14px}
   h1{font-family:var(--serif);font-size:22px;font-weight:600;margin:0;white-space:nowrap}
   .progress{flex:1;min-width:200px}
@@ -121,6 +141,7 @@
   .btn.danger{color:var(--red);border-color:var(--red)}
   .btn.field{color:var(--blue);border-color:var(--blue)}
   .btn.sm{padding:4px 10px;font-size:11.5px;border-radius:7px}
+  .btn.on{background:var(--accent);border-color:var(--accent);color:#fff}
   kbd{font-family:var(--mono);font-size:10px;background:var(--paper);border:1px solid var(--line-2);border-bottom-width:2px;border-radius:4px;padding:1px 4px;margin-left:5px;color:var(--muted)}
 
   .rail .card{padding:12px 14px}
@@ -141,7 +162,7 @@
   .gradehint button{font:600 11px var(--sans);border:1px solid var(--accent);color:var(--accent-ink);
     background:var(--accent-soft);border-radius:6px;padding:2px 8px;cursor:pointer;margin-left:6px}
 
-  .actions{position:fixed;left:0;right:0;bottom:0;background:var(--panel);border-top:1px solid var(--line-2);box-shadow:0 -6px 18px rgba(35,42,39,.12);z-index:20}
+  .actions{flex:none;background:var(--panel);border-top:1px solid var(--line-2);box-shadow:0 -6px 18px rgba(35,42,39,.12);z-index:20}
   .actions .in{max-width:1240px;margin:0 auto;padding:10px 20px;display:flex;gap:9px;align-items:center;flex-wrap:wrap}
   .nexthint{margin-left:auto;font-size:12px;color:var(--faint)}
   #toast{position:fixed;top:14px;right:14px;background:var(--accent);color:#fff;padding:8px 16px;border-radius:9px;font-size:12.5px;opacity:0;transition:opacity .25s;z-index:30;pointer-events:none}
@@ -251,7 +272,7 @@
   .loc small{color:var(--muted);font-size:10px;margin-left:5px}
   .loc:hover{border-color:var(--accent)}
   .loc.crumb{border-style:solid;border-color:var(--accent);background:var(--accent-soft);color:var(--accent-ink)}
-  #bigmap{width:100%;height:calc(100vh - 300px);min-height:420px;border:1px solid var(--line-2);border-radius:10px;z-index:1}
+  #bigmap{width:100%;flex:1;min-height:160px;border:1px solid var(--line-2);border-radius:10px;z-index:1}
   .ring-ico{border-radius:50%;display:flex;align-items:center;justify-content:center;
     border:2px solid #fff;box-shadow:0 1px 6px rgba(0,0,0,.35);cursor:pointer}
   .ring-ico span{background:var(--panel);color:var(--ink);border-radius:50%;width:calc(100% - 12px);height:calc(100% - 12px);
@@ -309,37 +330,39 @@
       <button id="sf-quarantined" onclick="setStatus('quarantined')">quarantined</button>
     </div>
     <div class="views">
-      <button id="vq" class="on" onclick="setView('q')">Queue</button>
-      <button id="vg" onclick="setView('g')">Grid</button>
-      <button id="vm" onclick="setView('m')">Map</button>
-      <button id="vt" onclick="setView('t')">Taxonomy</button>
+      <button id="vg" onclick="toggleView('g')">▦ Grid</button>
+      <button id="vt" onclick="toggleView('t')">🏷 Taxonomy</button>
     </div>
   </header>
 
-  <div class="drillbar" id="drillbar"></div>
-
-  <div class="queue" id="queueview">
-    <div class="qlistwrap card">
-      <div class="minor" id="qcount">loading…</div>
-      <div id="qlist"></div>
+  <!-- persistent workspace: map (left) drills + discovers; the editor (right) opens on click -->
+  <div class="workspace" id="workspace">
+    <div class="mappane">
+      <div class="maptools">
+        <button class="btn sm" id="surveyBtn" onclick="toggleSurvey()">▭ Survey a region</button>
+        <button class="btn sm on" id="msyncBtn" onclick="toggleMapSync()"
+                title="Zoom or pan the map and the route list narrows to what you can see">⊞ List follows map</button>
+        <button class="btn sm" onclick="resetMap()" title="clear the place filter and re-frame the map">⟳ Reset</button>
+        <span class="minor" id="surveyLog" style="margin-left:auto;font-family:ui-monospace,monospace"></span>
+      </div>
+      <div class="drillbar" id="drillbar"></div>
+      <div id="bigmap"></div>
+      <div class="minor" id="surveyHint" style="margin-top:7px">rings = areas (green = curated share) · click to drill in ·
+        dots = routes (<span class="dotkey" style="background:var(--accent)"></span> published
+        <span class="dotkey" style="background:var(--amber)"></span> draft
+        <span class="dotkey" style="background:var(--red)"></span> quarantined) · <b>click a route to edit it →</b></div>
+      <details class="scopewrap"><summary id="qcount">routes in scope</summary><div id="qlist"></div></details>
     </div>
-    <div id="main"><div class="card">loading…</div></div>
-    <div class="rail" id="rail"></div>
+    <div class="splitter" id="splitter" title="drag to resize · drag to an edge to give one pane the whole screen"></div>
+    <div class="editorpane">
+      <div id="main"><div class="card minor">Pick a route on the map (or drill into a place) to edit it here.</div></div>
+      <div class="rail" id="rail"></div>
+    </div>
   </div>
 
   <div class="taxview" id="taxview" style="display:none"></div>
 
-  <div id="mapview" style="display:none">
-    <div class="card" style="padding:12px">
-      <div id="bigmap"></div>
-      <div class="minor" style="margin-top:7px">rings = one area per circle, green share is curated — click a ring to
-        drill in · dots = routes (<span class="dotkey" style="background:var(--accent)"></span> published
-        <span class="dotkey" style="background:var(--amber)"></span> draft
-        <span class="dotkey" style="background:var(--red)"></span> quarantined) · a hollow dot borrowed its crag's pin</div>
-    </div>
-  </div>
-
-  <div class="gridview" id="gridview">
+  <div class="gridview" id="gridview" style="display:none">
     <div class="bulk">
       <span id="selcount">0 selected</span> —
       <select id="bulkField"><option value="sun_window_code">sunWindow</option><option value="stars">stars</option><option value="protection_style">protectionStyle</option><option value="belays">belays</option></select>
@@ -357,6 +380,7 @@
 <div class="actions"><div class="in">
   <button class="btn primary" onclick="publish()">✓ Publish<kbd>⌘⏎</kbd></button>
   <button class="btn field" onclick="fieldcheck()">🥾 Field check<kbd>⌘F</kbd></button>
+  <button class="btn" onclick="retag()" title="Re-run the LLM tagger on this route's prose">🏷 Re-tag</button>
   <button class="btn danger" onclick="quarantine()">✕ Quarantine</button>
   <button class="btn danger" onclick="delRoute()" title="remove this record file entirely — drafts only">🗑 Delete</button>
   <button class="btn" onclick="move(1)">Next<kbd>⌘→</kbd></button>
@@ -401,6 +425,11 @@
 
 <script>
 let ENUMS={}, QUEUE=[], ALLROWS=[], TREE=[], DRILL=[], COUNTS={}, STATUS='draft', curId=null, R=null, saveTimers={};
+// "List follows map": the visible map bounds are a second, live filter on the
+// list. PTS is id → [lat,lon] taken from the map feed (every route has a pin,
+// borrowed from its crag when it has none of its own), so a route can always be
+// tested against the viewport. MAPBOX is null until the map first settles.
+let MAPSYNC=true, MAPBOX=null, PTS={};
 const $=id=>document.getElementById(id);
 // API base: same-origin locally; the S3-hosted Studio sets window.API_BASE
 // to the Lambda URL (decision #40 phase B) — one UI, two homes.
@@ -498,6 +527,7 @@ async function boot(){
   [ENUMS,SOURCES]=await Promise.all([api('/enums'),api('/sources')]);
   bulkFieldChanged();
   await Promise.all([loadQueue(),loadTree()]);
+  initBigMap();                                // the map is always on-screen now
   const rm=location.hash.match(/^#r=(\d+)/);   // deep link straight to a route's card
   if(rm){
     await openRoute(+rm[1]);
@@ -556,6 +586,7 @@ async function delRoute(){
 }
 async function loadTree(){        // all routes + status: drill counts & map (refresh after status flips)
   TREE=await api('/map');
+  PTS={}; TREE.forEach(p=>{if(p.lat!=null)PTS[p.id]=[p.lat,p.lon]});
   renderDrill();updateMapLayer();
 }
 let qseq=0;
@@ -565,7 +596,7 @@ async function loadQueue(keepId){
   const d=await api(`/queue?status=${STATUS}&q=${encodeURIComponent(q)}`);
   if(my!==qseq)return;            // superseded by a newer request — drop stale result
   ALLROWS=d.rows; COUNTS=d.counts;
-  QUEUE=drillFilter(ALLROWS);
+  applyScope();
   updateCounts();
   renderList();renderGrid();renderDrill();
   if(keepId)openRoute(keepId);
@@ -582,20 +613,30 @@ function updateCounts(){
 function syncSeg(){['all','draft','publish','quarantined'].forEach(x=>$('sf-'+x).classList.toggle('on',x===STATUS))}
 function setStatus(s){STATUS=s;syncSeg();loadQueue()}
 function renderList(){
-  const n=QUEUE.length;
-  $('qcount').textContent=n?`${n} route${n===1?'':'s'} in scope`:'';
+  const n=QUEUE.length, byMap=MAPSYNC&&MAPBOX, hidden=byMap?drillFilter(ALLROWS).length-n:0;
+  $('qcount').textContent=n?`${n} route${n===1?'':'s'} ${byMap?'in view':'in scope'}`
+    +(hidden>0?` · ${hidden} outside the map`:''):'';
   $('qlist').innerHTML=n?QUEUE.map(r=>`
     <div class="qrow ${r.id===curId?'on':''}" onclick="openRoute(${r.id})">
       <span class="dot ${r.status==='publish'?'p':r.status==='quarantined'?'x':'d'}"></span>
       <div class="qtxt"><b>${esc(r.name)}</b>
         <small>${esc((r.path_tokens||[]).slice(-1)[0]||'')} · ${esc(r.original_grade)||'—'}</small></div>
     </div>`).join('')
-   :'<div class="minor" style="padding:8px 2px">no matches here — clear the filter, pick another place, or switch status</div>';
+   :`<div class="minor" style="padding:8px 2px">${MAPSYNC&&MAPBOX
+       ?'nothing in this part of the map — zoom out, pan, or turn off “List follows map”'
+       :'no matches here — clear the filter, pick another place, or switch status'}</div>`;
 }
 
 // ── location drill-down — country › region › crag, guidebook-index style ──
 const tok=(r,i)=>((r.path_tokens||[])[i]||'');
 function drillFilter(rows){return rows.filter(r=>DRILL.every((t,i)=>tok(r,i)===t))}
+// The two live filters on the list: the place drill-down, then the map viewport.
+// A route with no pin at all is never hidden by the map — it can't be judged.
+function viewFilter(rows){
+  if(!MAPSYNC||!MAPBOX)return rows;
+  return rows.filter(r=>{const p=PTS[r.id];return p?MAPBOX.contains(p):true});
+}
+function applyScope(){QUEUE=viewFilter(drillFilter(ALLROWS))}
 function renderDrill(){
   const scope=drillFilter(TREE), lvl=DRILL.length;
   const groups={};
@@ -614,7 +655,7 @@ function renderDrill(){
 function drillDown(t){DRILL.push(t);refreshDrill()}
 function drillTo(i){DRILL=DRILL.slice(0,i);refreshDrill()}
 function refreshDrill(){
-  QUEUE=drillFilter(ALLROWS);
+  applyScope();
   renderDrill();renderList();renderGrid();updateMapLayer();
   if(!R&&QUEUE.length)openRoute(QUEUE[0].id);   // never replace an open editor uninvited
 }
@@ -625,6 +666,7 @@ async function openRoute(id){
   if(my!==oseq)return;            // a newer open superseded this one
   R=r;curId=id;
   renderCard(); renderRail(); renderList();
+  const ep=document.querySelector('.editorpane'); if(ep)ep.scrollTop=0;   // always start at the route header
   const i=QUEUE.findIndex(x=>x.id===curId);
   $('nexthint').textContent=i<0?'':`route ${i+1}/${QUEUE.length}${QUEUE[i+1]?' — next: '+QUEUE[i+1].name:''}`;  // textContent — safe
   const row=document.querySelector('.qrow.on');
@@ -1158,7 +1200,7 @@ let MAP=null;
 function initMap(r){
   if(MAP){MAP.remove();MAP=null}
   MAP=L.map('livemap',{scrollWheelZoom:false}).setView([r.lat,r.lon],14);
-  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OSM'}).addTo(MAP);
+  L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',{maxZoom:17,attribution:'© OSM · © OpenTopoMap (CC-BY-SA)'}).addTo(MAP);
   L.marker([r.lat,r.lon],{title:'route'}).addTo(MAP).bindPopup('route: '+r.name);
   (r.parkings||[]).forEach((pk,i)=>{
     const m=L.marker([pk.lat,pk.lon],{draggable:true,
@@ -1206,6 +1248,16 @@ async function statusFlip(call,msg,newStatus){  // publish/quarantine: advance t
 }
 const publish=()=>R&&statusFlip('/route/'+R.id+'/publish','✓ published — tags now human','publish');
 const quarantine=()=>R&&statusFlip('/route/'+R.id+'/status/quarantined','quarantined','quarantined');
+async function retag(){
+  if(!R)return;
+  commitFocus();
+  toast('re-tagging with the LLM…');
+  try{
+    const d=await api('/route/'+R.id+'/retag',{method:'POST'});
+    toast('🏷 re-tagged'+(d.flagged&&d.flagged.length?` · ${d.flagged.length} field(s) flagged`:''));
+    await openRoute(R.id);   // re-render editor with the new tags/protection/hazards
+  }catch(e){ toast('re-tag failed: '+e); }
+}
 async function fieldcheck(){
   if(!R)return;
   commitFocus();
@@ -1308,28 +1360,141 @@ async function taxDel(fam,code){
   try{await api(`/taxonomy/${fam}/${encodeURIComponent(code)}`,{method:'DELETE'});toast('removed '+code);ENUMS=await api('/enums');renderTax()}
   catch(e){toast('⚠ '+e)}
 }
+// The map+editor workspace is always on screen; Grid & Taxonomy open as overlays.
 function setView(v){
-  $('queueview').style.display=v==='q'?'grid':'none';
-  $('gridview').style.display=v==='g'?'block':'none';
-  $('taxview').style.display=v==='t'?'block':'none';
-  $('mapview').style.display=v==='m'?'block':'none';
-  $('drillbar').style.display=(v==='q'||v==='g'||v==='m')?'flex':'none';
-  document.querySelector('.actions').style.display=(v==='t'||v==='m')?'none':'block';
-  ['q','g','m','t'].forEach(x=>$('v'+x).classList.toggle('on',v===x));
-  if(v==='t')renderTax();
-  if(v==='m')initBigMap();
-  if(v==='q'&&R)openRoute(R.id);  // re-render with possibly grown ENUMS
+  const grid=v==='g', tax=v==='t';
+  $('workspace').style.display=(grid||tax)?'none':'flex';
+  $('gridview').style.display=grid?'block':'none';
+  $('taxview').style.display=tax?'block':'none';
+  $('vg').classList.toggle('on',grid);
+  $('vt').classList.toggle('on',tax);
+  document.querySelector('.actions').style.display=tax?'none':'block';
+  if(grid)renderGrid();
+  if(tax)renderTax();
+  if(!grid&&!tax)setTimeout(()=>BIGMAP&&BIGMAP.invalidateSize(),50);
 }
+function toggleView(v){ setView($('v'+v).classList.contains('on')?'':v); }
+function pickRoute(id,status){ if(status&&status!==STATUS){STATUS=status;syncSeg();} loadQueue(id); }
+function resetMap(){ DRILL=[]; $('q').value=''; lastFitKey=null; MAPBOX=null; refreshDrill(); loadQueue(); const l=$('surveyLog'); if(l)l.textContent=''; }
+let mvTimer=null;
+function onMapMove(){
+  if(!MAPSYNC||!BIGMAP)return;
+  clearTimeout(mvTimer);                       // one recount per gesture, not per frame
+  mvTimer=setTimeout(()=>{
+    MAPBOX=BIGMAP.getBounds();
+    applyScope(); renderList(); renderGrid();  // list only — the editor stays put
+  },120);
+}
+function toggleMapSync(){
+  MAPSYNC=!MAPSYNC;
+  $('msyncBtn').classList.toggle('on',MAPSYNC);
+  MAPBOX=MAPSYNC&&BIGMAP?BIGMAP.getBounds():null;
+  applyScope(); renderList(); renderGrid();
+}
+// draggable splitter: resize the two panes, or drag to an edge to give one the whole screen
+(function(){
+  const sp=$('splitter'), ws=$('workspace'); if(!sp||!ws)return;
+  let drag=false;
+  const move=e=>{ if(!drag)return;
+    const r=ws.getBoundingClientRect();
+    let pct=Math.max(0,Math.min(100,(e.clientX-r.left)/r.width*100));
+    ws.style.setProperty('--split',pct+'%');
+    if(BIGMAP)BIGMAP.invalidateSize(); };
+  sp.addEventListener('mousedown',e=>{drag=true;sp.classList.add('drag');
+    document.body.style.cursor='col-resize';document.body.style.userSelect='none';e.preventDefault();});
+  window.addEventListener('mousemove',move);
+  window.addEventListener('mouseup',()=>{ if(!drag)return; drag=false;sp.classList.remove('drag');
+    document.body.style.cursor='';document.body.style.userSelect='';if(BIGMAP)setTimeout(()=>BIGMAP.invalidateSize(),40); });
+  sp.addEventListener('dblclick',()=>{ ws.style.setProperty('--split','44%'); if(BIGMAP)setTimeout(()=>BIGMAP.invalidateSize(),40); });
+  window.addEventListener('resize',()=>{ if(BIGMAP)BIGMAP.invalidateSize(); });
+})();
 
 // ── the map: progress rings per area, route dots when focused ──────────────
-let BIGMAP=null, MAPLAYER=null;
+let BIGMAP=null, MAPLAYER=null, lastFitKey=null;
 function initBigMap(){
   if(!BIGMAP){
     BIGMAP=L.map('bigmap').setView([47,5],5);
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OSM'}).addTo(BIGMAP);
+    const terr=L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',{maxZoom:17,attribution:'© OSM · SRTM · style © OpenTopoMap (CC-BY-SA)'});
+    const sat=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:18,attribution:'Imagery © Esri'});
+    const streets=L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{subdomains:'abcd',maxZoom:20,attribution:'© OSM © CARTO'});
+    terr.addTo(BIGMAP);                                   // terrain is the default layer
+    L.control.layers({'Terrain':terr,'Satellite':sat,'Streets':streets},null,{position:'topright'}).addTo(BIGMAP);
+    // Zoom/pan narrows the list. This touches the LIST ONLY — never the pins and
+    // never the open editor — so it cannot feed back into fitBounds and loop.
+    BIGMAP.on('moveend zoomend',onMapMove);
   }
   setTimeout(()=>BIGMAP.invalidateSize(),60);
+  wireSurvey();
   updateMapLayer();
+}
+// ── "Survey a region": draw a box → background discover job → draft pins ────
+let SURVEYON=false, S_DRAW=null, S_RECT=null, DISCLAYER=null;
+function toggleSurvey(force){
+  SURVEYON = force!==undefined ? force : !SURVEYON;
+  $('surveyBtn').classList.toggle('on',SURVEYON);
+  if(BIGMAP){BIGMAP.dragging[SURVEYON?'disable':'enable']();BIGMAP.getContainer().style.cursor=SURVEYON?'crosshair':''}
+  $('surveyHint').textContent=SURVEYON?'— drag a box on the map to survey it':'— click, then drag a box on the map to discover climbing there (all sources + LLM tag → drafts)';
+}
+function wireSurvey(){
+  if(!BIGMAP||BIGMAP._surveyWired)return; BIGMAP._surveyWired=true;
+  BIGMAP.on('mousedown',e=>{ if(!SURVEYON)return; S_DRAW=e.latlng;
+    S_RECT=L.rectangle([e.latlng,e.latlng],{color:'#3fa7d6',weight:2,dashArray:'5 4',fillColor:'#3fa7d6',fillOpacity:.1}).addTo(BIGMAP);});
+  BIGMAP.on('mousemove',e=>{ if(S_DRAW&&S_RECT)S_RECT.setBounds(L.latLngBounds(S_DRAW,e.latlng)); });
+  BIGMAP.on('mouseup',e=>{ if(!S_DRAW)return; const b=L.latLngBounds(S_DRAW,e.latlng); S_DRAW=null; toggleSurvey(false);
+    if(b.getNorth()-b.getSouth()<.01||b.getEast()-b.getWest()<.01){S_RECT&&S_RECT.remove();S_RECT=null;return;}
+    S_RECT.setStyle({color:'#C08A1E',fillColor:'#C08A1E',dashArray:null,className:''});   // blue draw → amber survey
+    runDiscover([b.getSouth(),b.getWest(),b.getNorth(),b.getEast()]); });
+}
+let POLL=null;
+async function runDiscover(bbox){
+  $('surveyLog').textContent='starting survey…';
+  if(POLL){clearInterval(POLL);POLL=null;}   // never leave a previous survey polling
+  let job;
+  // fetch() only rejects on a network error, so a 400/500 still resolves — read
+  // the status and the job id explicitly, or we would poll /discover/undefined
+  // every 1.5s for the life of the page (the stray 404s in the console).
+  try{
+    const res=await fetch('/api/discover',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({bbox})});
+    const d=await res.json().catch(()=>({}));
+    if(!res.ok||!d.job)throw new Error(d.detail||`survey could not start (HTTP ${res.status})`);
+    job=d.job;
+  }catch(e){
+    $('surveyLog').textContent='⚠ '+esc(e.message||e);
+    if(S_RECT){S_RECT.remove();S_RECT=null;}
+    return;
+  }
+  const t0=Date.now(), STALL_MS=15*60*1000;
+  POLL=setInterval(async()=>{
+    let j;
+    try{
+      const res=await fetch('/api/discover/'+job);
+      if(!res.ok){                            // the job is gone (server restarted?) — stop, don't spin
+        clearInterval(POLL);POLL=null;
+        $('surveyLog').textContent=`⚠ lost the survey job (HTTP ${res.status}) — run it again`;
+        return;
+      }
+      j=await res.json();
+    }catch(e){ return; }                      // transient blip — keep polling
+    $('surveyLog').textContent=(j.log||[]).slice(-1)[0]||j.status;
+    if(!j.done){
+      if(Date.now()-t0>STALL_MS){ clearInterval(POLL);POLL=null;
+        $('surveyLog').textContent='⚠ survey stalled — run it again'; }
+      return;
+    }
+    clearInterval(POLL);POLL=null;
+    if(j.status==='error'){ $('surveyLog').textContent='⚠ '+esc(j.error||'failed'); return; }
+    const rn=(j.region||{}).name||'the region';
+    if(j.drafts){
+      await loadTree(); await loadQueue();
+      const first=(j.pins||[])[0], row=first&&ALLROWS.find(r=>r.name===first.name);
+      if(row){ DRILL=(row.path_tokens||[]).slice(0,3); refreshDrill(); openRoute(row.id); }  // focus the new region + open a draft
+      BIGMAP.fitBounds([[bbox[0],bbox[1]],[bbox[2],bbox[3]]],{padding:[36,36],maxZoom:12});   // fly to what you just surveyed
+      $('surveyLog').textContent=`✓ ${j.drafts} draft route(s) added in ${esc(rn)}`+(j.deduped?` · ${j.deduped} already known`:'')+' — open one to curate →';
+    } else {
+      $('surveyLog').textContent='⚠ '+esc(j.note||('no new routes found in '+rn));   // say WHY it's empty
+      if(S_RECT){S_RECT.remove();S_RECT=null;}
+    }
+  },1500);
 }
 function updateMapLayer(){
   if(!BIGMAP)return;
@@ -1344,7 +1509,7 @@ function updateMapLayer(){
         .addTo(MAPLAYER)
         .bindPopup(`<b>${esc(p.name)}</b> ${esc(p.original_grade)||''}<br>
           <span style="font-size:11px">${esc((p.path_tokens||[]).join(' › '))} · ${p.status}${p.approx?' · pin borrowed from the crag':''}</span><br>
-          <a href="#" onclick="jumpTo(${p.id},'${p.status}');return false">✏ open in queue</a>`);
+          <a href="#" onclick="pickRoute(${p.id},'${p.status}');return false">✏ edit this route →</a>`);
       bounds.push([p.lat,p.lon]);
     });
   } else {                                      // one progress ring per next level down
@@ -1363,7 +1528,13 @@ function updateMapLayer(){
       bounds.push([lat,lon]);
     });
   }
-  if(bounds.length)BIGMAP.fitBounds(bounds,{padding:[40,40],maxZoom:lvl>=2?13:7});
+  const fitKey=DRILL.join('>');
+  if(bounds.length&&fitKey!==lastFitKey){       // re-frame only when the drill level changes — don't yank the user's pan
+    lastFitKey=fitKey;
+    // world view → frame Europe (where the corpus lives); pan or drill to reach the rest
+    const fit=lvl===0?[[35.5,-10],[59,28]]:bounds;
+    BIGMAP.fitBounds(fit,{padding:[40,40],maxZoom:lvl>=2?13:6});
+  }
 }
 async function jumpTo(id,status){
   STATUS=status;syncSeg();

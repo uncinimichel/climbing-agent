@@ -1,25 +1,32 @@
-"""search_climbs — the retrieval agent's DB layer.
+"""search_climbs — the retrieval agent's data layer, over the JSON record.
 
-Builds one parameterized SQL query over the climbing schema from validated,
-enum-constrained parameters (roadmap Stage 5½, decision #19). The enum lists are
-loaded from the DB lookup tables at startup so the tool schema and the taxonomy
-can never drift. The LLM never writes SQL; this module does.
+No Postgres (the corpus consolidated on the JSON record — the Studio's own store).
+This reads exactly what the Studio writes (corpus/tools/store.py): published route
+documents, the area tree with downward-inherited eff_* (rock/aspect/gradeContext),
+and the taxonomy enums. The enum lists come from the same taxonomy the store
+validates against, so the tool schema and the corpus can never drift. The LLM
+never writes a query; this module filters the in-memory records.
+
+The public surface is unchanged from the Postgres era so its callers
+(chat.py / core.py / search_cli.py / server.py) need no edits: `connect()` now
+returns the in-memory Store (the "connection"), and load_enums/tool_schema/
+search_climbs take that store in the old `conn` position.
 
 Run directly for a no-LLM test pass:  python search.py
 """
 
 from __future__ import annotations
 
-import json
+import math
 import os
 import sys
 from pathlib import Path
 
-import psycopg
-from psycopg.rows import dict_row
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "corpus" / "tools"))
+from store import Store  # noqa: E402
 
-DEFAULT_DSN = "postgresql://climbing:climbing@localhost:5432/climbing"
 MAX_LIMIT = 20
+ASPECTS = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"]
 
 
 def load_dotenv() -> None:
@@ -35,30 +42,27 @@ def load_dotenv() -> None:
         os.environ.setdefault(key.strip(), value.strip().strip('"').strip("'"))
 
 
-def connect() -> psycopg.Connection:
-    dsn = os.environ.get("DATABASE_URL", DEFAULT_DSN)
-    return psycopg.connect(dsn, row_factory=dict_row)
+def connect() -> Store:
+    """The 'connection' is now the in-memory JSON store (loads the record once)."""
+    return Store()
 
 
-def load_enums(conn: psycopg.Connection) -> dict[str, list[str]]:
-    """The closed vocabularies, straight from the DB (taxonomy.md's mirror)."""
-    enums: dict[str, list[str]] = {}
-    with conn.cursor() as cur:
-        for key, sql in {
-            "rock": "SELECT code FROM climbing.rock_type ORDER BY code",
-            "disciplines": "SELECT code FROM climbing.discipline ORDER BY code",
-            "features": "SELECT code FROM climbing.feature ORDER BY code",
-            "character": "SELECT code FROM climbing.character ORDER BY code",
-            "aspect": "SELECT unnest(ARRAY['N','NE','E','SE','S','SW','W','NW'])",
-            "sun_window": "SELECT code FROM climbing.sun_window ORDER BY code",
-        }.items():
-            cur.execute(sql)
-            enums[key] = [r[next(iter(r))] for r in cur.fetchall()]
-    return enums
+def load_enums(store: Store) -> dict[str, list[str]]:
+    """The closed vocabularies, straight from the taxonomy record the store
+    validates writes against — same source, so they can't drift."""
+    code = lambda fam: sorted(t["code"] for t in store.tax[fam])  # noqa: E731
+    return {
+        "rock": code("rock_type"),
+        "disciplines": code("discipline"),
+        "features": code("feature"),
+        "character": code("character"),
+        "aspect": ASPECTS,
+        "sun_window": code("sun_window"),
+    }
 
 
 def tool_schema(enums: dict[str, list[str]]) -> dict:
-    """The search_climbs tool definition, enums injected from the DB."""
+    """The search_climbs tool definition, enums injected from the taxonomy."""
     return {
         "name": "search_climbs",
         "description": (
@@ -125,120 +129,138 @@ def tool_schema(enums: dict[str, list[str]]) -> dict:
     }
 
 
-def search_climbs(conn: psycopg.Connection, params: dict) -> list[dict]:
-    """Validate params against the enums and run the search. Raises ValueError on
-    off-dictionary values (the agent loop returns that as an is_error tool result)."""
-    enums = load_enums(conn)
+def _haversine_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
+    r = 6371.0
+    p1, p2 = math.radians(lat1), math.radians(lat2)
+    dp, dl = math.radians(lat2 - lat1), math.radians(lon2 - lon1)
+    a = math.sin(dp / 2) ** 2 + math.cos(p1) * math.cos(p2) * math.sin(dl / 2) ** 2
+    return 2 * r * math.asin(math.sqrt(a))
 
-    where = ["r.status = 'publish'"]
-    args: dict = {}
 
+def _coords(store: Store, r: dict) -> tuple[float, float] | None:
+    """Route coords, falling back to the nearest ancestor area with a location
+    (the planner's own haversine matching does the same)."""
+    if r.get("lat") is not None and r.get("lon") is not None:
+        return float(r["lat"]), float(r["lon"])
+    for a in store.area_chain(r.get("area_id")):
+        if a.get("lat") is not None and a.get("lon") is not None:
+            return float(a["lat"]), float(a["lon"])
+    return None
+
+
+def search_climbs(store: Store, params: dict) -> list[dict]:
+    """Validate params against the enums and filter the published corpus. Raises
+    ValueError on off-dictionary values (the agent loop returns that as an
+    is_error tool result) — validation happens up front, before any row is seen,
+    so a bad enum is rejected even when nothing would have matched."""
+    enums = load_enums(store)
+    rock_by_code = {t["code"]: t for t in store.tax["rock_type"]}
+
+    # ── validate every param up front (matches the old pre-query validation) ──
     rock = params.get("rock")
-    if rock is not None:
-        if rock not in enums["rock"]:
-            raise ValueError(f"unknown rock type {rock!r}; allowed: {enums['rock']}")
-        where.append("r.eff_rock_code = %(rock)s")
-        args["rock"] = rock
-
-    for facet, table, col in (("disciplines", "route_discipline", "discipline_code"),
-                              ("features", "route_feature", "feature_code"),
-                              ("character", "route_character", "character_code")):
-        for i, val in enumerate(params.get(facet) or []):
+    if rock is not None and rock not in enums["rock"]:
+        raise ValueError(f"unknown rock type {rock!r}; allowed: {enums['rock']}")
+    for facet in ("disciplines", "features", "character"):
+        for val in params.get(facet) or []:
             if val not in enums[facet]:
                 raise ValueError(f"unknown {facet} value {val!r}; allowed: {enums[facet]}")
-            key = f"{facet}{i}"
-            where.append(
-                f"EXISTS (SELECT 1 FROM climbing.{table} j_{key} "
-                f"WHERE j_{key}.route_id = r.id AND j_{key}.{col} = %({key})s)"
-            )
-            args[key] = val
-
-    near = params.get("near")
-    if near is not None:
-        args["lat"], args["lon"] = float(near["lat"]), float(near["lon"])
-        args["radius_m"] = float(near.get("radius_km", 150)) * 1000
-        where.append(
-            "ST_DWithin(r.geom, ST_SetSRID(ST_MakePoint(%(lon)s, %(lat)s), 4326)::geography, %(radius_m)s)"
-        )
-
+    aspect = params.get("aspect")
+    if aspect is not None and aspect not in enums["aspect"]:
+        raise ValueError(f"unknown aspect {aspect!r}")
     month = params.get("month")
     if month is not None:
         month = int(month)
         if not 1 <= month <= 12:
             raise ValueError("month must be 1-12")
-        where.append("(r.best_season IS NULL OR %(month)s = ANY(r.best_season))")
-        args["month"] = month
-
-    max_dg = params.get("max_data_grade")
-    if max_dg is not None:
-        where.append("r.data_grade <= %(max_dg)s")
-        args["max_dg"] = int(max_dg)
-
-    aspect = params.get("aspect")
-    if aspect is not None:
-        if aspect not in enums["aspect"]:
-            raise ValueError(f"unknown aspect {aspect!r}")
-        where.append("r.eff_aspect = %(aspect)s")
-        args["aspect"] = aspect
-
+    max_dg = None if params.get("max_data_grade") is None else int(params["max_data_grade"])
+    near = params.get("near")
+    if near is not None:
+        near = {"lat": float(near["lat"]), "lon": float(near["lon"]),
+                "radius_km": float(near.get("radius_km", 150))}
+    want = {f: set(params.get(f) or []) for f in ("disciplines", "features", "character")}
     limit = min(int(params.get("limit") or 10), MAX_LIMIT)
-    args["limit"] = limit
 
-    distance_sql = (
-        "ST_Distance(r.geom, ST_SetSRID(ST_MakePoint(%(lon)s, %(lat)s), 4326)::geography) / 1000.0"
-        if near is not None else "NULL::float"
-    )
-    climo_join = (
-        "LEFT JOIN climbing.route_climatology cl ON cl.route_id = r.id AND cl.month = %(month)s"
-        if month is not None else
-        "LEFT JOIN climbing.route_climatology cl ON false"
-    )
+    rows: list[dict] = []
+    for r in store.routes.values():
+        if r.get("status") != "publish":
+            continue
+        eff = store.route_effective(r)
 
-    sql = f"""
-        SELECT r.name,
-               array_to_string(r.path_tokens, ' > ')          AS location,
-               r.eff_grade_context                            AS grade_context,
-               r.grade_system_code || ' ' || r.original_grade AS grade,
-               r.data_grade,
-               r.eff_rock_code                                AS rock,
-               rt.notes                                       AS rock_notes,
-               rt.seeps, rt.fragile_when_wet,
-               r.eff_aspect                                   AS aspect,
-               r.sun_window_code                              AS sun_window,
-               r.protection_code                              AS protection,
-               r.length_m, r.pitches_count, r.elevation_m,
-               r.approach_time_min, r.approach_difficulty,
-               r.best_season, r.stars,
-               ROUND(({distance_sql})::numeric, 1)            AS distance_km,
-               cl.rainy_days AS month_rainy_days, cl.temp_high AS month_temp_high,
-               r.protection_style, r.belays,
-               (SELECT array_agg(rd.discipline_code ORDER BY rd.discipline_code)
-                  FROM climbing.route_discipline rd WHERE rd.route_id = r.id) AS disciplines,
-               (SELECT array_agg(rf.feature_code ORDER BY rf.feature_code)
-                  FROM climbing.route_feature rf WHERE rf.route_id = r.id)    AS features,
-               (SELECT array_agg(rc.character_code ORDER BY rc.character_code)
-                  FROM climbing.route_character rc WHERE rc.route_id = r.id)  AS character,
-               (SELECT json_agg(json_build_object('hazard', rh.hazard_code, 'evidence', rh.evidence_span))
-                  FROM climbing.route_hazard rh WHERE rh.route_id = r.id)     AS hazards
-        FROM climbing.route_resolved r
-        LEFT JOIN climbing.rock_type rt ON rt.code = r.eff_rock_code
-        {climo_join}
-        WHERE {' AND '.join(where)}
-        ORDER BY {'distance_km NULLS LAST,' if near is not None else ''} r.data_grade NULLS LAST, r.stars DESC NULLS LAST
-        LIMIT %(limit)s
-    """
-    with conn.cursor() as cur:
-        cur.execute(sql, args)
-        rows = cur.fetchall()
-    for row in rows:  # decimals/None → JSON-friendly
-        if row.get("distance_km") is not None:
-            row["distance_km"] = float(row["distance_km"])
-    return rows
+        if rock is not None and eff["eff_rock_code"] != rock:
+            continue
+        tags = r.get("tags") or {}
+        if not want["disciplines"] <= set(tags.get("disciplines") or []):
+            continue
+        if not want["features"] <= set(tags.get("features") or []):
+            continue
+        if not want["character"] <= set(tags.get("character") or []):
+            continue
+        if aspect is not None and eff["eff_aspect"] != aspect:
+            continue
+        if month is not None:
+            season = r.get("best_season")
+            if season and month not in season:   # NULL season = matches any month (as in SQL)
+                continue
+        if max_dg is not None:
+            dg = r.get("data_grade")
+            if dg is None or dg > max_dg:          # NULL data_grade excluded, as in SQL
+                continue
+
+        distance_km = None
+        if near is not None:
+            co = _coords(store, r)
+            if co is None:
+                continue
+            distance_km = round(_haversine_km(near["lat"], near["lon"], co[0], co[1]), 1)
+            if distance_km > near["radius_km"]:
+                continue
+
+        rt = rock_by_code.get(eff["eff_rock_code"] or "", {})
+        climo = next((c for c in (r.get("climatology") or []) if c.get("month") == month), {}) if month else {}
+        og = r.get("original_grade")
+        rows.append({
+            "name": r["name"],
+            "location": " > ".join(eff["path_tokens"]),
+            "grade_context": eff["eff_grade_context"],
+            "grade": f"{r.get('grade_system_code') or ''} {og}".strip() if og else None,
+            "data_grade": r.get("data_grade"),
+            "rock": eff["eff_rock_code"],
+            "rock_notes": rt.get("notes"),
+            "seeps": rt.get("seeps"),
+            "fragile_when_wet": rt.get("fragile_when_wet"),
+            "aspect": eff["eff_aspect"],
+            "sun_window": r.get("sun_window_code"),
+            "protection": r.get("protection_code"),
+            "length_m": r.get("length_m"),
+            "pitches_count": r.get("pitches_count"),
+            "elevation_m": r.get("elevation_m"),
+            "approach_time_min": r.get("approach_time_min"),
+            "approach_difficulty": r.get("approach_difficulty"),
+            "best_season": r.get("best_season"),
+            "stars": r.get("stars"),
+            "distance_km": distance_km,
+            "month_rainy_days": climo.get("rainy_days"),
+            "month_temp_high": climo.get("temp_high"),
+            "protection_style": r.get("protection_style"),
+            "belays": r.get("belays"),
+            "disciplines": sorted(tags.get("disciplines") or []),
+            "features": sorted(tags.get("features") or []),
+            "character": sorted(tags.get("character") or []),
+            "hazards": [{"hazard": h.get("hazard_code"), "evidence": h.get("evidence_span")}
+                        for h in (r.get("hazards") or [])],
+        })
+
+    # distance NULLS LAST, then data_grade NULLS LAST, then stars DESC NULLS LAST
+    rows.sort(key=lambda x: (
+        x["distance_km"] is None, x["distance_km"] if x["distance_km"] is not None else 0.0,
+        x["data_grade"] is None, x["data_grade"] if x["data_grade"] is not None else 0,
+        x["stars"] is None, -(x["stars"] or 0),
+    ))
+    return rows[:limit]
 
 
 if __name__ == "__main__":
-    load_dotenv()
-    conn = connect()
+    store = connect()
     tests = [
         ("sandstone in August", {"rock": "sandstone", "month": 8}),
         ("trad multi-pitch within 700km of London, ≤VS", {
@@ -247,18 +269,18 @@ if __name__ == "__main__":
             "max_data_grade": 5,
         }),
         ("north-facing (shade) in August", {"aspect": "N", "month": 8}),
-        ("limestone in August (Anica Kuk should NOT match — not in season)", {"rock": "limestone", "month": 8}),
+        ("limestone in August", {"rock": "limestone", "month": 8}),
     ]
     failures = 0
     for label, p in tests:
-        rows = search_climbs(conn, p)
+        rows = search_climbs(store, p)
         print(f"\n== {label} → {len(rows)} result(s)")
-        for r in rows:
-            print(f"   {r['name']:34s} {r['grade']:12s} {r['rock']:10s} "
-                  f"{(str(r['distance_km']) + ' km') if r['distance_km'] is not None else '':>10s}  {r['location']}")
-    # enum rejection must raise
+        for r in rows[:8]:
+            dist = (str(r["distance_km"]) + " km") if r["distance_km"] is not None else ""
+            print(f"   {r['name']:34s} {(r['grade'] or ''):14s} {(r['rock'] or ''):10s} "
+                  f"{dist:>10s}  {r['location']}")
     try:
-        search_climbs(conn, {"rock": "kryptonite"})
+        search_climbs(store, {"rock": "kryptonite"})
         print("FAIL: off-dictionary rock accepted"); failures += 1
     except ValueError as e:
         print(f"\n== enum rejection OK: {e}")

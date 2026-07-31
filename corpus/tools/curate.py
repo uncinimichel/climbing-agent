@@ -738,6 +738,117 @@ def taxonomy_delete(family: str, code: str):
     return {"ok": True}
 
 
+# ── region discovery (the map's "Survey a region") ────────────────────────
+# Draw a bbox → a background thread runs ingest/discover.py (reverse-geocode +
+# SerpAPI web search + LLM crag/route extraction) and lands drafts in the S3
+# holding pen. Local + in-process for now (AWS/Lambda later, per Michel).
+import threading as _threading  # noqa: E402
+import uuid as _uuid  # noqa: E402
+
+sys.path.insert(0, str(ROOT / "ingest"))
+import discover as _discover  # noqa: E402
+
+_JOBS: dict = {}
+
+
+def _ensure_area_chain(names: list, lat, lon) -> int | None:
+    """Find-or-create country→region→crag areas from a name breadcrumb; return the
+    crag area id. Discovered drafts get a real (still-uncurated) area so they show
+    up in the queue/map immediately; the curator re-parents/renames/places before
+    publishing. New areas carry the crag's approx coords."""
+    names = [n for n in names if n]
+    if not names:
+        return None
+    parent, aid = None, None
+    for i, name in enumerate(names):
+        kind = "country" if i == 0 else ("crag" if i == len(names) - 1 else "region")
+        hit = next((a for a in S.areas.values() if a.get("name") == name
+                    and a.get("kind") == kind and a.get("parent_id") == parent), None)
+        if hit:
+            aid = hit["id"]
+        else:
+            aid = (max(S.areas) + 1) if S.areas else 1
+            S.areas[aid] = {"id": aid, "name": name, "kind": kind, "parent_id": parent,
+                            "lat": lat if kind == "crag" else None,
+                            "lon": lon if kind == "crag" else None,
+                            "grade_context": None, "aspect": None, "rock_code": None,
+                            "timezone": None, "access_notes": None}
+        parent = aid
+    S.save_areas()
+    return aid
+
+
+def _run_discover(job_id: str, bbox: list, dry_run: bool):
+    j = _JOBS[job_id]
+    try:
+        got = _discover.discover_candidates(bbox, on_progress=lambda m: j["log"].append(m))
+        geo = got["region"]
+        existing = {x.get("external_id")
+                    for r in S.routes.values() for x in r.get("external_refs", [])}
+        pins, saved, skipped = [], 0, 0
+        for c in got["crags"]:
+            area_id = _ensure_area_chain(geo["breadcrumb"] + [c.get("crag")], c["lat"], c["lon"])
+            for route in _discover._candidate_to_routes(geo, c):
+                ext = route["external_refs"][0]["external_id"]
+                if ext in existing:            # unique-key dedup — never re-add
+                    skipped += 1
+                    continue
+                route.update(area_id=area_id, lat=c["lat"], lon=c["lon"], id=S.new_route_id())
+                if dry_run:
+                    S.validate(route)          # prove it would save; don't write
+                else:
+                    S.save_route(route)        # lands in the curated record as status:draft
+                    existing.add(ext)
+                saved += 1
+                pins.append({"name": route["name"], "grade": route.get("original_grade"),
+                             "crag": c.get("crag"), "lat": c["lat"], "lon": c["lon"], "status": "draft"})
+        j["log"].append(f"done · {saved} draft route(s) in the record"
+                        + (f", {skipped} already known" if skipped else ""))
+        j.update(region=geo, pins=pins, crags=[c.get("crag") for c in got["crags"]],
+                 drafts=saved, deduped=skipped, note=got.get("note"), status="done", done=True)
+    except Exception as e:  # noqa: BLE001 — surface the error, don't crash the thread
+        j.update(status="error", error=str(e), done=True)
+
+
+@app.post("/api/discover")
+def start_discover(body: dict):
+    bbox = body.get("bbox")
+    if not (isinstance(bbox, list) and len(bbox) == 4):
+        raise HTTPException(400, "bbox=[south, west, north, east] required")
+    jid = _uuid.uuid4().hex[:8]
+    _JOBS[jid] = {"status": "running", "done": False, "log": [], "pins": [],
+                  "crags": [], "drafts": 0, "deduped": 0, "error": None, "bbox": bbox}
+    _threading.Thread(target=_run_discover, args=(jid, bbox, bool(body.get("dry_run"))),
+                      daemon=True).start()
+    return {"job": jid}
+
+
+@app.get("/api/discover/{jid}")
+def discover_status(jid: str):
+    j = _JOBS.get(jid)
+    if not j:
+        raise HTTPException(404, "no such job")
+    return j
+
+
+@app.post("/api/route/{rid}/retag")
+def retag(rid: int):
+    """Re-run the LLM tagger on a route's prose (protection/hazards/character/
+    feature) — after discovery, or when the description changed. Reverts
+    tagged_by → 'llm' (needs human re-verification before it can publish)."""
+    import tag as _tag  # ingest/tag.py — ROOT/ingest is already on sys.path
+    r = copy.deepcopy(get_route(rid))
+    enums = _tag.enums_from_store(S)
+    prose = (r.get("intro_html") or r.get("pitch_info_html")
+             or " ".join(p.get("description") or "" for p in (r.get("pitches") or [])) or "")
+    tags, _ = _tag.tag_batch(enums, [{"name": r["name"], "grade": r.get("original_grade"),
+                                      "description": prose or None}])
+    flagged = _tag.apply_tags(r, tags[0], enums)
+    r["tagged_by"] = "llm"
+    save_route(r)
+    return {"ok": True, "flagged": flagged}
+
+
 @app.post("/api/export")
 def export():
     """Regenerate the committed corpus.json export from the record."""
