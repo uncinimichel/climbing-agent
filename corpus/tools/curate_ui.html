@@ -26,21 +26,27 @@
     --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 22px rgba(0,0,0,.28);}}
   *{box-sizing:border-box}
   body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.45;font-size:14px;-webkit-font-smoothing:antialiased}
-  .wrap{max-width:1480px;margin:0 auto;padding:18px 20px 130px}
-  /* the persistent workspace: map on the left, the route editor on the right */
-  .workspace{display:grid;grid-template-columns:minmax(360px,42%) minmax(0,1fr);gap:16px;align-items:start}
-  .mappane{position:sticky;top:14px}
-  .editorpane{min-width:0}
+  /* full-screen: header on top, then a workspace that fills the rest */
+  .wrap{max-width:none;margin:0;padding:12px 16px 0;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+  header.app{flex:none;margin-bottom:10px}
+  /* map (left) | draggable splitter | route editor (right) — either can go full-width */
+  .workspace{flex:1;display:flex;min-height:0}
+  .mappane{flex:none;width:var(--split,44%);min-width:0;display:flex;flex-direction:column;min-height:0;overflow:hidden}
+  .maptools{display:flex;gap:9px;align-items:center;margin-bottom:7px;flex-wrap:wrap;flex:none}
+  .mappane .drillbar{flex:none;max-height:24vh;overflow:auto}
+  .splitter{flex:none;width:9px;margin:0 4px;align-self:stretch;cursor:col-resize;border-radius:6px;background:var(--line-2)}
+  .splitter:hover,.splitter.drag{background:var(--accent)}
+  .editorpane{flex:1;min-width:0;overflow:auto;padding:0 6px 84px 12px}
   .editorpane .rail{margin-top:12px}
-  .maptools{display:flex;gap:9px;align-items:center;margin-bottom:8px;flex-wrap:wrap}
-  .scopewrap{margin-top:10px;background:var(--panel);border:1px solid var(--line-2);border-radius:12px;padding:5px 12px}
+  .gridview,.taxview{flex:1;min-height:0;overflow:auto;padding-bottom:84px}
+  .scopewrap{flex:none;margin-top:8px;background:var(--panel);border:1px solid var(--line-2);border-radius:12px;padding:5px 12px}
   .scopewrap>summary{cursor:pointer;font:600 12px var(--sans);color:var(--muted);padding:5px 2px;list-style:none;user-select:none}
   .scopewrap>summary::-webkit-details-marker{display:none}
   .scopewrap>summary::before{content:'▸ ';color:var(--faint)}
   .scopewrap[open]>summary::before{content:'▾ '}
   .scopewrap[open]>summary{color:var(--ink)}
-  #qlist{max-height:32vh;overflow:auto;margin-top:4px}
-  @media (max-width:920px){.workspace{grid-template-columns:1fr}.mappane{position:static}}
+  #qlist{max-height:28vh;overflow:auto;margin-top:4px}
+  @media (max-width:820px){.workspace{flex-direction:column}.mappane{width:auto!important;height:50vh}.splitter{display:none}}
   header.app{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:14px}
   h1{font-family:var(--serif);font-size:22px;font-weight:600;margin:0;white-space:nowrap}
   .progress{flex:1;min-width:200px}
@@ -265,7 +271,7 @@
   .loc small{color:var(--muted);font-size:10px;margin-left:5px}
   .loc:hover{border-color:var(--accent)}
   .loc.crumb{border-style:solid;border-color:var(--accent);background:var(--accent-soft);color:var(--accent-ink)}
-  #bigmap{width:100%;height:calc(100vh - 250px);min-height:480px;border:1px solid var(--line-2);border-radius:10px;z-index:1}
+  #bigmap{width:100%;flex:1;min-height:160px;border:1px solid var(--line-2);border-radius:10px;z-index:1}
   .ring-ico{border-radius:50%;display:flex;align-items:center;justify-content:center;
     border:2px solid #fff;box-shadow:0 1px 6px rgba(0,0,0,.35);cursor:pointer}
   .ring-ico span{background:var(--panel);color:var(--ink);border-radius:50%;width:calc(100% - 12px);height:calc(100% - 12px);
@@ -343,6 +349,7 @@
         <span class="dotkey" style="background:var(--red)"></span> quarantined) · <b>click a route to edit it →</b></div>
       <details class="scopewrap"><summary id="qcount">routes in scope</summary><div id="qlist"></div></details>
     </div>
+    <div class="splitter" id="splitter" title="drag to resize · drag to an edge to give one pane the whole screen"></div>
     <div class="editorpane">
       <div id="main"><div class="card minor">Pick a route on the map (or drill into a place) to edit it here.</div></div>
       <div class="rail" id="rail"></div>
@@ -1335,7 +1342,7 @@ async function taxDel(fam,code){
 // The map+editor workspace is always on screen; Grid & Taxonomy open as overlays.
 function setView(v){
   const grid=v==='g', tax=v==='t';
-  $('workspace').style.display=(grid||tax)?'none':'grid';
+  $('workspace').style.display=(grid||tax)?'none':'flex';
   $('gridview').style.display=grid?'block':'none';
   $('taxview').style.display=tax?'block':'none';
   $('vg').classList.toggle('on',grid);
@@ -1347,6 +1354,23 @@ function setView(v){
 }
 function toggleView(v){ setView($('v'+v).classList.contains('on')?'':v); }
 function pickRoute(id,status){ if(status&&status!==STATUS){STATUS=status;syncSeg();} loadQueue(id); }
+// draggable splitter: resize the two panes, or drag to an edge to give one the whole screen
+(function(){
+  const sp=$('splitter'), ws=$('workspace'); if(!sp||!ws)return;
+  let drag=false;
+  const move=e=>{ if(!drag)return;
+    const r=ws.getBoundingClientRect();
+    let pct=Math.max(0,Math.min(100,(e.clientX-r.left)/r.width*100));
+    ws.style.setProperty('--split',pct+'%');
+    if(BIGMAP)BIGMAP.invalidateSize(); };
+  sp.addEventListener('mousedown',e=>{drag=true;sp.classList.add('drag');
+    document.body.style.cursor='col-resize';document.body.style.userSelect='none';e.preventDefault();});
+  window.addEventListener('mousemove',move);
+  window.addEventListener('mouseup',()=>{ if(!drag)return; drag=false;sp.classList.remove('drag');
+    document.body.style.cursor='';document.body.style.userSelect='';if(BIGMAP)setTimeout(()=>BIGMAP.invalidateSize(),40); });
+  sp.addEventListener('dblclick',()=>{ ws.style.setProperty('--split','44%'); if(BIGMAP)setTimeout(()=>BIGMAP.invalidateSize(),40); });
+  window.addEventListener('resize',()=>{ if(BIGMAP)BIGMAP.invalidateSize(); });
+})();
 
 // ── the map: progress rings per area, route dots when focused ──────────────
 let BIGMAP=null, MAPLAYER=null;
