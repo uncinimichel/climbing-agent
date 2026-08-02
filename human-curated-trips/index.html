@@ -189,6 +189,20 @@
   .row.top{background:linear-gradient(90deg,rgba(84,207,218,.055),transparent 55%);
     box-shadow:inset 3px 0 0 var(--glass)}
 
+  /* live sports link straight through to their real board */
+  .golive{display:flex;align-items:center;justify-content:space-between;gap:16px;
+    padding:16px 18px;border-top:1px solid var(--ember-line);text-decoration:none;
+    background:rgba(232,118,59,.10);color:var(--snow);font-family:var(--disp);
+    font-weight:600;font-size:clamp(14.5px,1.6vw,16.5px);letter-spacing:-.015em;
+    transition:background .18s ease}
+  .golive:hover{background:rgba(232,118,59,.18)}
+  .golive .arr{flex:none;transition:transform .18s ease}
+  .golive:hover .arr{transform:translateX(4px)}
+  .golive:focus-visible{outline:2px solid var(--glass);outline-offset:-3px}
+  .soon{margin:0;padding:15px 18px;border-top:1px solid var(--lineSoft);
+    font-family:var(--mono);font-size:11.5px;color:var(--faint);letter-spacing:.03em;
+    line-height:1.6}
+
   .bfoot{padding:14px 18px;border-top:1px solid var(--line);background:rgba(8,19,26,.45);
     font-family:var(--mono);font-size:11px;color:var(--faint);letter-spacing:.03em;
     display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
@@ -428,6 +442,7 @@
         <div class="r"><span class="beat" aria-hidden="true"></span><span>re-ranked 06:12 today</span></div>
       </div>
       <div id="board" role="tabpanel" aria-live="polite"></div>
+      <div id="b-live"></div>
       <div class="bfoot">
         <span id="b-count"></span>
         <span>Every note is written and signed by the curator who knows the place.</span>
@@ -642,6 +657,7 @@
 const SPORTS = {
   ski: {
     label:'Ski', status:'Opening Nov',
+    soon:'Ski opens in November. All four are written up — Elin is re-checking the lift and snow records before they go live.',
     weights:['snow depth','lift status'],
     dials:['Snow','Lifts','Fly','Beds','Buzz'],
     picks:[
@@ -657,6 +673,8 @@ const SPORTS = {
   },
   climbing: {
     label:'Climbing', status:'Live',
+    href:'../index.html',
+    cta:'Climbing is live — open the real board, three winter weekends ranked',
     weights:['hours of dry rock','temperature window'],
     dials:['Dry','Temp','Fly','Beds','Buzz'],
     picks:[
@@ -672,6 +690,7 @@ const SPORTS = {
   },
   surfing: {
     label:'Surfing', status:'In curation',
+    soon:'Surfing is in curation. Sofia and Dan are still checking these four against a full season before the board opens.',
     weights:['swell size & period','wind direction'],
     dials:['Swell','Wind','Fly','Beds','Buzz'],
     picks:[
@@ -687,6 +706,7 @@ const SPORTS = {
   },
   windsurfing: {
     label:'Windsurfing', short:'Windsurf', status:'In curation',
+    soon:'Windsurfing is in curation. Jonas is working through the summer wind records spot by spot.',
     weights:['wind hours per day','gust consistency'],
     dials:['Wind','Gust','Fly','Beds','Buzz'],
     picks:[
@@ -702,6 +722,7 @@ const SPORTS = {
   },
   cycling: {
     label:'Cycling', status:'In curation',
+    soon:'Cycling is in curation. Ana is riding each route herself before it goes on the board.',
     weights:['rain risk','wind on the exposed sections'],
     dials:['Rain','Wind','Fly','Beds','Buzz'],
     picks:[
@@ -771,6 +792,7 @@ const board  = document.getElementById('board');
 const wLine  = document.getElementById('weights');
 const bSport = document.getElementById('b-sport');
 const bCount = document.getElementById('b-count');
+const bLive  = document.getElementById('b-live');
 
 function render(key){
   const s = SPORTS[key];
@@ -778,6 +800,14 @@ function render(key){
   wLine.innerHTML = 'Weighted first for ' + s.label.toLowerCase() + ': <b>' +
     s.weights.map(esc).join('</b> and <b>') + '</b>. Then flights, beds and chatter.';
   bCount.textContent = s.picks.length + ' places on the board · watched daily';
+
+  /* a live sport links straight through to its real, running board */
+  bLive.innerHTML = s.href
+    ? `<a class="golive" href="${s.href}">${esc(s.cta)}` +
+      `<svg class="arr" width="19" height="19" aria-hidden="true" style="stroke:currentColor;` +
+      `fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round">` +
+      `<use href="#i-arr"/></svg></a>`
+    : `<p class="soon">${esc(s.soon || '')}</p>`;
 
   board.innerHTML = s.picks.map((p, i) => `
     <article class="row in${i === 0 ? ' top' : ''}" style="animation-delay:${i * 55}ms">
