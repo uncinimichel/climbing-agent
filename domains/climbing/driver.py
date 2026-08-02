@@ -173,6 +173,38 @@ def run_trip(trip, repo_root, shared, serpapi_key=None,
     return ranked, data
 
 
+def write_site_pages(repo_root, summaries, tag_spec, now=None):
+    """venues/<slug>.html for every venue across every trip, plus sitemap.xml
+    and robots.txt. Returns (n_venue_pages, n_sitemap_urls).
+
+    One page per VENUE, not per (trip, venue): a crag's detail page is about the
+    crag, and several trips rank the same crag. Venues are deduped by slug, which
+    is also the key write_venue_pages names files by — so a crag on three boards
+    gets one page and three links to it.
+
+    This restores the render.write_venue_pages/write_seo_files calls that
+    engine/driver.py made until 618c700 (the multi-trip rewrite) dropped them
+    along with the site_root branch they lived in. In between, venues/ froze at
+    whatever the last single-trip run wrote: 52 of the 86 venue links on each
+    winter board pointed at a 404, and sitemap.xml stopped updating."""
+    if not summaries:
+        return 0, 0
+    today = (now or datetime.now(timezone.utc)).date().isoformat()
+    merged, seen = [], set()
+    for _, data in summaries:
+        for v in data.get("venues") or []:
+            slug = render._slug(v["shortName"])
+            if slug not in seen:
+                seen.add(slug)
+                merged.append(v)
+    # any trip supplies the surrounding page chrome; the venue content is the venue's
+    base = summaries[0][1]
+    slugs = render.write_venue_pages({**base, "venues": merged}, repo_root, tag_spec)
+    n_urls = render.write_seo_files(slugs, today, repo_root)
+    print(f"[site] wrote {len(slugs)} venue pages, sitemap.xml ({n_urls} urls), robots.txt")
+    return len(slugs), n_urls
+
+
 def render_index(repo_root, summaries, now=None):
     """Write the repo-root trip picker from already-rendered trips.
     `summaries` is a list of (trip registry dict, render `data`) pairs, in the

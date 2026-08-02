@@ -54,6 +54,8 @@ def main():
         summaries.append((t, data))
 
     driver.render_index(REPO_ROOT, summaries)
+    # per-venue pages + sitemap/robots, over every trip's venues (see #33 M3)
+    driver.write_site_pages(REPO_ROOT, summaries, shared["tag_spec"])
 
 
 if __name__ == "__main__":

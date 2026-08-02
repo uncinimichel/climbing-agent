@@ -24,11 +24,39 @@ def _fly(m_to, d_to=None):
 
 
 # Coords + airports for sheet areas (keys = accent-stripped lowercase sheet names,
-# in the sheet's own spellings). New sheet rows missing here are geocoded.
+# in the sheet's own spellings). EVERY sheet row must have an entry here: a row
+# without one is skipped, never guessed at (see build_venues).
 # Same physical-character vocabulary as venues.json (see its "notes"): aspect /
 # coastal / wind_exposed / drying — the ranking reads them for felt temperature,
 # gust exposure and how long the rock stays wet.
 GAZETTEER = {
+    # ── areas the spreadsheet names but spells its own way ───────────────────
+    # These used to reach build_venues' geocode fallback whenever the trip did
+    # not curate the SHEET_ALIAS target by name, and the geocoder placed several
+    # of them on the wrong continent — "Aaran" (a typo for Arran) resolved to
+    # ‘Arān in Syria and ranked 13th on Aleppo's weather. Coordinates below are
+    # taken from the curated trip-ni-july-2026/venues.json entries, not guessed.
+    "aaran": dict(lat=55.634, lon=-5.20, rock="granite", style="mountain multi-pitch (Cìr Mhòr)",
+                  coastal=True, wind_exposed=True, travel=_fly("GLA")),
+    "mournes": dict(lat=54.15, lon=-6.00, rock="granite", style="moderate multi-pitch trad",
+                    wind_exposed=True,
+                    travel={"michel": {"mode": "fly", "to": "BFS"}, "dan": {"mode": "local"}}),
+    "lake district": dict(lat=54.546, lon=-3.128, rock="volcanic rock", style="large, Full-Range multi-pitch",
+                          travel={"michel": {"mode": "drive"}, "dan": {"mode": "fly", "to": "MAN"}}),
+    "cornwall": dict(lat=50.176, lon=-5.62, rock="granite",
+                     style="immaculate sea-cliff trad (Bosigran, Chair Ladder)",
+                     aspect="NW", coastal=True, tidal=True, wind_exposed=True, drying="fast",
+                     travel={"michel": {"mode": "drive"}, "dan": {"mode": "fly", "to": "NQY"}}),
+    "llanberis": dict(lat=53.103, lon=-4.043, rock="rhyolite/dolerite", style="vast, Full-Range multi-pitch",
+                      drying="slow",
+                      travel={"michel": {"mode": "drive"}, "dan": {"mode": "fly", "to": "MAN"}}),
+    "dolomites": dict(lat=46.54, lon=12.137, rock="limestone", style="vast Full-Range multi-pitch",
+                      travel=_fly("VCE")),
+    "east tyrol": dict(lat=46.829, lon=12.769, rock="limestone/dolomite",
+                       style="large, medium-to-hard multi-pitch", travel=_fly("INN")),
+    "picos europa": dict(lat=43.201, lon=-4.821, rock="limestone",
+                         style="moderate-to-hard alpine multi-pitch (Naranjo de Bulnes)",
+                         travel=_fly("BIO")),
     "tenerife": dict(lat=28.27, lon=-16.64, rock="volcanic", style="Cañadas del Teide multi-pitch", travel=_fly("TFS")),
     "mallorca": dict(lat=39.72, lon=2.77, rock="limestone", style="Sa Gubia + sea cliffs", coastal=True, travel=_fly("PMI")),
     "riglos": dict(lat=42.35, lon=-0.73, rock="conglomerate", style="huge overhanging towers", aspect="S", wind_exposed=True, travel=_fly("BCN")),
@@ -115,19 +143,27 @@ def load_sheet_full(csv_path):
     return rows
 
 
-def geocode(name):
-    """Open-Meteo's free geocoder — fallback for sheet rows not in the GAZETTEER."""
+def geocode_suggestions(name, count=3):
+    """Open-Meteo's free geocoder — a CURATION AID, never a source of truth.
+
+    It used to be build_venues' silent fallback, which is how "Aaran" (the
+    spreadsheet's spelling of Arran) came to be ranked as a village near Aleppo,
+    and "Lake District" as San Francisco. A place name alone is not enough to
+    identify a crag, and being wrong here is invisible: the venue still renders,
+    still scores, and simply reports another continent's weather.
+
+    So it now only suggests. When a sheet row has no GAZETTEER entry, the row is
+    skipped and these candidates go in the warning, for a human to verify and
+    paste into the GAZETTEER."""
     try:
-        d = get_json("https://geocoding-api.open-meteo.com/v1/search?count=1&name="
+        d = get_json(f"https://geocoding-api.open-meteo.com/v1/search?count={count}&name="
                       + urllib.parse.quote(name))
-        res = (d.get("results") or [None])[0]
-        if res:
-            return dict(lat=res["latitude"], lon=res["longitude"],
-                        country=res.get("country", ""), rock="", style="",
-                        travel={"michel": {"mode": "fly", "to": ""}, "dan": {"mode": "fly", "to": ""}})
+        return [f"{r['name']}, {r.get('admin1') or ''} {r.get('country') or ''}".strip()
+                + f" ({r['latitude']:.3f}, {r['longitude']:.3f})"
+                for r in (d.get("results") or [])]
     except Exception as e:
-        print(f"[warn] geocode failed for {name}: {e}", file=sys.stderr)
-    return None
+        print(f"[warn] geocode lookup failed for {name}: {e}", file=sys.stderr)
+        return []
 
 
 def build_venues(curated_venues, csv_path):
@@ -145,9 +181,19 @@ def build_venues(curated_venues, csv_path):
             v = dict(curated[cname])
             used.add(cname)
         else:
-            g = GAZETTEER.get(k) or geocode(sh["area"])
+            # Curated coordinates only. An alias that this trip does not curate
+            # by name falls through to the GAZETTEER (keyed by the sheet's own
+            # spelling) — and if that is missing too, the row is SKIPPED rather
+            # than geocoded. Guessing put "Aaran, Scotland" in Syria and "Lake
+            # District, England" in San Francisco, silently, for days.
+            g = GAZETTEER.get(k)
             if not g:
-                print(f"[warn] sheet area '{sh['area']}' has no coords — skipped", file=sys.stderr)
+                hints = geocode_suggestions(sh["area"])
+                print(f"[warn] sheet area '{sh['area']}' ({sh['country'] or 'no country'}) "
+                      f"has no GAZETTEER entry — SKIPPED, not guessed. "
+                      f"Add one to domains/climbing/venues.py keyed '{k}'."
+                      + (f" Geocoder suggests: {'; '.join(hints)}" if hints else ""),
+                      file=sys.stderr)
                 continue
             v = {"name": sh["area"], "country": sh["country"] or g.get("country", ""),
                  "priority": "7 (from sheet)", "lat": g["lat"], "lon": g["lon"],
