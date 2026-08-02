@@ -105,6 +105,7 @@ jobs:
           cp robots.txt sitemap.xml site/ 2>/dev/null || true
           cp -R venues site/venues 2>/dev/null || true
           cp -R trips site/trips 2>/dev/null || true   # per-trip dashboards (root index.html is the picker)
+          cp -R human-curated-trips site/human-curated-trips 2>/dev/null || true   # multi-sport front page
           cp -R knowledge site/knowledge
 
       - name: Upload page artifact
