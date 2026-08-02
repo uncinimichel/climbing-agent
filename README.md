@@ -35,6 +35,33 @@ by GitHub Actions (no laptop, no manual step).
 | Daily cloud job | [`.github/workflows/weather.yml`](.github/workflows/weather.yml) |
 | Plan, architecture, backlog | [`trip-ni-july-2026/PLAN.md`](trip-ni-july-2026/PLAN.md) |
 
+## Code layout: `core/` vs `domains/`
+
+The code is split by **what it knows about**, not by technical layer:
+
+```
+core/                sport-agnostic infrastructure — nothing here says "climbing"
+  weather/           providers (fetch) + metrics (parse payloads) + WMO codes
+  travel/            flights (SerpApi), stays (OSM Overpass)
+  http cache geo quota paths trip trips rank_history sport
+domains/
+  climbing/          live — conditions curves, venues, scoring, render, driver
+  ski/               conditions only — blocked on resort feeds (snow depth, lifts)
+  golf/              conditions only — needs a curated course list
+engine/              deprecated shims re-exporting the above; imports still work
+```
+
+**The rule:** core fetches and parses; domains judge. If answering a question
+needs the word *climbing* (or *ski*, or *golf*), it belongs in a domain — and a
+domain never imports another domain. Two sports that score rain the same way say
+so twice, on purpose: that is what lets golf's curves change without anyone
+re-checking climbing, and what lets different people work on different sports
+without meeting in a shared file. See [`domains/README.md`](domains/README.md).
+
+The multi-sport front page follows the same split:
+[`human-curated-trips/core/`](human-curated-trips/) holds the dial and the board,
+`human-curated-trips/domains/<sport>.js` holds one sport's data and copy.
+
 Weather: [Open-Meteo](https://open-meteo.com/) (free, no key). Flights: Google Flights
 via SerpApi (key stored as a GitHub secret, never committed). Stays:
 [OpenStreetMap Overpass](https://wiki.openstreetmap.org/wiki/Overpass_API) (free, no

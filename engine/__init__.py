@@ -1,8 +1,16 @@
-"""Trip-computation engine: parameterized weather/flights/stays/scoring/render
-logic extracted from trip-ni-july-2026/scripts/update_report.py so it can run
-against ANY TripContext, not just the one hardcoded NI trip.
+"""DEPRECATED import surface — kept so nothing outside had to move.
 
-Every function here takes its trip-specific inputs as parameters (a TripContext,
-or plain lat/lon/dates) instead of reading module-level globals — that's the
-whole point of this package (see knowledge/roadmap/decisions.md #25).
+The engine was one climbing-shaped package. It is now split by what the code
+actually knows about:
+
+    core/            sport-agnostic tools — weather providers + derived metrics,
+                     travel (flights, stays), cache, http, geo, quota, scoring
+                     primitives, the trip context, and the Sport port
+    domains/<sport>/ everything that only makes sense for one sport
+
+Every name that used to be importable as `engine.X` still is, forwarding to its
+new home, so update_report.py, fetch_env.py, backtest_ranking.py, admin/server.py
+and the tests keep working unchanged. New code should import from `core.*` and
+`domains.<sport>.*` directly — that is where the docs and the type of change you
+are making will point you.
 """

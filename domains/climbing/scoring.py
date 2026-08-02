@@ -1,0 +1,451 @@
+"""Venue evaluation + composite scoring — moved from update_report.py's
+evaluate/apply_composite/rank/weather_signals/venue_is_tidal, parameterized on
+TripContext (+ explicit caches and the multi-pitch.com climb list) instead of
+module-level globals.
+
+Composite score: weather + travel + venue fit. Weather stays dominant; travel
+uses live/cached flight prices when known plus the sheet's travel-time band;
+venue fit comes from the sheet's judgment columns (volume of multi-pitch,
+difficulty spread, minimum-trip length).
+"""
+import re
+import sys
+from datetime import date
+
+from core.geo import haversine_km
+from core.http import redact
+from core.travel.stays import STAY_ADULTS, stay_options
+from core.weather import metrics, providers
+from core.weather.codes import WMO
+
+from . import conditions
+from .climbs import nearby_climbs, venue_is_tidal
+from .icons import wmo_icon
+
+# Weather leads the destination choice; travel is a tiebreak, not a proximity
+# bonus that lets a nearby-but-poor venue out-rank a far-but-excellent one.
+# One source of truth, so the dashboard's methodology copy can never drift
+# from the maths.
+from .weights import W_FIT, W_TRAVEL, W_WEATHER  # noqa: E402
+TIME_BAND = {"< 4": 95, "2-4": 95, "4-6": 85, "6-8": 70, "8-10": 55, "10-12": 45, "12-24": 30}
+VOL_BAND = {"vast": 100, "large": 85, "moderate": 65, "smaller": 45}
+DIFF_BAND = {"full range": 100, "moderate": 90, "medium to hard": 75, "hard": 50}
+
+
+def _band(txt, table, default):
+    t = (txt or "").lower()
+    for k, s in table.items():
+        if k in t:
+            return s
+    return default
+
+
+def _sig(x):
+    return max(0, min(100, round(x)))
+
+
+def prio_num(v):
+    for ch in v.get("priority", "9"):
+        if ch.isdigit():
+            return int(ch)
+    return 9
+
+
+def wmean(pairs):
+    """Weighted mean of (value, weight) pairs, skipping value None. With every
+    weight 1.0 this is a plain mean — so preferences default to no-op."""
+    ps = [(v, w) for v, w in pairs if v is not None and w]
+    if not ps:
+        return None
+    return round(sum(v * w for v, w in ps) / sum(w for _, w in ps))
+
+
+def traveller_distance_km(v, who, ctx):
+    """Great-circle km from a traveller's nearest home airport to the venue."""
+    origins = ctx.origin_coords.get(who) or []
+    if not origins:
+        return None
+    return min(haversine_km(la, lo, v["lat"], v["lon"]) for la, lo in origins)
+
+
+def home_distance_km(v, ctx):
+    """How far *both* travellers must go on average — a local (Dan at an NI crag)
+    contributes ~0, so home venues score near-full on distance."""
+    dists = []
+    for who in ctx.origin_coords:
+        mode = (v.get("travel", {}).get(who) or {}).get("mode")
+        if mode == "local":
+            dists.append(0.0)
+        else:
+            d = traveller_distance_km(v, who, ctx)
+            if d is not None:
+                dists.append(d)
+    return sum(dists) / len(dists) if dists else None
+
+
+def distance_fit_score(v, ctx):
+    """0–100 distance-from-home: near = full marks, ~4000 km = 0. Linear, clamped.
+    Lets far venues (Africa, US) rank lower on fit even before flights are priced."""
+    d = home_distance_km(v, ctx)
+    return None if d is None else max(0, min(100, round(100 - d * 0.025)))
+
+
+def distance_cost_estimate(v, who, ctx):
+    """Rough return-fare proxy (£) from a traveller's distance — the travel
+    fallback when no live flight price exists yet. ~£40 base + £0.08/km."""
+    d = traveller_distance_km(v, who, ctx)
+    return None if d is None else round(40 + d * 0.08)
+
+
+def evaluate(v, ctx, env_cache=None, climo_cache=None, stays_cache=None,
+             link_health_cache=None, mp_climbs=None):
+    mp_climbs = mp_climbs or []
+    res = {"venue": v, "ok": True, "climo": None, "fc": None, "seasonal": None}
+    res["stays"] = stay_options(v, ctx, stays_cache, link_health_cache)
+    try:
+        res["climo"] = providers.climatology(v["lat"], v["lon"], ctx, climo_cache)
+    except Exception as e:
+        print(f"[warn] climatology failed for {v['name']}: {redact(e)}", file=sys.stderr)
+        res["climo"] = None
+    try:
+        res["seasonal"] = providers.seasonal(v["lat"], v["lon"], ctx, env_cache)
+    except Exception as e:
+        print(f"[warn] seasonal failed for {v['name']}: {redact(e)}", file=sys.stderr)
+        res["seasonal"] = None
+    if venue_is_tidal(v, mp_climbs):
+        try:
+            res["tides"] = providers.tide_extremes(v["lat"], v["lon"], env_cache)
+        except Exception as e:
+            print(f"[warn] tides failed for {v['name']}: {redact(e)}", file=sys.stderr)
+    try:
+        d = providers.forecast(v["lat"], v["lon"], env_cache)
+        daily = d["daily"]
+        days = daily["time"]
+        met = conditions.forecast_metrics(d)                     # per-ISO-date derived signals
+        hby = metrics.hourly_by_date(d)                       # per-date 24h strip (local hours)
+        res["tz"] = d.get("timezone")                         # IANA tz + offset for the
+        res["utc_off"] = d.get("utc_offset_seconds")          # "local time at the crag" clock
+        valid = [i for i in range(len(days)) if daily["temperature_2m_max"][i] is not None]
+        in_win = [i for i in valid if ctx.target_start <= date.fromisoformat(days[i]) <= ctx.target_end]
+        if in_win:                                            # ECMWF-ensemble confidence layer —
+            try:                                              # only in-window venues use ens_prob,
+                ens = metrics.ensemble_metrics(               # so skip the extra call for the rest
+                    providers.ensemble_raw(v["lat"], v["lon"], env_cache))
+                for ds, rec in ens.items():                   # merge member P(rain) + tmax spread
+                    if ds in met and rec.get("p_rain") is not None:
+                        met[ds]["ens_prob"] = rec["p_rain"]
+                        met[ds]["tmax_sd"] = rec.get("tmax_sd")
+                        met[ds]["tmax_lo"] = rec.get("tmax_lo")
+                        met[ds]["tmax_hi"] = rec.get("tmax_hi")
+            except Exception as e:
+                print(f"[warn] ensemble failed for {v['name']}: {redact(e)}", file=sys.stderr)
+        winds = daily.get("windspeed_10m_max") or [None] * len(days)
+        dirs = daily.get("winddirection_10m_dominant") or [None] * len(days)
+        # per-day live forecast for graph-window days (overlaid on the typical chart)
+        res["fc_days"] = {}
+        uvs = daily.get("uv_index_max") or [None] * len(days)
+        ccs = daily.get("cloud_cover_mean") or [None] * len(days)
+        graph_md = ctx.graph_md
+        for i in valid:
+            dd = date.fromisoformat(days[i])
+            if (dd.month, dd.day) in graph_md:
+                mi = met.get(days[i], {})
+                res["fc_days"][(dd.month, dd.day)] = {
+                    "tmax": round(daily["temperature_2m_max"][i]),
+                    "precip": round(daily["precipitation_sum"][i] or 0, 1),
+                    "icon": wmo_icon(daily["weathercode"][i]),
+                    "wind": round(winds[i]) if winds[i] is not None else None,
+                    "dir": round(dirs[i]) if dirs[i] is not None else None,
+                    "uv": round(uvs[i]) if uvs[i] is not None else None,
+                    "cloud": round(ccs[i]) if ccs[i] is not None else None,
+                    "gust": mi.get("gust"), "dew": mi.get("dew"),
+                    "friction": mi.get("friction"), "sunFrac": mi.get("sun_frac"),
+                    # rain probability (climbing-window max when the hourly split is
+                    # available → daily → ensemble → weathercode) + ensemble temp range,
+                    # for the widget's chance-of-rain % and the low-confidence temp whisker
+                    "prob": round(metrics.effective_rain_prob(
+                        mi.get("prob_day") if mi.get("prob_day") is not None
+                        else daily["precipitation_probability_max"][i],
+                        daily["weathercode"][i], mi.get("ens_prob"))),
+                    "pop": mi.get("ens_prob"), "tlo": mi.get("tmax_lo"), "thi": mi.get("tmax_hi"),
+                    # day/night rain split + the 24h local-hour strip for the
+                    # hour-by-hour panel (rainNight = prev evening + pre-dawn)
+                    "rainDay": mi.get("rain_day"), "rainNight": mi.get("rain_night"),
+                    "hrs": hby.get(days[i]),
+                }
+        if in_win:
+            scores = [conditions.day_score(daily["weathercode"][i], daily["precipitation_sum"][i],
+                                         daily["precipitation_probability_max"][i],
+                                         conditions.asp_m(v, met.get(days[i])),
+                                         rain_tol=ctx.prefs.rain_tol, heat_tol=ctx.prefs.heat_tol)
+                      for i in in_win]
+            codes = [daily["weathercode"][i] for i in in_win]
+            dom = max(set(codes), key=codes.count)
+            wm = [met.get(days[i], {}) for i in in_win]
+            gusts_w = [x["gust"] for x in wm if x.get("gust") is not None]
+            dews_w = [x["dew"] for x in wm if x.get("dew") is not None]
+            am_flags = [x["am_dry"] for x in wm if x.get("am_dry") is not None]
+            mean_dew = round(sum(dews_w) / len(dews_w), 1) if dews_w else None
+            ph_w = [x["precip_hours"] for x in wm if x.get("precip_hours") is not None]
+            wd_w = [x["wdir"] for x in wm if x.get("wdir") is not None]
+            wind_dir = metrics.circular_mean_deg(wd_w)   # circular mean over the window
+            res["fc"] = {
+                "score": round(sum(scores) / len(scores)),
+                "tmax": round(sum(daily["temperature_2m_max"][i] for i in in_win) / len(in_win)),
+                "rain_prob": max(metrics.effective_rain_prob(
+                    met.get(days[i], {}).get("prob_day")
+                    if met.get(days[i], {}).get("prob_day") is not None
+                    else daily["precipitation_probability_max"][i],
+                    daily["weathercode"][i],
+                    met.get(days[i], {}).get("ens_prob")) for i in in_win),
+                "sky": WMO.get(dom, "?"), "sky_icon": wmo_icon(dom),
+                "gust_max": max(gusts_w) if gusts_w else None,
+                "wind_dir": wind_dir,
+                "wet_hours": round(sum(ph_w) / len(ph_w), 1) if ph_w else None,
+                "friction": conditions.friction_label(mean_dew), "dew": mean_dew,
+                "am_dry_days": (sum(1 for a in am_flags if a), len(am_flags)) if am_flags else None,
+                "in_window": True, "horizon": days[-1],
+                "cover_days": len(in_win), "trip_days": ctx.trip_days,
+            }
+        else:
+            res["fc"] = {"in_window": False, "horizon": days[-1] if days else "?"}
+    except Exception as e:
+        print(f"[warn] forecast failed for {v['name']}: {redact(e)}", file=sys.stderr)
+        res["fc"] = None
+
+    fc, sea = res["fc"], res["seasonal"]
+    # Climatology (+seasonal) component — computed whenever we have climo, so a
+    # PARTIAL-window forecast can blend with it instead of superseding it on a
+    # sliver of days (see below).
+    climo_component = None
+    if res["climo"]:
+        c = res["climo"]
+        dry_f = conditions.drying_factor(v)             # shade/sea air → wet days cost more
+        sunny = max(0.35, 1 - c["rain_pct"] / 100)   # dry climate ≈ sunny climate
+        cs = conditions.climo_score({**c, "tmax": conditions.sun_adjusted_tmax(v, c["tmax"], sunny)},
+                                 rain_tol=ctx.prefs.rain_tol, heat_tol=ctx.prefs.heat_tol, dry_f=dry_f)
+        if sea:
+            # gentle blend: climatology dominant, 45-day outlook nudges it
+            ssun = max(0.35, 1 - sea["rain_pct"] / 100)
+            ss = conditions.climo_score({"tmax": conditions.sun_adjusted_tmax(v, sea["tmax"], ssun),
+                                       "rain_pct": sea["rain_pct"]},
+                                      rain_tol=ctx.prefs.rain_tol, heat_tol=ctx.prefs.heat_tol, dry_f=dry_f)
+            climo_component = (round(0.7 * cs + 0.3 * ss), f"typical {ctx.period_lbl} + long-range outlook")
+        else:
+            climo_component = (cs, f"typical {ctx.period_lbl} (climatology)")
+
+    if fc and fc.get("in_window"):
+        k, n = fc.get("cover_days", 0), fc.get("trip_days") or ctx.trip_days
+        if k >= n or climo_component is None:
+            # forecast covers the whole trip window (or we have no climatology) —
+            # it fully supersedes, as designed
+            res["score"], res["basis"] = fc["score"], "live forecast (trip window)"
+        else:
+            # forecast reaches only part of the window — weight it by coverage and
+            # fill the out-of-range days with climatology, so 2 dry edge days can't
+            # out-rank a whole typical-July verdict (the Dolomites artifact)
+            wt = k / n
+            res["score"] = round(wt * fc["score"] + (1 - wt) * climo_component[0])
+            res["basis"] = f"live forecast ({k}/{n} trip days) blended with {climo_component[1]}"
+    elif climo_component is not None:
+        res["score"], res["basis"] = climo_component
+    else:
+        res["score"], res["basis"] = -1, "no data"
+    res["wscore"] = res["score"]   # weather-only score; composite overwrites score
+    return res
+
+
+def weather_signals(r, v):
+    """Per-signal 'health checks' for the header ring's outer tier: how little
+    each weather signal is costing (100 = costing nothing). Uses the same
+    numbers/penalty curves as the score itself. Wind + friction only exist on
+    the live-forecast horizon — before that they ship as None ('pending').
+    Wind is scaled by where it hits the crag (windward face vs leeward, plus a
+    wind_exposed surcharge); Drying tracks how long the rock stays wet given
+    the crag's shade/sea-air character (conditions.drying_factor)."""
+    fc = r.get("fc") or {}
+    dry_f = conditions.drying_factor(v)
+    traits = conditions.drying_traits(v)
+    if fc.get("in_window"):
+        t = conditions.sun_adjusted_tmax(v, fc["tmax"]) if fc.get("tmax") is not None else None
+        g, dw, wh = fc.get("gust_max"), fc.get("dew"), fc.get("wet_hours")
+        wd = fc.get("wind_dir")
+        wf = conditions.wind_factor(v, wd)
+        face = wf - (0.25 if v.get("wind_exposed") else 0)   # aspect part alone
+        wind_d = "no gust signal"
+        if g is not None:
+            wind_d = f"gusts to {g} km/h" + (f" from the {metrics.compass(wd)}" if wd is not None else "")
+            wind_d += (" — blowing onto the face" if face > 1.1
+                       else " — face part-sheltered (leeward)" if face < 0.9 else "")
+            if v.get("wind_exposed"):
+                wind_d += " · wind-exposed crag, nowhere to hide"
+        return [
+            {"n": "Rain", "v": _sig(100 - (fc.get("rain_prob") or 0) * 0.8),
+             "d": f"max rain prob {fc.get('rain_prob') or 0}% over the trip"},
+            {"n": "Heat", "v": _sig(100 - conditions.heat_penalty(t) - max(0, 8 - t) * 2) if t is not None else None,
+             "d": f"{round(t)}°C felt on the rock" if t is not None else "no temperature signal"},
+            {"n": "Wind", "v": _sig(100 - max(0, (g or 0) - 30) * 0.6 * wf) if g is not None else None,
+             "d": wind_d},
+            {"n": "Friction", "v": _sig(100 - max(0, (dw or 0) - 12) * 1.2) if dw is not None else None,
+             "d": f"daytime dewpoint {dw}°C" if dw is not None else "no dewpoint signal"},
+            {"n": "Drying", "v": _sig(100 - min(wh, 12) * 0.8 * dry_f) if wh is not None else None,
+             "d": (f"~{wh}h/day of rain to dry off" + (f" · {traits}" if traits else ""))
+                  if wh is not None else "no wet-hours signal"},
+        ]
+    c, sea = r.get("climo"), r.get("seasonal")
+    if not c:
+        return None
+    rp = round(0.7 * c["rain_pct"] + 0.3 * sea["rain_pct"]) if sea else c["rain_pct"]
+    sunny = max(0.35, 1 - rp / 100)
+    tm = 0.7 * c["tmax"] + 0.3 * sea["tmax"] if sea else c["tmax"]
+    t = conditions.sun_adjusted_tmax(v, tm, sunny)
+    pend = "activates when the live forecast reaches your dates"
+    # Drying on this horizon = the EXTRA cost of slow-drying rock on typical wet
+    # days (same half-weighted term climo_score charges); fast-drying reads 100.
+    dry_extra = max(0.0, conditions.rain_penalty(rp) * (dry_f - 1) * 0.5)
+    return [
+        {"n": "Rain", "v": _sig(100 - conditions.rain_penalty(rp)), "d": f"{rp}% typical wet days"},
+        {"n": "Heat", "v": _sig(100 - conditions.heat_penalty(t) - max(0, 8 - t) * 2),
+         "d": f"{round(t)}°C felt on the rock"},
+        {"n": "Wind", "v": None, "d": pend},
+        {"n": "Friction", "v": None, "d": pend},
+        {"n": "Drying", "v": _sig(100 - dry_extra),
+         "d": (f"{traits} — wet days cost more here" if dry_f > 1.05
+               else f"{traits} — sheds rain quickly" if traits and dry_f < 0.95
+               else "neutral drying") + f" · {rp}% typical wet days"},
+    ]
+
+
+def venue_fit(v, ctx, mp_climbs=None):
+    """How well the venue ITSELF suits this trip, independent of the weather:
+    the curated sheet's judgement columns (volume of multi-pitch, difficulty
+    spread, minimum sensible trip length), how many indexed routes are nearby,
+    and how far it is from home. Returns (score, note, sub_signals)."""
+    mp_climbs = mp_climbs or []
+    sh = v.get("sheet") or {}
+    p = ctx.prefs
+    vol_s = _band(sh.get("volume"), VOL_BAND, 60)
+    diff_s = _band(sh.get("difficulty"), DIFF_BAND, 70)
+    mt = re.search(r"\d+", sh.get("min_trip") or "")
+    trip_s = 100 if not mt else max(0, 100 - max(0, int(mt.group()) - ctx.trip_days) * 25)
+    n_routes = len(nearby_climbs(v, mp_climbs, km=60))
+    routes_s = 50 + min(50, n_routes * 10)   # multi-pitch.com coverage: neutral at 0, +10/route
+    dist_s = distance_fit_score(v, ctx)      # near home = full marks, ~4000 km = 0
+    hd = home_distance_km(v, ctx)
+    fit = wmean([(vol_s, p.volume), (diff_s, p.difficulty), (trip_s, p.trip_fit),
+                 (routes_s, p.coverage), (dist_s, p.fit_distance)])
+    fit_bits = []
+    if sh.get("volume"):
+        fit_bits.append(f"{sh['volume'].lower()} multi-pitch volume")
+    if sh.get("difficulty"):
+        fit_bits.append(f"difficulty: {sh['difficulty'].lower()}")
+    if sh.get("min_trip"):
+        fit_bits.append(f"min trip {sh['min_trip'].lower()} vs your {ctx.trip_days} days")
+    fit_bits.append(f"{n_routes} multi-pitch.com route{'s' if n_routes != 1 else ''} nearby"
+                    if n_routes else "no multi-pitch.com routes indexed yet")
+    if dist_s is not None:
+        fit_bits.append(f"~{round(hd)} km from home")
+    sub = [
+        {"n": "Volume", "v": vol_s,
+         "d": f"{sh['volume'].lower()} multi-pitch volume (sheet)" if sh.get("volume")
+              else "no volume note on the sheet — default"},
+        {"n": "Difficulty", "v": diff_s,
+         "d": f"difficulty: {sh['difficulty'].lower()} (sheet)" if sh.get("difficulty")
+              else "no difficulty note on the sheet — default"},
+        {"n": "Trip fit", "v": trip_s,
+         "d": f"min trip {sh['min_trip'].lower()} vs your {ctx.trip_days} days" if sh.get("min_trip")
+              else f"no minimum-trip constraint vs your {ctx.trip_days} days"},
+        {"n": "Coverage", "v": routes_s,
+         "d": f"{n_routes} multi-pitch.com route{'s' if n_routes != 1 else ''} within 60 km"
+              if n_routes else "no multi-pitch.com routes indexed — neutral"},
+        {"n": "Distance", "v": dist_s,
+         "d": f"~{round(hd)} km from home (London / Belfast)" if dist_s is not None
+              else "no coordinates — neutral"},
+    ]
+    return fit, "; ".join(fit_bits), sub
+
+
+def apply_composite(r, ctx, mp_climbs=None):
+    """Attach r['score'] (composite 0-100) + r['breakdown'] for the UI."""
+    mp_climbs = mp_climbs or []
+    v = r["venue"]
+    sh = v.get("sheet") or {}
+    w = r.get("wscore", -1)
+    if w < 0:
+        r["score"], r["breakdown"] = -1, None
+        return
+    p = ctx.prefs
+    # travel: known flight prices (live or cached) per traveller; drive/local are cheap
+    fl = r.get("flights") or {}
+    costs, cost_bits = [], []
+    for who, label in ctx.traveller_names.items():
+        mode = (v.get("travel", {}).get(who) or {}).get("mode")
+        opts = ((fl.get(who) or {}).get("options")) or []
+        if mode == "local":
+            costs.append(0)
+            cost_bits.append(f"{label} local £0")
+        elif mode == "drive":
+            costs.append(90)
+            cost_bits.append(f"{label} drives ~£90")
+        elif opts:
+            costs.append(opts[0]["price"])
+            cost_bits.append(f"{label} £{opts[0]['price']} return")
+        else:
+            est = distance_cost_estimate(v, who, ctx)   # no live price yet → distance proxy
+            costs.append(est)
+            if est is not None:
+                cost_bits.append(f"{label} ~£{est} est. (by distance)")
+    known = [c for c in costs if c is not None]
+    cost_s = round(max(0, min(100, 100 - (sum(known) / len(known)) / 4))) if known else None
+    fl_d = "; ".join(cost_bits) if cost_bits else "no priced flights yet"
+    time_s = _band(sh.get("travel_time"), TIME_BAND, 65)
+    # stay: the cheapest realistic bed near the crag for the trip's nights —
+    # a campsite keeps a venue cheap, a hotel-only area costs points. Typical
+    # per-type nightly estimates (OSM has no prices), per person, same £/4
+    # slope as flights.
+    st = (r.get("stays") or {}).get("cheapest")
+    stay_s = None
+    if st:
+        pp_total = st["est"] / STAY_ADULTS * ctx.rep_combo["nights"]
+        stay_s = round(max(0, min(100, 100 - pp_total / 4)))
+        cost_bits.append(f"stay from ~£{st['est']}/night for 2 ({st['type'].lower()}, est.)")
+    travel = wmean([(cost_s, p.cost), (time_s, 1.0), (stay_s, 1.0)])
+    travel_note = ("; ".join(cost_bits) if cost_bits else "no priced flights yet") \
+        + (f" · {sh['travel_time']} from UK (sheet)" if sh.get("travel_time") else "")
+    fit, fit_note, fit_sub = venue_fit(v, ctx, mp_climbs)
+    ww, wt, wf = W_WEATHER * p.weather, W_TRAVEL * p.travel, W_FIT * p.fit
+    r["score"] = round((ww * w + wt * travel + wf * fit) / (ww + wt + wf))
+    r["breakdown"] = {
+        "weather": w, "travel": travel, "fit": fit,
+        "weights": {"weather": W_WEATHER, "travel": W_TRAVEL, "fit": W_FIT},
+        "weather_note": r.get("basis", "") + (
+            f" · {v['aspect'].upper()}-facing rock ({conditions.ASPECT_ADJ.get(v['aspect'].upper(), 0):+d}°C felt in full sun)"
+            if v.get("aspect") else "")
+            + (" · sea air — rock holds damp longer" if v.get("coastal") or v.get("tidal") else "")
+            + (" · wind-exposed crag — gusts bite harder" if v.get("wind_exposed") else "")
+            + (f" · dries {v['drying']} (curated)" if v.get("drying") else ""),
+        "travel_note": travel_note, "fit_note": fit_note,
+        # each factor's own function, for the header ring's outer tier +
+        # hover panels (v = 0-100 sub-score, None = pending/no data)
+        "sub": {
+            "weather": weather_signals(r, v),
+            "travel": [
+                {"n": "Flights", "v": cost_s, "d": fl_d},
+                {"n": "Time", "v": time_s,
+                 "d": f"{sh['travel_time']} from UK (sheet)" if sh.get("travel_time")
+                      else "no travel-time band on the sheet — neutral"},
+                {"n": "Stay", "v": stay_s,
+                 "d": f"{st['type'].lower()} ~£{st['est']}/night for 2 (est.)" if st
+                      else "no stay data yet"},
+            ],
+            "fit": fit_sub,
+        },
+    }
+
+
+def rank(results):
+    """Best venue first, ties broken by the curated priority column."""
+    ok = [r for r in results if r.get("ok") and r["score"] >= 0]
+    ok.sort(key=lambda r: (-r["score"], prio_num(r["venue"])))
+    ok_ids = {id(r) for r in ok}   # identity, not dict equality
+    return ok + [r for r in results if id(r) not in ok_ids]

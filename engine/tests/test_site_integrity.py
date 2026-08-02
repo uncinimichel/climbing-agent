@@ -161,7 +161,7 @@ class LinkIntegrity(unittest.TestCase):
                 self._check(html_path)
 
     def test_render_nav_targets_exist(self):
-        nav = re.findall(r'href="(knowledge/[^"]+\.html)"', _read(ROOT / "engine" / "render.py"))
+        nav = re.findall(r'href="(knowledge/[^"]+\.html)"', _read(ROOT / "domains" / "climbing" / "render.py"))
         self.assertTrue(nav, "no knowledge/* nav links found in render.py")
         for href in nav:
             self.assertTrue((ROOT / href).exists(), f"nav link target missing: {href}")
@@ -252,7 +252,7 @@ class VenueCharacter(unittest.TestCase):
 # ── E · generators wired ────────────────────────────────────────────────────
 class GeneratorsWired(unittest.TestCase):
     def test_nav_links_in_render(self):
-        src = _read(ROOT / "engine" / "render.py")
+        src = _read(ROOT / "domains" / "climbing" / "render.py")
         for href in ("knowledge/corpus-inspector.html", "knowledge/data-dependencies.html"):
             self.assertIn(href, src, f"{href} not wired into the homepage nav")
 

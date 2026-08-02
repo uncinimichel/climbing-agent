@@ -1,11 +1,14 @@
-"""Tiny geo helper shared by climbs.py (multi-pitch.com proximity) and
-stays.py (Overpass lodging distance) — moved verbatim from update_report.py's
-module-level `_haversine`."""
-import math
+"""Back-compat shim — this module now lives at `core.geo`.
 
+Kept so existing imports (`engine.geo`) keep resolving after the core/ + domains/
+split. Replacing this module object with the real one means every name —
+including private helpers like `_slug` — stays the same object, so there is no
+list here to drift out of date.
 
-def haversine_km(la1, lo1, la2, lo2):
-    p = math.pi / 180
-    h = (math.sin((la2 - la1) * p / 2) ** 2
-         + math.cos(la1 * p) * math.cos(la2 * p) * math.sin((lo2 - lo1) * p / 2) ** 2)
-    return 2 * 6371 * math.asin(math.sqrt(h))
+New code should import `core.geo` directly.
+"""
+import sys
+
+from core import geo as _real
+
+sys.modules[__name__] = _real
