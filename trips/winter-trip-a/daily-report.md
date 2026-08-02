@@ -1,6 +1,6 @@
 # Winter Trip A — best winter destination (Michel & Dan)
 
-**Updated:** 2026-08-02 19:31 UTC · ranked best-first.
+**Updated:** 2026-08-02 20:46 UTC · ranked best-first.
 
 > 📅 Trip starts <b>27 Nov</b> (117 days out) — still past the live forecast, which currently reaches 17 Aug. Ranked on <b>typical late November weather</b> (2021–2024). Live forecast reaches your dates on 12 Nov.
 
@@ -15,21 +15,21 @@
 | 3 = | 🇪🇸 El Castellet<br><sub>[mp map](https://multi-pitch.com/map/) (6) · not in sheet</sub> | 90 | 16°C, 0% wet | n/a | n/a |
 | 4 = | 🇪🇸 Penya Roc<br><sub>[mp map](https://multi-pitch.com/map/) (6) · not in sheet</sub> | 90 | 14°C, 0% wet | n/a | n/a |
 | 5 = | 🇪🇸 Puig Campana<br><sub>[mp map](https://multi-pitch.com/map/) (6) · not in sheet</sub> | 90 | 15°C, 0% wet | n/a | n/a |
-| 6 = | 🏴󠁧󠁢󠁷󠁬󠁳󠁿 Llanberis<br><sub>[mp map](https://multi-pitch.com/map/) (6) · [sheet r19](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=19:19)</sub> | 89 | 7°C, 17% wet | [search](https://www.skyscanner.net/transport/flights/lgw//261127/261129/) | [search](https://www.skyscanner.net/transport/flights/bfs//261127/261129/) |
-| 7 = | 🇪🇸 Costa Blanca<br><sub>[mp map](https://multi-pitch.com/map/) (6) · [sheet r25](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=25:25)</sub> | 89 | 19°C, 0% wet | [search](https://www.skyscanner.net/transport/flights/lgw/alc/261127/261129/) | [search](https://www.skyscanner.net/transport/flights/bfs/alc/261127/261129/) |
-| 8 = | 🏴󠁧󠁢󠁥󠁮󠁧󠁿 Bosigran<br><sub>[mp map](https://multi-pitch.com/map/) (2) · not in sheet</sub> | 89 | 11°C, 17% wet | n/a | n/a |
-| 9 = | 🏴󠁧󠁢󠁥󠁮󠁧󠁿 Chair Ladder<br><sub>[mp map](https://multi-pitch.com/map/) (2) · not in sheet</sub> | 89 | 11°C, 17% wet | n/a | n/a |
-| 10 = | 🇲🇦 Lower Eagle Crag<br><sub>[mp map](https://multi-pitch.com/map/) (4) · not in sheet</sub> | 89 | 17°C, 0% wet | n/a | n/a |
+| 6 ▲1 | 🇪🇸 Costa Blanca<br><sub>[mp map](https://multi-pitch.com/map/) (6) · [sheet r25](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=25:25)</sub> | 89 | 19°C, 0% wet | [search](https://www.skyscanner.net/transport/flights/lgw/alc/261127/261129/) | [search](https://www.skyscanner.net/transport/flights/bfs/alc/261127/261129/) |
+| 7 ▲1 | 🏴󠁧󠁢󠁥󠁮󠁧󠁿 Bosigran<br><sub>[mp map](https://multi-pitch.com/map/) (2) · not in sheet</sub> | 89 | 11°C, 17% wet | n/a | n/a |
+| 8 ▲1 | 🏴󠁧󠁢󠁥󠁮󠁧󠁿 Chair Ladder<br><sub>[mp map](https://multi-pitch.com/map/) (2) · not in sheet</sub> | 89 | 11°C, 17% wet | n/a | n/a |
+| 9 ▲1 | 🇲🇦 Lower Eagle Crag<br><sub>[mp map](https://multi-pitch.com/map/) (4) · not in sheet</sub> | 89 | 17°C, 0% wet | n/a | n/a |
+| 10 ▲40 | 📍 Mournes<br><sub>[mp map](https://multi-pitch.com/map/) (5) · [sheet r17](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=17:17)</sub> | 88 | 7°C, 17% wet | [search](https://www.skyscanner.net/transport/flights/lgw/bfs/261127/261129/) | local (Dan) |
 | 11 = | 🇫🇷 Calanques<br><sub>[mp map](https://multi-pitch.com/map/) · [sheet r27](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=27:27)</sub> | 88 | 12°C, 17% wet | — | — |
-| 12 = | 🇲🇦 Ksar Rock<br><sub>[mp map](https://multi-pitch.com/map/) (4) · not in sheet</sub> | 88 | 16°C, 0% wet | — | — |
-| 13 = | 🇪🇸 Peñón de Ifach<br><sub>[mp map](https://multi-pitch.com/map/) (6) · not in sheet</sub> | 88 | 18°C, 0% wet | — | — |
-| 14 = | 🏴󠁧󠁢󠁥󠁮󠁧󠁿 Lake District<br><sub>[mp map](https://multi-pitch.com/map/) · [sheet r18](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=18:18)</sub> | 87 | 15°C, 8% wet | — | — |
+| 12 ▲30 | 🏴󠁧󠁢󠁥󠁮󠁧󠁿 Cornwall<br><sub>[mp map](https://multi-pitch.com/map/) (2) · [sheet r36](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=36:36)</sub> | 88 | 11°C, 17% wet | — | — |
+| 13 ▼1 | 🇲🇦 Ksar Rock<br><sub>[mp map](https://multi-pitch.com/map/) (4) · not in sheet</sub> | 88 | 16°C, 0% wet | — | — |
+| 14 ▼1 | 🇪🇸 Peñón de Ifach<br><sub>[mp map](https://multi-pitch.com/map/) (6) · not in sheet</sub> | 88 | 18°C, 0% wet | — | — |
 | 15 = | 🇪🇸 Cathedral Rock<br><sub>[mp map](https://multi-pitch.com/map/) (1) · not in sheet</sub> | 87 | 14°C, 0% wet | — | — |
 | 16 = | 🇲🇦 Anti Atlas<br><sub>[mp map](https://multi-pitch.com/map/) (4) · [sheet r14](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=14:14)</sub> | 86 | 21°C, 0% wet | — | — |
-| 17 = | 🏴󠁧󠁢󠁳󠁣󠁴󠁿 Aaran<br><sub>[mp map](https://multi-pitch.com/map/) · [sheet r15](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=15:15)</sub> | 86 | 14°C, 8% wet | — | — |
-| 18 = | 🏴󠁧󠁢󠁷󠁬󠁳󠁿 Dinorwic Quarry<br><sub>[mp map](https://multi-pitch.com/map/) (6) · not in sheet</sub> | 86 | 6°C, 17% wet | — | — |
-| 19 = | ☘️ Buzzards Roost<br><sub>[mp map](https://multi-pitch.com/map/) (5) · not in sheet</sub> | 85 | 5°C, 17% wet | — | — |
-| 20 = | ☘️ Slieve Lamagan<br><sub>[mp map](https://multi-pitch.com/map/) (5) · not in sheet</sub> | 85 | 5°C, 17% wet | — | — |
+| 17 ▲1 | 🏴󠁧󠁢󠁷󠁬󠁳󠁿 Dinorwic Quarry<br><sub>[mp map](https://multi-pitch.com/map/) (6) · not in sheet</sub> | 86 | 6°C, 17% wet | — | — |
+| 18 ▲1 | ☘️ Buzzards Roost<br><sub>[mp map](https://multi-pitch.com/map/) (5) · not in sheet</sub> | 85 | 5°C, 17% wet | — | — |
+| 19 ▲1 | ☘️ Slieve Lamagan<br><sub>[mp map](https://multi-pitch.com/map/) (5) · not in sheet</sub> | 85 | 5°C, 17% wet | — | — |
+| 20 ▼14 | 🏴󠁧󠁢󠁷󠁬󠁳󠁿 Llanberis<br><sub>[mp map](https://multi-pitch.com/map/) (6) · [sheet r19](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=19:19)</sub> | 84 | 4°C, 17% wet | — | — |
 | 21 = | 🇯🇴 Wadi Rum<br><sub>[mp map](https://multi-pitch.com/map/) (1) · [sheet r22](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=22:22)</sub> | 84 | 19°C, 8% wet | — | — |
 | 22 = | 🇲🇦 Amzkhssan Wall<br><sub>[mp map](https://multi-pitch.com/map/) (4) · not in sheet</sub> | 84 | 19°C, 0% wet | — | — |
 | 23 = | 🇪🇸 Riglos<br><sub>[mp map](https://multi-pitch.com/map/) · [sheet r5](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=5:5)</sub> | 83 | 11°C, 17% wet | — | — |
@@ -51,50 +51,52 @@
 | 39 = | 🇮🇪 Sail Rock<br><sub>[mp map](https://multi-pitch.com/map/) (2) · not in sheet</sub> | 78 | 8°C, 25% wet | — | — |
 | 40 = | 🏴󠁧󠁢󠁷󠁬󠁳󠁿 Three Cliffs Bay<br><sub>[mp map](https://multi-pitch.com/map/) (1) · not in sheet</sub> | 78 | 9°C, 33% wet | — | — |
 | 41 = | ☘️ Eagle Mountain<br><sub>[mp map](https://multi-pitch.com/map/) (5) · not in sheet</sub> | 77 | 5°C, 17% wet | — | — |
-| 42 = | 🏴󠁧󠁢󠁥󠁮󠁧󠁿 Cornwall<br><sub>[mp map](https://multi-pitch.com/map/) · [sheet r36](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=36:36)</sub> | 76 | 6°C, 17% wet | — | — |
-| 43 = | 🇮🇪 Tormore Group<br><sub>[mp map](https://multi-pitch.com/map/) (2) · not in sheet</sub> | 76 | 8°C, 25% wet | — | — |
-| 44 = | 🏴󠁧󠁢󠁳󠁣󠁴󠁿 Cir Mhor<br><sub>[mp map](https://multi-pitch.com/map/) (1) · not in sheet</sub> | 76 | 4°C, 25% wet | — | — |
-| 45 = | 🏴󠁧󠁢󠁷󠁬󠁳󠁿 Great Tor<br><sub>[mp map](https://multi-pitch.com/map/) (1) · not in sheet</sub> | 76 | 9°C, 33% wet | — | — |
-| 46 = | 🏴󠁧󠁢󠁷󠁬󠁳󠁿 Clogwyn Dur Arddu<br><sub>[mp map](https://multi-pitch.com/map/) (6) · not in sheet</sub> | 75 | 4°C, 17% wet | — | — |
-| 47 = | 🏴󠁧󠁢󠁷󠁬󠁳󠁿 Lliwedd<br><sub>[mp map](https://multi-pitch.com/map/) (6) · not in sheet</sub> | 75 | 4°C, 17% wet | — | — |
-| 48 = | 🇪🇸 Tenerife<br><sub>[mp map](https://multi-pitch.com/map/) (1) · [sheet r3](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=3:3)</sub> | 74 | 3°C, 17% wet | — | — |
-| 49 = | 🇫🇷 Carcassonne<br><sub>[mp map](https://multi-pitch.com/map/) · [sheet r38](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=38:38)</sub> | 74 | 12°C, 33% wet | — | — |
-| 50 = | 📍 Mournes<br><sub>[mp map](https://multi-pitch.com/map/) · [sheet r17](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=17:17)</sub> | 73 | 16°C, 33% wet | — | — |
-| 51 = | 🇪🇸 Gredos<br><sub>[mp map](https://multi-pitch.com/map/) · [sheet r28](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=28:28)</sub> | 73 | 3°C, 25% wet | — | — |
-| 52 = | 🏴󠁧󠁢󠁥󠁮󠁧󠁿 Isle of White<br><sub>[mp map](https://multi-pitch.com/map/) · [sheet r34](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=34:34)</sub> | 73 | 9°C, 33% wet | — | — |
-| 53 = | 🇪🇸 Los Galayos<br><sub>[mp map](https://multi-pitch.com/map/) · not in sheet</sub> | 72 | 4°C, 25% wet | — | — |
-| 54 = | 🇪🇸 Mallorca<br><sub>[mp map](https://multi-pitch.com/map/) · [sheet r4](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=4:4)</sub> | 71 | 13°C, 33% wet | — | — |
-| 55 = | 🇩🇪 Elbsandstein<br><sub>[mp map](https://multi-pitch.com/map/) · [sheet r7](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=7:7)</sub> | 68 | 3°C, 25% wet | — | — |
-| 56 = | 🏴󠁧󠁢󠁳󠁣󠁴󠁿 Old Man of Hoy<br><sub>[mp map](https://multi-pitch.com/map/) (1) · [sheet r33](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=33:33)</sub> | 67 | 7°C, 33% wet | — | — |
-| 57 = | 🇮🇹 Dolomites<br><sub>[mp map](https://multi-pitch.com/map/) (5) · [sheet r13](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=13:13)</sub> | 66 | -2°C, 25% wet | — | — |
-| 58 = | 🏴󠁧󠁢󠁳󠁣󠁴󠁿 Hoy<br><sub>[mp map](https://multi-pitch.com/map/) (1) · [sheet r33](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=33:33)</sub> | 66 | 6°C, 33% wet | — | — |
-| 59 = | 🇸🇰 Zádiel<br><sub>[mp map](https://multi-pitch.com/map/) · [sheet r26](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=26:26)</sub> | 65 | 3°C, 25% wet | — | — |
-| 60 = | 🏴󠁧󠁢󠁥󠁮󠁧󠁿 Lundy<br><sub>[mp map](https://multi-pitch.com/map/) (2) · [sheet r24](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=24:24)</sub> | 64 | 11°C, 42% wet | — | — |
-| 61 = | 🏴󠁧󠁢󠁳󠁣󠁴󠁿 Old Man of Stoer<br><sub>[mp map](https://multi-pitch.com/map/) (1) · not in sheet</sub> | 63 | 7°C, 42% wet | — | — |
-| 62 = | 🇹🇷 Aladaglar<br><sub>[mp map](https://multi-pitch.com/map/) · [sheet r40](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=40:40)</sub> | 62 | -6°C, 17% wet | — | — |
-| 63 = | 🇮🇹 Sella Towers<br><sub>[mp map](https://multi-pitch.com/map/) (5) · not in sheet</sub> | 62 | -5°C, 25% wet | — | — |
-| 64 = | 🇳🇴 Setesdal<br><sub>[mp map](https://multi-pitch.com/map/) · [sheet r20](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=20:20)</sub> | 61 | -3°C, 25% wet | — | — |
-| 65 = | 🏴󠁧󠁢󠁥󠁮󠁧󠁿 Gimmer Crag<br><sub>[mp map](https://multi-pitch.com/map/) (1) · not in sheet</sub> | 61 | 5°C, 42% wet | — | — |
-| 66 = | 🇮🇹 Sass Pordoi South Face<br><sub>[mp map](https://multi-pitch.com/map/) (5) · not in sheet</sub> | 61 | -7°C, 25% wet | — | — |
-| 67 = | 🇮🇹 Vajolet towers<br><sub>[mp map](https://multi-pitch.com/map/) (5) · not in sheet</sub> | 60 | -7°C, 25% wet | — | — |
-| 68 = | 🇮🇹 Sass Pordoi<br><sub>[mp map](https://multi-pitch.com/map/) (5) · not in sheet</sub> | 58 | -4°C, 25% wet | — | — |
-| 69 = | 🇳🇴 Loften<br><sub>[mp map](https://multi-pitch.com/map/) · [sheet r21](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=21:21)</sub> | 56 | 2°C, 33% wet | — | — |
-| 70 = | 🏴󠁧󠁢󠁥󠁮󠁧󠁿 Scafell<br><sub>[mp map](https://multi-pitch.com/map/) (1) · not in sheet</sub> | 56 | 1°C, 33% wet | — | — |
-| 71 = | 🇮🇹 Grande Fermeda<br><sub>[mp map](https://multi-pitch.com/map/) (5) · not in sheet</sub> | 56 | -6°C, 33% wet | — | — |
-| 72 = | 🇳🇦 Spitzkoppe<br><sub>[mp map](https://multi-pitch.com/map/) · [sheet r32](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=32:32)</sub> | 52 | 28°C, 0% wet | — | — |
-| 73 = | 🇫🇷 Aiguille Dibona<br><sub>[mp map](https://multi-pitch.com/map/) (1) · not in sheet</sub> | 52 | -2°C, 42% wet | — | — |
-| 74 = | 🇵🇹 Meadinha<br><sub>[mp map](https://multi-pitch.com/map/) (1) · [sheet r39](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=39:39)</sub> | 52 | 10°C, 50% wet | — | — |
-| 75 = | 📍 Mount Indefatigable<br><sub>[mp map](https://multi-pitch.com/map/) (1) · not in sheet</sub> | 51 | -7°C, 25% wet | — | — |
-| 76 = | 🇮🇹 Campanile Basso<br><sub>[mp map](https://multi-pitch.com/map/) · [sheet r30](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=30:30)</sub> | 50 | -8°C, 33% wet | — | — |
-| 77 = | 🇳🇴 Stetind<br><sub>[mp map](https://multi-pitch.com/map/) (1) · not in sheet</sub> | 47 | -8°C, 33% wet | — | — |
-| 78 = | 🇮🇹 Sicilly<br><sub>[mp map](https://multi-pitch.com/map/) · [sheet r29](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=29:29)</sub> | 45 | 17°C, 50% wet | — | — |
-| 79 = | 🇧🇬 Vratsa<br><sub>[mp map](https://multi-pitch.com/map/) (1) · [sheet r6](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=6:6)</sub> | 42 | 8°C, 50% wet | — | — |
-| 80 = | 🇭🇷 Anica Kuk<br><sub>[mp map](https://multi-pitch.com/map/) · not in sheet</sub> | 39 | 10°C, 50% wet | — | — |
-| 81 = | 🇬🇷 Meteora<br><sub>[mp map](https://multi-pitch.com/map/) (1) · [sheet r12](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=12:12)</sub> | 34 | 12°C, 58% wet | — | — |
-| 82 = | 🇵🇹 Medina<br><sub>[mp map](https://multi-pitch.com/map/) · [sheet r39](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=39:39)</sub> | 34 | 31°C, 0% wet | — | — |
-| 83 = | 🇬🇷 Heiliger Geist<br><sub>[mp map](https://multi-pitch.com/map/) (1) · not in sheet</sub> | 32 | 12°C, 58% wet | — | — |
-| 84 = | 🇸🇮 Triglav<br><sub>[mp map](https://multi-pitch.com/map/) · [sheet r23](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=23:23)</sub> | 31 | -7°C, 42% wet | — | — |
-| 85 = | 🇨🇭 Bruggler<br><sub>[mp map](https://multi-pitch.com/map/) (1) · [sheet r16](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=16:16)</sub> | 29 | 2°C, 58% wet | — | — |
-| 86 = | 🇫🇷 Mont Blonc<br><sub>[mp map](https://multi-pitch.com/map/) · [sheet r31](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=31:31)</sub> | 24 | -13°C, 50% wet | — | — |
+| 42 ▲1 | 🇮🇪 Tormore Group<br><sub>[mp map](https://multi-pitch.com/map/) (2) · not in sheet</sub> | 76 | 8°C, 25% wet | — | — |
+| 43 ▲1 | 🏴󠁧󠁢󠁳󠁣󠁴󠁿 Cir Mhor<br><sub>[mp map](https://multi-pitch.com/map/) (1) · not in sheet</sub> | 76 | 4°C, 25% wet | — | — |
+| 44 ▲1 | 🏴󠁧󠁢󠁷󠁬󠁳󠁿 Great Tor<br><sub>[mp map](https://multi-pitch.com/map/) (1) · not in sheet</sub> | 76 | 9°C, 33% wet | — | — |
+| 45 ▲1 | 🏴󠁧󠁢󠁷󠁬󠁳󠁿 Clogwyn Dur Arddu<br><sub>[mp map](https://multi-pitch.com/map/) (6) · not in sheet</sub> | 75 | 4°C, 17% wet | — | — |
+| 46 ▲1 | 🏴󠁧󠁢󠁷󠁬󠁳󠁿 Lliwedd<br><sub>[mp map](https://multi-pitch.com/map/) (6) · not in sheet</sub> | 75 | 4°C, 17% wet | — | — |
+| 47 ▲1 | 🇪🇸 Tenerife<br><sub>[mp map](https://multi-pitch.com/map/) (1) · [sheet r3](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=3:3)</sub> | 74 | 3°C, 17% wet | — | — |
+| 48 ▲1 | 🇫🇷 Carcassonne<br><sub>[mp map](https://multi-pitch.com/map/) · [sheet r38](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=38:38)</sub> | 74 | 12°C, 33% wet | — | — |
+| 49 ▲2 | 🇪🇸 Gredos<br><sub>[mp map](https://multi-pitch.com/map/) · [sheet r28](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=28:28)</sub> | 73 | 3°C, 25% wet | — | — |
+| 50 ▲2 | 🏴󠁧󠁢󠁥󠁮󠁧󠁿 Isle of White<br><sub>[mp map](https://multi-pitch.com/map/) · [sheet r34](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=34:34)</sub> | 73 | 9°C, 33% wet | — | — |
+| 51 ▼34 | 🏴󠁧󠁢󠁳󠁣󠁴󠁿 Aaran<br><sub>[mp map](https://multi-pitch.com/map/) (1) · [sheet r15](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=15:15)</sub> | 72 | 4°C, 25% wet | — | — |
+| 52 ▲1 | 🇪🇸 Los Galayos<br><sub>[mp map](https://multi-pitch.com/map/) · not in sheet</sub> | 72 | 4°C, 25% wet | — | — |
+| 53 ▲1 | 🇪🇸 Mallorca<br><sub>[mp map](https://multi-pitch.com/map/) · [sheet r4](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=4:4)</sub> | 71 | 13°C, 33% wet | — | — |
+| 54 🆕 | 🇦🇹 East Tyrol<br><sub>[mp map](https://multi-pitch.com/map/) · [sheet r8](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=8:8)</sub> | 71 | 6°C, 25% wet | — | — |
+| 55 ▲2 | 🇮🇹 Dolomites<br><sub>[mp map](https://multi-pitch.com/map/) (5) · [sheet r13](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=13:13)</sub> | 71 | 2°C, 25% wet | — | — |
+| 56 ▼42 | 🏴󠁧󠁢󠁥󠁮󠁧󠁿 Lake District<br><sub>[mp map](https://multi-pitch.com/map/) (1) · [sheet r18](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=18:18)</sub> | 71 | 5°C, 33% wet | — | — |
+| 57 ▼2 | 🇩🇪 Elbsandstein<br><sub>[mp map](https://multi-pitch.com/map/) · [sheet r7](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=7:7)</sub> | 68 | 3°C, 25% wet | — | — |
+| 58 ▼2 | 🏴󠁧󠁢󠁳󠁣󠁴󠁿 Old Man of Hoy<br><sub>[mp map](https://multi-pitch.com/map/) (1) · [sheet r33](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=33:33)</sub> | 67 | 7°C, 33% wet | — | — |
+| 59 ▼1 | 🏴󠁧󠁢󠁳󠁣󠁴󠁿 Hoy<br><sub>[mp map](https://multi-pitch.com/map/) (1) · [sheet r33](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=33:33)</sub> | 66 | 6°C, 33% wet | — | — |
+| 60 ▼1 | 🇸🇰 Zádiel<br><sub>[mp map](https://multi-pitch.com/map/) · [sheet r26](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=26:26)</sub> | 65 | 3°C, 25% wet | — | — |
+| 61 ▼1 | 🏴󠁧󠁢󠁥󠁮󠁧󠁿 Lundy<br><sub>[mp map](https://multi-pitch.com/map/) (2) · [sheet r24](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=24:24)</sub> | 64 | 11°C, 42% wet | — | — |
+| 62 ▼1 | 🏴󠁧󠁢󠁳󠁣󠁴󠁿 Old Man of Stoer<br><sub>[mp map](https://multi-pitch.com/map/) (1) · not in sheet</sub> | 63 | 7°C, 42% wet | — | — |
+| 63 ▼1 | 🇹🇷 Aladaglar<br><sub>[mp map](https://multi-pitch.com/map/) · [sheet r40](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=40:40)</sub> | 62 | -6°C, 17% wet | — | — |
+| 64 ▼1 | 🇮🇹 Sella Towers<br><sub>[mp map](https://multi-pitch.com/map/) (5) · not in sheet</sub> | 62 | -5°C, 25% wet | — | — |
+| 65 ▼1 | 🇳🇴 Setesdal<br><sub>[mp map](https://multi-pitch.com/map/) · [sheet r20](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=20:20)</sub> | 61 | -3°C, 25% wet | — | — |
+| 66 ▼1 | 🏴󠁧󠁢󠁥󠁮󠁧󠁿 Gimmer Crag<br><sub>[mp map](https://multi-pitch.com/map/) (1) · not in sheet</sub> | 61 | 5°C, 42% wet | — | — |
+| 67 ▼1 | 🇮🇹 Sass Pordoi South Face<br><sub>[mp map](https://multi-pitch.com/map/) (5) · not in sheet</sub> | 61 | -7°C, 25% wet | — | — |
+| 68 ▼1 | 🇮🇹 Vajolet towers<br><sub>[mp map](https://multi-pitch.com/map/) (5) · not in sheet</sub> | 60 | -7°C, 25% wet | — | — |
+| 69 ▼1 | 🇮🇹 Sass Pordoi<br><sub>[mp map](https://multi-pitch.com/map/) (5) · not in sheet</sub> | 58 | -4°C, 25% wet | — | — |
+| 70 ▼1 | 🇳🇴 Loften<br><sub>[mp map](https://multi-pitch.com/map/) · [sheet r21](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=21:21)</sub> | 56 | 2°C, 33% wet | — | — |
+| 71 ▼1 | 🏴󠁧󠁢󠁥󠁮󠁧󠁿 Scafell<br><sub>[mp map](https://multi-pitch.com/map/) (1) · not in sheet</sub> | 56 | 1°C, 33% wet | — | — |
+| 72 ▼1 | 🇮🇹 Grande Fermeda<br><sub>[mp map](https://multi-pitch.com/map/) (5) · not in sheet</sub> | 56 | -6°C, 33% wet | — | — |
+| 73 ▼1 | 🇳🇦 Spitzkoppe<br><sub>[mp map](https://multi-pitch.com/map/) · [sheet r32](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=32:32)</sub> | 52 | 28°C, 0% wet | — | — |
+| 74 ▼1 | 🇫🇷 Aiguille Dibona<br><sub>[mp map](https://multi-pitch.com/map/) (1) · not in sheet</sub> | 52 | -2°C, 42% wet | — | — |
+| 75 ▼1 | 🇵🇹 Meadinha<br><sub>[mp map](https://multi-pitch.com/map/) (1) · [sheet r39](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=39:39)</sub> | 52 | 10°C, 50% wet | — | — |
+| 76 ▼1 | 📍 Mount Indefatigable<br><sub>[mp map](https://multi-pitch.com/map/) (1) · not in sheet</sub> | 51 | -7°C, 25% wet | — | — |
+| 77 ▼1 | 🇮🇹 Campanile Basso<br><sub>[mp map](https://multi-pitch.com/map/) · [sheet r30](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=30:30)</sub> | 50 | -8°C, 33% wet | — | — |
+| 78 ▼1 | 🇳🇴 Stetind<br><sub>[mp map](https://multi-pitch.com/map/) (1) · not in sheet</sub> | 47 | -8°C, 33% wet | — | — |
+| 79 ▼1 | 🇮🇹 Sicilly<br><sub>[mp map](https://multi-pitch.com/map/) · [sheet r29](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=29:29)</sub> | 45 | 17°C, 50% wet | — | — |
+| 80 ▼1 | 🇧🇬 Vratsa<br><sub>[mp map](https://multi-pitch.com/map/) (1) · [sheet r6](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=6:6)</sub> | 42 | 8°C, 50% wet | — | — |
+| 81 ▼1 | 🇭🇷 Anica Kuk<br><sub>[mp map](https://multi-pitch.com/map/) · not in sheet</sub> | 39 | 10°C, 50% wet | — | — |
+| 82 ▼1 | 🇬🇷 Meteora<br><sub>[mp map](https://multi-pitch.com/map/) (1) · [sheet r12](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=12:12)</sub> | 34 | 12°C, 58% wet | — | — |
+| 83 ▼1 | 🇵🇹 Medina<br><sub>[mp map](https://multi-pitch.com/map/) · [sheet r39](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=39:39)</sub> | 34 | 31°C, 0% wet | — | — |
+| 84 ▼1 | 🇬🇷 Heiliger Geist<br><sub>[mp map](https://multi-pitch.com/map/) (1) · not in sheet</sub> | 32 | 12°C, 58% wet | — | — |
+| 85 ▼1 | 🇸🇮 Triglav<br><sub>[mp map](https://multi-pitch.com/map/) · [sheet r23](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=23:23)</sub> | 31 | -7°C, 42% wet | — | — |
+| 86 ▼1 | 🇨🇭 Bruggler<br><sub>[mp map](https://multi-pitch.com/map/) (1) · [sheet r16](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=16:16)</sub> | 29 | 2°C, 58% wet | — | — |
+| 87 🆕 | 🇪🇸 Picos Europa<br><sub>[mp map](https://multi-pitch.com/map/) · [sheet r9](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=9:9)</sub> | 24 | 3°C, 75% wet | — | — |
+| 88 ▼2 | 🇫🇷 Mont Blonc<br><sub>[mp map](https://multi-pitch.com/map/) · [sheet r31](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit#gid=0&range=31:31)</sub> | 24 | -13°C, 50% wet | — | — |
 
 _Flights: top 10 venues, return 2026-11-27→2026-11-29 (2n); date options: 11-27→11-29 (2n). Use the book links to adjust. Stays: OpenStreetMap lodging within 15 km per venue (houses, camping, hotels for 2 adults) on the dashboard's per-venue cards. Rendered dashboard: https://uncinimichel.github.io/climbing-agent/_

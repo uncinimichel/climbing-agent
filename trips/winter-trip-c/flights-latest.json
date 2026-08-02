@@ -56,6 +56,17 @@
         "mode": "unknown"
       }
     },
+    "Cornwall": {
+      "michel": {
+        "mode": "drive"
+      },
+      "dan": {
+        "mode": "fly",
+        "options": [],
+        "to": "NQY",
+        "book_url": "https://www.skyscanner.net/transport/flights/bfs/nqy/261211/261213/"
+      }
+    },
     "El Castellet": {
       "michel": {
         "mode": "unknown"
@@ -93,15 +104,7 @@
         "to": "AGA",
         "book_url": "https://www.skyscanner.net/transport/flights/bfs/aga/261211/261213/"
       }
-    },
-    "Avon Gorge": {
-      "michel": {
-        "mode": "unknown"
-      },
-      "dan": {
-        "mode": "unknown"
-      }
     }
   },
-  "checked_at": "2026-08-02 19:32 UTC (no key \u2014 links only)"
+  "checked_at": "2026-08-02 20:50 UTC (no key \u2014 links only)"
 }

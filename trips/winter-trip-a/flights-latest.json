@@ -53,20 +53,6 @@
         "mode": "unknown"
       }
     },
-    "Llanberis": {
-      "michel": {
-        "mode": "fly",
-        "options": [],
-        "to": "",
-        "book_url": "https://www.skyscanner.net/transport/flights/lgw//261127/261129/"
-      },
-      "dan": {
-        "mode": "fly",
-        "options": [],
-        "to": "",
-        "book_url": "https://www.skyscanner.net/transport/flights/bfs//261127/261129/"
-      }
-    },
     "Costa Blanca": {
       "michel": {
         "mode": "fly",
@@ -104,7 +90,18 @@
       "dan": {
         "mode": "unknown"
       }
+    },
+    "Mournes": {
+      "michel": {
+        "mode": "fly",
+        "options": [],
+        "to": "BFS",
+        "book_url": "https://www.skyscanner.net/transport/flights/lgw/bfs/261127/261129/"
+      },
+      "dan": {
+        "mode": "local"
+      }
     }
   },
-  "checked_at": "2026-08-02 19:31 UTC (Google Flights/SerpApi)"
+  "checked_at": "2026-08-02 20:46 UTC (Google Flights/SerpApi)"
 }
