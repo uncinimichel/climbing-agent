@@ -1,5 +1,109 @@
 {
-  "flex": null,
+  "flex": {
+    "venue": "Montserrat",
+    "travellers": {
+      "michel": [
+        {
+          "shift": -3,
+          "out": "2026-11-24",
+          "back": "2026-11-26",
+          "book_url": "https://www.skyscanner.net/transport/flights/lgw/bcn/261124/261126/",
+          "price": 41,
+          "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTExLTI0agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDQkNOGkISCjIwMjYtMTEtMjZqBwgBEgNCQ05yBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ"
+        },
+        {
+          "shift": -2,
+          "out": "2026-11-25",
+          "back": "2026-11-27",
+          "book_url": "https://www.skyscanner.net/transport/flights/lgw/bcn/261125/261127/",
+          "price": 41,
+          "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTExLTI1agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDQkNOGkISCjIwMjYtMTEtMjdqBwgBEgNCQ05yBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ"
+        },
+        {
+          "shift": -1,
+          "out": "2026-11-26",
+          "back": "2026-11-28",
+          "book_url": "https://www.skyscanner.net/transport/flights/lgw/bcn/261126/261128/",
+          "price": 41,
+          "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTExLTI2agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDQkNOGkISCjIwMjYtMTEtMjhqBwgBEgNCQ05yBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ"
+        },
+        {
+          "shift": 1,
+          "out": "2026-11-28",
+          "back": "2026-11-30",
+          "book_url": "https://www.skyscanner.net/transport/flights/lgw/bcn/261128/261130/",
+          "price": 41,
+          "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTExLTI4agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDQkNOGkISCjIwMjYtMTEtMzBqBwgBEgNCQ05yBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ"
+        },
+        {
+          "shift": 2,
+          "out": "2026-11-29",
+          "back": "2026-12-01",
+          "book_url": "https://www.skyscanner.net/transport/flights/lgw/bcn/261129/261201/",
+          "price": 44,
+          "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTExLTI5agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDQkNOGkISCjIwMjYtMTItMDFqBwgBEgNCQ05yBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ"
+        },
+        {
+          "shift": 3,
+          "out": "2026-11-30",
+          "back": "2026-12-02",
+          "book_url": "https://www.skyscanner.net/transport/flights/lgw/bcn/261130/261202/",
+          "price": 41,
+          "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTExLTMwagcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDQkNOGkISCjIwMjYtMTItMDJqBwgBEgNCQ05yBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ"
+        }
+      ],
+      "dan": [
+        {
+          "shift": -3,
+          "out": "2026-11-24",
+          "back": "2026-11-26",
+          "book_url": "https://www.skyscanner.net/transport/flights/bfs/bcn/261124/261126/",
+          "price": 63,
+          "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTExLTI0agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQkNOGjASCjIwMjYtMTEtMjZqBwgBEgNCQ05yBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ"
+        },
+        {
+          "shift": -2,
+          "out": "2026-11-25",
+          "back": "2026-11-27",
+          "book_url": "https://www.skyscanner.net/transport/flights/bfs/bcn/261125/261127/",
+          "price": 70,
+          "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTExLTI1agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQkNOGjASCjIwMjYtMTEtMjdqBwgBEgNCQ05yBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ"
+        },
+        {
+          "shift": -1,
+          "out": "2026-11-26",
+          "back": "2026-11-28",
+          "book_url": "https://www.skyscanner.net/transport/flights/bfs/bcn/261126/261128/",
+          "price": 67,
+          "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTExLTI2agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQkNOGjASCjIwMjYtMTEtMjhqBwgBEgNCQ05yBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ"
+        },
+        {
+          "shift": 1,
+          "out": "2026-11-28",
+          "back": "2026-11-30",
+          "book_url": "https://www.skyscanner.net/transport/flights/bfs/bcn/261128/261130/",
+          "price": 73,
+          "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTExLTI4agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQkNOGjASCjIwMjYtMTEtMzBqBwgBEgNCQ05yBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ"
+        },
+        {
+          "shift": 2,
+          "out": "2026-11-29",
+          "back": "2026-12-01",
+          "book_url": "https://www.skyscanner.net/transport/flights/bfs/bcn/261129/261201/",
+          "price": 67,
+          "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTExLTI5agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQkNOGjASCjIwMjYtMTItMDFqBwgBEgNCQ05yBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ"
+        },
+        {
+          "shift": 3,
+          "out": "2026-11-30",
+          "back": "2026-12-02",
+          "book_url": "https://www.skyscanner.net/transport/flights/bfs/bcn/261130/261202/",
+          "price": 67,
+          "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTExLTMwagcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQkNOGjASCjIwMjYtMTItMDJqBwgBEgNCQ05yBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ"
+        }
+      ]
+    }
+  },
   "rep_combo": {
     "id": "fri-sun",
     "out": "2026-11-27",
@@ -7,6 +111,78 @@
     "nights": 2
   },
   "venues": {
+    "Montserrat": {
+      "michel": {
+        "mode": "fly",
+        "to": "BCN",
+        "options": [
+          {
+            "price": 41,
+            "airline": "Wizz Air",
+            "from": "LTN",
+            "to": "BCN",
+            "dep": "12:15",
+            "arr": "15:25",
+            "stops": 0
+          },
+          {
+            "price": 55,
+            "airline": "Wizz Air",
+            "from": "LTN",
+            "to": "BCN",
+            "dep": "06:00",
+            "arr": "09:05",
+            "stops": 0
+          },
+          {
+            "price": 61,
+            "airline": "Vueling",
+            "from": "LGW",
+            "to": "BCN",
+            "dep": "14:35",
+            "arr": "17:40",
+            "stops": 0
+          }
+        ],
+        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTExLTI3agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDQkNOGkISCjIwMjYtMTEtMjlqBwgBEgNCQ05yBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ",
+        "book_url": "https://www.skyscanner.net/transport/flights/ltn/bcn/261127/261129/"
+      },
+      "dan": {
+        "mode": "fly",
+        "to": "BCN",
+        "options": [
+          {
+            "price": 69,
+            "airline": "Vueling",
+            "from": "DUB",
+            "to": "BCN",
+            "dep": "12:50",
+            "arr": "16:30",
+            "stops": 0
+          },
+          {
+            "price": 73,
+            "airline": "Ryanair",
+            "from": "DUB",
+            "to": "BCN",
+            "dep": "18:10",
+            "arr": "21:40",
+            "stops": 0
+          },
+          {
+            "price": 83,
+            "airline": "Ryanair",
+            "from": "DUB",
+            "to": "BCN",
+            "dep": "11:20",
+            "arr": "14:50",
+            "stops": 0
+          }
+        ],
+        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTExLTI3agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQkNOGjASCjIwMjYtMTEtMjlqBwgBEgNCQ05yBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
+        "book_url": "https://www.skyscanner.net/transport/flights/dub/bcn/261127/261129/"
+      }
+    },
     "Roca Gris": {
       "michel": {
         "mode": "unknown"
@@ -15,18 +191,76 @@
         "mode": "unknown"
       }
     },
-    "Montserrat": {
+    "Costa Blanca": {
       "michel": {
         "mode": "fly",
-        "options": [],
-        "to": "BCN",
-        "book_url": "https://www.skyscanner.net/transport/flights/lgw/bcn/261127/261129/"
+        "to": "ALC",
+        "options": [
+          {
+            "price": 36,
+            "airline": "Wizz Air",
+            "from": "LTN",
+            "to": "ALC",
+            "dep": "16:30",
+            "arr": "20:10",
+            "stops": 0
+          },
+          {
+            "price": 55,
+            "airline": "easyJet",
+            "from": "LTN",
+            "to": "ALC",
+            "dep": "16:05",
+            "arr": "19:40",
+            "stops": 0
+          },
+          {
+            "price": 56,
+            "airline": "Ryanair",
+            "from": "STN",
+            "to": "ALC",
+            "dep": "18:55",
+            "arr": "22:30",
+            "stops": 0
+          }
+        ],
+        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTExLTI3agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDQUxDGkISCjIwMjYtMTEtMjlqBwgBEgNBTENyBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ",
+        "book_url": "https://www.skyscanner.net/transport/flights/ltn/alc/261127/261129/"
       },
       "dan": {
         "mode": "fly",
-        "options": [],
-        "to": "BCN",
-        "book_url": "https://www.skyscanner.net/transport/flights/bfs/bcn/261127/261129/"
+        "to": "ALC",
+        "options": [
+          {
+            "price": 94,
+            "airline": "Ryanair",
+            "from": "DUB",
+            "to": "ALC",
+            "dep": "06:00",
+            "arr": "09:45",
+            "stops": 0
+          },
+          {
+            "price": 101,
+            "airline": "Ryanair UK",
+            "from": "BFS",
+            "to": "ALC",
+            "dep": "05:55",
+            "arr": "09:50",
+            "stops": 0
+          },
+          {
+            "price": 112,
+            "airline": "Aer Lingus",
+            "from": "DUB",
+            "to": "ALC",
+            "dep": "07:40",
+            "arr": "11:40",
+            "stops": 0
+          }
+        ],
+        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTExLTI3agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQUxDGjASCjIwMjYtMTEtMjlqBwgBEgNBTENyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
+        "book_url": "https://www.skyscanner.net/transport/flights/dub/alc/261127/261129/"
       }
     },
     "El Castellet": {
@@ -53,18 +287,44 @@
         "mode": "unknown"
       }
     },
-    "Costa Blanca": {
+    "Mournes": {
       "michel": {
         "mode": "fly",
-        "options": [],
-        "to": "ALC",
-        "book_url": "https://www.skyscanner.net/transport/flights/lgw/alc/261127/261129/"
+        "to": "BFS",
+        "options": [
+          {
+            "price": 42,
+            "airline": "Ryanair UK",
+            "from": "STN",
+            "to": "BFS",
+            "dep": "07:50",
+            "arr": "09:10",
+            "stops": 0
+          },
+          {
+            "price": 46,
+            "airline": "Ryanair UK",
+            "from": "STN",
+            "to": "BFS",
+            "dep": "17:35",
+            "arr": "18:55",
+            "stops": 0
+          },
+          {
+            "price": 60,
+            "airline": "easyJet",
+            "from": "STN",
+            "to": "BFS",
+            "dep": "08:50",
+            "arr": "10:10",
+            "stops": 0
+          }
+        ],
+        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTExLTI3agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDQkZTGkISCjIwMjYtMTEtMjlqBwgBEgNCRlNyBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ",
+        "book_url": "https://www.skyscanner.net/transport/flights/stn/bfs/261127/261129/"
       },
       "dan": {
-        "mode": "fly",
-        "options": [],
-        "to": "ALC",
-        "book_url": "https://www.skyscanner.net/transport/flights/bfs/alc/261127/261129/"
+        "mode": "local"
       }
     },
     "Bosigran": {
@@ -90,18 +350,7 @@
       "dan": {
         "mode": "unknown"
       }
-    },
-    "Mournes": {
-      "michel": {
-        "mode": "fly",
-        "options": [],
-        "to": "BFS",
-        "book_url": "https://www.skyscanner.net/transport/flights/lgw/bfs/261127/261129/"
-      },
-      "dan": {
-        "mode": "local"
-      }
     }
   },
-  "checked_at": "2026-08-06 08:32 UTC (Google Flights/SerpApi)"
+  "checked_at": "2026-08-07 07:18 UTC (Google Flights/SerpApi)"
 }
