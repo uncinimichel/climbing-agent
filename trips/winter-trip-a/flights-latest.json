@@ -40,7 +40,7 @@
           "out": "2026-11-29",
           "back": "2026-12-01",
           "book_url": "https://www.skyscanner.net/transport/flights/lgw/bcn/261129/261201/",
-          "price": 44,
+          "price": 41,
           "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTExLTI5agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDQkNOGkISCjIwMjYtMTItMDFqBwgBEgNCQ05yBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ"
         },
         {
@@ -58,7 +58,7 @@
           "out": "2026-11-24",
           "back": "2026-11-26",
           "book_url": "https://www.skyscanner.net/transport/flights/bfs/bcn/261124/261126/",
-          "price": 63,
+          "price": 59,
           "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTExLTI0agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQkNOGjASCjIwMjYtMTEtMjZqBwgBEgNCQ05yBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ"
         },
         {
@@ -66,7 +66,7 @@
           "out": "2026-11-25",
           "back": "2026-11-27",
           "book_url": "https://www.skyscanner.net/transport/flights/bfs/bcn/261125/261127/",
-          "price": 70,
+          "price": 77,
           "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTExLTI1agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQkNOGjASCjIwMjYtMTEtMjdqBwgBEgNCQ05yBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ"
         },
         {
@@ -90,7 +90,7 @@
           "out": "2026-11-29",
           "back": "2026-12-01",
           "book_url": "https://www.skyscanner.net/transport/flights/bfs/bcn/261129/261201/",
-          "price": 67,
+          "price": 70,
           "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTExLTI5agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQkNOGjASCjIwMjYtMTItMDFqBwgBEgNCQ05yBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ"
         },
         {
@@ -126,7 +126,7 @@
             "stops": 0
           },
           {
-            "price": 55,
+            "price": 51,
             "airline": "Wizz Air",
             "from": "LTN",
             "to": "BCN",
@@ -241,7 +241,7 @@
             "stops": 0
           },
           {
-            "price": 101,
+            "price": 104,
             "airline": "Ryanair UK",
             "from": "BFS",
             "to": "ALC",
@@ -311,7 +311,7 @@
             "stops": 0
           },
           {
-            "price": 60,
+            "price": 59,
             "airline": "easyJet",
             "from": "STN",
             "to": "BFS",
@@ -352,5 +352,5 @@
       }
     }
   },
-  "checked_at": "2026-08-07 07:18 UTC (Google Flights/SerpApi)"
+  "checked_at": "2026-08-08 06:59 UTC (Google Flights/SerpApi)"
 }
