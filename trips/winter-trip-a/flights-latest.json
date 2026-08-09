@@ -90,7 +90,7 @@
           "out": "2026-11-29",
           "back": "2026-12-01",
           "book_url": "https://www.skyscanner.net/transport/flights/bfs/bcn/261129/261201/",
-          "price": 70,
+          "price": 67,
           "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTExLTI5agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQkNOGjASCjIwMjYtMTItMDFqBwgBEgNCQ05yBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ"
         },
         {
@@ -117,7 +117,16 @@
         "to": "BCN",
         "options": [
           {
-            "price": 41,
+            "price": 42,
+            "airline": "Ryanair",
+            "from": "LTN",
+            "to": "BCN",
+            "dep": "15:35",
+            "arr": "18:45",
+            "stops": 0
+          },
+          {
+            "price": 45,
             "airline": "Wizz Air",
             "from": "LTN",
             "to": "BCN",
@@ -132,15 +141,6 @@
             "to": "BCN",
             "dep": "06:00",
             "arr": "09:05",
-            "stops": 0
-          },
-          {
-            "price": 61,
-            "airline": "Vueling",
-            "from": "LGW",
-            "to": "BCN",
-            "dep": "14:35",
-            "arr": "17:40",
             "stops": 0
           }
         ],
@@ -232,15 +232,6 @@
         "to": "ALC",
         "options": [
           {
-            "price": 94,
-            "airline": "Ryanair",
-            "from": "DUB",
-            "to": "ALC",
-            "dep": "06:00",
-            "arr": "09:45",
-            "stops": 0
-          },
-          {
             "price": 104,
             "airline": "Ryanair UK",
             "from": "BFS",
@@ -250,7 +241,16 @@
             "stops": 0
           },
           {
-            "price": 112,
+            "price": 104,
+            "airline": "Ryanair",
+            "from": "DUB",
+            "to": "ALC",
+            "dep": "06:00",
+            "arr": "09:45",
+            "stops": 0
+          },
+          {
+            "price": 113,
             "airline": "Aer Lingus",
             "from": "DUB",
             "to": "ALC",
@@ -260,7 +260,7 @@
           }
         ],
         "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTExLTI3agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQUxDGjASCjIwMjYtMTEtMjlqBwgBEgNBTENyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
-        "book_url": "https://www.skyscanner.net/transport/flights/dub/alc/261127/261129/"
+        "book_url": "https://www.skyscanner.net/transport/flights/bfs/alc/261127/261129/"
       }
     },
     "El Castellet": {
@@ -352,5 +352,5 @@
       }
     }
   },
-  "checked_at": "2026-08-08 06:59 UTC (Google Flights/SerpApi)"
+  "checked_at": "2026-08-09 06:58 UTC (Google Flights/SerpApi)"
 }
