@@ -24,7 +24,7 @@
           "out": "2026-11-26",
           "back": "2026-11-28",
           "book_url": "https://www.skyscanner.net/transport/flights/lgw/bcn/261126/261128/",
-          "price": 41,
+          "price": 45,
           "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTExLTI2agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDQkNOGkISCjIwMjYtMTEtMjhqBwgBEgNCQ05yBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ"
         },
         {
@@ -135,12 +135,12 @@
             "stops": 0
           },
           {
-            "price": 51,
-            "airline": "Wizz Air",
-            "from": "LTN",
+            "price": 57,
+            "airline": "Ryanair",
+            "from": "STN",
             "to": "BCN",
-            "dep": "06:00",
-            "arr": "09:05",
+            "dep": "13:00",
+            "arr": "16:10",
             "stops": 0
           }
         ],
@@ -233,15 +233,6 @@
         "options": [
           {
             "price": 104,
-            "airline": "Ryanair UK",
-            "from": "BFS",
-            "to": "ALC",
-            "dep": "05:55",
-            "arr": "09:50",
-            "stops": 0
-          },
-          {
-            "price": 104,
             "airline": "Ryanair",
             "from": "DUB",
             "to": "ALC",
@@ -250,7 +241,16 @@
             "stops": 0
           },
           {
-            "price": 113,
+            "price": 104,
+            "airline": "Ryanair UK",
+            "from": "BFS",
+            "to": "ALC",
+            "dep": "05:55",
+            "arr": "09:50",
+            "stops": 0
+          },
+          {
+            "price": 112,
             "airline": "Aer Lingus",
             "from": "DUB",
             "to": "ALC",
@@ -260,7 +260,7 @@
           }
         ],
         "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTExLTI3agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQUxDGjASCjIwMjYtMTEtMjlqBwgBEgNBTENyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
-        "book_url": "https://www.skyscanner.net/transport/flights/bfs/alc/261127/261129/"
+        "book_url": "https://www.skyscanner.net/transport/flights/dub/alc/261127/261129/"
       }
     },
     "El Castellet": {
@@ -352,5 +352,5 @@
       }
     }
   },
-  "checked_at": "2026-08-09 06:58 UTC (Google Flights/SerpApi)"
+  "checked_at": "2026-08-10 07:34 UTC (Google Flights/SerpApi)"
 }
