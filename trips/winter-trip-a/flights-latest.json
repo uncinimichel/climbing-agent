@@ -82,7 +82,7 @@
           "out": "2026-11-28",
           "back": "2026-11-30",
           "book_url": "https://www.skyscanner.net/transport/flights/bfs/bcn/261128/261130/",
-          "price": 73,
+          "price": 67,
           "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTExLTI4agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQkNOGjASCjIwMjYtMTEtMzBqBwgBEgNCQ05yBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ"
         },
         {
@@ -152,6 +152,15 @@
         "to": "BCN",
         "options": [
           {
+            "price": 67,
+            "airline": "Ryanair",
+            "from": "DUB",
+            "to": "BCN",
+            "dep": "18:10",
+            "arr": "21:40",
+            "stops": 0
+          },
+          {
             "price": 69,
             "airline": "Vueling",
             "from": "DUB",
@@ -165,17 +174,8 @@
             "airline": "Ryanair",
             "from": "DUB",
             "to": "BCN",
-            "dep": "18:10",
-            "arr": "21:40",
-            "stops": 0
-          },
-          {
-            "price": 83,
-            "airline": "Ryanair",
-            "from": "DUB",
-            "to": "BCN",
-            "dep": "11:20",
-            "arr": "14:50",
+            "dep": "07:40",
+            "arr": "11:10",
             "stops": 0
           }
         ],
@@ -250,7 +250,7 @@
             "stops": 0
           },
           {
-            "price": 104,
+            "price": 95,
             "airline": "Ryanair UK",
             "from": "BFS",
             "to": "ALC",
@@ -352,5 +352,5 @@
       }
     }
   },
-  "checked_at": "2026-08-11 07:04 UTC (Google Flights/SerpApi)"
+  "checked_at": "2026-08-11 21:51 UTC (Google Flights/SerpApi)"
 }
