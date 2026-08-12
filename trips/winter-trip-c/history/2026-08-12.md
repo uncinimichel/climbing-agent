@@ -1,6 +1,6 @@
 # Winter Trip C — best winter destination (Michel & Dan)
 
-**Updated:** 2026-08-12 06:06 UTC · ranked best-first.
+**Updated:** 2026-08-12 07:24 UTC · ranked best-first.
 
 > 📅 Trip starts <b>11 Dec</b> (121 days out) — still past the live forecast, which currently reaches 27 Aug. Ranked on <b>typical mid December weather</b> (2021–2024). Live forecast reaches your dates on 26 Nov.
 

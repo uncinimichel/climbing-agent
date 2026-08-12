@@ -90,7 +90,7 @@
           "out": "2026-11-29",
           "back": "2026-12-01",
           "book_url": "https://www.skyscanner.net/transport/flights/bfs/bcn/261129/261201/",
-          "price": 70,
+          "price": 67,
           "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTExLTI5agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQkNOGjASCjIwMjYtMTItMDFqBwgBEgNCQ05yBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ"
         },
         {
@@ -126,21 +126,21 @@
             "stops": 0
           },
           {
+            "price": 52,
+            "airline": "Ryanair",
+            "from": "STN",
+            "to": "BCN",
+            "dep": "13:00",
+            "arr": "16:10",
+            "stops": 0
+          },
+          {
             "price": 56,
             "airline": "Wizz Air",
             "from": "LTN",
             "to": "BCN",
             "dep": "06:00",
             "arr": "09:05",
-            "stops": 0
-          },
-          {
-            "price": 57,
-            "airline": "Ryanair",
-            "from": "STN",
-            "to": "BCN",
-            "dep": "13:00",
-            "arr": "16:10",
             "stops": 0
           }
         ],
@@ -352,5 +352,5 @@
       }
     }
   },
-  "checked_at": "2026-08-12 06:00 UTC (Google Flights/SerpApi)"
+  "checked_at": "2026-08-12 07:19 UTC (Google Flights/SerpApi)"
 }
