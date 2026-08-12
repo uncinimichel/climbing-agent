@@ -62,7 +62,8 @@ def _slug(name: str) -> str:
 def _region_from_bbox(bbox: geo.Bbox) -> tuple[str, str | None]:
     lat, lon = geo.center(bbox)
     req = urllib.request.Request(
-        f"https://nominatim.openstreetmap.org/reverse?lat={lat}&lon={lon}&format=json&zoom=5",
+        f"https://nominatim.openstreetmap.org/reverse?lat={lat}&lon={lon}&format=json&zoom=5"
+        "&accept-language=en",  # English names — keys must match across sources ("Italy", not "Italia")
         headers={"User-Agent": "climbing-agent-ingest/0.1 (uncini.michel@gmail.com)"})
     with urllib.request.urlopen(req, timeout=30) as resp:
         addr = json.load(resp).get("address") or {}

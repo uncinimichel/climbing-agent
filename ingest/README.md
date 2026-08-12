@@ -47,6 +47,26 @@ in `repairs`, and the whole file fails loudly if anything off-taxonomy
 survives. Verified live: 9 crags, 1183 routes, 302 cross-source identities,
 0 repairs needed on a 40-route tagged sample.
 
+## Canonical keys (`keyed`)
+
+```
+python -m ingest keyed <run-id>
+```
+
+Stores crawl + curated output under the S3 record key scheme — ALWAYS
+`<country>/<region>/<crag>/<route>.json` (4 slug parts, `store.slug`
+imported for byte-parity) — under namespaces `keyed/crawl/<source>/` and
+`keyed/curated/`. Resolution ladder: source-stated fields (country anchored
+to the record's own vocabulary — home nations stay countries) → reverse
+geocode of real coords (en, home-nation state promoted, NI counties from
+OSM's `historic` field) → `_flagged/` + report (never keyed by guesswork).
+Region slugs strip `co-`/`county-` so UKC ("Co. Antrim"), geocoders ("County
+Antrim") and the record ("antrim") converge. Stated-region-vs-coords
+disagreements (OpenBeta crags claiming Sardegna with coords in Umbria, found
+live) go to `report.json` `conflicts` — flagged, never silently resolved.
+Slug collisions get a `-<source_id>` suffix (still 4 parts) and are reported.
+Syncing `keyed/` to the S3 bucket is a separate explicit step.
+
 ## Chatter + link (separate output type, same run machinery)
 
 ```

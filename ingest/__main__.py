@@ -80,6 +80,9 @@ def main(argv=None) -> int:
     m.add_argument("--max-llm-routes", type=int, default=None,
                    help="cap the number of routes sent to the model (testing knob)")
 
+    k = sub.add_parser("keyed", help="store crawl + curated output under the canonical S3 record key scheme")
+    k.add_argument("run_id")
+
     sub.add_parser("list", help="list runs")
     w = sub.add_parser("_work", help=argparse.SUPPRESS)  # internal: the worker process
     w.add_argument("run_id")
@@ -88,7 +91,7 @@ def main(argv=None) -> int:
     return {"start": _start, "status": _status, "result": _result,
             "resume": _resume, "list": _list, "_work": _work,
             "chatter": _chatter, "survey": _survey, "link": _link,
-            "enrich": _enrich, "llm": _llm}[a.cmd](a)
+            "enrich": _enrich, "llm": _llm, "keyed": _keyed}[a.cmd](a)
 
 
 def _start(a) -> int:
@@ -232,6 +235,14 @@ def _llm(a) -> int:
     with_runs = [r for r in a.with_runs.split(",") if r]
     counts = llm_curate(a.run_id, with_runs, a.model, a.batch, a.max_llm_routes)
     json.dump(counts, sys.stdout, indent=2)
+    print()
+    return 0
+
+
+def _keyed(a) -> int:
+    from .keyed import key_run
+    report = key_run(a.run_id)
+    json.dump(report, sys.stdout, indent=2, ensure_ascii=False)
     print()
     return 0
 
