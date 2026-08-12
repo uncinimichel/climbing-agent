@@ -144,6 +144,18 @@ Adapter contract (see `sources/__init__.py`): `plan(bbox) -> frontier`,
 | thecrag  | area-tree walk with bbox pruning — every area page embeds its own `bbox: [[..],[..]]`, subtrees that miss the query box are dropped unfetched | no open geo endpoint (endpoint guessing gets Cloudflare-blocked — don't). Walk root: `--root URL`, else Nominatim country -> `ROOTS` table. NB URL slugs lie about hierarchy (Fair Head = `/ireland/fair-head` but breadcrumb UK > Northern Ireland) — trust children lists, not URL prefixes |
 | climbook | region-membership (bbox -> Nominatim admin region -> `/falesie` index -> region page -> crag list) | the Italian community DB (~84 Marche crags where MP has 0); robots wide open, no terms page, plain HTTP. Pages carry NO GPS -> crag coords are null, region is the geo filter (coarser than the bbox — documented recall/precision tradeoff). Covers FR/ES regions too. Full route table at `/falesie/<id>/<slug>/vie`; grades French-scale; multipitch = L1/L2 rows kept verbatim |
 
+| camptocamp | native bbox on their public JSON API (`api.camptocamp.org/waypoints?wtyp=climbing_outdoor&bbox=…`, EPSG:3857) | the cleanest source of all: CC BY-SA topoguide data, no HTML. Routes per waypoint with French grades, equipment rating, source-stated single/multi. Alps-heavy (Marche 0) — earns its keep on alpine/trad boxes |
+| falesiait | Italian region section (bbox -> Nominatim region -> `section/<id>/<region>.html` -> `crag/<id>/<slug>.html`), then per-crag GPS trims to the box | crag METADATA only (GPS + rock + access prose, no route lists — verified) — the coordinates complement to Climbook's routes; found by our own survey lens. Robots allows content paths |
+
+**Next-source catalog (deep discovery, 2026-08-13 agent, all live-verified):**
+APIs — oblyk.org (free key required), brattelinjer.no/buldreinfo.com (Norway,
+GPL stack, sitemap.txt handed over), plezanje.net (Slovenia, open GraphQL).
+Clean server-rendered crawls — horosvaz.cz (official Czech federation DB incl.
+access status), topo.portalgorski.pl (Poland, 12.6k routes), teufelsturm.de
+(Saxon Switzerland, 13.5k routes), bleau.info (Font — honor its 5s
+crawl-delay). Ask-first — lezec.cz (explicit EU TDM reservation in robots).
+Rejected — skalnioblasti.cz (anti-bot gate), guidedolomiti/sassbaloss (not DBs).
+
 **Italy source research (2026-08-12, two agents + live checks):** rejected —
 `thetopo.com`/27crags (TOS explicitly bans scraping + robots blocks anthropic
 UAs), Vertical-Life (app-only behind OAuth, nothing public), falesiaonline

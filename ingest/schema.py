@@ -53,17 +53,19 @@ HAZARDS = taxonomy_codes("hazard")
 INCLINES = taxonomy_codes("incline")
 
 CRAG_KEYS = {"source", "source_id", "name", "lat", "lon", "url",
-             "country", "region", "rock_type", "aspect", "routes"}
+             "country", "region", "rock_type", "aspect", "description", "routes"}
 ROUTE_KEYS = {"source_id", "name", "grade", "length_m", "pitches", "stars",
               "bolts_count", "protection", "disciplines", "fa", "url", "description"}
 
 
 def crag(source: str, source_id: str, name: str, *, lat=None, lon=None, url=None,
-         country=None, region=None, rock_type=None, aspect=None, routes=None) -> dict:
+         country=None, region=None, rock_type=None, aspect=None, description="",
+         routes=None) -> dict:
     return {"source": source, "source_id": str(source_id), "name": name,
             "lat": lat, "lon": lon, "url": url, "country": country,
             "region": region, "rock_type": rock_type,
             "aspect": aspect,  # source-stated compass facing ("N", "SW", "all") — verbatim
+            "description": description or "",  # crag-level prose (access/character) — LLM input
             "routes": routes or []}
 
 

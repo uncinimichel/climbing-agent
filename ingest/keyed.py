@@ -180,6 +180,7 @@ def _write_crag(base: Path, flagged_root: Path, crag: dict, routes: list[dict],
     meta = {k: v for k, v in crag.items() if k != "routes"}
     meta["_key_notes"] = notes
     _atomic_write(crag_dir / "_crag.json", meta)
+    report["written"] += 1  # _crag.json counts — crag-metadata sources (falesia.it) write no route files
     if notes:
         report["key_notes"].append({"source": source_label, "crag": crag["name"], "notes": notes})
     conflicts = [n for n in notes if n.startswith("CONFLICT")]
