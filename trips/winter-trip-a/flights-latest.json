@@ -40,7 +40,7 @@
           "out": "2026-11-29",
           "back": "2026-12-01",
           "book_url": "https://www.skyscanner.net/transport/flights/lgw/bcn/261129/261201/",
-          "price": 40,
+          "price": 38,
           "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTExLTI5agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDQkNOGkISCjIwMjYtMTItMDFqBwgBEgNCQ05yBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ"
         },
         {
@@ -206,7 +206,7 @@
             "stops": 0
           },
           {
-            "price": 55,
+            "price": 52,
             "airline": "easyJet",
             "from": "LTN",
             "to": "ALC",
@@ -232,6 +232,15 @@
         "to": "ALC",
         "options": [
           {
+            "price": 88,
+            "airline": "Ryanair UK",
+            "from": "BFS",
+            "to": "ALC",
+            "dep": "05:55",
+            "arr": "09:50",
+            "stops": 0
+          },
+          {
             "price": 89,
             "airline": "Ryanair",
             "from": "DUB",
@@ -248,19 +257,10 @@
             "dep": "16:35",
             "arr": "20:20",
             "stops": 0
-          },
-          {
-            "price": 95,
-            "airline": "Ryanair UK",
-            "from": "BFS",
-            "to": "ALC",
-            "dep": "05:55",
-            "arr": "09:50",
-            "stops": 0
           }
         ],
         "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTExLTI3agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQUxDGjASCjIwMjYtMTEtMjlqBwgBEgNBTENyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
-        "book_url": "https://www.skyscanner.net/transport/flights/dub/alc/261127/261129/"
+        "book_url": "https://www.skyscanner.net/transport/flights/bfs/alc/261127/261129/"
       }
     },
     "El Castellet": {
@@ -352,5 +352,5 @@
       }
     }
   },
-  "checked_at": "2026-08-12 07:19 UTC (Google Flights/SerpApi)"
+  "checked_at": "2026-08-12 20:22 UTC (Google Flights/SerpApi)"
 }
