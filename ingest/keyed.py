@@ -155,7 +155,7 @@ _COUNTRY_EN = {"italia": "Italy", "espana": "Spain", "france": "France",
 
 
 def _write_crag(base: Path, flagged_root: Path, crag: dict, routes: list[dict],
-                report: dict, source_label: str) -> None:
+                report: dict, source_label: str, used_dirs: set) -> None:
     country, region, notes = _resolve_key_parts(crag)
     name_slug = slug(crag["name"])
     if not country or not region:
@@ -167,6 +167,15 @@ def _write_crag(base: Path, flagged_root: Path, crag: dict, routes: list[dict],
                                   "notes": notes})
         return
     crag_dir = base / slug(country) / _region_slug(region) / name_slug
+    if str(crag_dir) in used_dirs:
+        # two distinct crags resolving to one directory would silently
+        # intermix routes and overwrite _crag.json — same policy as route
+        # collisions: disambiguate with the source id, still 4 key parts, report
+        suffixed = f"{name_slug}-{slug(str(crag.get('source_id') or 'dup'))}"[:64]
+        report["collisions"].append({"source": source_label, "crag": crag["name"],
+                                     "kind": "crag-dir", "keyed_as": suffixed})
+        crag_dir = crag_dir.with_name(suffixed)
+    used_dirs.add(str(crag_dir))
     crag_dir.mkdir(parents=True, exist_ok=True)
     meta = {k: v for k, v in crag.items() if k != "routes"}
     meta["_key_notes"] = notes
@@ -197,6 +206,7 @@ def key_run(run_id: str) -> dict:
               "collisions": [], "key_notes": []}
 
     flagged_root = run.dir / "keyed" / "_flagged"
+    used_dirs: set = set()
     src_dir = run.dir / "enriched"
     if not src_dir.exists() or not any(src_dir.glob("*.json")):
         src_dir = run.dir / "parsed"
@@ -206,14 +216,14 @@ def key_run(run_id: str) -> dict:
             continue
         for c in inv.get("crags") or []:
             _write_crag(run.dir / "keyed" / "crawl" / f.stem, flagged_root,
-                        c, c.get("routes") or [], report, f.stem)
+                        c, c.get("routes") or [], report, f.stem, used_dirs)
 
     curated = run.dir / "llm-curated" / "inventory.json"
     if curated.exists():
         inv = json.loads(curated.read_text())
         for c in inv.get("crags") or []:
             _write_crag(run.dir / "keyed" / "curated", flagged_root,
-                        c, c.get("routes") or [], report, "curated")
+                        c, c.get("routes") or [], report, "curated", used_dirs)
 
     _atomic_write(run.dir / "keyed" / "report.json", report)
     run.log(f"keyed: {report['written']} files, {len(report['flagged'])} flagged, "
