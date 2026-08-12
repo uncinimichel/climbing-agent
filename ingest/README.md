@@ -55,6 +55,24 @@ python -m ingest chatter --crag "Fair Head" [--crag ...] [--from-run <scrape-run
 python -m ingest link <chatter-run-id> [--against <scrape-run-id>,<scrape-run-id>]
 ```
 
+`survey` (added 2026-08-12) is the region-level discovery sweep — one SerpAPI
+search per LENS, still fully mechanical (a future API endpoint like the rest):
+
+```
+python -m ingest survey --region "Marche" [--num 20] [--force]
+```
+
+Eight angles per region, borrowing standard OSINT/dorking operator patterns
+(`site:`/`filetype:`/`inurl:` packs + local-language terms): local+English
+crag inventory, new-routes/rebolting news (Italian: "nuova falesia",
+"chiodatura"), access/closure news ("divieto", "ordinanza"), guidebook-PDF
+hunt (`filetype:pdf`), `inurl:falesia` crag pages, forums, social/video. Docs
+share the chatter schema with a `lens` property; `link` matches known crag
+names in them; extracting UNKNOWN crag names from the prose is the LLM
+phase's job. First live Marche sweep: 67 docs, incl. a live closure notice
+(Tetto del Mondo), a rebolting note (Valgiubola) and a previously-unknown
+Italian DB (falesia.it) — found by the lens design, not by us.
+
 `chatter` runs the July-2026 winning SerpAPI query per seed crag and writes
 schema-validated mention docs (title/url/site/snippet/ISO date — all verbatim
 mechanical fields, see `chatter.py`) to `parsed/chatter.json`, raw responses

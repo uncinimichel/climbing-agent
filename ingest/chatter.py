@@ -45,8 +45,36 @@ SOURCE_ID = "serpapi-google"
 MIN_QUOTA_LEFT = 25
 SITES = "site:ukclimbing.com OR site:reddit.com OR site:instagram.com OR site:facebook.com OR site:youtube.com OR site:tiktok.com"
 
-DOC_KEYS = {"source", "seed", "query", "position", "title", "url", "site",
+DOC_KEYS = {"source", "seed", "lens", "query", "position", "title", "url", "site",
             "snippet", "published_at", "published_raw"}
+
+# Survey mode — region-level discovery with MULTIPLE query angles (Michel,
+# 2026-08-12). Lens design borrows standard OSINT/dorking operator patterns
+# (site:/filetype:/inurl: packs + local-language terms): guidebook PDFs and
+# inurl:falesia pages surface crags no mention-query would, access/closure
+# news matters as much as new routes. All mechanical — extraction of NEW crag
+# names from these docs is the LLM phase's job; the link step already matches
+# KNOWN names. {region} is substituted in; Italian lenses search google.it.
+IT_PARAMS = {"google_domain": "google.it", "gl": "it", "hl": "it"}
+EN_PARAMS = {"google_domain": "google.co.uk", "gl": "uk", "hl": "en"}
+SURVEY_LENSES = [
+    {"key": "crags-local", "q": '(falesia OR falesie OR arrampicata) "{region}"',
+     "params": IT_PARAMS, "window": None},
+    {"key": "crags-en", "q": '"{region}" rock climbing (crag OR routes)',
+     "params": EN_PARAMS, "window": None},
+    {"key": "new-routes", "q": '("nuova falesia" OR "nuove vie" OR chiodatura OR richiodatura) "{region}"',
+     "params": IT_PARAMS, "window": "y"},
+    {"key": "access", "q": 'falesia (divieto OR chiusa OR chiuso OR accesso OR ordinanza) "{region}"',
+     "params": IT_PARAMS, "window": "y"},
+    {"key": "topo-pdf", "q": '(falesia OR arrampicata OR topo) "{region}" filetype:pdf',
+     "params": IT_PARAMS, "window": None},
+    {"key": "crag-pages", "q": 'inurl:falesia "{region}"',
+     "params": IT_PARAMS, "window": None},
+    {"key": "forums", "q": '"{region}" (arrampicata OR climbing) (site:reddit.com OR site:ukclimbing.com OR site:forum.planetmountain.com)',
+     "params": EN_PARAMS, "window": None},
+    {"key": "social-video", "q": '"{region}" (arrampicata OR falesia OR climbing) (site:youtube.com OR site:instagram.com OR site:facebook.com)',
+     "params": IT_PARAMS, "window": "y"},
+]
 
 
 def doc_problems(d: dict) -> list[str]:
@@ -103,7 +131,7 @@ def _published(date_str: str | None) -> str | None:
     return None
 
 
-def _docs_from_response(seed: str, query: str, payload: dict) -> list[dict]:
+def _docs_from_response(seed: str, query: str, payload: dict, lens: str) -> list[dict]:
     docs = []
     for r in payload.get("organic_results") or []:
         url = r.get("link")
@@ -112,6 +140,7 @@ def _docs_from_response(seed: str, query: str, payload: dict) -> list[dict]:
         docs.append({
             "source": SOURCE_ID,
             "seed": seed,
+            "lens": lens,
             "query": query,
             "position": r.get("position"),
             "title": r.get("title") or "",
@@ -143,7 +172,7 @@ def run_chatter(seeds: list[str], window: str, num: int, force: bool) -> Run:
         payload = _get("https://serpapi.com/search.json?" + urllib.parse.urlencode(params))
         item = {"kind": "serp", "id": seed}
         run.save_raw("serp", item, payload)
-        new = _docs_from_response(seed, q, payload)
+        new = _docs_from_response(seed, q, payload, "crag-mention")
         for d in new:
             problems = doc_problems(d)
             if problems:
@@ -165,6 +194,54 @@ def run_chatter(seeds: list[str], window: str, num: int, force: bool) -> Run:
     for s in ("serp",):
         run.set_status(s, "done")
     run.log(f"chatter: done — {len(docs)} docs across {len(seeds)} seed(s)")
+    return run
+
+
+def run_survey(region: str, num: int, force: bool) -> Run:
+    """Region-level multi-lens discovery sweep — one search per SURVEY_LENS,
+    all mechanical. Docs share the chatter schema (seed = the region, lens =
+    the angle that found them); the link step matches known crag names in
+    them, the LLM phase will later extract UNKNOWN ones."""
+    key = load_key()
+    left = quota_left(key)
+    if not force and left - len(SURVEY_LENSES) < MIN_QUOTA_LEFT:
+        raise RuntimeError(
+            f"only {left} SerpAPI searches left; {len(SURVEY_LENSES)} needed would drop below "
+            f"the {MIN_QUOTA_LEFT} reserved for the flight monitor — --force to override")
+
+    run = Run.create(None, ["serp"], {"num": num, "mode": "survey"}, {}, kind="chatter")
+    run.log(f"survey: region {region!r}, {len(SURVEY_LENSES)} lenses, quota_left={left}")
+    docs, queries = [], []
+    for lens in SURVEY_LENSES:
+        q = lens["q"].format(region=region)
+        params = {"engine": "google", "num": str(num), "q": q, "api_key": key,
+                  **lens["params"]}
+        if lens["window"]:
+            params["tbs"] = f"qdr:{lens['window']}"
+        payload = _get("https://serpapi.com/search.json?" + urllib.parse.urlencode(params))
+        run.save_raw("serp", {"kind": "serp-survey", "id": f"{region}:{lens['key']}"}, payload)
+        new = _docs_from_response(region, q, payload, lens["key"])
+        for d in new:
+            problems = doc_problems(d)
+            if problems:
+                raise RuntimeError(f"survey schema violation ({d.get('url')}): {problems}")
+        docs.extend(new)
+        queries.append({"seed": region, "lens": lens["key"], "q": q, "docs": len(new)})
+        run.log(f"survey: {lens['key']} -> {len(new)} doc(s)")
+        time.sleep(1.0)
+
+    payload = {
+        "run_id": run.run_id, "kind": "chatter", "mode": "survey", "source": SOURCE_ID,
+        "generated_at": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
+        "region": region, "queries": queries,
+        "counts": {"docs": len(docs),
+                   "by_lens": {q["lens"]: q["docs"] for q in queries}},
+        "docs": docs,
+    }
+    from .runstore import _atomic_write
+    _atomic_write(run.dir / "parsed" / "chatter.json", payload)
+    run.set_status("serp", "done")
+    run.log(f"survey: done — {len(docs)} docs across {len(SURVEY_LENSES)} lenses")
     return run
 
 

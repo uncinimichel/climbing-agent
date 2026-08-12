@@ -58,6 +58,11 @@ def main(argv=None) -> int:
     c.add_argument("--num", type=int, default=20)
     c.add_argument("--force", action="store_true", help="ignore the shared-quota guard")
 
+    sv = sub.add_parser("survey", help="region-level multi-lens SerpAPI discovery sweep (mechanical)")
+    sv.add_argument("--region", required=True, help='region name, e.g. "Marche"')
+    sv.add_argument("--num", type=int, default=20)
+    sv.add_argument("--force", action="store_true", help="ignore the shared-quota guard")
+
     ln = sub.add_parser("link", help="link a chatter run's docs to known crags")
     ln.add_argument("run_id", help="chatter run id")
     ln.add_argument("--against", default="",
@@ -82,7 +87,7 @@ def main(argv=None) -> int:
     a = p.parse_args(argv)
     return {"start": _start, "status": _status, "result": _result,
             "resume": _resume, "list": _list, "_work": _work,
-            "chatter": _chatter, "link": _link,
+            "chatter": _chatter, "survey": _survey, "link": _link,
             "enrich": _enrich, "llm": _llm}[a.cmd](a)
 
 
@@ -194,6 +199,13 @@ def _chatter(a) -> int:
         print("no seeds: pass --crag and/or --from-run", file=sys.stderr)
         return 2
     run = run_chatter(seeds, a.window, a.num, a.force)
+    print(f"run: {run.run_id}  ({run.dir})")
+    return 0
+
+
+def _survey(a) -> int:
+    from .chatter import run_survey
+    run = run_survey(a.region, a.num, a.force)
     print(f"run: {run.run_id}  ({run.dir})")
     return 0
 
