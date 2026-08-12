@@ -50,15 +50,17 @@ class Run:
 
     # -- lifecycle -----------------------------------------------------------
     @classmethod
-    def create(cls, bbox, sources: list[str], caps: dict, roots: dict) -> "Run":
+    def create(cls, bbox, sources: list[str], caps: dict, roots: dict,
+               kind: str = "scrape") -> "Run":
         stamp = time.strftime("%Y%m%d-%H%M%S")
         run = cls(f"{stamp}-{secrets.token_hex(2)}")
         (run.dir / "raw").mkdir(parents=True)
         (run.dir / "parsed").mkdir()
         _atomic_write(run.manifest_path, {
             "run_id": run.run_id,
+            "kind": kind,                         # scrape (bbox inventory) | chatter (serp mentions)
             "created_at": _now(),
-            "bbox": list(bbox),
+            "bbox": list(bbox) if bbox else None,
             "sources": sources,
             "caps": caps,
             "roots": roots,                       # per-source override, e.g. thecrag walk root

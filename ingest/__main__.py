@@ -50,13 +50,27 @@ def main(argv=None) -> int:
             sp.add_argument("--max-pages", type=int, default=None, help="raise/replace the cap")
             sp.add_argument("--max-crags", type=int, default=None, help="raise/replace the cap")
 
+    c = sub.add_parser("chatter", help="SerpAPI per-crag chatter run (separate schema)")
+    c.add_argument("--crag", action="append", default=[], help="seed crag name (repeatable)")
+    c.add_argument("--from-run", default=None,
+                   help="seed with every crag name from this scrape run's inventories")
+    c.add_argument("--window", default="w2", help="Google tbs qdr window (default w2 = 2 weeks)")
+    c.add_argument("--num", type=int, default=20)
+    c.add_argument("--force", action="store_true", help="ignore the shared-quota guard")
+
+    ln = sub.add_parser("link", help="link a chatter run's docs to known crags")
+    ln.add_argument("run_id", help="chatter run id")
+    ln.add_argument("--against", default="",
+                    help="comma-separated scrape run ids to match against (corpus record always included)")
+
     sub.add_parser("list", help="list runs")
     w = sub.add_parser("_work", help=argparse.SUPPRESS)  # internal: the worker process
     w.add_argument("run_id")
 
     a = p.parse_args(argv)
     return {"start": _start, "status": _status, "result": _result,
-            "resume": _resume, "list": _list, "_work": _work}[a.cmd](a)
+            "resume": _resume, "list": _list, "_work": _work,
+            "chatter": _chatter, "link": _link}[a.cmd](a)
 
 
 def _start(a) -> int:
@@ -149,6 +163,32 @@ def _result(a) -> int:
         parsed = run.load_parsed(s)
         if parsed:
             out["inventories"][s] = parsed
+    json.dump(out, sys.stdout, indent=2, ensure_ascii=False)
+    print()
+    return 0
+
+
+def _chatter(a) -> int:
+    from .chatter import run_chatter
+    seeds = list(a.crag)
+    if a.from_run:
+        src_run = Run.load(a.from_run)
+        for f in (src_run.dir / "parsed").glob("*.json"):
+            for c in json.loads(f.read_text()).get("crags") or []:
+                if c["name"] not in seeds:
+                    seeds.append(c["name"])
+    if not seeds:
+        print("no seeds: pass --crag and/or --from-run", file=sys.stderr)
+        return 2
+    run = run_chatter(seeds, a.window, a.num, a.force)
+    print(f"run: {run.run_id}  ({run.dir})")
+    return 0
+
+
+def _link(a) -> int:
+    from .chatter import link_chatter
+    against = [r for r in a.against.split(",") if r]
+    out = link_chatter(a.run_id, against)
     json.dump(out, sys.stdout, indent=2, ensure_ascii=False)
     print()
     return 0

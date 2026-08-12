@@ -21,6 +21,25 @@ Live-verified 2026-08-11: ukc Fair Head bbox → 5 crags / 1,032 routes (~45 s);
 openbeta Smith Rock bbox → 106 crags discovered, capped runs + resume with
 raised caps; thecrag NI walk → bbox pruning + leaf point-check (see below).
 
+## Chatter + link (separate output type, same run machinery)
+
+```
+python -m ingest chatter --crag "Fair Head" [--crag ...] [--from-run <scrape-run-id>] \
+                         [--window w2] [--num 20] [--force]
+python -m ingest link <chatter-run-id> [--against <scrape-run-id>,<scrape-run-id>]
+```
+
+`chatter` runs the July-2026 winning SerpAPI query per seed crag and writes
+schema-validated mention docs (title/url/site/snippet/ISO date — all verbatim
+mechanical fields, see `chatter.py`) to `parsed/chatter.json`, raw responses
+kept. The key is shared with the flight monitor: quota is checked first and a
+reserve is refused past (`--force` to override). `link` then mechanically
+matches docs against every crag name in the corpus record + the given scrape
+runs (word-boundary text match), and classifies each seed: `in-corpus` /
+`scraped-only` / `not-ingested` — the last list is the "go scrape a bbox
+around this" queue. Which crag an ambiguous post REALLY means is judgment →
+the LLM phase, like entity merge.
+
 ## The contract
 
 - **Output = crag/route inventory only.** Chatter/mention sources (SerpAPI
