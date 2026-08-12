@@ -122,6 +122,16 @@ Adapter contract (see `sources/__init__.py`): `plan(bbox) -> frontier`,
 | openbeta | `cragsNear` GraphQL (center + covering radius, trim to box)   | keyless; API answers slowly (~45s) some days — adapter posts with 90s timeout + retries |
 | ukc      | their own map API `api.ukclimbing.com/.../crag_search/?location=lat,lng&distance=km` — browser *navigation* clears Cloudflare (plain HTTP and page-JS fetch both fail) | richest prose; crag pages via `corpus/tools/ukc_client.py` |
 | thecrag  | area-tree walk with bbox pruning — every area page embeds its own `bbox: [[..],[..]]`, subtrees that miss the query box are dropped unfetched | no open geo endpoint (endpoint guessing gets Cloudflare-blocked — don't). Walk root: `--root URL`, else Nominatim country -> `ROOTS` table. NB URL slugs lie about hierarchy (Fair Head = `/ireland/fair-head` but breadcrumb UK > Northern Ireland) — trust children lists, not URL prefixes |
+| climbook | region-membership (bbox -> Nominatim admin region -> `/falesie` index -> region page -> crag list) | the Italian community DB (~84 Marche crags where MP has 0); robots wide open, no terms page, plain HTTP. Pages carry NO GPS -> crag coords are null, region is the geo filter (coarser than the bbox — documented recall/precision tradeoff). Covers FR/ES regions too. Full route table at `/falesie/<id>/<slug>/vie`; grades French-scale; multipitch = L1/L2 rows kept verbatim |
+
+**Italy source research (2026-08-12, two agents + live checks):** rejected —
+`thetopo.com`/27crags (TOS explicitly bans scraping + robots blocks anthropic
+UAs), Vertical-Life (app-only behind OAuth, nothing public), falesiaonline
+(clean CC BY-NC-ND + open robots but exactly 1 Marche crag), planetmountain
+(all-rights-reserved editorial, few crags), gulliver (route lists exist but no
+clean enumeration; good for conditions later), Mountain Project (permission
+held, technically easy — but zero Marche coverage). falesia.it (found by the
+survey lens, robots open) — candidate for a later adapter.
 
 ## Known limits (v1, deliberate)
 

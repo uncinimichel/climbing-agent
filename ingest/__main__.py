@@ -99,7 +99,7 @@ def _start(a) -> int:
         print(f"unknown source(s) {unknown}; have: {list(REGISTRY)}", file=sys.stderr)
         return 2
     caps = {"max_pages": a.max_pages, "max_crags": a.max_crags}
-    roots = {"thecrag": a.root} if a.root else {}
+    roots = {s: a.root for s in sources} if a.root else {}  # tree/index sources use it, geo sources ignore it
     run = Run.create(bbox, sources, caps, roots)
     print(f"run: {run.run_id}  ({run.dir})")
     return _launch(run, a.follow)
