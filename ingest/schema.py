@@ -46,18 +46,25 @@ def taxonomy_codes(name: str) -> frozenset[str]:
 DISCIPLINES = taxonomy_codes("discipline")
 PROTECTION_GRADES = taxonomy_codes("protection_grade")
 ROCK_TYPES = taxonomy_codes("rock_type")
+SUN_WINDOWS = taxonomy_codes("sun_window")
+CHARACTER = taxonomy_codes("character")
+FEATURES = taxonomy_codes("feature")
+HAZARDS = taxonomy_codes("hazard")
+INCLINES = taxonomy_codes("incline")
 
 CRAG_KEYS = {"source", "source_id", "name", "lat", "lon", "url",
-             "country", "region", "rock_type", "routes"}
+             "country", "region", "rock_type", "aspect", "routes"}
 ROUTE_KEYS = {"source_id", "name", "grade", "length_m", "pitches", "stars",
               "bolts_count", "protection", "disciplines", "fa", "url", "description"}
 
 
 def crag(source: str, source_id: str, name: str, *, lat=None, lon=None, url=None,
-         country=None, region=None, rock_type=None, routes=None) -> dict:
+         country=None, region=None, rock_type=None, aspect=None, routes=None) -> dict:
     return {"source": source, "source_id": str(source_id), "name": name,
             "lat": lat, "lon": lon, "url": url, "country": country,
-            "region": region, "rock_type": rock_type, "routes": routes or []}
+            "region": region, "rock_type": rock_type,
+            "aspect": aspect,  # source-stated compass facing ("N", "SW", "all") — verbatim
+            "routes": routes or []}
 
 
 def route(source_id: str, name: str, *, grade_value=None, grade_system=None,

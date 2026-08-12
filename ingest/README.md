@@ -21,6 +21,32 @@ Live-verified 2026-08-11: ukc Fair Head bbox → 5 crags / 1,032 routes (~45 s);
 openbeta Smith Rock bbox → 106 crags discovered, capped runs + resume with
 raised caps; thecrag NI walk → bbox pruning + leaf point-check (see below).
 
+## Pipeline phases (Michel's ordering, 2026-08-12)
+
+```
+python -m ingest enrich <run-id>                 # phase 2: static, no LLM
+python -m ingest llm <run-id> [--with <run-id>,...] [--max-llm-routes N] [--model sonnet]
+```
+
+`enrich` adds mechanical statics per crag to `enriched/<source>.json`:
+Open-Meteo climate normals (temp/precip-days/wind, raw kept), a documented
+relative dry-warm-season rule, and `sun_window` (taxonomy code) derived from
+the source-stated aspect (UKC provides it; never guessed from geometry). Tide
+is explicitly null-with-reason — no free mechanical source; tidal risk arrives
+below as an evidence-quoted hazard.
+
+`llm` publishes to `llm-curated/inventory.json` (`status: llm-curated`, no
+human pass): dedupes crags (exact name+coords mechanical; near-miss pairs LLM-
+adjudicated; different granularity — UKC whole cliff vs theCrag sub-crags —
+deliberately NOT merged), links same-named routes across nearby crags from
+different sources via `same_as` (identity recorded, entities not collapsed),
+then LLM-tags routes with prose against the closed taxonomy (protection /
+hazards+verbatim evidence / character / feature / incline) via the `claude`
+CLI, with validate-and-repair — off-vocabulary output is dropped and counted
+in `repairs`, and the whole file fails loudly if anything off-taxonomy
+survives. Verified live: 9 crags, 1183 routes, 302 cross-source identities,
+0 repairs needed on a 40-route tagged sample.
+
 ## Chatter + link (separate output type, same run machinery)
 
 ```

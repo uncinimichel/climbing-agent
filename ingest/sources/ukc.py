@@ -60,7 +60,8 @@ def plan(bbox: geo.Bbox, session=None, root=None) -> list[dict]:
                       "nroutes": c.get("nroutes"),
                       "country": _text(c.get("country_name")),
                       "region": _text(c.get("county_name")),
-                      "rock_type": _rock(_text(c.get("rocktype_name")))})
+                      "rock_type": _rock(_text(c.get("rocktype_name"))),
+                      "aspect": _text(c.get("aspect_name")) or None})
     return items
 
 
@@ -113,7 +114,7 @@ def parse(item: dict, payload: dict, bbox: geo.Bbox) -> dict:
         SOURCE_ID, item["id"], item["name"],
         lat=item.get("lat"), lon=item.get("lon"), url=payload.get("url"),
         country=item.get("country"), region=item.get("region"),
-        rock_type=item.get("rock_type"),
+        rock_type=item.get("rock_type"), aspect=item.get("aspect"),
         routes=routes,
     )
     return {"crags": [c] if routes else [], "next": []}

@@ -63,6 +63,18 @@ def main(argv=None) -> int:
     ln.add_argument("--against", default="",
                     help="comma-separated scrape run ids to match against (corpus record always included)")
 
+    e = sub.add_parser("enrich", help="static enrichment (climate/wind/season/sun) — no LLM")
+    e.add_argument("run_id")
+
+    m = sub.add_parser("llm", help="LLM curation: dedupe/merge + taxonomy tags -> llm-curated/")
+    m.add_argument("run_id", help="primary run (output lands here)")
+    m.add_argument("--with", dest="with_runs", default="",
+                   help="comma-separated additional run ids to merge in")
+    m.add_argument("--model", default="sonnet")
+    m.add_argument("--batch", type=int, default=20)
+    m.add_argument("--max-llm-routes", type=int, default=None,
+                   help="cap the number of routes sent to the model (testing knob)")
+
     sub.add_parser("list", help="list runs")
     w = sub.add_parser("_work", help=argparse.SUPPRESS)  # internal: the worker process
     w.add_argument("run_id")
@@ -70,7 +82,8 @@ def main(argv=None) -> int:
     a = p.parse_args(argv)
     return {"start": _start, "status": _status, "result": _result,
             "resume": _resume, "list": _list, "_work": _work,
-            "chatter": _chatter, "link": _link}[a.cmd](a)
+            "chatter": _chatter, "link": _link,
+            "enrich": _enrich, "llm": _llm}[a.cmd](a)
 
 
 def _start(a) -> int:
@@ -190,6 +203,23 @@ def _link(a) -> int:
     against = [r for r in a.against.split(",") if r]
     out = link_chatter(a.run_id, against)
     json.dump(out, sys.stdout, indent=2, ensure_ascii=False)
+    print()
+    return 0
+
+
+def _enrich(a) -> int:
+    from .enrich import enrich_run
+    summary = enrich_run(a.run_id)
+    json.dump(summary, sys.stdout, indent=2)
+    print()
+    return 0
+
+
+def _llm(a) -> int:
+    from .llm import llm_curate
+    with_runs = [r for r in a.with_runs.split(",") if r]
+    counts = llm_curate(a.run_id, with_runs, a.model, a.batch, a.max_llm_routes)
+    json.dump(counts, sys.stdout, indent=2)
     print()
     return 0
 
