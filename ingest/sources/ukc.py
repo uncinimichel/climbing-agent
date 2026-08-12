@@ -33,9 +33,14 @@ API = "https://api.ukclimbing.com/site/logbook/v1/crag_search/"
 MAX_DISTANCE_KM = 100  # crag_search's practical ceiling; bigger boxes lose the edges
 
 DISCIPLINE_MAP = {
-    "trad": "trad", "sport": "sport", "boulder": "bouldering", "alpine": "alpine",
+    "trad": "trad", "sport": "sport", "alpine": "alpine",
     "winter": "mixed", "ice": "ice", "aid": "aid", "scramble": "scrambling",
     "top rope": "tr", "solo": "trad",
+    # live labels are "Bouldering"/"Boulder Circuit", not "Boulder" (the
+    # harvested map's guess — caught 2026-08-12 when 533 Fair Head boulder
+    # problems mapped to nothing); keep "boulder" too, belt and braces
+    "boulder": "bouldering", "bouldering": "bouldering",
+    "boulder circuit": "bouldering",
 }
 
 
@@ -55,8 +60,24 @@ def plan(bbox: geo.Bbox, session=None, root=None) -> list[dict]:
                       "nroutes": c.get("nroutes"),
                       "country": _text(c.get("country_name")),
                       "region": _text(c.get("county_name")),
-                      "rock_type": _text(c.get("rocktype_name"))})
+                      "rock_type": _rock(_text(c.get("rocktype_name")))})
     return items
+
+
+# UKC rocktype_name -> corpus taxonomy rock_type code. Lowercase + strip any
+# "(hard)/(soft)" qualifier covers most; the rest are aliases. Unmappable
+# values (Artificial, UNKNOWN, …) become None — an enum field never carries a
+# raw source string (taxonomy IS the schema, Michel 2026-08-12).
+ROCK_ALIASES = {"grit": "gritstone", "mica schist": "schist",
+                "volcanic tuff": "volcanic", "tuff": "volcanic"}
+
+
+def _rock(v):
+    if not v:
+        return None
+    s = re.sub(r"\s*\(.*\)$", "", v.strip().lower())
+    s = ROCK_ALIASES.get(s, s)
+    return s if s in schema.ROCK_TYPES else None
 
 
 def _text(v):

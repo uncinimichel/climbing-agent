@@ -14,7 +14,7 @@ from __future__ import annotations
 import time
 import traceback
 
-from . import geo
+from . import geo, schema
 from .runstore import Run, item_key
 from .sources import REGISTRY
 
@@ -85,6 +85,13 @@ def _work_source(run: Run, source_id: str, bbox, caps: dict, session, root) -> N
                 payload = existing["payload"]
 
             result = src.parse(item, payload, bbox)
+            for c in result["crags"]:
+                problems = schema.validate(c)
+                if problems:
+                    # a mapper emitting off-schema output is a bug to fix, not
+                    # data to keep — fail the source loudly (raw is stored, so
+                    # rerunning after the fix costs no re-fetch)
+                    raise RuntimeError(f"schema violation in {c.get('name')!r}: {problems}")
             for c in result["crags"]:
                 crags.append(c)
                 st["crags"] += 1
