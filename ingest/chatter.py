@@ -57,24 +57,43 @@ DOC_KEYS = {"source", "seed", "lens", "query", "position", "title", "url", "site
 # KNOWN names. {region} is substituted in; Italian lenses search google.it.
 IT_PARAMS = {"google_domain": "google.it", "gl": "it", "hl": "it"}
 EN_PARAMS = {"google_domain": "google.co.uk", "gl": "uk", "hl": "en"}
-SURVEY_LENSES = [
-    {"key": "crags-local", "q": '(falesia OR falesie OR arrampicata) "{region}"',
-     "params": IT_PARAMS, "window": None},
-    {"key": "crags-en", "q": '"{region}" rock climbing (crag OR routes)',
-     "params": EN_PARAMS, "window": None},
-    {"key": "new-routes", "q": '("nuova falesia" OR "nuove vie" OR chiodatura OR richiodatura) "{region}"',
-     "params": IT_PARAMS, "window": "y"},
-    {"key": "access", "q": 'falesia (divieto OR chiusa OR chiuso OR accesso OR ordinanza) "{region}"',
-     "params": IT_PARAMS, "window": "y"},
-    {"key": "topo-pdf", "q": '(falesia OR arrampicata OR topo) "{region}" filetype:pdf',
-     "params": IT_PARAMS, "window": None},
-    {"key": "crag-pages", "q": 'inurl:falesia "{region}"',
-     "params": IT_PARAMS, "window": None},
-    {"key": "forums", "q": '"{region}" (arrampicata OR climbing) (site:reddit.com OR site:ukclimbing.com OR site:forum.planetmountain.com)',
-     "params": EN_PARAMS, "window": None},
-    {"key": "social-video", "q": '"{region}" (arrampicata OR falesia OR climbing) (site:youtube.com OR site:instagram.com OR site:facebook.com)',
-     "params": IT_PARAMS, "window": "y"},
-]
+SURVEY_LENSES_BY_LANG = {
+    "it": [
+        {"key": "crags-local", "q": '(falesia OR falesie OR arrampicata) "{region}"',
+         "params": IT_PARAMS, "window": None},
+        {"key": "crags-en", "q": '"{region}" rock climbing (crag OR routes)',
+         "params": EN_PARAMS, "window": None},
+        {"key": "new-routes", "q": '("nuova falesia" OR "nuove vie" OR chiodatura OR richiodatura) "{region}"',
+         "params": IT_PARAMS, "window": "y"},
+        {"key": "access", "q": 'falesia (divieto OR chiusa OR chiuso OR accesso OR ordinanza) "{region}"',
+         "params": IT_PARAMS, "window": "y"},
+        {"key": "topo-pdf", "q": '(falesia OR arrampicata OR topo) "{region}" filetype:pdf',
+         "params": IT_PARAMS, "window": None},
+        {"key": "crag-pages", "q": 'inurl:falesia "{region}"',
+         "params": IT_PARAMS, "window": None},
+        {"key": "forums", "q": '"{region}" (arrampicata OR climbing) (site:reddit.com OR site:ukclimbing.com OR site:forum.planetmountain.com)',
+         "params": EN_PARAMS, "window": None},
+        {"key": "social-video", "q": '"{region}" (arrampicata OR falesia OR climbing) (site:youtube.com OR site:instagram.com OR site:facebook.com)',
+         "params": IT_PARAMS, "window": "y"},
+    ],
+    "en": [
+        {"key": "crags-local", "q": '("rock climbing" OR crag OR "rock climbs") "{region}"',
+         "params": EN_PARAMS, "window": None},
+        {"key": "new-routes", "q": '("new route" OR "new routes" OR "first ascent" OR "new climb") climbing "{region}"',
+         "params": EN_PARAMS, "window": "y"},
+        {"key": "access", "q": 'climbing (access OR closed OR restriction OR "nesting birds" OR ban) "{region}"',
+         "params": EN_PARAMS, "window": "y"},
+        {"key": "topo-pdf", "q": '(climbing OR guide OR topo OR "new routes") "{region}" filetype:pdf',
+         "params": EN_PARAMS, "window": None},
+        {"key": "crag-pages", "q": '(inurl:crag OR inurl:climbing) "{region}"',
+         "params": EN_PARAMS, "window": None},
+        {"key": "forums", "q": '"{region}" climbing (site:reddit.com OR site:ukclimbing.com OR site:climbing.ie)',
+         "params": EN_PARAMS, "window": None},
+        {"key": "social-video", "q": '"{region}" (climbing OR bouldering) (site:youtube.com OR site:instagram.com OR site:facebook.com)',
+         "params": EN_PARAMS, "window": "y"},
+    ],
+}
+SURVEY_LENSES = SURVEY_LENSES_BY_LANG["it"]  # back-compat default
 
 
 def doc_problems(d: dict) -> list[str]:
@@ -197,22 +216,23 @@ def run_chatter(seeds: list[str], window: str, num: int, force: bool) -> Run:
     return run
 
 
-def run_survey(region: str, num: int, force: bool) -> Run:
+def run_survey(region: str, num: int, force: bool, lang: str = "en") -> Run:
     """Region-level multi-lens discovery sweep — one search per SURVEY_LENS,
     all mechanical. Docs share the chatter schema (seed = the region, lens =
     the angle that found them); the link step matches known crag names in
     them, the LLM phase will later extract UNKNOWN ones."""
+    lenses = SURVEY_LENSES_BY_LANG.get(lang) or SURVEY_LENSES_BY_LANG["en"]
     key = load_key()
     left = quota_left(key)
-    if not force and left - len(SURVEY_LENSES) < MIN_QUOTA_LEFT:
+    if not force and left - len(lenses) < MIN_QUOTA_LEFT:
         raise RuntimeError(
-            f"only {left} SerpAPI searches left; {len(SURVEY_LENSES)} needed would drop below "
+            f"only {left} SerpAPI searches left; {len(lenses)} needed would drop below "
             f"the {MIN_QUOTA_LEFT} reserved for the flight monitor — --force to override")
 
     run = Run.create(None, ["serp"], {"num": num, "mode": "survey"}, {}, kind="chatter")
-    run.log(f"survey: region {region!r}, {len(SURVEY_LENSES)} lenses, quota_left={left}")
+    run.log(f"survey: region {region!r}, lang={lang}, {len(lenses)} lenses, quota_left={left}")
     docs, queries = [], []
-    for lens in SURVEY_LENSES:
+    for lens in lenses:
         q = lens["q"].format(region=region)
         params = {"engine": "google", "num": str(num), "q": q, "api_key": key,
                   **lens["params"]}
@@ -241,7 +261,7 @@ def run_survey(region: str, num: int, force: bool) -> Run:
     from .runstore import _atomic_write
     _atomic_write(run.dir / "parsed" / "chatter.json", payload)
     run.set_status("serp", "done")
-    run.log(f"survey: done — {len(docs)} docs across {len(SURVEY_LENSES)} lenses")
+    run.log(f"survey: done — {len(docs)} docs across {len(lenses)} lenses")
     return run
 
 
