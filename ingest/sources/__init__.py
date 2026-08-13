@@ -21,6 +21,7 @@ must survive JSON round-tripping (the frontier is persisted per item).
 """
 from __future__ import annotations
 
-from . import camptocamp, climbook, falesiait, openbeta, thecrag, ukc
+from . import camptocamp, climbook, falesiait, irishwiki, openbeta, thecrag, ukc
 
-REGISTRY = {m.SOURCE_ID: m for m in (camptocamp, climbook, falesiait, openbeta, thecrag, ukc)}
+REGISTRY = {m.SOURCE_ID: m for m in (camptocamp, climbook, falesiait, irishwiki,
+                                     openbeta, thecrag, ukc)}
