@@ -16,7 +16,7 @@
           "out": "2026-11-25",
           "back": "2026-11-27",
           "book_url": "https://www.skyscanner.net/transport/flights/lgw/bcn/261125/261127/",
-          "price": 44,
+          "price": 41,
           "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTExLTI1agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDQkNOGkISCjIwMjYtMTEtMjdqBwgBEgNCQ05yBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ"
         },
         {
@@ -90,7 +90,7 @@
           "out": "2026-11-29",
           "back": "2026-12-01",
           "book_url": "https://www.skyscanner.net/transport/flights/bfs/bcn/261129/261201/",
-          "price": 67,
+          "price": 70,
           "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTExLTI5agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQkNOGjASCjIwMjYtMTItMDFqBwgBEgNCQ05yBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ"
         },
         {
@@ -207,7 +207,7 @@
             "stops": 0
           },
           {
-            "price": 56,
+            "price": 59,
             "airline": "Ryanair",
             "from": "STN",
             "to": "ALC",
@@ -352,5 +352,5 @@
       }
     }
   },
-  "checked_at": "2026-08-16 06:49 UTC (Google Flights/SerpApi)"
+  "checked_at": "2026-08-17 07:00 UTC (Google Flights/SerpApi)"
 }
