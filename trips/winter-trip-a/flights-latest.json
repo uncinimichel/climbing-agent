@@ -16,7 +16,7 @@
           "out": "2026-11-25",
           "back": "2026-11-27",
           "book_url": "https://www.skyscanner.net/transport/flights/lgw/bcn/261125/261127/",
-          "price": 44,
+          "price": 41,
           "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTExLTI1agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDQkNOGkISCjIwMjYtMTEtMjdqBwgBEgNCQ05yBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ"
         },
         {
@@ -90,7 +90,7 @@
           "out": "2026-11-29",
           "back": "2026-12-01",
           "book_url": "https://www.skyscanner.net/transport/flights/bfs/bcn/261129/261201/",
-          "price": 68,
+          "price": 67,
           "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTExLTI5agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQkNOGjASCjIwMjYtMTItMDFqBwgBEgNCQ05yBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ"
         },
         {
@@ -98,7 +98,7 @@
           "out": "2026-11-30",
           "back": "2026-12-02",
           "book_url": "https://www.skyscanner.net/transport/flights/bfs/bcn/261130/261202/",
-          "price": 60,
+          "price": 67,
           "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTExLTMwagcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQkNOGjASCjIwMjYtMTItMDJqBwgBEgNCQ05yBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ"
         }
       ]
@@ -135,12 +135,12 @@
             "stops": 0
           },
           {
-            "price": 52,
-            "airline": "Ryanair",
-            "from": "STN",
+            "price": 53,
+            "airline": "easyJet",
+            "from": "LTN",
             "to": "BCN",
-            "dep": "13:00",
-            "arr": "16:10",
+            "dep": "17:00",
+            "arr": "20:10",
             "stops": 0
           }
         ],
@@ -161,7 +161,7 @@
             "stops": 0
           },
           {
-            "price": 68,
+            "price": 67,
             "airline": "Ryanair",
             "from": "DUB",
             "to": "BCN",
@@ -170,7 +170,7 @@
             "stops": 0
           },
           {
-            "price": 68,
+            "price": 67,
             "airline": "Ryanair",
             "from": "DUB",
             "to": "BCN",
@@ -241,7 +241,7 @@
             "stops": 0
           },
           {
-            "price": 89,
+            "price": 84,
             "airline": "Ryanair",
             "from": "DUB",
             "to": "ALC",
@@ -250,7 +250,7 @@
             "stops": 0
           },
           {
-            "price": 89,
+            "price": 84,
             "airline": "Ryanair",
             "from": "DUB",
             "to": "ALC",
@@ -311,12 +311,12 @@
             "stops": 0
           },
           {
-            "price": 58,
-            "airline": "Ryanair UK",
+            "price": 57,
+            "airline": "easyJet",
             "from": "STN",
             "to": "BFS",
-            "dep": "17:35",
-            "arr": "18:55",
+            "dep": "11:55",
+            "arr": "13:15",
             "stops": 0
           }
         ],
@@ -352,5 +352,5 @@
       }
     }
   },
-  "checked_at": "2026-08-19 06:49 UTC (Google Flights/SerpApi)"
+  "checked_at": "2026-08-20 06:52 UTC (Google Flights/SerpApi)"
 }
