@@ -58,7 +58,7 @@
           "out": "2026-11-24",
           "back": "2026-11-26",
           "book_url": "https://www.skyscanner.net/transport/flights/bfs/bcn/261124/261126/",
-          "price": 67,
+          "price": 68,
           "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTExLTI0agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQkNOGjASCjIwMjYtMTEtMjZqBwgBEgNCQ05yBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ"
         },
         {
@@ -302,21 +302,21 @@
             "stops": 0
           },
           {
+            "price": 56,
+            "airline": "easyJet",
+            "from": "LTN",
+            "to": "BFS",
+            "dep": "11:10",
+            "arr": "12:30",
+            "stops": 0
+          },
+          {
             "price": 57,
             "airline": "easyJet",
             "from": "STN",
             "to": "BFS",
             "dep": "08:50",
             "arr": "10:10",
-            "stops": 0
-          },
-          {
-            "price": 58,
-            "airline": "easyJet",
-            "from": "LTN",
-            "to": "BFS",
-            "dep": "07:00",
-            "arr": "08:20",
             "stops": 0
           }
         ],
@@ -352,5 +352,5 @@
       }
     }
   },
-  "checked_at": "2026-08-23 06:49 UTC (Google Flights/SerpApi)"
+  "checked_at": "2026-08-24 06:56 UTC (Google Flights/SerpApi)"
 }
