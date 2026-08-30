@@ -8,7 +8,7 @@
           "out": "2026-11-24",
           "back": "2026-11-26",
           "book_url": "https://www.skyscanner.net/transport/flights/lgw/bcn/261124/261126/",
-          "price": 44,
+          "price": 47,
           "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTExLTI0agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDQkNOGkISCjIwMjYtMTEtMjZqBwgBEgNCQ05yBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ"
         },
         {
@@ -24,7 +24,7 @@
           "out": "2026-11-26",
           "back": "2026-11-28",
           "book_url": "https://www.skyscanner.net/transport/flights/lgw/bcn/261126/261128/",
-          "price": 43,
+          "price": 44,
           "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTExLTI2agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDQkNOGkISCjIwMjYtMTEtMjhqBwgBEgNCQ05yBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ"
         },
         {
@@ -66,7 +66,7 @@
           "out": "2026-11-25",
           "back": "2026-11-27",
           "book_url": "https://www.skyscanner.net/transport/flights/bfs/bcn/261125/261127/",
-          "price": 110,
+          "price": 111,
           "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTExLTI1agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQkNOGjASCjIwMjYtMTEtMjdqBwgBEgNCQ05yBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ"
         },
         {
@@ -82,7 +82,7 @@
           "out": "2026-11-28",
           "back": "2026-11-30",
           "book_url": "https://www.skyscanner.net/transport/flights/bfs/bcn/261128/261130/",
-          "price": 65,
+          "price": 66,
           "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTExLTI4agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQkNOGjASCjIwMjYtMTEtMzBqBwgBEgNCQ05yBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ"
         },
         {
@@ -90,7 +90,7 @@
           "out": "2026-11-29",
           "back": "2026-12-01",
           "book_url": "https://www.skyscanner.net/transport/flights/bfs/bcn/261129/261201/",
-          "price": 67,
+          "price": 65,
           "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTExLTI5agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQkNOGjASCjIwMjYtMTItMDFqBwgBEgNCQ05yBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ"
         },
         {
@@ -161,7 +161,7 @@
             "stops": 0
           },
           {
-            "price": 70,
+            "price": 69,
             "airline": "Ryanair",
             "from": "DUB",
             "to": "BCN",
@@ -170,7 +170,7 @@
             "stops": 0
           },
           {
-            "price": 72,
+            "price": 71,
             "airline": "Ryanair",
             "from": "DUB",
             "to": "BCN",
@@ -181,6 +181,14 @@
         ],
         "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTExLTI3agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQkNOGjASCjIwMjYtMTEtMjlqBwgBEgNCQ05yBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
         "book_url": "https://www.skyscanner.net/transport/flights/dub/bcn/261127/261129/"
+      }
+    },
+    "Roca Gris": {
+      "michel": {
+        "mode": "unknown"
+      },
+      "dan": {
+        "mode": "unknown"
       }
     },
     "Costa Blanca": {
@@ -224,7 +232,7 @@
         "to": "ALC",
         "options": [
           {
-            "price": 69,
+            "price": 74,
             "airline": "Ryanair UK",
             "from": "BFS",
             "to": "ALC",
@@ -233,7 +241,7 @@
             "stops": 0
           },
           {
-            "price": 76,
+            "price": 75,
             "airline": "Ryanair",
             "from": "DUB",
             "to": "ALC",
@@ -242,7 +250,7 @@
             "stops": 0
           },
           {
-            "price": 79,
+            "price": 78,
             "airline": "Ryanair",
             "from": "DUB",
             "to": "ALC",
@@ -253,14 +261,6 @@
         ],
         "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTExLTI3agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQUxDGjASCjIwMjYtMTEtMjlqBwgBEgNBTENyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
         "book_url": "https://www.skyscanner.net/transport/flights/bfs/alc/261127/261129/"
-      }
-    },
-    "Roca Gris": {
-      "michel": {
-        "mode": "unknown"
-      },
-      "dan": {
-        "mode": "unknown"
       }
     },
     "El Castellet": {
@@ -311,12 +311,12 @@
             "stops": 0
           },
           {
-            "price": 53,
+            "price": 49,
             "airline": "easyJet",
-            "from": "LTN",
+            "from": "STN",
             "to": "BFS",
-            "dep": "11:10",
-            "arr": "12:30",
+            "dep": "08:50",
+            "arr": "10:10",
             "stops": 0
           }
         ],
@@ -352,5 +352,5 @@
       }
     }
   },
-  "checked_at": "2026-08-29 12:14 UTC (Google Flights/SerpApi)"
+  "checked_at": "2026-08-30 11:13 UTC (Google Flights/SerpApi)"
 }
