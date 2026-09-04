@@ -45,20 +45,6 @@
         "book_url": "https://www.skyscanner.net/transport/flights/bfs/alc/261204/261206/"
       }
     },
-    "Montserrat": {
-      "michel": {
-        "mode": "fly",
-        "options": [],
-        "to": "BCN",
-        "book_url": "https://www.skyscanner.net/transport/flights/lgw/bcn/261204/261206/"
-      },
-      "dan": {
-        "mode": "fly",
-        "options": [],
-        "to": "BCN",
-        "book_url": "https://www.skyscanner.net/transport/flights/bfs/bcn/261204/261206/"
-      }
-    },
     "Lower Eagle Crag": {
       "michel": {
         "mode": "unknown"
@@ -73,6 +59,20 @@
       },
       "dan": {
         "mode": "unknown"
+      }
+    },
+    "Montserrat": {
+      "michel": {
+        "mode": "fly",
+        "options": [],
+        "to": "BCN",
+        "book_url": "https://www.skyscanner.net/transport/flights/lgw/bcn/261204/261206/"
+      },
+      "dan": {
+        "mode": "fly",
+        "options": [],
+        "to": "BCN",
+        "book_url": "https://www.skyscanner.net/transport/flights/bfs/bcn/261204/261206/"
       }
     },
     "Ksar Rock": {
@@ -106,5 +106,5 @@
       }
     }
   },
-  "checked_at": "2026-09-04 10:44 UTC (no key \u2014 links only)"
+  "checked_at": "2026-09-04 20:54 UTC (no key \u2014 links only)"
 }

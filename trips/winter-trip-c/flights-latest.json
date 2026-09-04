@@ -75,6 +75,14 @@
         "mode": "unknown"
       }
     },
+    "Avon Gorge": {
+      "michel": {
+        "mode": "unknown"
+      },
+      "dan": {
+        "mode": "unknown"
+      }
+    },
     "Lower Eagle Crag": {
       "michel": {
         "mode": "unknown"
@@ -90,21 +98,7 @@
       "dan": {
         "mode": "unknown"
       }
-    },
-    "Anti Atlas": {
-      "michel": {
-        "mode": "fly",
-        "options": [],
-        "to": "AGA",
-        "book_url": "https://www.skyscanner.net/transport/flights/lgw/aga/261211/261213/"
-      },
-      "dan": {
-        "mode": "fly",
-        "options": [],
-        "to": "AGA",
-        "book_url": "https://www.skyscanner.net/transport/flights/bfs/aga/261211/261213/"
-      }
     }
   },
-  "checked_at": "2026-09-04 10:44 UTC (no key \u2014 links only)"
+  "checked_at": "2026-09-04 20:54 UTC (no key \u2014 links only)"
 }
