@@ -1,8 +1,13 @@
 """multi-pitch.com route-database lookups — moved verbatim from
 update_report.py, with MP_CLIMBS threaded as an explicit parameter instead of
 a module-level global mutated by main()."""
+import json
+import re
+import unicodedata
+
 from core.geo import haversine_km
 from core.http import get_json
+from core.paths import REPO_ROOT
 
 MP_DATA_URL = "https://multi-pitch.com/data/data.json"   # live climb DB (S3-backed)
 SITE_URL = "https://multi-pitch.com/"
@@ -56,6 +61,52 @@ def climb_url(c):
     return SITE_URL + "climbs/" + slug + "/"
 
 
+# ── which way a climb faces ──────────────────────────────────────────────────
+# The live data.json feed doesn't carry `face`; the curated corpus record does
+# (corpus/record/**/*.json, the source-stated multi-pitch.com facing), keyed by
+# (cliff, route) with the crag's own areas.json aspect as the fallback. Loaded
+# once per process.
+_CORPUS_FACES = None
+
+
+def _key(s):
+    s = unicodedata.normalize("NFKD", s or "").encode("ascii", "ignore").decode()
+    return re.sub(r"[^a-z0-9]+", " ", s.lower()).strip()
+
+
+def corpus_faces():
+    global _CORPUS_FACES
+    if _CORPUS_FACES is None:
+        faces, rec = {}, REPO_ROOT / "corpus" / "record"
+        try:
+            areas = {a["id"]: a for a in json.loads((rec / "areas.json").read_text())["areas"]}
+        except Exception:
+            areas = {}
+        for a in areas.values():
+            if a.get("aspect"):
+                faces[(_key(a["name"]), None)] = a["aspect"]
+        for f in rec.rglob("*.json"):
+            try:
+                d = json.loads(f.read_text())
+            except Exception:
+                continue
+            if isinstance(d, dict) and d.get("area_id") and d.get("aspect"):
+                cliff = (areas.get(d["area_id"]) or {}).get("name", "")
+                faces[(_key(cliff), _key(d.get("name")))] = d["aspect"]
+        _CORPUS_FACES = faces
+    return _CORPUS_FACES
+
+
+def climb_face(c):
+    """Source-stated facing for a data.json climb: its own `face` if the feed
+    ever carries one, else the corpus record for (cliff, route), else the
+    crag's aspect. None when nothing states it — never guessed."""
+    if c.get("face"):
+        return c["face"]
+    faces, cliff = corpus_faces(), _key(c.get("cliff"))
+    return faces.get((cliff, _key(c.get("routeName")))) or faces.get((cliff, None))
+
+
 def nearby_climb_cards(v, mp_climbs, km=60, limit=6):
     """Full climb dicts (image + grade + flags) for multi-pitch.com routes near the venue."""
     out = []
@@ -76,6 +127,7 @@ def nearby_climb_cards(v, mp_climbs, km=60, limit=6):
                 "length": c.get("length"),
                 "approach": c.get("approachTime"),
                 "appDiff": c.get("approachDifficulty"),
+                "face": climb_face(c),   # source-stated facing (compass point) or None
                 "dist": round(d),
                 "img": (SITE_URL.rstrip("/") + "/" + img) if img else None,
                 "url": climb_url(c),

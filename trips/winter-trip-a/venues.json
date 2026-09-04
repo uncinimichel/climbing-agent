@@ -15,7 +15,9 @@
       "lon": -115.1674,
       "rock": "limestone",
       "style": "",
-      "why": ""
+      "why": "",
+      "aspect": "E/N",
+      "aspect_source": "curated 2026-09-04 (unverified): Kananaskis — east-face routes, north ridge"
     },
     {
       "name": "Anica Kuk",
@@ -36,7 +38,9 @@
       "lon": -2.6332,
       "rock": "limestone",
       "style": "",
-      "why": ""
+      "why": "",
+      "aspect": "W",
+      "aspect_source": "curated 2026-09-04: gorge's east bank, Main Wall faces W over the Avon"
     },
     {
       "name": "Bosigran",
@@ -90,7 +94,9 @@
       "lon": -2.6643,
       "rock": "limestone",
       "style": "",
-      "why": ""
+      "why": "",
+      "aspect": "W",
+      "aspect_source": "curated 2026-09-04: Wye valley, faces W/SW"
     },
     {
       "name": "Gimmer Crag",
@@ -144,7 +150,9 @@
       "lon": -8.6852,
       "rock": "quartzite",
       "style": "",
-      "why": ""
+      "why": "",
+      "aspect": "W",
+      "aspect_source": "corpus area 'Donegal (Sail Rock)' = W"
     },
     {
       "name": "Tormore Group",
@@ -330,7 +338,9 @@
       "lon": 16.5907,
       "rock": "granite",
       "style": "",
-      "why": ""
+      "why": "",
+      "aspect": "S/W",
+      "aspect_source": "curated 2026-09-04 (unverified): Sydpilaren S, west face routes W"
     },
     {
       "name": "Meadinha",

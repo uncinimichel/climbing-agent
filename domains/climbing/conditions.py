@@ -13,6 +13,7 @@ never move a golf ranking, and so one person (or one agent) can own this file
 end to end without reading anything outside domains/climbing/.
 """
 import math
+import re
 
 from core.weather import metrics
 
@@ -47,6 +48,58 @@ ASPECT_ADJ = {"N": -4, "NE": -3, "NW": -2, "E": -1, "W": 2, "SE": 3, "SW": 3, "S
 
 # Bearing (°) each aspect looks toward — for wind-vs-face exposure.
 ASPECT_DEG = {"N": 0, "NE": 45, "E": 90, "SE": 135, "S": 180, "SW": 225, "W": 270, "NW": 315}
+ASPECT_POINTS = ("N", "NE", "E", "SE", "S", "SW", "W", "NW")   # clockwise
+
+
+# ── aspect: one face, several faces, or every face ──────────────────────────
+# A venue's `aspect` (venues.json / GAZETTEER) is a source-stated compass
+# facing. A single crag is one point ("S"). An AREA whose walls look different
+# ways lists them slash-joined, dominant first ("S/SW/NW" — the Dolomites), and
+# a free-standing tower or dome that has a wall in every direction says "all".
+# Every consumer below goes through these helpers, so the scoring, the tag chip
+# and the compass-rose widget all read the field the same way.
+
+def aspect_points(aspect):
+    """Compass points an `aspect` value names, in the order written; [] when
+    unknown. 'all' → all eight."""
+    if not aspect:
+        return []
+    s = str(aspect).strip().upper()
+    if s in ("ALL", "*", "ANY"):
+        return list(ASPECT_POINTS)
+    out = []
+    for tok in re.split(r"[/,+|\s]+", s):
+        if tok in ASPECT_DEG and tok not in out:
+            out.append(tok)
+    return out
+
+
+def aspect_label(aspect):
+    """Display form: 'S', 'S/SW', or 'all' — '' when unknown."""
+    pts = aspect_points(aspect)
+    if not pts:
+        return ""
+    return "all" if len(pts) == len(ASPECT_POINTS) else "/".join(pts)
+
+
+def aspect_adj(aspect, default=1):
+    """Felt-temperature shift in full sun (°C): the mean over the listed faces
+    (an 'all' tower nets to ~0). `default` when the aspect is unknown — the
+    callers' historical mild +1 sun bump."""
+    pts = aspect_points(aspect)
+    if not pts:
+        return default
+    return sum(ASPECT_ADJ[p] for p in pts) / len(pts)
+
+
+def aspect_windward(aspect, wdir):
+    """Mean of cos(wind − face) over the listed faces: +1 wind straight onto the
+    wall … −1 fully leeward; 0 when unknown or when the faces cancel out
+    (a tower always has a lee side)."""
+    pts = aspect_points(aspect)
+    if not pts or wdir is None:
+        return 0.0
+    return sum(math.cos(math.radians(wdir - ASPECT_DEG[p])) for p in pts) / len(pts)
 
 
 # ── the crag's physical character ────────────────────────────────────────────
@@ -58,10 +111,7 @@ def wind_factor(v, wdir):
     a leeward wall is part-sheltered by its own hillside. A `wind_exposed`
     crag (sea cliff, free-standing tower, summit ridge) has nothing to hide
     behind, so it pays a surcharge whichever way the wind blows."""
-    f = 1.0
-    deg = ASPECT_DEG.get((v.get("aspect") or "").upper())
-    if deg is not None and wdir is not None:
-        f += 0.25 * math.cos(math.radians(wdir - deg))   # windward +25% … leeward −25%
+    f = 1.0 + 0.25 * aspect_windward(v.get("aspect"), wdir)   # windward +25% … leeward −25%
     if v.get("wind_exposed"):
         f += 0.25
     return f
@@ -79,7 +129,7 @@ def drying_factor(v):
         return 0.7
     if d == "slow":
         return 1.4
-    f = 1.0 - ASPECT_ADJ.get((v.get("aspect") or "").upper(), 1) * 0.05  # N +0.2 … S −0.2
+    f = 1.0 - aspect_adj(v.get("aspect"), 1) * 0.05  # N +0.2 … S −0.2
     if v.get("coastal") or v.get("tidal"):
         f += 0.25
     return max(0.6, min(1.6, f))
@@ -88,10 +138,10 @@ def drying_factor(v):
 def drying_traits(v):
     """Short human reason for the venue's drying factor ('' when neutral)."""
     bits = []
-    asp = (v.get("aspect") or "").upper()
-    if ASPECT_ADJ.get(asp, 0) <= -2:
+    asp, adj = aspect_label(v.get("aspect")), aspect_adj(v.get("aspect"), 0)
+    if adj <= -2:
         bits.append(f"shaded {asp} face")
-    elif ASPECT_ADJ.get(asp, 0) >= 3:
+    elif adj >= 3:
         bits.append(f"sunny {asp} face")
     if v.get("coastal") or v.get("tidal"):
         bits.append("sea air")
@@ -107,7 +157,7 @@ def sun_adjusted_tmax(v, tmax, sun_frac=None):
     for the climatology/outlook horizons."""
     if tmax is None:
         return tmax
-    adj = ASPECT_ADJ.get((v.get("aspect") or "").upper(), 1)
+    adj = aspect_adj(v.get("aspect"), 1)
     s = 0.7 if sun_frac is None else max(0.0, min(1.0, sun_frac))
     return tmax + adj * s
 

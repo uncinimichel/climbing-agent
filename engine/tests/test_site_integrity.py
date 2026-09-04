@@ -27,6 +27,12 @@ CORPUS_DEPLOYED = KDIR / "data" / "corpus.json"
 ASPECTS = {"N", "NE", "E", "SE", "S", "SW", "W", "NW"}
 
 
+def _aspect_ok(a):
+    """Venue `aspect`: one point, several slash-joined ('S/SW/NW'), or 'all'."""
+    a = str(a).strip().upper()
+    return a == "ALL" or all(p in ASPECTS for p in a.split("/"))
+
+
 def _read(p):
     return Path(p).read_text(encoding="utf-8")
 
@@ -223,7 +229,7 @@ class VenueCharacter(unittest.TestCase):
     def _check(self, entries, label):
         bad = []
         for name, v in entries:
-            if v.get("aspect") and v["aspect"].upper() not in ASPECTS:
+            if v.get("aspect") and not _aspect_ok(v["aspect"]):
                 bad.append(f"{label}:{name}.aspect={v['aspect']!r}")
             if v.get("drying") and v["drying"].lower() not in self.DRYING:
                 bad.append(f"{label}:{name}.drying={v['drying']!r}")

@@ -29,6 +29,18 @@ def _fly(m_to, d_to=None):
 # Same physical-character vocabulary as venues.json (see its "notes"): aspect /
 # coastal / wind_exposed / drying — the ranking reads them for felt temperature,
 # gust exposure and how long the rock stays wet.
+#
+# aspect provenance (2026-09-04, every entry now has one — it draws the compass
+# rose on the venue header): corpus/multi-pitch.com route facings for tenerife
+# (Cathedral Rock E), vratsa (S), freyr (W), lundy (W), devon (Cornakey S; Culm
+# coast W), anti atlas (Amzkhssan S, Ksar SE, Lower Eagle NE, High Sierra S);
+# "all" = towers/domes with a wall every way (elbsandstein, meteora, wadi rum,
+# campanile basso, mont blonc, spitzkoppe, medina); the rest are curated from
+# general knowledge and UNVERIFIED — mallorca (Sa Gubia S/SE), montserrat (S
+# side + N side), setesdal (Hægefjell S/SW), loften (Presten W, Vågakallen N),
+# zadiel (N–S gorge → E/W walls), sicilly (San Vito: Monte Monaco N, Salinella
+# W), carcassonne (S), aladaglar (Demirkazık N face, Parmakkaya E). Correct
+# in place when you have been there.
 GAZETTEER = {
     # ── areas the spreadsheet names but spells its own way ───────────────────
     # These used to reach build_venues' geocode fallback whenever the trip did
@@ -36,59 +48,59 @@ GAZETTEER = {
     # of them on the wrong continent — "Aaran" (a typo for Arran) resolved to
     # ‘Arān in Syria and ranked 13th on Aleppo's weather. Coordinates below are
     # taken from the curated trip-ni-july-2026/venues.json entries, not guessed.
-    "aaran": dict(lat=55.634, lon=-5.20, rock="granite", style="mountain multi-pitch (Cìr Mhòr)",
+    "aaran": dict(lat=55.634, lon=-5.20, rock="granite", style="mountain multi-pitch (Cìr Mhòr)", aspect="S",
                   coastal=True, wind_exposed=True, travel=_fly("GLA")),
-    "mournes": dict(lat=54.15, lon=-6.00, rock="granite", style="moderate multi-pitch trad",
+    "mournes": dict(lat=54.15, lon=-6.00, rock="granite", style="moderate multi-pitch trad", aspect="SE/NE/SW",
                     wind_exposed=True,
                     travel={"michel": {"mode": "fly", "to": "BFS"}, "dan": {"mode": "local"}}),
-    "lake district": dict(lat=54.546, lon=-3.128, rock="volcanic rock", style="large, Full-Range multi-pitch",
+    "lake district": dict(lat=54.546, lon=-3.128, rock="volcanic rock", style="large, Full-Range multi-pitch", aspect="SW/N",
                           travel={"michel": {"mode": "drive"}, "dan": {"mode": "fly", "to": "MAN"}}),
     "cornwall": dict(lat=50.176, lon=-5.62, rock="granite",
                      style="immaculate sea-cliff trad (Bosigran, Chair Ladder)",
                      aspect="NW", coastal=True, tidal=True, wind_exposed=True, drying="fast",
                      travel={"michel": {"mode": "drive"}, "dan": {"mode": "fly", "to": "NQY"}}),
-    "llanberis": dict(lat=53.103, lon=-4.043, rock="rhyolite/dolerite", style="vast, Full-Range multi-pitch",
+    "llanberis": dict(lat=53.103, lon=-4.043, rock="rhyolite/dolerite", style="vast, Full-Range multi-pitch", aspect="N/E/SW",
                       drying="slow",
                       travel={"michel": {"mode": "drive"}, "dan": {"mode": "fly", "to": "MAN"}}),
-    "dolomites": dict(lat=46.54, lon=12.137, rock="limestone", style="vast Full-Range multi-pitch",
+    "dolomites": dict(lat=46.54, lon=12.137, rock="limestone", style="vast Full-Range multi-pitch", aspect="S/SW/NW",
                       travel=_fly("VCE")),
     "east tyrol": dict(lat=46.829, lon=12.769, rock="limestone/dolomite",
-                       style="large, medium-to-hard multi-pitch", travel=_fly("INN")),
+                       style="large, medium-to-hard multi-pitch", aspect="N/S", travel=_fly("INN")),
     "picos europa": dict(lat=43.201, lon=-4.821, rock="limestone",
-                         style="moderate-to-hard alpine multi-pitch (Naranjo de Bulnes)",
+                         style="moderate-to-hard alpine multi-pitch (Naranjo de Bulnes)", aspect="S/W/E",
                          travel=_fly("BIO")),
-    "tenerife": dict(lat=28.27, lon=-16.64, rock="volcanic", style="Cañadas del Teide multi-pitch", travel=_fly("TFS")),
-    "mallorca": dict(lat=39.72, lon=2.77, rock="limestone", style="Sa Gubia + sea cliffs", coastal=True, travel=_fly("PMI")),
+    "tenerife": dict(lat=28.27, lon=-16.64, rock="volcanic", style="Cañadas del Teide multi-pitch", aspect="E", travel=_fly("TFS")),
+    "mallorca": dict(lat=39.72, lon=2.77, rock="limestone", style="Sa Gubia + sea cliffs", aspect="S/SE", coastal=True, travel=_fly("PMI")),
     "riglos": dict(lat=42.35, lon=-0.73, rock="conglomerate", style="huge overhanging towers", aspect="S", wind_exposed=True, travel=_fly("BCN")),
-    "vratsa": dict(lat=43.20, lon=23.55, rock="limestone", style="big limestone walls", travel=_fly("SOF")),
-    "elbsandstein": dict(lat=50.91, lon=14.06, rock="sandstone", style="historic sandstone towers", travel=_fly("PRG")),
-    "montserrat": dict(lat=41.60, lon=1.81, rock="conglomerate", style="pocketed conglomerate spires", travel=_fly("BCN")),
-    "freyr": dict(lat=50.22, lon=4.89, rock="limestone", style="Meuse valley slab classics", travel=_fly("BRU")),
-    "meteora": dict(lat=39.72, lon=21.63, rock="conglomerate", style="monastery towers, bold conglomerate", travel=_fly("SKG")),
-    "anti atlas": dict(lat=29.72, lon=-8.98, rock="quartzite", style="vast desert trad (Tafraout)", travel=_fly("AGA")),
+    "vratsa": dict(lat=43.20, lon=23.55, rock="limestone", style="big limestone walls", aspect="S", travel=_fly("SOF")),
+    "elbsandstein": dict(lat=50.91, lon=14.06, rock="sandstone", style="historic sandstone towers", aspect="all", travel=_fly("PRG")),
+    "montserrat": dict(lat=41.60, lon=1.81, rock="conglomerate", style="pocketed conglomerate spires", aspect="S/N", travel=_fly("BCN")),
+    "freyr": dict(lat=50.22, lon=4.89, rock="limestone", style="Meuse valley slab classics", aspect="W", travel=_fly("BRU")),
+    "meteora": dict(lat=39.72, lon=21.63, rock="conglomerate", style="monastery towers, bold conglomerate", aspect="all", travel=_fly("SKG")),
+    "anti atlas": dict(lat=29.72, lon=-8.98, rock="quartzite", style="vast desert trad (Tafraout)", aspect="S/SE/NE", travel=_fly("AGA")),
     "bruggler": dict(lat=47.12, lon=8.99, rock="limestone", style="plated limestone slabs", aspect="S", travel=_fly("ZRH")),
-    "setesdal": dict(lat=58.9, lon=7.4, rock="granite", style="granite walls & slabs", travel=_fly("KRS")),
-    "loften": dict(lat=68.12, lon=13.6, rock="granite", style="arctic granite (Presten, Svolvær)", coastal=True, travel=_fly("BOO")),
-    "wadi rum": dict(lat=29.57, lon=35.42, rock="sandstone", style="desert big walls, Bedouin routes", travel=_fly("AQJ")),
+    "setesdal": dict(lat=58.9, lon=7.4, rock="granite", style="granite walls & slabs", aspect="S/SW", travel=_fly("KRS")),
+    "loften": dict(lat=68.12, lon=13.6, rock="granite", style="arctic granite (Presten, Svolvær)", aspect="W/N", coastal=True, travel=_fly("BOO")),
+    "wadi rum": dict(lat=29.57, lon=35.42, rock="sandstone", style="desert big walls, Bedouin routes", aspect="all", travel=_fly("AQJ")),
     "triglav": dict(lat=46.38, lon=13.84, rock="limestone", style="north-face alpine limestone", aspect="N", travel=_fly("LJU")),
-    "lundy": dict(lat=51.18, lon=-4.67, rock="granite", style="island sea-cliff granite", tidal=True, coastal=True, wind_exposed=True,
+    "lundy": dict(lat=51.18, lon=-4.67, rock="granite", style="island sea-cliff granite", aspect="W", tidal=True, coastal=True, wind_exposed=True,
                   travel={"michel": {"mode": "drive"}, "dan": {"mode": "fly", "to": "BRS"}}),
     "costa blanca": dict(lat=38.63, lon=0.07, rock="limestone", style="Peñón d'Ifach + big ridges", aspect="S", coastal=True, travel=_fly("ALC")),
-    "zadiel": dict(lat=48.62, lon=20.83, rock="limestone", style="karst gorge towers", travel=_fly("KSC")),
+    "zadiel": dict(lat=48.62, lon=20.83, rock="limestone", style="karst gorge towers", aspect="E/W", travel=_fly("KSC")),
     "calanques": dict(lat=43.21, lon=5.45, rock="limestone", style="sea cliffs above turquoise coves", aspect="S", coastal=True, travel=_fly("MRS")),
     "gredos": dict(lat=40.27, lon=-5.17, rock="granite", style="Galayos granite spires", aspect="W", travel=_fly("MAD")),
-    "sicilly": dict(lat=38.17, lon=12.74, rock="limestone", style="San Vito lo Capo sea cliffs", coastal=True, travel=_fly("PMO")),
-    "campanile basso": dict(lat=46.16, lon=10.87, rock="dolomite", style="Brenta's free-standing tower", travel=_fly("VRN")),
-    "mont blonc": dict(lat=45.88, lon=6.89, rock="granite", style="high alpine granite (Chamonix)", travel=_fly("GVA")),
-    "spitzkoppe": dict(lat=-21.83, lon=15.19, rock="granite", style="desert granite dome", travel=_fly("WDH")),
+    "sicilly": dict(lat=38.17, lon=12.74, rock="limestone", style="San Vito lo Capo sea cliffs", aspect="N/W", coastal=True, travel=_fly("PMO")),
+    "campanile basso": dict(lat=46.16, lon=10.87, rock="dolomite", style="Brenta's free-standing tower", aspect="all", travel=_fly("VRN")),
+    "mont blonc": dict(lat=45.88, lon=6.89, rock="granite", style="high alpine granite (Chamonix)", aspect="all", travel=_fly("GVA")),
+    "spitzkoppe": dict(lat=-21.83, lon=15.19, rock="granite", style="desert granite dome", aspect="all", travel=_fly("WDH")),
     "hoy": dict(lat=58.88, lon=-3.43, rock="sandstone", style="Old Man of Hoy sea stack", aspect="W", coastal=True, wind_exposed=True, travel=_fly("KOI")),
     "isle of white": dict(lat=50.66, lon=-1.30, rock="chalk", style="south-coast sea cliffs", tidal=True, coastal=True, aspect="S",
                           travel={"michel": {"mode": "drive"}, "dan": {"mode": "fly", "to": "SOU"}}),
-    "devon": dict(lat=50.92, lon=-4.56, rock="culm sandstone", style="Culm coast slabs (Wreckers Slab)", tidal=True, coastal=True, wind_exposed=True,
+    "devon": dict(lat=50.92, lon=-4.56, rock="culm sandstone", style="Culm coast slabs (Wreckers Slab)", aspect="S/W", tidal=True, coastal=True, wind_exposed=True,
                   travel={"michel": {"mode": "drive"}, "dan": {"mode": "fly", "to": "EXT"}}),
-    "carcassonne": dict(lat=43.21, lon=2.35, rock="limestone", style="southern France crags", travel=_fly("CCF")),
-    "medina": dict(lat=24.47, lon=39.61, rock="granite", style="desert granite", travel=_fly("MED")),
-    "aladaglar": dict(lat=37.80, lon=35.15, rock="limestone", style="Turkish alpine limestone", travel=_fly("ASR")),
+    "carcassonne": dict(lat=43.21, lon=2.35, rock="limestone", style="southern France crags", aspect="S", travel=_fly("CCF")),
+    "medina": dict(lat=24.47, lon=39.61, rock="granite", style="desert granite", aspect="all", travel=_fly("MED")),
+    "aladaglar": dict(lat=37.80, lon=35.15, rock="limestone", style="Turkish alpine limestone", aspect="N/E", travel=_fly("ASR")),
 }
 
 # sheet spelling -> curated venues.json name

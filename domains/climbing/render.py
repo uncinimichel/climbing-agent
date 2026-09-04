@@ -24,7 +24,7 @@ from .icons import MP_ICONS, WMO, wmo_icon
 from core.travel.flights import skyscanner_url
 from .weights import W_WEATHER, W_TRAVEL, W_FIT
 from core.travel.stays import STAY_ADULTS, STAY_RADIUS_KM
-from .conditions import ASPECT_ADJ
+from .conditions import aspect_adj, aspect_label, aspect_points, ASPECT_POINTS, ASPECT_DEG
 
 MP_MAP_URL = "https://multi-pitch.com/map/"
 
@@ -379,6 +379,75 @@ def venue_tag_section(v, tag_spec):
             f'<div class="taglanes">{"".join(lanes)}</div>')
 
 
+# ── compass rose: which way the rock faces ───────────────────────────────────
+# The same widget multi-pitch.com draws on every climb page (an 8-point star,
+# the facing point lit, the code in the hub). Drawn here for the static venue
+# pages and again in JS (compassSvg) for the live planner — keep the two in
+# step: same geometry, same colours. `aspect` may name one face, several
+# ("S/SW/NW", dominant first) or "all" (see conditions.aspect_points).
+SUN_HINT = {"N": "shade all day", "NE": "morning sun only", "E": "morning sun",
+            "SE": "sun until early afternoon", "S": "sun most of the day",
+            "SW": "afternoon & evening sun", "W": "afternoon & evening sun",
+            "NW": "late-evening sun only"}
+
+
+def aspect_caption(aspect):
+    """(head, sub) for the compass caption — ('S/SW-facing', 'sun most of the
+    day · also SW'); ('', '') when the aspect is unknown."""
+    pts = aspect_points(aspect)
+    if not pts:
+        return "", ""
+    if len(pts) == len(ASPECT_POINTS):
+        return "faces every way", "a sunny wall and a shady wall at any hour"
+    head = f"{'/'.join(pts)}-facing"
+    sub = SUN_HINT.get(pts[0], "")
+    if len(pts) > 1:
+        sub = f"varies by wall · mostly {pts[0]}: {sub}"
+    return head, sub
+
+
+def compass_svg(aspect, size=64, mini=False):
+    """Inline SVG compass rose with the venue's facing point(s) lit. '' when
+    the aspect is unknown. `mini` drops the hub label (route-card pills)."""
+    pts = aspect_points(aspect)
+    if not pts:
+        return ""
+    lit = set(pts)
+    label = "ALL" if len(pts) == len(ASPECT_POINTS) else pts[0]
+    head, sub = aspect_caption(aspect)
+    title = _esc(head + (f" — {sub}" if sub else ""))
+
+    def point(name, deg):
+        big = deg % 90 == 0
+        R, w, c = (44, 8, 15) if big else (32, 6, 12)
+        light, dark = ("#5FA5F5", "#2B6BC9") if name in lit else ("#E6E9EE", "#ADB4BF")
+        return (f'<g transform="rotate({deg} 50 50)">'
+                f'<polygon points="50,{50 - R} 50,50 {50 - w},{50 - c}" fill="{light}"/>'
+                f'<polygon points="50,{50 - R} {50 + w},{50 - c} 50,50" fill="{dark}"/></g>')
+
+    # draw order: dim small, dim big, then the lit points on top
+    order = sorted(ASPECT_DEG.items(), key=lambda kv: (kv[0] in lit, kv[1] % 90 == 0))
+    body = "".join(point(n, d) for n, d in order)
+    hub = "" if mini else (
+        f'<rect x="37" y="37" width="26" height="26" rx="4" fill="#3E4E6A"/>'
+        f'<text x="50" y="51" text-anchor="middle" dominant-baseline="central" '
+        f'font-family="IBM Plex Mono,monospace" font-weight="600" '
+        f'font-size="{13 if len(label) <= 2 else 10}" fill="#fff">{label}</text>')
+    return (f'<svg class="compass" viewBox="0 0 100 100" width="{size}" height="{size}" '
+            f'role="img" aria-label="{title}"><title>{title}</title>'
+            f'<circle cx="50" cy="50" r="47" fill="none" stroke="#4A5160" stroke-width="2.5"/>'
+            f'{body}{hub}</svg>')
+
+
+def aspect_widget(aspect, size=64):
+    """Compass + caption block shared by the band (JS twin: aspectWidget)."""
+    head, sub = aspect_caption(aspect)
+    if not head:
+        return ""
+    return (f'<div class="aspectw">{compass_svg(aspect, size)}'
+            f'<div class="aspect-cap"><b>{_esc(head)}</b>{_esc(sub)}</div></div>')
+
+
 def venue_tags(v, cards, grades, tag_spec, cond_txt=None, tidal=False):
     """Colored tag chips in two tiers, emitted in a FIXED order so every venue
     card reads the same way (see knowledge/data/tags.md — the reader-facing key
@@ -417,9 +486,11 @@ def venue_tags(v, cards, grades, tag_spec, cond_txt=None, tidal=False):
 
     # ── Tier 2a · Character (static physical crag) ──
     add("rock", v.get("rock"))
-    asp = (v.get("aspect") or "").upper()
-    if asp:
-        adj = ASPECT_ADJ.get(asp, 0)
+    asp = aspect_label(v.get("aspect"))
+    if asp == "all":
+        add("aspect", "walls face every way")
+    elif asp:
+        adj = aspect_adj(v.get("aspect"), 0)
         add("aspect", f"{asp}-facing" + (" · shade" if adj < 0 else " · sun-baked" if adj >= 3 else ""))
     if v.get("coastal") and not tidal:   # the tidal chip already implies the sea
         add("coastal", "coastal · sea air")
@@ -554,6 +625,7 @@ def venue_payload(n, r, ctx, mp_climbs, guidebooks, extra_climbing_data, tag_spe
         "tz": r.get("tz"), "utcOff": r.get("utc_off"),
         "country": v["country"], "flag": flag(v["country"]), "rock": v.get("rock", ""),
         "style": v.get("style", ""),
+        "aspect": v.get("aspect"),   # source-stated facing → compass rose (see compass_svg)
         "why": v.get("why", "") or (
             f"{(v.get('sheet') or {}).get('volume') or 'Unknown'}-volume {v.get('rock') or 'rock'}"
             f", {((v.get('sheet') or {}).get('difficulty') or 'range unknown').lower()}"
@@ -796,6 +868,11 @@ svg.topo .dseg{pointer-events:stroke}
 .band-body{position:relative;max-width:60%}
 .vname{font-family:var(--disp);font-weight:800;font-size:clamp(26px,4.5vw,40px);letter-spacing:-.02em;line-height:1.05;margin:6px 0 5px}
 .vmeta{font-size:13px;color:var(--muted)}
+.aspectw{display:flex;align-items:center;gap:11px;margin-top:14px}
+.aspectw svg{flex-shrink:0;filter:drop-shadow(0 1px 2px rgba(0,0,0,.55))}
+.aspect-cap{font-size:12px;color:var(--muted);line-height:1.4}
+.aspect-cap b{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink)}
+.cp svg{width:13px;height:13px;vertical-align:-3px;margin-right:4px}
 .vpills{display:flex;gap:7px;margin-top:13px;flex-wrap:wrap}
 .pill{display:inline-flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--line2);border-radius:16px;padding:4px 11px;font-size:11.5px;font-weight:600}
 .pill .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
@@ -1133,6 +1210,46 @@ function topoSvg(v){
 }
 
 
+// Compass rose — JS twin of render.compass_svg (same geometry/colours; the
+// static venue pages use the Python one). aspect: 'S' | 'S/SW/NW' | 'all'.
+var ASPECT_DEG={N:0,NE:45,E:90,SE:135,S:180,SW:225,W:270,NW:315};
+var SUN_HINT={N:'shade all day',NE:'morning sun only',E:'morning sun',SE:'sun until early afternoon',S:'sun most of the day',SW:'afternoon & evening sun',W:'afternoon & evening sun',NW:'late-evening sun only'};
+function aspectPoints(a){
+  if(!a)return [];
+  var s=String(a).trim().toUpperCase();
+  if(s==='ALL'||s==='*'||s==='ANY')return Object.keys(ASPECT_DEG);
+  var out=[];s.split(/[/,+| ]+/).forEach(function(t){if(ASPECT_DEG.hasOwnProperty(t)&&out.indexOf(t)<0)out.push(t);});
+  return out;
+}
+function aspectCaption(a){
+  var p=aspectPoints(a);
+  if(!p.length)return ['',''];
+  if(p.length===8)return ['faces every way','a sunny wall and a shady wall at any hour'];
+  var sub=SUN_HINT[p[0]]||'';
+  if(p.length>1)sub='varies by wall · mostly '+p[0]+': '+sub;
+  return [p.join('/')+'-facing',sub];
+}
+function compassSvg(a,size,mini){
+  var p=aspectPoints(a);if(!p.length)return '';
+  var lit={};p.forEach(function(x){lit[x]=1;});
+  var label=p.length===8?'ALL':p[0],cap=aspectCaption(a),title=esc(cap[0]+(cap[1]?' — '+cap[1]:''));
+  var names=Object.keys(ASPECT_DEG).sort(function(x,y){
+    var kx=(lit[x]?2:0)+(ASPECT_DEG[x]%90===0?1:0),ky=(lit[y]?2:0)+(ASPECT_DEG[y]%90===0?1:0);return kx-ky;});
+  var body=names.map(function(n){
+    var d=ASPECT_DEG[n],big=d%90===0,R=big?44:32,w=big?8:6,c=big?15:12;
+    var col=lit[n]?['#5FA5F5','#2B6BC9']:['#E6E9EE','#ADB4BF'];
+    return '<g transform="rotate('+d+' 50 50)"><polygon points="50,'+(50-R)+' 50,50 '+(50-w)+','+(50-c)+'" fill="'+col[0]+'"/>'
+      +'<polygon points="50,'+(50-R)+' '+(50+w)+','+(50-c)+' 50,50" fill="'+col[1]+'"/></g>';
+  }).join('');
+  var hub=mini?'':'<rect x="37" y="37" width="26" height="26" rx="4" fill="#3E4E6A"/><text x="50" y="51" text-anchor="middle" dominant-baseline="central" font-family="IBM Plex Mono,monospace" font-weight="600" font-size="'+(label.length<=2?13:10)+'" fill="#fff">'+label+'</text>';
+  return '<svg class="compass" viewBox="0 0 100 100" width="'+size+'" height="'+size+'" role="img" aria-label="'+title+'"><title>'+title+'</title>'
+    +'<circle cx="50" cy="50" r="47" fill="none" stroke="#4A5160" stroke-width="2.5"/>'+body+hub+'</svg>';
+}
+function aspectWidget(a,size){
+  var cap=aspectCaption(a);if(!cap[0])return '';
+  return '<div class="aspectw">'+compassSvg(a,size||64)+'<div class="aspect-cap"><b>'+esc(cap[0])+'</b>'+esc(cap[1])+'</div></div>';
+}
+
 function bandHtml(v){
   var c=cond(v);
   var img=safeUrl(v.hero);
@@ -1141,7 +1258,8 @@ function bandHtml(v){
     +'<div class="band-body">'
     +'<div class="eyebrow">No.'+num(v.rank)+' of '+V.length+esc(deltaTxt(v))+' · '+esc(v.flag)+' '+esc(v.country)+'</div>'
     +'<h1 class="vname">'+esc(v.shortName)+'</h1>'
-    +'<div class="vmeta">'+esc(v.style||'')+'</div></div>'
+    +'<div class="vmeta">'+esc(v.style||'')+'</div>'
+    +aspectWidget(v.aspect)+'</div>'
     +(v.breakdown?'<div id="brkChart" class="brkchart hdr"></div>':'')
     +'</header>';
 }
@@ -1700,6 +1818,7 @@ function climbHtml(c){
   if(c.length)pills.push(num(c.length)+'m');
   if(c.approach!=null)pills.push(num(c.approach)+' min walk-in');
   if(c.dist!=null)pills.push(num(c.dist)+' km away');
+  if(c.face)pills.push(compassSvg(c.face,13,true)+esc(c.face)+'-facing');
   var ph='<div class="cpills">'+pills.map(function(p){return '<span class="cp">'+p+'</span>';}).join('')
     +(c.flags||[]).map(function(f){return '<span class="cp warn">⚠ '+esc(f)+'</span>';}).join('')+'</div>';
   var name=safeUrl(c.url)
@@ -2053,7 +2172,8 @@ def venue_page(v, trip, tag_spec, all_venues=None):
                 f"<td>{_esc(lows or '–')}</td>" if has_tide else ""))
     climbs = "".join(
         f'<li><a href="{_esc(c["url"])}" rel="noopener">{_esc(c.get("route",""))}</a> '
-        f'({_esc(c.get("grade",""))}{", " + str(c.get("pitches")) + " pitches" if c.get("pitches") else ""}) '
+        f'({_esc(c.get("grade",""))}{", " + str(c.get("pitches")) + " pitches" if c.get("pitches") else ""}'
+        f'{", " + _esc(aspect_label(c.get("face"))) + "-facing" if aspect_points(c.get("face")) else ""}) '
         f'on {_esc(c.get("cliff",""))}</li>'
         for c in (v.get("climbs") or []) if c.get("url"))
     extras = "".join(
@@ -2123,6 +2243,10 @@ body{{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15
 .wrap{{max-width:820px;margin:0 auto;padding:28px 20px 60px}}
 a{{color:#57A664}} h1{{font-family:var(--disp);font-size:30px;line-height:1.15;margin-bottom:4px}} h2{{font-family:var(--disp);font-size:17px;margin:28px 0 10px}}
 .meta{{color:var(--muted);font-size:13px}} .src{{color:var(--faint);font-size:12px}}
+.aspectw{{display:flex;align-items:center;gap:11px;margin:14px 0 4px}}
+.aspectw svg{{flex-shrink:0;filter:drop-shadow(0 1px 2px rgba(0,0,0,.55))}}
+.aspect-cap{{font-size:12.5px;color:var(--muted);line-height:1.4}}
+.aspect-cap b{{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink)}}
 table{{border-collapse:collapse;width:100%;font-size:12.5px;font-family:var(--mono)}}
 .twrap{{overflow-x:auto}} th,td{{padding:5px 8px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}}
 th{{color:var(--muted);font-weight:600}} li{{margin-bottom:7px}} ul{{padding-left:20px}}
@@ -2160,6 +2284,7 @@ h2:hover .hanchor,.hanchor:focus-visible{{opacity:1;filter:none}}
 <main class="wrap">
 <h1>{_esc(name)} — multi-pitch climbing</h1>
 <p class="meta">{_esc(v.get('country',''))} · {_esc(v.get('rock',''))} · {_esc(v.get('style',''))}{(' · grades ' + _esc(v['grades'])) if v.get('grades') else ''}{' · tidal access — plan around low water' if v.get('tidal') else ''}</p>
+{aspect_widget(v.get("aspect"))}
 {f'<p>{_esc(why)}</p>' if why else ''}
 {venue_tag_section(v, tag_spec)}
 <h2 id="weather"><a class="hanchor" href="#weather" title="Link to this section">🔗</a>Weather — typical {_esc(period)} vs current outlook</h2>

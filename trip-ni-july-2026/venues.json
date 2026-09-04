@@ -5,7 +5,7 @@
     "end": "2026-07-28",
     "_comment": "LEGACY — ignored since decision #33 M1: the trips.json registry window wins. Kept in sync for humans only."
   },
-  "notes": "Single source of truth for candidate venues. The script reads THIS file to decide what to query (weather + flights). 'travel' gives how each person reaches the venue: mode fly|local|drive and the destination airport IATA they fly into (Michel from London, Dan from Belfast). Physical-character fields the ranking reads: 'aspect' (N/NE/E/SE/S/SW/W/NW — which way the rock faces; shifts felt temperature and drying), 'coastal' (sea air holds damp — rock stays wet longer), 'wind_exposed' (sea cliff / free-standing tower / summit ridge with no shelter — gusts bite harder), 'drying' ('fast'|'slow' — explicit curator override of the aspect+coastal derivation), 'tidal' (tide-dependent access; also implies coastal air for drying).",
+  "notes": "Single source of truth for candidate venues. The script reads THIS file to decide what to query (weather + flights). 'travel' gives how each person reaches the venue: mode fly|local|drive and the destination airport IATA they fly into (Michel from London, Dan from Belfast). Physical-character fields the ranking reads: 'aspect' (which way the rock faces; shifts felt temperature and drying — one of N/NE/E/SE/S/SW/W/NW, several slash-joined dominant-first for an area whose walls face different ways, e.g. 'S/SW/NW', or 'all' for a tower/dome; drawn as a compass rose on the venue header — 'aspect_source' says where the value came from), 'coastal' (sea air holds damp — rock stays wet longer), 'wind_exposed' (sea cliff / free-standing tower / summit ridge with no shelter — gusts bite harder), 'drying' ('fast'|'slow' — explicit curator override of the aspect+coastal derivation), 'tidal' (tide-dependent access; also implies coastal air for drying).",
   "venues": [
     {
       "name": "Fair Head, NI",
@@ -51,7 +51,9 @@
         }
       },
       "wind_exposed": true,
-      "cliff_height_m": 100
+      "cliff_height_m": 100,
+      "aspect": "SE/NE/SW",
+      "aspect_source": "corpus routes: Slieve Lamagan SE, Buzzards Roost SE, Slieve Beg SW, Eagle Mountain NE, Pigeon Rock E"
     },
     {
       "name": "Dolomites (Cortina)",
@@ -73,7 +75,9 @@
           "to": "VCE"
         }
       },
-      "cliff_height_m": 500
+      "cliff_height_m": 500,
+      "aspect": "S/SW/NW",
+      "aspect_source": "corpus routes: Sass Pordoi S face S, Grande Fermeda S, Sella Towers SW, Vajolet SW, Sass Pordoi NW"
     },
     {
       "name": "East Tyrol (Lienz)",
@@ -95,7 +99,9 @@
           "to": "INN"
         }
       },
-      "cliff_height_m": 400
+      "cliff_height_m": 400,
+      "aspect": "N/S",
+      "aspect_source": "curated 2026-09-04 (unverified): Lienz Dolomites — Laserzwand north wall + south-side Roter Turm/Große Sandspitze"
     },
     {
       "name": "Lake District (Borrowdale)",
@@ -116,7 +122,9 @@
           "to": "MAN"
         }
       },
-      "cliff_height_m": 100
+      "cliff_height_m": 100,
+      "aspect": "SW/N",
+      "aspect_source": "corpus routes: Gimmer Crag SW, Scafell N"
     },
     {
       "name": "Snowdonia (Llanberis Pass)",
@@ -138,7 +146,9 @@
         }
       },
       "drying": "slow",
-      "cliff_height_m": 100
+      "cliff_height_m": 100,
+      "aspect": "N/E/SW",
+      "aspect_source": "corpus routes: Cloggy N, Lliwedd N, Tryfan E, Idwal Slabs NE, Cwm Cneifion SW, Dinorwic SE, Cwm Idwal NW"
     },
     {
       "name": "Isle of Arran",
@@ -162,7 +172,9 @@
       },
       "coastal": true,
       "wind_exposed": true,
-      "cliff_height_m": 250
+      "cliff_height_m": 250,
+      "aspect": "S",
+      "aspect_source": "corpus routes: Cir Mhor (Rosa Pinnacle) S"
     },
     {
       "name": "Picos de Europa",
@@ -184,7 +196,9 @@
           "to": "BIO"
         }
       },
-      "cliff_height_m": 500
+      "cliff_height_m": 500,
+      "aspect": "S/W/E",
+      "aspect_source": "curated 2026-09-04 (unverified): Naranjo de Bulnes — Sur/Directa S, Cara Oeste W, Cara Este E"
     },
     {
       "name": "Paklenica (Anica Kuk)",
@@ -281,7 +295,9 @@
         }
       },
       "wind_exposed": true,
-      "cliff_height_m": 350
+      "cliff_height_m": 350,
+      "aspect": "S",
+      "aspect_source": "corpus routes: Aiguille Dibona S"
     },
     {
       "name": "Stetind (Norway)",
@@ -305,7 +321,9 @@
       },
       "coastal": true,
       "wind_exposed": true,
-      "cliff_height_m": 600
+      "cliff_height_m": 600,
+      "aspect": "S/W",
+      "aspect_source": "curated 2026-09-04 (unverified): Sydpilaren S, west face routes W"
     }
   ]
 }

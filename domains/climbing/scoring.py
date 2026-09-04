@@ -419,8 +419,8 @@ def apply_composite(r, ctx, mp_climbs=None):
         "weather": w, "travel": travel, "fit": fit,
         "weights": {"weather": W_WEATHER, "travel": W_TRAVEL, "fit": W_FIT},
         "weather_note": r.get("basis", "") + (
-            f" · {v['aspect'].upper()}-facing rock ({conditions.ASPECT_ADJ.get(v['aspect'].upper(), 0):+d}°C felt in full sun)"
-            if v.get("aspect") else "")
+            f" · {conditions.aspect_label(v['aspect'])}-facing rock ({conditions.aspect_adj(v['aspect'], 0):+.0f}°C felt in full sun)"
+            if conditions.aspect_points(v.get("aspect")) else "")
             + (" · sea air — rock holds damp longer" if v.get("coastal") or v.get("tidal") else "")
             + (" · wind-exposed crag — gusts bite harder" if v.get("wind_exposed") else "")
             + (f" · dries {v['drying']} (curated)" if v.get("drying") else ""),
