@@ -62,10 +62,12 @@ def climb_url(c):
 
 
 # ── which way a climb faces ──────────────────────────────────────────────────
-# The live data.json feed doesn't carry `face`; the curated corpus record does
-# (corpus/record/**/*.json, the source-stated multi-pitch.com facing), keyed by
-# (cliff, route) with the crag's own areas.json aspect as the fallback. Loaded
-# once per process.
+# The live data.json feed doesn't carry `face`. The committed corpus does:
+# corpus/mp-climbs.json (per route: multi-pitch.com's source-stated `face`) and
+# corpus/corpus.json (per crag: the area's `aspect`), and the local-only
+# corpus/record/ (git-ignored — the JSON record DB, decision #39) overrides both
+# when present. CI only sees the committed two, so never depend on record/.
+# Keyed (cliff, route) with (cliff, None) as the crag fallback; loaded once.
 _CORPUS_FACES = None
 
 
@@ -74,22 +76,31 @@ def _key(s):
     return re.sub(r"[^a-z0-9]+", " ", s.lower()).strip()
 
 
+def _load(path):
+    try:
+        return json.loads(path.read_text())
+    except Exception:
+        return None
+
+
 def corpus_faces():
     global _CORPUS_FACES
     if _CORPUS_FACES is None:
-        faces, rec = {}, REPO_ROOT / "corpus" / "record"
-        try:
-            areas = {a["id"]: a for a in json.loads((rec / "areas.json").read_text())["areas"]}
-        except Exception:
-            areas = {}
+        faces, cdir = {}, REPO_ROOT / "corpus"
+        for a in (_load(cdir / "corpus.json") or {}).get("areas") or []:
+            if a.get("aspect"):
+                faces[(_key(a.get("name")), None)] = a["aspect"]
+        mp = _load(cdir / "mp-climbs.json") or {}
+        for c in (x for v in mp.values() if isinstance(v, list) for x in v):
+            if c.get("face"):
+                faces[(_key(c.get("cliff")), _key(c.get("routeName")))] = c["face"]
+        rec = cdir / "record"
+        areas = {a["id"]: a for a in (_load(rec / "areas.json") or {}).get("areas") or []}
         for a in areas.values():
             if a.get("aspect"):
                 faces[(_key(a["name"]), None)] = a["aspect"]
-        for f in rec.rglob("*.json"):
-            try:
-                d = json.loads(f.read_text())
-            except Exception:
-                continue
+        for f in rec.rglob("*.json") if rec.is_dir() else []:
+            d = _load(f)
             if isinstance(d, dict) and d.get("area_id") and d.get("aspect"):
                 cliff = (areas.get(d["area_id"]) or {}).get("name", "")
                 faces[(_key(cliff), _key(d.get("name")))] = d["aspect"]
@@ -99,8 +110,8 @@ def corpus_faces():
 
 def climb_face(c):
     """Source-stated facing for a data.json climb: its own `face` if the feed
-    ever carries one, else the corpus record for (cliff, route), else the
-    crag's aspect. None when nothing states it — never guessed."""
+    ever carries one, else the corpus (cliff, route) facing, else the crag's
+    aspect. None when nothing states it — never guessed."""
     if c.get("face"):
         return c["face"]
     faces, cliff = corpus_faces(), _key(c.get("cliff"))
