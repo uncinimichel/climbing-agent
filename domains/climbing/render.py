@@ -383,8 +383,10 @@ def venue_tag_section(v, tag_spec):
 # The same widget multi-pitch.com draws on every climb page (an 8-point star,
 # the facing point lit, the code in the hub). Drawn here for the static venue
 # pages and again in JS (compassSvg) for the live planner — keep the two in
-# step: same geometry, same colours. `aspect` may name one face, several
-# ("S/SW/NW", dominant first) or "all" (see conditions.aspect_points).
+# step: same geometry, same colours. Exposure is a CRAG attribute (Michel,
+# 2026-09-05): a region holds many crags facing many ways, so the rose is drawn
+# on each climb/crag card, never on the venue header. `aspect` may name one
+# face, two for a pillar ("S/W") or "all" for a tower (conditions.aspect_points).
 SUN_HINT = {"N": "shade all day", "NE": "morning sun only", "E": "morning sun",
             "SE": "sun until early afternoon", "S": "sun most of the day",
             "SW": "afternoon & evening sun", "W": "afternoon & evening sun",
@@ -868,11 +870,10 @@ svg.topo .dseg{pointer-events:stroke}
 .band-body{position:relative;max-width:60%}
 .vname{font-family:var(--disp);font-weight:800;font-size:clamp(26px,4.5vw,40px);letter-spacing:-.02em;line-height:1.05;margin:6px 0 5px}
 .vmeta{font-size:13px;color:var(--muted)}
-.aspectw{display:flex;align-items:center;gap:11px;margin-top:14px}
-.aspectw svg{flex-shrink:0;filter:drop-shadow(0 1px 2px rgba(0,0,0,.55))}
-.aspect-cap{font-size:12px;color:var(--muted);line-height:1.4}
-.aspect-cap b{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink)}
-.cp svg{width:13px;height:13px;vertical-align:-3px;margin-right:4px}
+.cface{display:flex;flex-direction:column;align-items:center;gap:3px;flex-shrink:0;align-self:center}
+.cface svg{filter:drop-shadow(0 1px 2px rgba(0,0,0,.55))}
+.cface span{font-family:var(--mono);font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+.spot-meta svg{vertical-align:-4px}
 .vpills{display:flex;gap:7px;margin-top:13px;flex-wrap:wrap}
 .pill{display:inline-flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--line2);border-radius:16px;padding:4px 11px;font-size:11.5px;font-weight:600}
 .pill .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
@@ -1258,8 +1259,7 @@ function bandHtml(v){
     +'<div class="band-body">'
     +'<div class="eyebrow">No.'+num(v.rank)+' of '+V.length+esc(deltaTxt(v))+' · '+esc(v.flag)+' '+esc(v.country)+'</div>'
     +'<h1 class="vname">'+esc(v.shortName)+'</h1>'
-    +'<div class="vmeta">'+esc(v.style||'')+'</div>'
-    +aspectWidget(v.aspect)+'</div>'
+    +'<div class="vmeta">'+esc(v.style||'')+'</div></div>'
     +(v.breakdown?'<div id="brkChart" class="brkchart hdr"></div>':'')
     +'</header>';
 }
@@ -1269,7 +1269,8 @@ function highlightHtml(v){
   if(!c)return '';
   var img=safeUrl(c.img);
   if(!img)return '';
-  var meta=[esc(c.tradGrade||c.grade||''),c.pitches?num(c.pitches)+' pitches':'',c.length?num(c.length)+'m':'',c.approach!=null?num(c.approach)+' min walk-in':'']
+  var meta=[esc(c.tradGrade||c.grade||''),c.pitches?num(c.pitches)+' pitches':'',c.length?num(c.length)+'m':'',c.approach!=null?num(c.approach)+' min walk-in':'',
+    c.face?compassSvg(c.face,18,true)+' '+esc(c.face)+'-facing':'']
     .filter(function(x){return x;}).join(' · ');
   return '<div class="sec"><div class="eyebrow">Highlight climb in this area</div>'
     +'<figure class="spot"><img src="'+img+'" alt="'+esc(c.cliff)+'" loading="lazy" onerror="this.parentElement.style.display=\'none\'">'
@@ -1818,7 +1819,6 @@ function climbHtml(c){
   if(c.length)pills.push(num(c.length)+'m');
   if(c.approach!=null)pills.push(num(c.approach)+' min walk-in');
   if(c.dist!=null)pills.push(num(c.dist)+' km away');
-  if(c.face)pills.push(compassSvg(c.face,13,true)+esc(c.face)+'-facing');
   var ph='<div class="cpills">'+pills.map(function(p){return '<span class="cp">'+p+'</span>';}).join('')
     +(c.flags||[]).map(function(f){return '<span class="cp warn">⚠ '+esc(f)+'</span>';}).join('')+'</div>';
   var name=safeUrl(c.url)
@@ -1826,6 +1826,7 @@ function climbHtml(c){
     :esc(c.cliff);
   return '<div class="climb"><div class="cthumb">'+(img?'<img src="'+img+'" alt="" loading="lazy" onerror="this.parentElement.textContent=\'🏔\'">':'🏔')+'</div>'
     +'<div style="min-width:0;flex:1"><div class="cname">'+name+'</div><div class="croute">'+esc(c.route)+'</div>'+ph+'</div>'
+    +(c.face?'<div class="cface" title="'+esc(aspectCaption(c.face).join(' — '))+'">'+compassSvg(c.face,38)+'<span>'+esc(c.face)+'-facing</span></div>':'')
     +'<div class="cgrade">'+esc(c.tradGrade||c.grade||'')+'</div></div>';
 }
 
@@ -2173,8 +2174,8 @@ def venue_page(v, trip, tag_spec, all_venues=None):
     climbs = "".join(
         f'<li><a href="{_esc(c["url"])}" rel="noopener">{_esc(c.get("route",""))}</a> '
         f'({_esc(c.get("grade",""))}{", " + str(c.get("pitches")) + " pitches" if c.get("pitches") else ""}'
-        f'{", " + _esc(aspect_label(c.get("face"))) + "-facing" if aspect_points(c.get("face")) else ""}) '
-        f'on {_esc(c.get("cliff",""))}</li>'
+        f') on {_esc(c.get("cliff",""))}'
+        f'{" " + compass_svg(c["face"], 20, mini=True) + " <span class=facing>" + _esc(aspect_label(c["face"])) + "-facing</span>" if aspect_points(c.get("face")) else ""}</li>'
         for c in (v.get("climbs") or []) if c.get("url"))
     extras = "".join(
         f'<li><a href="{_esc(x["url"])}" rel="noopener">{_esc(x.get("title",""))}</a> '
@@ -2243,10 +2244,7 @@ body{{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15
 .wrap{{max-width:820px;margin:0 auto;padding:28px 20px 60px}}
 a{{color:#57A664}} h1{{font-family:var(--disp);font-size:30px;line-height:1.15;margin-bottom:4px}} h2{{font-family:var(--disp);font-size:17px;margin:28px 0 10px}}
 .meta{{color:var(--muted);font-size:13px}} .src{{color:var(--faint);font-size:12px}}
-.aspectw{{display:flex;align-items:center;gap:11px;margin:14px 0 4px}}
-.aspectw svg{{flex-shrink:0;filter:drop-shadow(0 1px 2px rgba(0,0,0,.55))}}
-.aspect-cap{{font-size:12.5px;color:var(--muted);line-height:1.4}}
-.aspect-cap b{{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink)}}
+li svg.compass{{vertical-align:-5px;margin-left:4px}} .facing{{font-family:var(--mono);font-size:11px;color:var(--muted)}}
 table{{border-collapse:collapse;width:100%;font-size:12.5px;font-family:var(--mono)}}
 .twrap{{overflow-x:auto}} th,td{{padding:5px 8px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}}
 th{{color:var(--muted);font-weight:600}} li{{margin-bottom:7px}} ul{{padding-left:20px}}
@@ -2284,7 +2282,6 @@ h2:hover .hanchor,.hanchor:focus-visible{{opacity:1;filter:none}}
 <main class="wrap">
 <h1>{_esc(name)} — multi-pitch climbing</h1>
 <p class="meta">{_esc(v.get('country',''))} · {_esc(v.get('rock',''))} · {_esc(v.get('style',''))}{(' · grades ' + _esc(v['grades'])) if v.get('grades') else ''}{' · tidal access — plan around low water' if v.get('tidal') else ''}</p>
-{aspect_widget(v.get("aspect"))}
 {f'<p>{_esc(why)}</p>' if why else ''}
 {venue_tag_section(v, tag_spec)}
 <h2 id="weather"><a class="hanchor" href="#weather" title="Link to this section">🔗</a>Weather — typical {_esc(period)} vs current outlook</h2>
