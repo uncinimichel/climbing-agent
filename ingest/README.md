@@ -165,6 +165,21 @@ clean enumeration; good for conditions later), Mountain Project (permission
 held, technically easy — but zero Marche coverage). falesia.it (found by the
 survey lens, robots open) — candidate for a later adapter.
 
+**Spain / Costa Blanca source research (2026-09-05/06, two sequential runs, 124
+domains live-evaluated):** full record in
+[`research/costa-blanca/`](research/costa-blanca/) — `evals.json` per domain,
+`README.md` for the build order, `mappings/` for one field-mapping doc per
+build-adapter source. Headline: **Mountain Project has 383 Costa Blanca routes
+but only 1 on Puig Campana** — the multi-pitch classics live on Spanish sites.
+Build order: multilargo (49 PC routes, CC BY-SA, robots explicitly allows
+ClaudeBot), enlavertical (25, but no licence stated — ask first), camptocamp
+(11), panoramicas360 (8), compasswest (15, English PDFs), mountainproject (sport
+crags only), multi-pitch (ours). 25 sources are ask-first with contacts recorded;
+57 are prose-only blogs for a later LLM extraction pass, not adapters.
+**Bug this surfaced:** `sources/camptocamp.py` queries `wtyp=climbing_outdoor`
+only, so it misses summits — Puig Campana is one, which is why its Costa Blanca
+bbox run came back empty.
+
 ## Known limits (v1, deliberate)
 
 - Recall on tree/geo sources depends on the source's own coordinate quality;

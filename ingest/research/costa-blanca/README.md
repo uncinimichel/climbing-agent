@@ -58,6 +58,28 @@ Grades are stored verbatim with a system tag and never converted
 | mountainproject.com | YDS primary with automatic conversions shown per route: French (5b), Ewbanks (16), UIAA (VI-), ZA (15), British (HVS 4c); NCCS commitment grade (Grade III) on route page; stars 0-4 with vote count. |
 | multi-pitch.com | Dual: British adjectival+tech (BAS) shown on page (HS 4c, HS 4b) and UIAA in data.json originalGrade/gradeSys (IV+, V); per-pitch grades in prose are UIAA (IV, IV+, V). Site notes Spanish topos grade Espolón Central V+. Other sites' routes use FS (French), ALP, YDS, N (Norwegian). |
 
+### Mapping documents
+
+One per build-adapter source, in `mappings/`. Each binds that source's pages
+to the crag and route fields of `ingest/schema.py`, with the enumeration path,
+the grade system, the licence obligation and real Puig Campana examples — enough
+to hand-write the adapter without re-researching the site.
+
+| source | mapping doc | licence position |
+|---|---|---|
+| multilargo.com | [`mappings/multilargo.md`](mappings/multilargo.md) | CC BY-SA 4.0; robots explicitly allows ClaudeBot |
+| enlavertical.com | [`mappings/enlavertical.md`](mappings/enlavertical.md) | **No licence stated anywhere — ask before publishing** |
+| api.camptocamp.org | [`mappings/camptocamp.md`](mappings/camptocamp.md) | CC BY-SA 3.0 for guidebook docs; outings are BY-NC-ND, skip |
+| panoramicas360.net | [`mappings/panoramicas360.md`](mappings/panoramicas360.md) | All rights reserved, one author — ask, credit, never rehost images |
+| compasswest.co.uk | [`mappings/compasswest.md`](mappings/compasswest.md) | No notice; named author's guidebook work — treat as copyrighted |
+| mountainproject.com | [`mappings/mountainproject.md`](mappings/mountainproject.md) | Permission held; raw stays private. Crawl-delay 60 s |
+| multi-pitch.com | [`mappings/multi-pitch.md`](mappings/multi-pitch.md) | First-party (ours), CC BY-SA 4.0 |
+
+> **One concrete bug found.** `ingest/sources/camptocamp.py` queries
+> `wtyp=climbing_outdoor` only, but Puig Campana is `wtyp=summit` — which is why
+> an earlier Costa Blanca bbox run through that adapter returned nothing and was
+> misread as "the source has no Spanish data". See `mappings/camptocamp.md`.
+
 ## Metadata-only — coordinates and access, no route lists
 
 These fill gaps the route databases leave: where to park, what the sector
