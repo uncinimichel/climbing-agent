@@ -1803,6 +1803,17 @@
       "month_usage": 822,
       "hour": 1,
       "hour_limit": 200
+    },
+    {
+      "at": "2026-09-06 10:16 UTC",
+      "ok": true,
+      "plan": "Starter Plan",
+      "per_month": 1000,
+      "left": 159,
+      "total_left": 159,
+      "month_usage": 841,
+      "hour": 17,
+      "hour_limit": 200
     }
   ]
 }

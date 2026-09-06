@@ -1,6 +1,6 @@
 # Climbing trip ~24 July 2026 — Michel & Dan
 
-**Updated:** 2026-09-06 07:13 UTC · ranked best-first.
+**Updated:** 2026-09-06 10:15 UTC · ranked best-first.
 
 > 📅 Trip starts <b>24 Jul</b> (-44 days out) — still past the live forecast, which currently reaches 21 Sep. Ranked on <b>typical late July weather</b> (2021–2024). Live forecast reaches your dates on 9 Jul.
 
