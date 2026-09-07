@@ -65,14 +65,6 @@ SOURCE_META = {
     "openbeta": ("OpenBeta", "CC0"),
 }
 
-# Traced from the chart, north to south; land lies north-west, sea south-east.
-COAST = [(38.85, 0.100), (38.84, 0.115), (38.80, 0.185), (38.77, 0.185),
-         (38.74, 0.200), (38.70, 0.175), (38.68, 0.145), (38.66, 0.100),
-         (38.64, 0.075), (38.62, 0.045), (38.60, -0.030), (38.57, -0.075),
-         (38.54, -0.115), (38.51, -0.190), (38.50, -0.235), (38.47, -0.310),
-         (38.45, -0.360)]
-
-
 def _norm(s: str) -> str:
     s = unicodedata.normalize("NFKD", (s or "").lower())
     s = "".join(c for c in s if not unicodedata.combining(c))
@@ -88,14 +80,18 @@ def _key(name: str) -> str:
 
 
 def _load(run_ids: list[str]) -> tuple[list[dict], tuple, str]:
-    crags, bbox = [], None
+    """Merge runs, newest wins per source. Re-running one source after fixing
+    its adapter is the normal way to work here, so a source appearing in two of
+    the given runs takes its LAST occurrence rather than being counted twice."""
+    by_source: dict[str, list[dict]] = {}
+    bbox = None
     for run in run_ids:
         for path in sorted(glob.glob(str(RUNS_DIR / run / "parsed" / "*.json"))):
             d = json.loads(Path(path).read_text())
             bbox = bbox or tuple(d["bbox"])
-            for c in d["crags"]:
-                if c["lat"] is not None and c["lon"] is not None:
-                    crags.append(c)
+            by_source[d["source"]] = [c for c in d["crags"]
+                                      if c["lat"] is not None and c["lon"] is not None]
+    crags = [c for group in by_source.values() for c in group]
     if not crags:
         raise SystemExit(f"no parsed crags with coordinates in run(s) {run_ids}")
     return crags, bbox, run_ids[0]
@@ -133,13 +129,6 @@ def _places(crags: list[dict]) -> list[dict]:
 def build(run_ids: list[str], out: Path) -> Path:
     crags, bbox, run = _load(run_ids)
     s, w, n, e = bbox
-    lat0 = math.radians((s + n) / 2)
-    k = 2000.0
-
-    def proj(lat, lon):
-        return ((lon - w) * math.cos(lat0) * k, (n - lat) * k)
-
-    width, height = (e - w) * math.cos(lat0) * k, (n - s) * k
     places = _places(crags)
     sources = sorted({src for p in places for src in p["by"]},
                      key=lambda x: -sum(p["by"].get(x, {}).get("routes", 0) for p in places))
@@ -148,39 +137,13 @@ def build(run_ids: list[str], out: Path) -> Path:
               for x in sources}
     total_routes = sum(p["routes"] for p in places)
 
-    sea = [proj(*pt) for pt in COAST if s <= pt[0] <= n] + [proj(s, e), proj(n, e)]
-    sea_d = "M " + " L ".join(f"{x:.1f},{y:.1f}" for x, y in sea) + " Z"
-    coast_d = "M " + " L ".join(f"{x:.1f},{y:.1f}" for x, y in
-                                (proj(*pt) for pt in COAST if s <= pt[0] <= n))
-
-    dots, labels, placed = [], [], []
-    for i, p in enumerate(places):
-        x, y = proj(p["lat"], p["lon"])
-        r = 3.2 + math.sqrt(p["routes"]) * 1.55
-        dots.append(f'<circle class="dot" data-i="{i}" cx="{x:.1f}" cy="{y:.1f}" r="{r:.1f}">'
-                    f'<title>{html.escape(p["name"])} — {p["routes"]} routes</title></circle>')
-        if p["routes"] >= 12:
-            anchor = "end" if x > width * 0.62 else "start"
-            dx = -(r + 6) if anchor == "end" else (r + 6)
-            ly = y + 4
-            for px, py in placed:
-                if abs(px - x) < 150 and abs(py - ly) < 17:
-                    ly = py + 18
-            placed.append((x, ly))
-            labels.append(f'<text class="lbl" x="{x + dx:.1f}" y="{ly:.1f}" text-anchor="{anchor}">'
-                          f'{html.escape(p["name"])} <tspan class="lblnum">{p["routes"]}</tspan></text>')
-
-    grat = []
-    lon = math.ceil(w * 10) / 10
-    while lon < e:
-        gx, _ = proj(s, lon)
-        grat.append(f'<line class="grat" x1="{gx:.1f}" y1="0" x2="{gx:.1f}" y2="{height:.1f}"/>')
-        lon += 0.1
-    lat = math.ceil(s * 10) / 10
-    while lat < n:
-        _, gy = proj(lat, w)
-        grat.append(f'<line class="grat" x1="0" y1="{gy:.1f}" x2="{width:.1f}" y2="{gy:.1f}"/>')
-        lat += 0.1
+    # Marker data for Leaflet — the same circleMarker treatment the curation
+    # Studio (corpus/tools/curate_ui.html) uses over OSM tiles, so there is one
+    # map idiom in this project rather than two.
+    markers = json.dumps([{"i": i, "name": p["name"], "lat": round(p["lat"], 5),
+                           "lon": round(p["lon"], 5), "routes": p["routes"],
+                           "by": {k: v["routes"] for k, v in sorted(p["by"].items())}}
+                          for i, p in enumerate(places)], ensure_ascii=False)
 
     rows = []
     for i, p in enumerate(places):
@@ -207,7 +170,6 @@ def build(run_ids: list[str], out: Path) -> Path:
 
     pc = next((p for p in places if p["key"] == "puig campana"), None)
     pc_mp = pc["by"].get("mountainproject", {}).get("routes", 0) if pc else 0
-    scale_px = (10 / 111.32) * math.cos(lat0) * k
 
     # The note states only what this run's own data supports: the Mountain
     # Project contrast is the point of the page, but claiming "MP supplies 0"
@@ -231,17 +193,18 @@ def build(run_ids: list[str], out: Path) -> Path:
                     f'exactly one route on this mountain.</p>')
 
     out.write_text(_TEMPLATE.format(
-        width=width, height=height, w=w, e=e, s=s, n=n,
-        vb_w=width + 32, vb_h=height + 56, scale_px=scale_px, scale_lbl=scale_px + 8,
-        scale_y=height + 28, places=len(places), routes=total_routes,
-        records=len(crags), nsources=len(sources), run=run,
-        grat="".join(grat), sea=sea_d, coast=coast_d,
-        dots="".join(dots), labels="".join(labels),
+        w=w, e=e, s=s, n=n, places=len(places), routes=total_routes,
+        records=len(crags), nsources=len(sources), run=run, markers=markers,
         legend=legend, head=head, rows="".join(rows), note=note))
     return out
 
 
-_TEMPLATE = """<title>Costa Blanca Route Coverage</title>
+_TEMPLATE = """<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Costa Blanca Route Coverage</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500&display=swap">
@@ -281,18 +244,14 @@ h2 {{ font-size:19px; }}
   border-top:1px solid var(--line); padding-top:9px; margin-top:16px;
   display:flex; flex-wrap:wrap; gap:6px 18px; }}
 figure {{ margin:0; }}
-.mapbox {{ background:var(--panel); border:1px solid var(--line); border-radius:3px;
-  padding:10px; box-shadow:var(--shadow); overflow-x:auto; }}
-svg {{ display:block; width:100%; height:auto; }}
-.sea {{ fill:var(--sea); }}
-.coast {{ fill:none; stroke:var(--teal); stroke-width:1.6; opacity:.55; }}
-.grat {{ stroke:var(--line); stroke-width:.8; opacity:.55; }}
-.dot {{ fill:var(--ochre); fill-opacity:.62; stroke:var(--ochre); stroke-width:1.4; cursor:pointer; }}
-.dot:hover, .dot.on {{ fill-opacity:.95; stroke:var(--ink); stroke-width:2; }}
-.lbl {{ font-family:"IBM Plex Sans Condensed",sans-serif; font-weight:600; font-size:15px;
-  fill:var(--ink); paint-order:stroke; stroke:var(--panel); stroke-width:3.5px; pointer-events:none; }}
-.lblnum {{ font-family:"IBM Plex Mono",monospace; font-weight:500; fill:var(--muted); font-size:13px; }}
-.scalewrap text {{ font-family:"IBM Plex Mono",monospace; font-size:12px; fill:var(--muted); }}
+#map {{ height:min(68vh,620px); border:1px solid var(--line); border-radius:3px;
+  box-shadow:var(--shadow); background:var(--sea); }}
+.leaflet-container {{ font:inherit; background:var(--sea); }}
+.leaflet-popup-content {{ font:14px/1.5 "IBM Plex Sans",sans-serif; margin:10px 12px; }}
+.leaflet-popup-content b {{ font-family:"IBM Plex Sans Condensed",sans-serif; font-size:16px; }}
+.leaflet-popup-content dl {{ display:grid; grid-template-columns:auto auto; gap:1px 10px;
+  margin:7px 0 0; font-family:"IBM Plex Mono",monospace; font-size:12.5px; }}
+.leaflet-popup-content dd {{ margin:0; text-align:right; }}
 figcaption {{ margin-top:9px; font-size:12.5px; color:var(--muted); }}
 ul.legend {{ list-style:none; margin:0; padding:0; display:grid; gap:1px;
   grid-template-columns:repeat(auto-fit,minmax(228px,1fr)); background:var(--line);
@@ -335,25 +294,9 @@ tbody tr:hover {{ background:color-mix(in srgb, var(--teal) 8%, transparent); }}
 </header>
 
 <figure>
-  <div class="mapbox">
-  <svg viewBox="-16 -16 {vb_w:.0f} {vb_h:.0f}" role="img"
-       aria-label="Map of Costa Blanca crags, each sized by the number of routes held">
-    <rect x="-16" y="-16" width="{vb_w:.0f}" height="{vb_h:.0f}" fill="var(--panel)"/>
-    {grat}
-    <path class="sea" d="{sea}"/>
-    <path class="coast" d="{coast}"/>
-    {dots}
-    {labels}
-    <g class="scalewrap" transform="translate(8,{scale_y:.0f})">
-      <line x1="0" y1="0" x2="{scale_px:.1f}" y2="0" stroke="var(--muted)" stroke-width="1.5"/>
-      <line x1="0" y1="-4" x2="0" y2="4" stroke="var(--muted)" stroke-width="1.5"/>
-      <line x1="{scale_px:.1f}" y1="-4" x2="{scale_px:.1f}" y2="4" stroke="var(--muted)" stroke-width="1.5"/>
-      <text x="{scale_lbl:.1f}" y="4">10 km</text>
-    </g>
-  </svg>
-  </div>
-  <figcaption>Circle area tracks routes held. The Mediterranean is the tinted
-  wedge; the coastline is traced, not surveyed. Click a crag to find it below.</figcaption>
+  <div id="map"></div>
+  <figcaption>Circle area tracks routes held. Click a crag for its per-source
+  breakdown, or a table row below to find it on the map.</figcaption>
 </figure>
 
 <section>
@@ -382,17 +325,37 @@ Grades are stored exactly as each source writes them (<code>IV+</code>,
 </div>
 
 <script>
-const dots = document.querySelectorAll('.dot');
+const PLACES = {markers};
+const map = L.map('map', {{scrollWheelZoom: false}});
+L.tileLayer('https://tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png', {{
+  attribution: '© OpenStreetMap contributors', maxZoom: 17
+}}).addTo(map);
+map.fitBounds([[{s}, {w}], [{n}, {e}]]);
+
 const rows = document.querySelectorAll('tbody tr');
-function mark(i, scroll) {{
-  dots.forEach(d => d.classList.toggle('on', d.dataset.i === i));
-  rows.forEach(r => r.classList.toggle('on', r.dataset.i === i));
-  if (scroll) {{
-    const row = document.querySelector('tbody tr[data-i="' + i + '"]');
-    if (row) row.scrollIntoView({{block: 'center', behavior: 'smooth'}});
+const marks = {{}};
+PLACES.forEach(p => {{
+  const m = L.circleMarker([p.lat, p.lon], {{
+    radius: 4 + Math.sqrt(p.routes) * 1.5,
+    color: '#C08324', weight: 2, fillColor: '#C08324', fillOpacity: .45
+  }}).addTo(map);
+  const dl = Object.entries(p.by)
+    .map(([k, v]) => '<dt>' + k + '</dt><dd>' + v + '</dd>').join('');
+  m.bindPopup('<b>' + p.name + '</b><br>' + p.routes + ' routes<dl>' + dl + '</dl>');
+  m.on('click', () => select(p.i, false));
+  marks[p.i] = m;
+}});
+
+function select(i, fly) {{
+  rows.forEach(r => r.classList.toggle('on', r.dataset.i == i));
+  Object.entries(marks).forEach(([k, m]) =>
+    m.setStyle({{fillOpacity: k == i ? .9 : .45, color: k == i ? '#A2402C' : '#C08324'}}));
+  if (fly) {{
+    const p = PLACES[i];
+    map.setView([p.lat, p.lon], 13);
+    marks[i].openPopup();
   }}
 }}
-dots.forEach(d => d.addEventListener('click', () => mark(d.dataset.i, true)));
-rows.forEach(r => r.addEventListener('click', () => mark(r.dataset.i, false)));
+rows.forEach(r => r.addEventListener('click', () => select(r.dataset.i, true)));
 </script>
 """

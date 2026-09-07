@@ -108,6 +108,13 @@ def _index_groups(html: str) -> list[tuple[str, str, list[tuple[str, str]]]]:
 
 
 def plan(bbox: geo.Bbox, session=None, root: str | None = None) -> list[dict]:
+    """One item per CRAG, not per post. A post is a single route here, and the
+    runner emits one crag record per item — so per-post items would produce N
+    crag records sharing one name, which the keyed step then splits into
+    `puig-campana`, `puig-campana-puig-campana`, … rather than merging (it
+    cannot tell a repeated crag from two distinct crags with one name). The
+    crag is therefore the unit of work, and fetch() pulls its posts together,
+    the same shape compasswest uses for its PDFs."""
     groups = _index_groups(_get(root or INDEX))
     pts = _kml_points()
 
@@ -120,15 +127,26 @@ def plan(bbox: geo.Bbox, session=None, root: str | None = None) -> list[dict]:
         clon = sum(p[1] for p in located) / len(located)
         if not geo.contains(bbox, clat, clon):
             continue
-        for url, title in posts:
-            lat, lon = pts.get(url, (clat, clon))
-            items.append({"kind": "post", "url": url, "name": title, "crag": crag,
-                          "region": province, "lat": lat, "lon": lon})
+        items.append({
+            "kind": "crag", "name": crag, "id": _norm(crag).replace(" ", "-"),
+            "region": province, "lat": clat, "lon": clon,
+            "url": f"{INDEX}#{_norm(crag).replace(' ', '-')}",
+            "posts": [{"url": u, "title": t,
+                       "lat": pts.get(u, (clat, clon))[0],
+                       "lon": pts.get(u, (clat, clon))[1]} for u, t in posts],
+        })
     return items
 
 
-def fetch(item: dict, session=None) -> str:
-    return _get(urllib.parse.quote(item["url"], safe=":/"))
+def fetch(item: dict, session=None) -> dict:
+    """Every post of one crag, in one unit of work. The runner sleeps DELAY_S
+    once per item, so the courtesy delay between the inner requests is ours."""
+    out = {}
+    for i, post in enumerate(item["posts"]):
+        if i:
+            time.sleep(DELAY_S)
+        out[post["url"]] = _get(urllib.parse.quote(post["url"], safe=":/"))
+    return out
 
 
 def _properties(soup: BeautifulSoup) -> dict[str, str]:
@@ -153,11 +171,32 @@ def _int(s: str | None) -> int | None:
     return int(m.group(1)) if m else None
 
 
-def parse(item: dict, html: str, bbox: geo.Bbox) -> dict:
+def parse(item: dict, payload: dict, bbox: geo.Bbox) -> dict:
     if not geo.contains(bbox, item.get("lat"), item.get("lon")):
         return {"crags": [], "next": []}
-    soup = BeautifulSoup(html, "html.parser")
+
+    routes = []
+    for post in item["posts"]:
+        html_text = payload.get(post["url"])
+        if not html_text:
+            continue
+        route = _route(post, html_text)
+        if route:
+            routes.append(route)
+
+    crag = schema.crag(
+        SOURCE_ID, item["id"], item["name"],
+        lat=item["lat"], lon=item["lon"], url=item["url"], country="ES",
+        region=item.get("region"), rock_type=None, aspect=None,
+        description="Reseñas por Antonio García-Saúco ('Pels'), panoramicas360.net",
+        routes=routes)
+    return {"crags": [crag], "next": []}
+
+
+def _route(post: dict, html_text: str):
+    soup = BeautifulSoup(html_text, "html.parser")
     props = _properties(soup)
+    item = post
 
     title = soup.h1.get_text(" ", strip=True) if soup.h1 else item["name"]
     # Two title shapes on this blog:
@@ -166,6 +205,8 @@ def parse(item: dict, html: str, bbox: geo.Bbox) -> dict:
     name = re.sub(r"^Escalada en (?:el |la |los |las )?[^.]*\.\s*", "", title)
     name = re.sub(r"\s*[\(\[]\s*\d+\s*m\b.*$", "", name)   # "(140 m, V) · sector"
     name = re.sub(r"\s+\d+\s*m\s*[,·].*$", "", name)       # "450 m, IV+/V"
+    name = re.sub(r"\.\s*Escalada en\b.*$", "", name)      # "Llobet-Bertomeu. Escalada en …"
+    name = name.split(":")[0]                              # drop the blog subtitle
     name = name.strip(" ·-–—(,.") or title
 
     grade = props.get("dificultad")
@@ -198,7 +239,7 @@ def parse(item: dict, html: str, bbox: geo.Bbox) -> dict:
     for a in soup.select('a[href*="wikiloc.com"]'):
         prose.append(f"gps_track: {a['href']}")
 
-    route = schema.route(
+    return schema.route(
         source_id=item["url"].rsplit("/", 1)[-1], name=name,
         grade_value=grade or None,
         # The author mixes Spanish Roman and French freely ("V (un paso 6a+)")
@@ -209,11 +250,3 @@ def parse(item: dict, html: str, bbox: geo.Bbox) -> dict:
         stars=None, bolts_count=None, protection=protection,
         disciplines=disciplines, fa=None, url=item["url"],
         description="\n".join(prose))
-
-    crag = schema.crag(
-        SOURCE_ID, _norm(item["crag"]).replace(" ", "-"), item["crag"],
-        lat=item["lat"], lon=item["lon"], url=item["url"], country="ES",
-        region=item.get("region"), rock_type=None, aspect=None,
-        description=f"Reseña por Antonio García-Saúco ('Pels'), panoramicas360.net",
-        routes=[route])
-    return {"crags": [crag], "next": []}
