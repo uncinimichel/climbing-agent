@@ -290,7 +290,18 @@ figure {{ margin:0; }}
 #q::placeholder {{ color:var(--muted); }}
 .count {{ margin:0; font-family:"IBM Plex Mono",monospace; font-size:12.5px; color:var(--muted); }}
 table.routes tbody tr {{ cursor:pointer; }}
-table.routes td:first-child {{ font-weight:500; }}
+table.routes td {{ white-space:nowrap; }}
+/* the route name stays put while the other twelve columns scroll under it */
+table.routes td.rname, table.routes th:first-child {{
+  position:sticky; left:0; z-index:1; font-weight:500; white-space:nowrap;
+  background:var(--panel); box-shadow:1px 0 0 var(--line); }}
+table.routes th:first-child {{ z-index:3; }}
+table.routes tbody tr:hover td.rname {{ background:var(--panel); }}
+th.sortable {{ cursor:pointer; user-select:none; }}
+th.sortable:hover {{ color:var(--ink); }}
+th.sortable .arrow {{ font-size:9px; margin-left:5px; color:var(--teal); }}
+th[aria-sort]:not([aria-sort="none"]) {{ color:var(--ink); }}
+table.routes a {{ color:var(--teal); text-decoration:none; }}
 .tag {{ font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--muted); }}
 .empty {{ padding:18px 12px; color:var(--muted); }}
 figcaption {{ margin-top:9px; font-size:12.5px; color:var(--muted); }}
@@ -349,9 +360,7 @@ tbody tr:hover {{ background:color-mix(in srgb, var(--teal) 8%, transparent); }}
     <p id="count" class="count"></p>
   </div>
   <div class="tablewrap"><table class="routes">
-    <thead><tr><th scope="col">Route</th><th scope="col">Crag</th>
-    <th scope="col">Grade</th><th scope="col">m</th><th scope="col">P</th>
-    <th scope="col">Style</th><th scope="col">Source</th></tr></thead>
+    <thead><tr id="rhead"></tr></thead>
     <tbody id="rlist"></tbody>
   </table></div>
   <p id="more" class="foot"></p>
@@ -476,31 +485,96 @@ PLACES.forEach(p => p.list.forEach((r, j) => ALL.push({{
         (r.disc || []).join(' ') + ' ' + (r.sector || '')).toLowerCase()
 }})));
 
+// Every property the record holds, one column each. `t` is the sort type and
+// `g` reads the value, so the header, the cells and the comparator all come
+// from this one list.
+const COLS = [
+  {{k: 'name',   l: 'Route',        t: 's', g: x => x.d.name}},
+  {{k: 'crag',   l: 'Crag',         t: 's', g: x => x.crag}},
+  {{k: 'sector', l: 'Sector',       t: 's', g: x => x.d.sector}},
+  {{k: 'grade',  l: 'Grade',        t: 's', g: x => x.d.grade, n: true,
+    tip: 'Sorts within each grade system — systems are never converted'}},
+  {{k: 'sys',    l: 'System',       t: 's', g: x => x.d.sys}},
+  {{k: 'len',    l: 'Metres',       t: 'n', g: x => x.d.len, n: true}},
+  {{k: 'p',      l: 'Pitches',      t: 'n', g: x => x.d.p, n: true}},
+  {{k: 'disc',   l: 'Style',        t: 's', g: x => (x.d.disc || []).join(' ')}},
+  {{k: 'prot',   l: 'Protection',   t: 's', g: x => x.d.prot}},
+  {{k: 'stars',  l: 'Stars',        t: 'n', g: x => x.d.stars, n: true}},
+  {{k: 'fa',     l: 'First ascent', t: 's', g: x => x.d.fa}},
+  {{k: 'src',    l: 'Source',       t: 's', g: x => x.d.src}},
+];
+
 const LIMIT = 250;
 const qEl = document.getElementById('q');
+const headEl = document.getElementById('rhead');
 const listEl = document.getElementById('rlist');
 const countEl = document.getElementById('count');
 const moreEl = document.getElementById('more');
+let sortKey = null, sortDir = 1;
+
+headEl.innerHTML = COLS.map(c =>
+  '<th scope="col" data-k="' + c.k + '" tabindex="0" class="sortable' +
+  (c.n ? ' num' : '') + '"' + (c.tip ? ' title="' + c.tip + '"' : '') + '>' +
+  esc(c.l) + '<span class="arrow"></span></th>').join('') + '<th scope="col"></th>';
+
+function sortBy(k) {{
+  sortDir = sortKey === k ? -sortDir : 1;
+  sortKey = k;
+  headEl.querySelectorAll('th[data-k]').forEach(th => {{
+    const on = th.dataset.k === k;
+    th.setAttribute('aria-sort', on ? (sortDir > 0 ? 'ascending' : 'descending') : 'none');
+    th.querySelector('.arrow').textContent = on ? (sortDir > 0 ? '▲' : '▼') : '';
+  }});
+  render();
+}}
+headEl.addEventListener('click', e => {{
+  const th = e.target.closest('th[data-k]');
+  if (th) sortBy(th.dataset.k);
+}});
+headEl.addEventListener('keydown', e => {{
+  if (e.key === 'Enter' || e.key === ' ') {{
+    const th = e.target.closest('th[data-k]');
+    if (th) {{ e.preventDefault(); sortBy(th.dataset.k); }}
+  }}
+}});
 
 function render() {{
   const terms = qEl.value.toLowerCase().split(/\\s+/).filter(Boolean);
-  const hits = terms.length ? ALL.filter(x => terms.every(t => x.hay.includes(t))) : ALL;
+  let hits = terms.length ? ALL.filter(x => terms.every(t => x.hay.includes(t))) : ALL.slice();
+
+  if (sortKey) {{
+    const col = COLS.find(c => c.k === sortKey);
+    hits.sort((a, b) => {{
+      const va = col.g(a), vb = col.g(b);
+      // "?", "¿?", "¿ ?" are what the Spanish sources write for an unknown —
+      // kept verbatim in the cell, but sorted with the blanks, at the end
+      const blank = v => v == null || String(v).replace(/[¿?\\s]/g, '') === '';
+      const ea = blank(va), eb = blank(vb);
+      if (ea || eb) return ea && eb ? 0 : (ea ? 1 : -1);   // blanks always last
+      return (col.t === 'n' ? va - vb
+                            : String(va).localeCompare(String(vb), 'es')) * sortDir;
+    }});
+  }}
+
   countEl.textContent = hits.length + ' of ' + ALL.length + ' routes';
-  listEl.innerHTML = hits.slice(0, LIMIT).map(x => {{
-    const r = x.d;
-    return '<tr data-c="' + x.c + '" data-r="' + x.r + '"><td>' + esc(r.name) + '</td>' +
-      '<td>' + esc(x.crag) + (r.sector ? ' <span class="tag">' + esc(r.sector) + '</span>' : '') + '</td>' +
-      '<td class="num">' + esc(r.grade || '·') + '</td>' +
-      '<td class="num">' + (r.len || '·') + '</td>' +
-      '<td class="num">' + (r.p || '·') + '</td>' +
-      '<td class="tag">' + esc((r.disc || []).join(' ')) + '</td>' +
-      '<td class="tag">' + esc(r.src) + '</td></tr>';
-  }}).join('') || '<tr><td colspan="7" class="empty">No route matches that.</td></tr>';
+  listEl.innerHTML = hits.slice(0, LIMIT).map(x =>
+    '<tr data-c="' + x.c + '" data-r="' + x.r + '">' +
+    COLS.map(c => {{
+      const v = c.g(x);
+      return '<td class="' + (c.n ? 'num' : c.k === 'name' ? 'rname' : 'tag') + '">' +
+             (v == null || v === '' ? '·' : esc(v)) + '</td>';
+    }}).join('') +
+    '<td>' + (x.d.url ? '<a href="' + esc(x.d.url) + '" target="_blank" rel="noopener" ' +
+                        'title="open on ' + esc(x.d.src) + '">↗</a>' : '') + '</td></tr>'
+  ).join('') || '<tr><td colspan="' + (COLS.length + 1) +
+                '" class="empty">No route matches that.</td></tr>';
   moreEl.textContent = hits.length > LIMIT
-    ? 'Showing the first ' + LIMIT + ' — keep typing to narrow it down.' : '';
+    ? 'Showing the first ' + LIMIT + ' of ' + hits.length +
+      ' — narrow the search, or sort to bring what you want to the top.' : '';
 }}
 
 listEl.addEventListener('click', e => {{
+  if (e.target.closest('a')) return;   // the ↗ link opens the source, not the popup
   const tr = e.target.closest('tr[data-c]');
   if (tr) showRoute(+tr.dataset.c, +tr.dataset.r);
 }});
