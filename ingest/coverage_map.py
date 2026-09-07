@@ -52,6 +52,16 @@ ALIAS = [
     (r"\bsierra helada\b|\bserra gelada\b", "serra gelada"),
 ]
 
+# One hue per source, all at close to the same lightness so the provenance rail
+# reads as a code rather than as a highlight — no source is allowed to shout.
+SOURCE_COLOR = {
+    "multilargo": "#0E6068", "enlavertical": "#7A5CA8", "camptocamp": "#2F7D4F",
+    "panoramicas360": "#C08324", "mountainproject": "#A2402C",
+    "multipitch": "#1F6FB2", "compasswest": "#6B6357", "ukc": "#B0446E",
+    "thecrag": "#4A6B1F", "climbook": "#8A5A2B", "falesiait": "#3A6E8F",
+    "irishwiki": "#5E5AA8", "openbeta": "#7A6A2F",
+}
+
 # name shown in the legend, and the licence position that governs publishing it
 SOURCE_META = {
     "multilargo": ("multilargo", "CC BY-SA 4.0"),
@@ -118,24 +128,21 @@ def _places(crags: list[dict]) -> list[dict]:
                 if g and g not in seen:
                     seen.add(g)
                     grades.append(g)
-        # Every route, with the properties worth deciding a day on. The
-        # verbatim `description` prose is deliberately left out: it is the bulk
-        # of the payload and it is the third-party text that stays private.
+        # The whole uncurated record travels with the page — `rec` is exactly
+        # what the adapter emitted and what parsed/<source>.json holds, prose
+        # included, so any cell on screen can be traced to the captured data
+        # and from there to the page that produced it. 1,251 of them is 0.75 MB.
         routes = []
         for m in members:
             for r in m["routes"]:
-                g = r.get("grade") or {}
                 routes.append({
-                    "name": r["name"], "src": m["source"],
+                    "src": m["source"], "rec": r,
                     # enlavertical names sectors "Crag — Sector"; keep the
                     # sector so a route says which face it is actually on
                     "sector": m["name"].split("—", 1)[1].strip() if "—" in m["name"] else None,
-                    "grade": g.get("value"), "sys": g.get("system"),
-                    "len": r.get("length_m"), "p": r.get("pitches"),
-                    "disc": r.get("disciplines") or [], "prot": r.get("protection"),
-                    "fa": r.get("fa"), "stars": r.get("stars"), "url": r.get("url"),
+                    "crag_url": m.get("url"), "crag_id": m.get("source_id"),
                 })
-        routes.sort(key=lambda r: (r["name"] or "").lower())
+        routes.sort(key=lambda r: (r["rec"].get("name") or "").lower())
 
         places.append({
             "key": key,
@@ -187,7 +194,8 @@ def build(run_ids: list[str], out: Path) -> Path:
     head = "".join(f'<th scope="col">{html.escape(SOURCE_META.get(x, (x, ""))[0])}</th>'
                    for x in sources)
     legend = "".join(
-        f'<li><b>{html.escape(SOURCE_META.get(x, (x, ""))[0])}</b>'
+        f'<li style="--rail:{SOURCE_COLOR.get(x, "#5E7078")}">'
+        f'<b>{html.escape(SOURCE_META.get(x, (x, ""))[0])}</b>'
         f'<span class="lic">{html.escape(SOURCE_META.get(x, (x, ""))[1])}</span>'
         f'<span class="cnt">{totals[x]["routes"]} routes · {totals[x]["crags"]} crags</span></li>'
         for x in sources)
@@ -219,7 +227,8 @@ def build(run_ids: list[str], out: Path) -> Path:
     out.write_text(_TEMPLATE.format(
         w=w, e=e, s=s, n=n, places=len(places), routes=total_routes,
         records=len(crags), nsources=len(sources), run=run, markers=markers,
-        legend=legend, head=head, rows="".join(rows), note=note))
+        legend=legend, head=head, rows="".join(rows), note=note,
+        colors=json.dumps({k: v for k, v in SOURCE_COLOR.items() if k in sources})))
     return out
 
 
@@ -289,26 +298,93 @@ figure {{ margin:0; }}
   background:var(--panel); border:1px solid var(--line); border-radius:3px; }}
 #q::placeholder {{ color:var(--muted); }}
 .count {{ margin:0; font-family:"IBM Plex Mono",monospace; font-size:12.5px; color:var(--muted); }}
+/* --- the route table -----------------------------------------------------
+   One scale drives row height and text size; S/M/L just change it.          */
+:root {{ --scale:1; --rowpad:7px; }}
+:root[data-size="s"] {{ --scale:.88; --rowpad:4px; }}
+:root[data-size="l"] {{ --scale:1.12; --rowpad:11px; }}
+table.routes {{ font-size:calc(14px * var(--scale)); }}
+table.routes th, table.routes td {{ padding:var(--rowpad) calc(10px * var(--scale)); }}
 table.routes tbody tr {{ cursor:pointer; }}
 table.routes td {{ white-space:nowrap; }}
+td .nil {{ color:var(--line); }}
+
+/* The provenance rail: which source claimed this line. Same hue as its chip
+   in the sources list — the page's one piece of colour-coding. */
+table.routes tbody td.rname {{ border-left:3px solid var(--rail-on, var(--rail)); }}
+table.routes thead th:first-child {{ border-left:3px solid transparent; }}
+ul.legend li {{ border-left-color:var(--rail-on, var(--rail)); }}
+td.src {{ color:var(--rail-on, var(--rail)); }}
+/* the seven hues are picked for the paper ground; lift them off the dark one */
+@media (prefers-color-scheme: dark) {{
+  :root:not([data-theme="light"]) tr, :root:not([data-theme="light"]) li {{
+    --rail-on:color-mix(in srgb, var(--rail) 62%, white); }}
+}}
+:root[data-theme="dark"] tr, :root[data-theme="dark"] li {{
+  --rail-on:color-mix(in srgb, var(--rail) 62%, white); }}
+
 /* the route name stays put while the other twelve columns scroll under it */
 table.routes td.rname, table.routes th:first-child {{
   position:sticky; left:0; z-index:1; font-weight:500; white-space:nowrap;
   background:var(--panel); box-shadow:1px 0 0 var(--line); }}
 table.routes th:first-child {{ z-index:3; }}
 table.routes tbody tr:hover td.rname {{ background:var(--panel); }}
+
+/* the grade is what the eye goes to in a guidebook, so it gets the weight */
+td.grade {{ font-family:"IBM Plex Mono",monospace; font-weight:500; text-align:right;
+  font-size:calc(15px * var(--scale)); font-variant-numeric:tabular-nums; }}
+td.src {{ font-family:"IBM Plex Mono",monospace; font-size:calc(11.5px * var(--scale));
+  color:var(--rail); }}
+
 th.sortable {{ cursor:pointer; user-select:none; }}
 th.sortable:hover {{ color:var(--ink); }}
 th.sortable .arrow {{ font-size:9px; margin-left:5px; color:var(--teal); }}
 th[aria-sort]:not([aria-sort="none"]) {{ color:var(--ink); }}
 table.routes a {{ color:var(--teal); text-decoration:none; }}
+table.routes a:hover {{ text-decoration:underline; }}
+td.acts {{ display:flex; gap:10px; align-items:center; }}
+td.acts button.rec {{ font:inherit; font-size:calc(12px * var(--scale));
+  background:none; border:1px solid var(--line); border-radius:2px; color:var(--muted);
+  padding:1px 7px; cursor:pointer; }}
+td.acts button.rec:hover {{ border-color:var(--teal); color:var(--teal); }}
+td.acts a {{ font-size:calc(12px * var(--scale)); white-space:nowrap; }}
+
+.size {{ display:flex; border:1px solid var(--line); border-radius:3px; overflow:hidden; }}
+.size button {{ font:inherit; font-family:"IBM Plex Mono",monospace; font-size:12px;
+  width:30px; padding:8px 0; background:var(--panel); color:var(--muted);
+  border:0; border-left:1px solid var(--line); cursor:pointer; }}
+.size button:first-child {{ border-left:0; }}
+.size button[aria-pressed="true"] {{ background:var(--teal); color:#fff; }}
+
+/* --- the captured record ------------------------------------------------- */
+dialog#rec {{ width:min(680px,92vw); max-height:84vh; padding:0; border:1px solid var(--line);
+  border-radius:4px; background:var(--panel); color:var(--ink); box-shadow:0 18px 50px rgba(0,0,0,.28); }}
+dialog#rec::backdrop {{ background:rgba(10,22,28,.55); }}
+dialog#rec header {{ display:flex; justify-content:space-between; align-items:flex-start;
+  gap:16px; padding:16px 18px 10px; border-bottom:1px solid var(--line); }}
+dialog#rec h3 {{ margin:0; font-family:"IBM Plex Sans Condensed",sans-serif;
+  font-size:20px; font-weight:700; }}
+dialog#rec header p {{ margin:3px 0 0; font-size:12.5px; color:var(--muted); }}
+dialog#rec #recclose {{ font:inherit; background:none; border:0; color:var(--muted);
+  font-size:17px; cursor:pointer; line-height:1; padding:2px 4px; }}
+.reclead {{ margin:12px 18px 0; font-size:12.5px; color:var(--muted); max-width:60ch; }}
+.reclead code {{ font-family:"IBM Plex Mono",monospace; font-size:11.5px; color:var(--teal);
+  word-break:break-all; }}
+dialog#rec pre {{ margin:10px 18px; padding:12px 14px; overflow:auto; max-height:42vh;
+  background:var(--land); border:1px solid var(--line); border-radius:3px;
+  font-family:"IBM Plex Mono",monospace; font-size:12px; line-height:1.5;
+  white-space:pre-wrap; word-break:break-word; }}
+dialog#rec footer {{ display:flex; flex-wrap:wrap; gap:8px 20px; padding:12px 18px 16px;
+  border-top:1px solid var(--line); }}
+dialog#rec footer a {{ color:var(--teal); font-size:13.5px; }}
 .tag {{ font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--muted); }}
 .empty {{ padding:18px 12px; color:var(--muted); }}
 figcaption {{ margin-top:9px; font-size:12.5px; color:var(--muted); }}
 ul.legend {{ list-style:none; margin:0; padding:0; display:grid; gap:1px;
   grid-template-columns:repeat(auto-fit,minmax(228px,1fr)); background:var(--line);
   border:1px solid var(--line); border-radius:3px; overflow:hidden; }}
-ul.legend li {{ background:var(--panel); padding:11px 13px; display:grid; gap:2px; }}
+ul.legend li {{ background:var(--panel); padding:11px 13px 11px 12px; display:grid; gap:2px;
+  border-left:3px solid var(--rail); }}
 ul.legend b {{ font-weight:500; font-size:14.5px; }}
 .lic {{ font-size:11.5px; color:var(--muted); }}
 .cnt {{ font-family:"IBM Plex Mono",monospace; font-size:12.5px; color:var(--teal); }}
@@ -357,6 +433,11 @@ tbody tr:hover {{ background:color-mix(in srgb, var(--teal) 8%, transparent); }}
     <input id="q" type="search" autocomplete="off"
            placeholder="Search {routes} routes — name, crag, grade, source…"
            aria-label="Search routes by name, crag, grade or source">
+    <div class="size" role="group" aria-label="Table size">
+      <button data-size="s" title="Smaller rows">S</button>
+      <button data-size="m" title="Default size">M</button>
+      <button data-size="l" title="Larger rows">L</button>
+    </div>
     <p id="count" class="count"></p>
   </div>
   <div class="tablewrap"><table class="routes">
@@ -365,6 +446,18 @@ tbody tr:hover {{ background:color-mix(in srgb, var(--teal) 8%, transparent); }}
   </table></div>
   <p id="more" class="foot"></p>
 </section>
+
+<dialog id="rec">
+  <header>
+    <div><h3 id="recname"></h3><p id="recwhere"></p></div>
+    <button id="recclose" aria-label="Close">✕</button>
+  </header>
+  <p class="reclead">This is the record exactly as the adapter captured it —
+  uncurated, unmerged, no fields invented. It is one entry of
+  <code id="recfile"></code> in the run directory.</p>
+  <pre id="recjson"></pre>
+  <footer id="reclinks"></footer>
+</dialog>
 
 <section>
   <h2>The sources</h2>
@@ -393,6 +486,7 @@ Grades are stored exactly as each source writes them (<code>IV+</code>,
 
 <script>
 const PLACES = {markers};
+const SRC_COLOR = {colors};
 const map = L.map('map', {{scrollWheelZoom: false}});
 L.tileLayer('https://tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png', {{
   attribution: '© OpenStreetMap contributors', maxZoom: 17
@@ -489,19 +583,19 @@ PLACES.forEach(p => p.list.forEach((r, j) => ALL.push({{
 // `g` reads the value, so the header, the cells and the comparator all come
 // from this one list.
 const COLS = [
-  {{k: 'name',   l: 'Route',        t: 's', g: x => x.d.name}},
+  {{k: 'name',   l: 'Route',        t: 's', g: x => x.d.rec.name}},
   {{k: 'crag',   l: 'Crag',         t: 's', g: x => x.crag}},
   {{k: 'sector', l: 'Sector',       t: 's', g: x => x.d.sector}},
-  {{k: 'grade',  l: 'Grade',        t: 's', g: x => x.d.grade, n: true,
-    tip: 'Sorts within each grade system — systems are never converted'}},
-  {{k: 'sys',    l: 'System',       t: 's', g: x => x.d.sys}},
-  {{k: 'len',    l: 'Metres',       t: 'n', g: x => x.d.len, n: true}},
-  {{k: 'p',      l: 'Pitches',      t: 'n', g: x => x.d.p, n: true}},
-  {{k: 'disc',   l: 'Style',        t: 's', g: x => (x.d.disc || []).join(' ')}},
-  {{k: 'prot',   l: 'Protection',   t: 's', g: x => x.d.prot}},
-  {{k: 'stars',  l: 'Stars',        t: 'n', g: x => x.d.stars, n: true}},
-  {{k: 'fa',     l: 'First ascent', t: 's', g: x => x.d.fa}},
-  {{k: 'src',    l: 'Source',       t: 's', g: x => x.d.src}},
+  {{k: 'grade',  l: 'Grade',        t: 's', g: x => (x.d.rec.grade || {{}}).value, n: true,
+    cls: 'grade', tip: 'Sorts within each grade system — systems are never converted'}},
+  {{k: 'sys',    l: 'System',       t: 's', g: x => (x.d.rec.grade || {{}}).system}},
+  {{k: 'len',    l: 'Metres',       t: 'n', g: x => x.d.rec.length_m, n: true}},
+  {{k: 'p',      l: 'Pitches',      t: 'n', g: x => x.d.rec.pitches, n: true}},
+  {{k: 'disc',   l: 'Style',        t: 's', g: x => (x.d.rec.disciplines || []).join(' ')}},
+  {{k: 'prot',   l: 'Protection',   t: 's', g: x => x.d.rec.protection}},
+  {{k: 'stars',  l: 'Stars',        t: 'n', g: x => x.d.rec.stars, n: true}},
+  {{k: 'fa',     l: 'First ascent', t: 's', g: x => x.d.rec.fa}},
+  {{k: 'src',    l: 'Source',       t: 's', g: x => x.d.src, cls: 'src'}},
 ];
 
 const LIMIT = 250;
@@ -558,14 +652,19 @@ function render() {{
 
   countEl.textContent = hits.length + ' of ' + ALL.length + ' routes';
   listEl.innerHTML = hits.slice(0, LIMIT).map(x =>
-    '<tr data-c="' + x.c + '" data-r="' + x.r + '">' +
+    '<tr data-c="' + x.c + '" data-r="' + x.r + '" style="--rail:' +
+    (SRC_COLOR[x.d.src] || 'var(--muted)') + '">' +
     COLS.map(c => {{
       const v = c.g(x);
-      return '<td class="' + (c.n ? 'num' : c.k === 'name' ? 'rname' : 'tag') + '">' +
-             (v == null || v === '' ? '·' : esc(v)) + '</td>';
+      const cls = c.cls || (c.n ? 'num' : c.k === 'name' ? 'rname' : 'tag');
+      return '<td class="' + cls + (c.n && !c.cls ? '' : '') + '">' +
+             (v == null || v === '' ? '<span class="nil">·</span>' : esc(v)) + '</td>';
     }}).join('') +
-    '<td>' + (x.d.url ? '<a href="' + esc(x.d.url) + '" target="_blank" rel="noopener" ' +
-                        'title="open on ' + esc(x.d.src) + '">↗</a>' : '') + '</td></tr>'
+    '<td class="acts">' +
+    '<button class="rec" title="Show the captured record for this route">record</button>' +
+    (x.d.rec.url ? '<a href="' + esc(x.d.rec.url) + '" target="_blank" rel="noopener" ' +
+                   'title="Open this route on ' + esc(x.d.src) + '">source ↗</a>' : '') +
+    '</td></tr>'
   ).join('') || '<tr><td colspan="' + (COLS.length + 1) +
                 '" class="empty">No route matches that.</td></tr>';
   moreEl.textContent = hits.length > LIMIT
@@ -574,11 +673,52 @@ function render() {{
 }}
 
 listEl.addEventListener('click', e => {{
-  if (e.target.closest('a')) return;   // the ↗ link opens the source, not the popup
   const tr = e.target.closest('tr[data-c]');
-  if (tr) showRoute(+tr.dataset.c, +tr.dataset.r);
+  if (!tr) return;
+  const x = {{c: +tr.dataset.c, r: +tr.dataset.r}};
+  if (e.target.closest('a')) return;                    // source link opens the site
+  if (e.target.closest('button.rec')) return showRecord(x.c, x.r);
+  showRoute(x.c, x.r);                                  // anywhere else: find it on the map
 }});
 qEl.addEventListener('input', render);
+
+// ---- the captured record ------------------------------------------------
+const RUN = '{run}';
+const dlg = document.getElementById('rec');
+function showRecord(ci, ri) {{
+  const p = PLACES[ci], d = p.list[ri];
+  document.getElementById('recname').textContent = d.rec.name;
+  document.getElementById('recwhere').textContent =
+    p.name + (d.sector ? ' · ' + d.sector : '') + ' — captured from ' + d.src;
+  document.getElementById('recfile').textContent =
+    'ingest/runs/' + RUN + '/parsed/' + d.src + '.json';
+  document.getElementById('recjson').textContent = JSON.stringify(d.rec, null, 2);
+  document.getElementById('reclinks').innerHTML =
+    (d.rec.url ? '<a href="' + esc(d.rec.url) + '" target="_blank" rel="noopener">' +
+                 'This route on ' + esc(d.src) + ' ↗</a>' : '') +
+    (d.crag_url ? '<a href="' + esc(d.crag_url) + '" target="_blank" rel="noopener">' +
+                  'The ' + esc(p.name) + ' page it came from ↗</a>' : '');
+  dlg.showModal();
+}}
+document.getElementById('recclose').addEventListener('click', () => dlg.close());
+dlg.addEventListener('click', e => {{ if (e.target === dlg) dlg.close(); }});
+
+// ---- table size ---------------------------------------------------------
+const sizeEl = document.querySelector('.size');
+function setSize(v) {{
+  document.documentElement.dataset.size = v;
+  sizeEl.querySelectorAll('button').forEach(b =>
+    b.setAttribute('aria-pressed', String(b.dataset.size === v)));
+  try {{ localStorage.setItem('cb-size', v); }} catch (err) {{ /* private window */ }}
+}}
+sizeEl.addEventListener('click', e => {{
+  const b = e.target.closest('button[data-size]');
+  if (b) setSize(b.dataset.size);
+}});
+let saved = 'm';
+try {{ saved = localStorage.getItem('cb-size') || 'm'; }} catch (err) {{ /* ignore */ }}
+setSize(saved);
+
 render();
 </script>
 """
