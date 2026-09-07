@@ -85,6 +85,12 @@ def main(argv=None) -> int:
     k = sub.add_parser("keyed", help="store crawl + curated output under the canonical S3 record key scheme")
     k.add_argument("run_id")
 
+    cm = sub.add_parser("map", help="coverage map: every crag a run found, and which source has it")
+    cm.add_argument("run_id", help="primary run")
+    cm.add_argument("--with", dest="with_runs", default="",
+                    help="comma-separated additional run ids to merge in")
+    cm.add_argument("--out", default=None, help="output HTML (default: <run>/coverage-map.html)")
+
     sub.add_parser("list", help="list runs")
     w = sub.add_parser("_work", help=argparse.SUPPRESS)  # internal: the worker process
     w.add_argument("run_id")
@@ -93,7 +99,16 @@ def main(argv=None) -> int:
     return {"start": _start, "status": _status, "result": _result,
             "resume": _resume, "list": _list, "_work": _work,
             "chatter": _chatter, "survey": _survey, "link": _link,
-            "enrich": _enrich, "llm": _llm, "keyed": _keyed}[a.cmd](a)
+            "enrich": _enrich, "llm": _llm, "keyed": _keyed,
+            "map": _map}[a.cmd](a)
+
+
+def _map(a) -> int:
+    from .coverage_map import build
+    runs = [a.run_id] + [r for r in a.with_runs.split(",") if r]
+    out = Path(a.out) if a.out else Run(a.run_id).dir / "coverage-map.html"
+    print(build(runs, out))
+    return 0
 
 
 def _start(a) -> int:

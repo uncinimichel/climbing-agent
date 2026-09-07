@@ -1,5 +1,9 @@
 # multi-pitch.com → crawl schema
 
+> **Built and running:** `ingest/sources/multipitch.py` (module name has no
+> hyphen). **4 crags / 6 routes** in the bbox, exactly the six the research
+> predicted — which is the self-consistency check passing.
+
 **Verdict:** build-adapter, priority 7 — small, trivial, and **first-party.**
 This is Michel and Dan's own site (source at `github.com/dankni/multi-pitch`),
 licensed **CC BY-SA 4.0**, own topo images CC BY 4.0.

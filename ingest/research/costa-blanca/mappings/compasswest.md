@@ -1,5 +1,15 @@
 # compasswest.co.uk → crawl schema
 
+> **Built, and one claim below was wrong.** `ingest/sources/compasswest.py` runs
+> and returns 8 crags on the Costa Blanca bbox with **0 routes** — deliberately.
+> The route-mapping table further down assumed the descriptions PDFs carry a
+> text route list. They do not: `new-campana.pdf` extracts 19.8k characters of
+> access and history prose and *not one grade token*, because the route lines
+> live in the topo images. A grade regex over that text returns pitch fragments
+> ("1. 40m 1V.") and first-ascent sentences, so the adapter stores the verbatim
+> text and topo URLs and leaves routes to the LLM/vision phase. Read the route
+> table below as the target for that phase, not as something already mechanical.
+
 **Verdict:** build-adapter, priority 5 — the only substantial **English-language**
 topo set for the area. **Author:** Rowland Edwards (IFMGA guide, Compass West
 International School of Rock Climbing, in Finestrat since 1986), who opened most

@@ -1,5 +1,10 @@
 # panoramicas360.net → crawl schema
 
+> **Built and running:** `ingest/sources/panoramicas360.py`. **49 routes** in the
+> bbox, one crag record per post as designed (the keyed step folds them into one
+> crag directory). The KML is fetched once in `plan()` and is the only source of
+> coordinates, exactly as described below.
+
 **Verdict:** build-adapter, priority 4. **Author:** Antonio García-Saúco Iglesias
 ("Pels"), Alicante, blogging since 2009; copyright holder of all text and photos.
 **Contact:** enlacumbre@panoramicas360.net (plus a `/permisos/` page — read it

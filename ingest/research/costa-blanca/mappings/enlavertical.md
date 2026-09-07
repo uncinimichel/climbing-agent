@@ -1,5 +1,11 @@
 # enlavertical.com → crawl schema
 
+> **Built and running:** `ingest/sources/enlavertical.py`, sectors-as-crags as
+> designed below. One thing the notes did not anticipate: resolving the province
+> by NAME fails, because the site says "Pais Valencià" where Nominatim says
+> "Comunidad Valenciana". The adapter joins them on the **ISO 3166-2 code**
+> (`ES-VC`) instead, with an alias table for the other comunidades.
+
 **Verdict:** build-adapter, priority 2 — **but see the licence caveat below.**
 **Robots:** the `view` pages we need are allowed; a long list of JSON/XML helper
 endpoints is disallowed. **Contact:** contacto@enlavertical.com.

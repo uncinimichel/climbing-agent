@@ -1,5 +1,12 @@
 # mountainproject.com → crawl schema
 
+> **Built and running:** `ingest/sources/mountainproject.py`, `DELAY_S = 60.0`
+> honoured. The headline is confirmed live: **Puig Campana returns exactly 1
+> route.** One correction to the notes below — the climb type is in the
+> element's *class* (`span.route-type Rock Trad`), never in its text, which is
+> the grade-conversion row; and half stars are `starBlueHalf.svg`, so a
+> `src*="starBlue"` match over-counts.
+
 **Verdict:** build-adapter, priority 6 — **for the sport crags only.**
 **Owner:** onX Maps, Inc. **Permission:** already held (project decision — raw
 data stays in the private store and never on the public site). Keep the email

@@ -1,5 +1,11 @@
 # multilargo.com → crawl schema
 
+> **Built and running:** `ingest/sources/multilargo.py`. On the Costa Blanca
+> bbox it returns **14 crags / 417 routes**, 49 of them on Puig Campana — the
+> research estimate held. One correction to the notes below: the coordinate
+> links are entity-encoded (`&amp;query=`) in the server HTML and `&` in
+> the inlined RSC payload, so match on the parameter, never on the ampersand.
+
 **Verdict:** build-adapter, priority 1. **Licence:** CC BY-SA 4.0 (terms §3).
 **Robots:** content paths allowed, and `ClaudeBot`/`Claude-Web` are named in an
 explicitly *allowed* block. **Contact:** info@multilargo.com.

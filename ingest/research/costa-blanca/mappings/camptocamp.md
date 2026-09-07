@@ -1,5 +1,10 @@
 # api.camptocamp.org → crawl schema
 
+> **Fixed and verified live 2026-09-07.** `WAYPOINT_TYPES = ("climbing_outdoor",
+> "summit")` in `ingest/sources/camptocamp.py`. The bbox went from 13 waypoints
+> to **23 crags / 75 routes**, and Puig Campana now returns its **11 routes**
+> where the old query returned nothing at all.
+
 **Verdict:** build-adapter, priority 3 — and the cheapest of the seven, because
 **the adapter already exists** (`ingest/sources/camptocamp.py`). It needs a query
 fix, not a new module.

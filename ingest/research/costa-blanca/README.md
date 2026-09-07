@@ -33,6 +33,13 @@ camptocamp (11), panoramicas360 (8).
 
 ## Build these, in this order
 
+> **All seven are built** (2026-09-07) and live in `ingest/sources/`. What they
+> actually returned on the Costa Blanca bbox, rather than what the research
+> estimated, is in the run table at the bottom of this file. Two estimates did
+> not survive contact: Compass West yields **0** routes mechanically (they are
+> inside the topo images, not the PDF text), and camptocamp yields far more than
+> expected once the `wtyp=summit` bug is fixed.
+
 | # | source | Puig Campana routes | Costa Blanca scale | render | why it earns the adapter |
 |---|---|---:|---|---|---|
 | 1 | [multilargo.com](https://multilargo.com) | 49 | ~590 routes / ~18 zones in bbox | static-html | The densest multi-pitch croquis database in Alicante, and the single best Puig Campana source anywhere. Multi-pitch only. |
