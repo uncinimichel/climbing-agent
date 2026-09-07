@@ -301,13 +301,41 @@ figure {{ margin:0; }}
 /* --- the route table -----------------------------------------------------
    One scale drives row height and text size; S/M/L just change it.          */
 :root {{ --scale:1; --rowpad:7px; }}
-:root[data-size="s"] {{ --scale:.88; --rowpad:4px; }}
-:root[data-size="l"] {{ --scale:1.12; --rowpad:11px; }}
+:root[data-size="s"] {{ --scale:.82; --rowpad:3px; }}
+:root[data-size="l"] {{ --scale:1.26; --rowpad:12px; }}
 table.routes {{ font-size:calc(14px * var(--scale)); }}
 table.routes th, table.routes td {{ padding:var(--rowpad) calc(10px * var(--scale)); }}
 table.routes tbody tr {{ cursor:pointer; }}
-table.routes td {{ white-space:nowrap; }}
 td .nil {{ color:var(--line); }}
+
+/* Prose columns wrap inside a sane width so the table fits the page instead of
+   forcing 1,800px of sideways scrolling; the short data columns stay on one
+   line, where wrapping would only make them harder to compare. */
+table.routes td[data-k="name"] {{ max-width:20ch; }}
+table.routes td[data-k="crag"] {{ max-width:14ch; }}
+table.routes td[data-k="sector"] {{ max-width:12ch; }}
+table.routes td[data-k="fa"] {{ max-width:16ch; }}
+table.routes td[data-k="name"], table.routes td[data-k="crag"],
+table.routes td[data-k="sector"], table.routes td[data-k="fa"] {{
+  white-space:normal; overflow-wrap:anywhere; }}
+table.routes td[data-k="disc"] {{ max-width:11ch; white-space:normal; }}
+table.routes td[data-k="grade"], table.routes td[data-k="sys"],
+table.routes td[data-k="len"], table.routes td[data-k="p"],
+table.routes td[data-k="prot"],
+table.routes td[data-k="stars"], table.routes td[data-k="src"] {{ white-space:nowrap; }}
+/* the labels wrap too — "First ascent" on two lines costs nothing and the
+   column below it is narrow */
+table.routes thead th {{ white-space:normal; max-width:9ch; vertical-align:bottom; }}
+table.routes thead th:first-child {{ max-width:none; }}
+
+/* When it still overflows — at L, or on a narrow screen — make that visible and
+   scrollable: macOS hides overlay scrollbars, so the table looked frozen. */
+.tablewrap {{ scrollbar-width:thin; scrollbar-color:var(--muted) transparent;
+  overscroll-behavior-x:contain; }}
+.tablewrap::-webkit-scrollbar {{ height:10px; }}
+.tablewrap::-webkit-scrollbar-track {{ background:var(--land); }}
+.tablewrap::-webkit-scrollbar-thumb {{ background:var(--muted); border-radius:5px;
+  border:2px solid var(--land); }}
 
 /* The provenance rail: which source claimed this line. Same hue as its chip
    in the sources list — the page's one piece of colour-coding. */
@@ -342,13 +370,19 @@ th.sortable .arrow {{ font-size:9px; margin-left:5px; color:var(--teal); }}
 th[aria-sort]:not([aria-sort="none"]) {{ color:var(--ink); }}
 table.routes a {{ color:var(--teal); text-decoration:none; }}
 table.routes a:hover {{ text-decoration:underline; }}
-td.acts {{ display:flex; gap:10px; align-items:center; }}
+/* a table cell, not a flex container — display:flex takes the td out of the
+   row's layout and the column widths stop adding up */
+td.acts {{ white-space:nowrap; }}
+td.acts button.rec {{ margin-right:8px; }}
 td.acts button.rec {{ font:inherit; font-size:calc(12px * var(--scale));
   background:none; border:1px solid var(--line); border-radius:2px; color:var(--muted);
   padding:1px 7px; cursor:pointer; }}
 td.acts button.rec:hover {{ border-color:var(--teal); color:var(--teal); }}
 td.acts a {{ font-size:calc(12px * var(--scale)); white-space:nowrap; }}
 
+.sizewrap {{ display:flex; align-items:center; gap:8px; }}
+.sizelbl {{ font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--muted); }}
 .size {{ display:flex; border:1px solid var(--line); border-radius:3px; overflow:hidden; }}
 .size button {{ font:inherit; font-family:"IBM Plex Mono",monospace; font-size:12px;
   width:30px; padding:8px 0; background:var(--panel); color:var(--muted);
@@ -433,10 +467,13 @@ tbody tr:hover {{ background:color-mix(in srgb, var(--teal) 8%, transparent); }}
     <input id="q" type="search" autocomplete="off"
            placeholder="Search {routes} routes — name, crag, grade, source…"
            aria-label="Search routes by name, crag, grade or source">
-    <div class="size" role="group" aria-label="Table size">
-      <button data-size="s" title="Smaller rows">S</button>
-      <button data-size="m" title="Default size">M</button>
-      <button data-size="l" title="Larger rows">L</button>
+    <div class="sizewrap">
+      <span class="sizelbl">Size</span>
+      <div class="size" role="group" aria-label="Table size">
+        <button data-size="s" title="Smaller rows and text">S</button>
+        <button data-size="m" title="Default size">M</button>
+        <button data-size="l" title="Larger rows and text">L</button>
+      </div>
     </div>
     <p id="count" class="count"></p>
   </div>
@@ -657,7 +694,7 @@ function render() {{
     COLS.map(c => {{
       const v = c.g(x);
       const cls = c.cls || (c.n ? 'num' : c.k === 'name' ? 'rname' : 'tag');
-      return '<td class="' + cls + (c.n && !c.cls ? '' : '') + '">' +
+      return '<td class="' + cls + '" data-k="' + c.k + '">' +
              (v == null || v === '' ? '<span class="nil">·</span>' : esc(v)) + '</td>';
     }}).join('') +
     '<td class="acts">' +
@@ -702,6 +739,22 @@ function showRecord(ci, ri) {{
 }}
 document.getElementById('recclose').addEventListener('click', () => dlg.close());
 dlg.addEventListener('click', e => {{ if (e.target === dlg) dlg.close(); }});
+
+// A plain wheel over the table scrolls it sideways when it has somewhere to go,
+// and hands the gesture back to the page at either end. Without this the table
+// looks frozen: macOS hides the scrollbar and a mouse has no sideways axis.
+const wrap = listEl.closest('.tablewrap');
+wrap.addEventListener('wheel', e => {{
+  if (e.deltaX !== 0 || e.shiftKey) return;              // already a sideways gesture
+  const room = wrap.scrollWidth - wrap.clientWidth;
+  if (room <= 0) return;                                 // nothing to scroll: page wins
+  // Only hand the gesture back once we are AT the edge and still pushing that
+  // way — otherwise a big wheel delta would overshoot and do nothing at all.
+  const atStart = wrap.scrollLeft <= 0, atEnd = wrap.scrollLeft >= room - 0.5;
+  if ((e.deltaY < 0 && atStart) || (e.deltaY > 0 && atEnd)) return;
+  wrap.scrollLeft = Math.max(0, Math.min(room, wrap.scrollLeft + e.deltaY));
+  e.preventDefault();
+}}, {{passive: false}});
 
 // ---- table size ---------------------------------------------------------
 const sizeEl = document.querySelector('.size');
