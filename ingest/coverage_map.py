@@ -10,8 +10,12 @@ normalisation, and each place shows a per-source route count. A source column of
 dots is a source that has nothing there; a 0 is a source we crawled that yielded
 no route list (Compass West, whose routes live inside topo images).
 
-Self-contained HTML with an inline SVG map — no tile server, no map library, so
-it opens from disk and survives being published as an artifact.
+The page carries every route with its properties, searchable, and clicking one
+opens its full record on the map. Leaflet over OSM tiles with circleMarker
+points — the same idiom as the curation Studio (corpus/tools/curate_ui.html),
+so this project has one map, not two. It therefore needs the network: to make
+an artifact-publishable copy, the tiles have to be inlined as data URIs and
+Leaflet loaded from cdnjs.
 """
 from __future__ import annotations
 
@@ -114,13 +118,32 @@ def _places(crags: list[dict]) -> list[dict]:
                 if g and g not in seen:
                     seen.add(g)
                     grades.append(g)
+        # Every route, with the properties worth deciding a day on. The
+        # verbatim `description` prose is deliberately left out: it is the bulk
+        # of the payload and it is the third-party text that stays private.
+        routes = []
+        for m in members:
+            for r in m["routes"]:
+                g = r.get("grade") or {}
+                routes.append({
+                    "name": r["name"], "src": m["source"],
+                    # enlavertical names sectors "Crag — Sector"; keep the
+                    # sector so a route says which face it is actually on
+                    "sector": m["name"].split("—", 1)[1].strip() if "—" in m["name"] else None,
+                    "grade": g.get("value"), "sys": g.get("system"),
+                    "len": r.get("length_m"), "p": r.get("pitches"),
+                    "disc": r.get("disciplines") or [], "prot": r.get("protection"),
+                    "fa": r.get("fa"), "stars": r.get("stars"), "url": r.get("url"),
+                })
+        routes.sort(key=lambda r: (r["name"] or "").lower())
+
         places.append({
             "key": key,
             "name": sorted({m["name"].split("—")[0].strip() for m in members}, key=len)[0],
             "lat": sum(m["lat"] for m in members) / len(members),
             "lon": sum(m["lon"] for m in members) / len(members),
             "routes": sum(len(m["routes"]) for m in members),
-            "by": by, "grades": grades[:5],
+            "by": by, "grades": grades[:5], "list": routes,
         })
     places.sort(key=lambda p: -p["routes"])
     return places
@@ -142,7 +165,8 @@ def build(run_ids: list[str], out: Path) -> Path:
     # map idiom in this project rather than two.
     markers = json.dumps([{"i": i, "name": p["name"], "lat": round(p["lat"], 5),
                            "lon": round(p["lon"], 5), "routes": p["routes"],
-                           "by": {k: v["routes"] for k, v in sorted(p["by"].items())}}
+                           "by": {k: v["routes"] for k, v in sorted(p["by"].items())},
+                           "list": p["list"]}
                           for i, p in enumerate(places)], ensure_ascii=False)
 
     rows = []
@@ -252,6 +276,23 @@ figure {{ margin:0; }}
 .leaflet-popup-content dl {{ display:grid; grid-template-columns:auto auto; gap:1px 10px;
   margin:7px 0 0; font-family:"IBM Plex Mono",monospace; font-size:12.5px; }}
 .leaflet-popup-content dd {{ margin:0; text-align:right; }}
+.leaflet-popup-content .rl {{ margin-top:8px;
+  border-top:1px solid var(--line); padding-top:6px; }}
+.leaflet-popup-content .rl button {{ display:flex; justify-content:space-between; gap:10px;
+  width:100%; text-align:left; background:none; border:0; padding:3px 2px; cursor:pointer;
+  font:inherit; font-size:13px; color:var(--ink); border-radius:2px; }}
+.leaflet-popup-content .rl button:hover {{ background:color-mix(in srgb, var(--ochre) 22%, transparent); }}
+.leaflet-popup-content .rl b {{ font-family:"IBM Plex Mono",monospace; font-weight:500;
+  font-size:12px; color:var(--teal); white-space:nowrap; }}
+.finder {{ display:flex; align-items:baseline; gap:14px; flex-wrap:wrap; margin-bottom:10px; }}
+#q {{ flex:1; min-width:240px; font:inherit; padding:9px 12px; color:var(--ink);
+  background:var(--panel); border:1px solid var(--line); border-radius:3px; }}
+#q::placeholder {{ color:var(--muted); }}
+.count {{ margin:0; font-family:"IBM Plex Mono",monospace; font-size:12.5px; color:var(--muted); }}
+table.routes tbody tr {{ cursor:pointer; }}
+table.routes td:first-child {{ font-weight:500; }}
+.tag {{ font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--muted); }}
+.empty {{ padding:18px 12px; color:var(--muted); }}
 figcaption {{ margin-top:9px; font-size:12.5px; color:var(--muted); }}
 ul.legend {{ list-style:none; margin:0; padding:0; display:grid; gap:1px;
   grid-template-columns:repeat(auto-fit,minmax(228px,1fr)); background:var(--line);
@@ -300,6 +341,23 @@ tbody tr:hover {{ background:color-mix(in srgb, var(--teal) 8%, transparent); }}
 </figure>
 
 <section>
+  <h2>Find a route</h2>
+  <div class="finder">
+    <input id="q" type="search" autocomplete="off"
+           placeholder="Search {routes} routes — name, crag, grade, source…"
+           aria-label="Search routes by name, crag, grade or source">
+    <p id="count" class="count"></p>
+  </div>
+  <div class="tablewrap"><table class="routes">
+    <thead><tr><th scope="col">Route</th><th scope="col">Crag</th>
+    <th scope="col">Grade</th><th scope="col">m</th><th scope="col">P</th>
+    <th scope="col">Style</th><th scope="col">Source</th></tr></thead>
+    <tbody id="rlist"></tbody>
+  </table></div>
+  <p id="more" class="foot"></p>
+</section>
+
+<section>
   <h2>The sources</h2>
   <ul class="legend">{legend}</ul>
 </section>
@@ -339,11 +397,62 @@ PLACES.forEach(p => {{
     radius: 4 + Math.sqrt(p.routes) * 1.5,
     color: '#C08324', weight: 2, fillColor: '#C08324', fillOpacity: .45
   }}).addTo(map);
-  const dl = Object.entries(p.by)
-    .map(([k, v]) => '<dt>' + k + '</dt><dd>' + v + '</dd>').join('');
-  m.bindPopup('<b>' + p.name + '</b><br>' + p.routes + ' routes<dl>' + dl + '</dl>');
-  m.on('click', () => select(p.i, false));
+  m.on('click', () => {{ select(p.i, false); m.setPopupContent(cragPopup(p)); }});
+  // maxHeight lets Leaflet scroll and auto-pan the popup itself — a crag with
+  // 97 routes otherwise opens taller than the map and loses its own heading
+  m.bindPopup(cragPopup(p), {{maxWidth: 330, minWidth: 260, maxHeight: 240,
+                             autoPanPadding: [24, 24]}});
   marks[p.i] = m;
+}});
+
+// a declaration, not a const: the marker loop above calls it while building
+// its popups, which a const in the temporal dead zone would not survive
+function esc(s) {{
+  return String(s == null ? '' : s).replace(/[&<>"]/g,
+    c => ({{'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}}[c]));
+}}
+
+// Crag popup: the per-source split, then every route on it. Clicking one
+// swaps the popup for that route's full properties.
+function cragPopup(p) {{
+  const dl = Object.entries(p.by)
+    .map(([k, v]) => '<dt>' + esc(k) + '</dt><dd>' + v + '</dd>').join('');
+  const list = p.list.map((r, j) =>
+    '<button data-c="' + p.i + '" data-r="' + j + '"><span>' + esc(r.name) +
+    '</span><b>' + esc(r.grade || '—') + '</b></button>').join('');
+  return '<b>' + esc(p.name) + '</b><br>' + p.routes + ' routes<dl>' + dl + '</dl>' +
+         (list ? '<div class="rl">' + list + '</div>' : '');
+}}
+
+// Route popup: the properties, with the source named so a claim can be chased.
+function routePopup(p, r) {{
+  const row = (k, v) => v ? '<dt>' + k + '</dt><dd>' + esc(v) + '</dd>' : '';
+  const grade = r.grade ? esc(r.grade) + (r.sys ? ' <span class="tag">' + esc(r.sys) + '</span>' : '') : '';
+  return '<b>' + esc(r.name) + '</b><br><span class="tag">' + esc(p.name) +
+    (r.sector ? ' · ' + esc(r.sector) : '') + '</span><dl>' +
+    (grade ? '<dt>grade</dt><dd>' + grade + '</dd>' : '') +
+    row('length', r.len ? r.len + ' m' : '') +
+    row('pitches', r.p) +
+    row('style', (r.disc || []).join(', ')) +
+    row('protection', r.prot) +
+    row('stars', r.stars) +
+    row('first ascent', r.fa) +
+    row('source', r.src) +
+    '</dl>' + (r.url ? '<a href="' + esc(r.url) + '" target="_blank" rel="noopener">open on ' +
+                       esc(r.src) + ' ↗</a>' : '');
+}}
+
+function showRoute(ci, ri) {{
+  const p = PLACES[ci], r = p.list[ri];
+  select(ci, false);
+  marks[ci].setPopupContent(routePopup(p, r));
+  map.setView([p.lat, p.lon], Math.max(map.getZoom(), 12));
+  marks[ci].openPopup();
+}}
+
+document.addEventListener('click', e => {{
+  const b = e.target.closest('.rl button');
+  if (b) showRoute(+b.dataset.c, +b.dataset.r);
 }});
 
 function select(i, fly) {{
@@ -353,9 +462,49 @@ function select(i, fly) {{
   if (fly) {{
     const p = PLACES[i];
     map.setView([p.lat, p.lon], 13);
+    marks[i].setPopupContent(cragPopup(p));
     marks[i].openPopup();
   }}
 }}
 rows.forEach(r => r.addEventListener('click', () => select(r.dataset.i, true)));
+
+// ---- route search -------------------------------------------------------
+const ALL = [];
+PLACES.forEach(p => p.list.forEach((r, j) => ALL.push({{
+  c: p.i, r: j, crag: p.name, d: r,
+  hay: (r.name + ' ' + p.name + ' ' + (r.grade || '') + ' ' + r.src + ' ' +
+        (r.disc || []).join(' ') + ' ' + (r.sector || '')).toLowerCase()
+}})));
+
+const LIMIT = 250;
+const qEl = document.getElementById('q');
+const listEl = document.getElementById('rlist');
+const countEl = document.getElementById('count');
+const moreEl = document.getElementById('more');
+
+function render() {{
+  const terms = qEl.value.toLowerCase().split(/\\s+/).filter(Boolean);
+  const hits = terms.length ? ALL.filter(x => terms.every(t => x.hay.includes(t))) : ALL;
+  countEl.textContent = hits.length + ' of ' + ALL.length + ' routes';
+  listEl.innerHTML = hits.slice(0, LIMIT).map(x => {{
+    const r = x.d;
+    return '<tr data-c="' + x.c + '" data-r="' + x.r + '"><td>' + esc(r.name) + '</td>' +
+      '<td>' + esc(x.crag) + (r.sector ? ' <span class="tag">' + esc(r.sector) + '</span>' : '') + '</td>' +
+      '<td class="num">' + esc(r.grade || '·') + '</td>' +
+      '<td class="num">' + (r.len || '·') + '</td>' +
+      '<td class="num">' + (r.p || '·') + '</td>' +
+      '<td class="tag">' + esc((r.disc || []).join(' ')) + '</td>' +
+      '<td class="tag">' + esc(r.src) + '</td></tr>';
+  }}).join('') || '<tr><td colspan="7" class="empty">No route matches that.</td></tr>';
+  moreEl.textContent = hits.length > LIMIT
+    ? 'Showing the first ' + LIMIT + ' — keep typing to narrow it down.' : '';
+}}
+
+listEl.addEventListener('click', e => {{
+  const tr = e.target.closest('tr[data-c]');
+  if (tr) showRoute(+tr.dataset.c, +tr.dataset.r);
+}});
+qEl.addEventListener('input', render);
+render();
 </script>
 """
