@@ -80,26 +80,41 @@ def _point(doc: dict) -> tuple[float | None, float | None]:
         return None, None
 
 
+# Waypoint types that can carry climbing routes. `climbing_outdoor` alone was
+# the original query and it silently missed every mountain: Puig Campana is a
+# `summit`, which is why the 2026-09 Costa Blanca bbox run came back empty and
+# was misread as "camptocamp has no Spanish data" — it has 11 routes there,
+# with alpine grades no other source carries. (Costa Blanca research,
+# ingest/research/costa-blanca/mappings/camptocamp.md.)
+WAYPOINT_TYPES = ("climbing_outdoor", "summit")
+
+
 def plan(bbox: geo.Bbox, session=None, root=None) -> list[dict]:
     s, w, n, e = bbox
     xmin, ymin = _to_merc(s, w)
     xmax, ymax = _to_merc(n, e)
-    items, offset = [], 0
-    while True:
-        data = _get("/waypoints", {"wtyp": "climbing_outdoor",
-                                   "bbox": f"{xmin:.0f},{ymin:.0f},{xmax:.0f},{ymax:.0f}",
-                                   "limit": 100, "offset": offset})
-        docs = data.get("documents") or []
-        for doc in docs:
-            lat, lon = _point(doc)
-            if not geo.contains(bbox, lat, lon):
-                continue
-            items.append({"kind": "crag", "id": str(doc["document_id"]),
-                          "name": _title(doc), "lat": lat, "lon": lon})
-        offset += len(docs)
-        if offset >= (data.get("total") or 0) or not docs:
-            break
-        time.sleep(DELAY_S)
+    items, seen = [], set()
+    for wtyp in WAYPOINT_TYPES:
+        offset = 0
+        while True:
+            data = _get("/waypoints", {"wtyp": wtyp,
+                                       "bbox": f"{xmin:.0f},{ymin:.0f},{xmax:.0f},{ymax:.0f}",
+                                       "limit": 100, "offset": offset})
+            docs = data.get("documents") or []
+            for doc in docs:
+                lat, lon = _point(doc)
+                if not geo.contains(bbox, lat, lon):
+                    continue
+                doc_id = str(doc["document_id"])
+                if doc_id in seen:
+                    continue          # a waypoint can match more than one type
+                seen.add(doc_id)
+                items.append({"kind": "crag", "id": doc_id,
+                              "name": _title(doc), "lat": lat, "lon": lon})
+            offset += len(docs)
+            if offset >= (data.get("total") or 0) or not docs:
+                break
+            time.sleep(DELAY_S)
     return items
 
 

@@ -144,8 +144,24 @@ Adapter contract (see `sources/__init__.py`): `plan(bbox) -> frontier`,
 | thecrag  | area-tree walk with bbox pruning — every area page embeds its own `bbox: [[..],[..]]`, subtrees that miss the query box are dropped unfetched | no open geo endpoint (endpoint guessing gets Cloudflare-blocked — don't). Walk root: `--root URL`, else Nominatim country -> `ROOTS` table. NB URL slugs lie about hierarchy (Fair Head = `/ireland/fair-head` but breadcrumb UK > Northern Ireland) — trust children lists, not URL prefixes |
 | climbook | region-membership (bbox -> Nominatim admin region -> `/falesie` index -> region page -> crag list) | the Italian community DB (~84 Marche crags where MP has 0); robots wide open, no terms page, plain HTTP. Pages carry NO GPS -> crag coords are null, region is the geo filter (coarser than the bbox — documented recall/precision tradeoff). Covers FR/ES regions too. Full route table at `/falesie/<id>/<slug>/vie`; grades French-scale; multipitch = L1/L2 rows kept verbatim |
 
-| camptocamp | native bbox on their public JSON API (`api.camptocamp.org/waypoints?wtyp=climbing_outdoor&bbox=…`, EPSG:3857) | the cleanest source of all: CC BY-SA topoguide data, no HTML. Routes per waypoint with French grades, equipment rating, source-stated single/multi. Alps-heavy (Marche 0) — earns its keep on alpine/trad boxes |
+| camptocamp | native bbox on their public JSON API (`api.camptocamp.org/waypoints?wtyp=climbing_outdoor,summit&bbox=…`, EPSG:3857) | the cleanest source of all: CC BY-SA topoguide data, no HTML. Routes per waypoint with French grades, equipment rating, source-stated single/multi. **`wtyp` must include `summit`** — querying `climbing_outdoor` alone silently drops every mountain (Puig Campana is a summit; that bug made a whole Costa Blanca run come back empty) |
 | falesiait | Italian region section (bbox -> Nominatim region -> `section/<id>/<region>.html` -> `crag/<id>/<slug>.html`), then per-crag GPS trims to the box | crag METADATA only (GPS + rock + access prose, no route lists — verified) — the coordinates complement to Climbook's routes; found by our own survey lens. Robots allows content paths |
+
+Spanish sources, built 2026-09-07 from the Costa Blanca research
+([`research/costa-blanca/`](research/costa-blanca/) — one mapping doc per source):
+
+| source | discovery (verified live 2026-09-07) | notes |
+|----------|---------------------------------------------------------------|-------|
+| multilargo | province index `/escalada/<provincia>` (Nominatim -> slug, else the 186-zone sitemap), then one `/zona/<slug>` fetch per zone | **the best Spanish multi-pitch DB**: 14 crags / 417 routes on the Costa Blanca box, 49 on Puig Campana where MP has 1. CC BY-SA 4.0 and its robots names ClaudeBot as *allowed*. Coordinates exist only on zone pages, so the zone page is the pruning point. Route ficha (FA, protección, per-pitch) is a later enrichment pass — each route keeps its `/via/` url |
+| enlavertical | Nominatim state -> **ISO 3166-2 code** -> the id in the site's own province `<select>` -> `/provincias/view/<id>` -> escuela -> sector | sectors are the crags (each has its own `lat_cent`/`lon_cent`, rock and approach). 25 routes on Puig Campana across 4 sectors. Mixed encoding: declared iso-8859-1 with UTF-8-as-latin1 strings inside, repaired per string. **No licence statement anywhere on the site — crawl yes, publish only after contacto@enlavertical.com agrees** |
+| panoramicas360 | `/croquis-escalada/` (h2 province, h3 crag, route links) + the author's Google My Maps KML for coordinates | 49 routes in the box, one post per route, pitch-by-pitch Spanish prose. All rights reserved to one named author — credit every record, never rehost images |
+| compasswest | `/topos/` headings -> per-crag PDFs (pypdf text) | 8 crags in the box, **0 routes by design**: the route lists live in the topo IMAGES, and a grade regex over the text layer returns pitch fragments, so text + topo URLs are stored for the LLM/vision phase instead of inventing routes. Site states no coordinates — a hand-entered table in the adapter is the bbox filter |
+| mountainproject | area-tree walk from an explicit `--root` (a country root costs one 60s fetch per area) | permission held; **Crawl-delay 60 s, honoured**. Deep on sport crags, near-empty on the multi-pitch mountains (1 route on Puig Campana). Climb type is in the `span.route-type` *class*, never its text |
+| multipitch | one `/data/data.json`, filtered by bbox client-side | our own site, CC BY-SA 4.0 — 4 crags / 6 routes in the box. Value is as a self-consistency check on the pipeline, not volume |
+
+`--root` takes one URL for every source, or per-source assignments once several
+index sources share a run:
+`--root multilargo=https://multilargo.com/escalada/alicante,mountainproject=…`
 
 **Next-source catalog (deep discovery, 2026-08-13 agent, all live-verified):**
 APIs — oblyk.org (free key required), brattelinjer.no/buldreinfo.com (Norway,

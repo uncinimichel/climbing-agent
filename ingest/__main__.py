@@ -37,7 +37,8 @@ def main(argv=None) -> int:
     s.add_argument("--max-pages", type=int, default=None)
     s.add_argument("--max-crags", type=int, default=None)
     s.add_argument("--root", default=None,
-                   help="walk root URL for tree sources (thecrag)")
+                   help="walk/index root URL for tree sources — one URL for all, "
+                        "or per-source 'src=URL,src=URL'")
     s.add_argument("--follow", action="store_true", help="run in the foreground")
 
     for name in ("status", "result", "resume"):
@@ -103,10 +104,39 @@ def _start(a) -> int:
         print(f"unknown source(s) {unknown}; have: {list(REGISTRY)}", file=sys.stderr)
         return 2
     caps = {"max_pages": a.max_pages, "max_crags": a.max_crags}
-    roots = {s: a.root for s in sources} if a.root else {}  # tree/index sources use it, geo sources ignore it
+    roots = _roots(a.root, sources)
     run = Run.create(bbox, sources, caps, roots)
     print(f"run: {run.run_id}  ({run.dir})")
     return _launch(run, a.follow)
+
+
+def _roots(root: str | None, sources: list[str]) -> dict:
+    """--root accepts one URL for every source (the original form, still used by
+    thecrag) or per-source assignments once more than one index source is in the
+    same run and they need different walk roots:
+
+        --root https://www.thecrag.com/…/puig-campana
+        --root multilargo=https://multilargo.com/escalada/alicante,\\
+               mountainproject=https://www.mountainproject.com/area/106282611/costa-blanca
+
+    Geo-query sources ignore whatever they are given."""
+    if not root:
+        return {}
+    if "=" not in root:
+        return {s: root for s in sources}
+    out = {}
+    for pair in root.split(","):
+        pair = pair.strip()
+        if not pair:
+            continue
+        name, _, url = pair.partition("=")
+        name, url = name.strip(), url.strip()
+        if not url:
+            raise SystemExit(f"--root: no URL for source {name!r}")
+        if name not in REGISTRY:
+            raise SystemExit(f"--root: unknown source {name!r}; have: {list(REGISTRY)}")
+        out[name] = url
+    return out
 
 
 def _resume(a) -> int:
