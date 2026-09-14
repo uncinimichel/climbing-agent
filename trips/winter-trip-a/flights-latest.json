@@ -8,7 +8,7 @@
           "out": "2026-11-24",
           "back": "2026-11-26",
           "book_url": "https://www.skyscanner.net/transport/flights/lgw/bcn/261124/261126/",
-          "price": 38,
+          "price": 42,
           "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTExLTI0agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDQkNOGkISCjIwMjYtMTEtMjZqBwgBEgNCQ05yBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ"
         },
         {
@@ -16,7 +16,7 @@
           "out": "2026-11-25",
           "back": "2026-11-27",
           "book_url": "https://www.skyscanner.net/transport/flights/lgw/bcn/261125/261127/",
-          "price": 40,
+          "price": 45,
           "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTExLTI1agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDQkNOGkISCjIwMjYtMTEtMjdqBwgBEgNCQ05yBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ"
         },
         {
@@ -135,12 +135,12 @@
             "stops": 0
           },
           {
-            "price": 43,
-            "airline": "Wizz Air",
-            "from": "LTN",
+            "price": 44,
+            "airline": "Ryanair",
+            "from": "STN",
             "to": "BCN",
-            "dep": "12:15",
-            "arr": "15:25",
+            "dep": "18:10",
+            "arr": "21:20",
             "stops": 0
           }
         ],
@@ -165,8 +165,8 @@
             "airline": "Ryanair",
             "from": "DUB",
             "to": "BCN",
-            "dep": "11:20",
-            "arr": "14:50",
+            "dep": "18:10",
+            "arr": "21:40",
             "stops": 0
           },
           {
@@ -174,8 +174,8 @@
             "airline": "Ryanair",
             "from": "DUB",
             "to": "BCN",
-            "dep": "18:10",
-            "arr": "21:40",
+            "dep": "21:15",
+            "arr": "00:45",
             "stops": 0
           }
         ],
@@ -202,12 +202,12 @@
             "airline": "Ryanair",
             "from": "STN",
             "to": "ALC",
-            "dep": "10:15",
-            "arr": "13:50",
+            "dep": "18:55",
+            "arr": "22:30",
             "stops": 0
           },
           {
-            "price": 50,
+            "price": 53,
             "airline": "Ryanair",
             "from": "STN",
             "to": "ALC",
@@ -224,7 +224,7 @@
         "to": "ALC",
         "options": [
           {
-            "price": 65,
+            "price": 67,
             "airline": "Ryanair UK",
             "from": "BFS",
             "to": "ALC",
@@ -233,7 +233,7 @@
             "stops": 0
           },
           {
-            "price": 73,
+            "price": 71,
             "airline": "Ryanair",
             "from": "DUB",
             "to": "ALC",
@@ -242,7 +242,7 @@
             "stops": 0
           },
           {
-            "price": 74,
+            "price": 72,
             "airline": "Ryanair",
             "from": "DUB",
             "to": "ALC",
@@ -297,26 +297,26 @@
             "airline": "Ryanair UK",
             "from": "STN",
             "to": "BFS",
-            "dep": "17:35",
-            "arr": "18:55",
-            "stops": 0
-          },
-          {
-            "price": 40,
-            "airline": "Ryanair UK",
-            "from": "STN",
-            "to": "BFS",
             "dep": "08:00",
             "arr": "09:20",
             "stops": 0
           },
           {
-            "price": 42,
+            "price": 41,
             "airline": "easyJet",
             "from": "LTN",
             "to": "BFS",
             "dep": "07:00",
             "arr": "08:20",
+            "stops": 0
+          },
+          {
+            "price": 41,
+            "airline": "Ryanair UK",
+            "from": "STN",
+            "to": "BFS",
+            "dep": "17:35",
+            "arr": "18:55",
             "stops": 0
           }
         ],
@@ -352,5 +352,5 @@
       }
     }
   },
-  "checked_at": "2026-09-13 11:11 UTC (Google Flights/SerpApi)"
+  "checked_at": "2026-09-14 11:39 UTC (Google Flights/SerpApi)"
 }
