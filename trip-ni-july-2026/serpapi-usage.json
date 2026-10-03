@@ -2,17 +2,6 @@
   "comment": "SerpApi (Google Flights) quota, sampled each run via account.json (consumes no search). Newest entries appended; capped history.",
   "history": [
     {
-      "at": "2026-07-03 09:47 UTC",
-      "ok": true,
-      "plan": "Free Plan",
-      "per_month": 250,
-      "left": 109,
-      "total_left": 109,
-      "month_usage": 141,
-      "hour": 3,
-      "hour_limit": 250
-    },
-    {
       "at": "2026-07-03 09:54 UTC",
       "ok": true,
       "plan": "Free Plan",
@@ -1978,6 +1967,17 @@
       "total_left": 475,
       "month_usage": 525,
       "hour": 19,
+      "hour_limit": 200
+    },
+    {
+      "at": "2026-10-03 11:23 UTC",
+      "ok": true,
+      "plan": "Starter Plan",
+      "per_month": 1000,
+      "left": 458,
+      "total_left": 458,
+      "month_usage": 542,
+      "hour": 17,
       "hour_limit": 200
     }
   ]
