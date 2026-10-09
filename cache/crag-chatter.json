@@ -1,9 +1,9 @@
 {
- "generated": "2026-10-02T12:00:33+00:00",
+ "generated": "2026-10-09T12:45:20+00:00",
  "window": "past 2 weeks (tbs=qdr:w2)",
  "venues": {
   "Lundy": {
-   "fetched_at": "2026-10-02T12:00:33+00:00",
+   "fetched_at": "2026-10-09T12:45:20+00:00",
    "search_name": "Lundy",
    "country": "England",
    "query_inputs": [
@@ -27,7 +27,7 @@
    "items": []
   },
   "Picos de Europa": {
-   "fetched_at": "2026-10-02T12:00:33+00:00",
+   "fetched_at": "2026-10-09T12:45:20+00:00",
    "search_name": "Picos de Europa",
    "country": "Spain",
    "query_inputs": [
@@ -50,89 +50,59 @@
    ],
    "items": [
     {
-     "title": "Picos de Europa - 100 vias de Escalada",
-     "link": "https://www.camptocamp.org/books/960779/fr/picos-de-europa-100-vias-de-escalada",
-     "domain": "camptocamp.org",
-     "src": "forum",
-     "date": "hace 2 días",
-     "days_ago": 2,
-     "snippet": "Sélection de 100 voies, principalement d'escalade et quelques-unes de neige-glace, dans le massif des Picos de Europa. Chaque voie est présentée sur une double ...",
-     "via": "local"
+     "title": "Picos de Europa, Eneko Pou, Iker Pou",
+     "link": "https://www.planetmountain.com/en/routes/vicios-ocultos-tiro-pedabejo-picos-de-europa/140199",
+     "domain": "planetmountain.com",
+     "src": "web",
+     "date": "3 days ago",
+     "days_ago": 3,
+     "snippet": "The first ascent of 'Vicios Ocultos' (7c+?/285m) on Tiro Pedabejo (2189m) Picos de Europa (Eneko Pou, Iker Pou 2025)",
+     "via": "broad"
     },
     {
      "title": "Routes - Rock climbing, alpinism, mountaineering, Alps ...",
-     "link": "https://www.planetmountain.com/en/routes/page/7?tipologia=1",
+     "link": "https://www.planetmountain.com/en/routes/page/1?tipologia=1&gruppo=Picos%20de%20Europa",
      "domain": "planetmountain.com",
      "src": "web",
-     "date": "4 days ago",
-     "days_ago": 4,
-     "snippet": "Spain - Cordillera Cantábrica - Picos de Europa. Rayu was established ground-up on the south face of Peña Santa de Castilla in the Picos de Europa. The first ...",
+     "date": "27 Sept 2026",
+     "days_ago": null,
+     "snippet": "Elixir Para Calvos. Climbing routes. Elixir Para Calvos - Pena de Fresnidiello. V+ / VS (4c). Spain - Cordillera Cantábrica - Picos de Europa. The most popular ...",
      "via": "broad"
     },
     {
-     "title": "Los hermanos Pou escalan en libre Vicios Ocultos en Picos ...",
-     "link": "https://zuk.eus/hermanos-pou-vicios-ocultos-picos-europa/",
-     "domain": "zuk.eus",
+     "title": "Why Mountain Climbers Keep Underestimating The Picos ...",
+     "link": "https://ivan.iugo.com.uy/mountain-climbers-keep-underestimating-picos-de-europa",
+     "domain": "ivan.iugo.com.uy",
      "src": "web",
-     "date": "hace 1 día",
-     "days_ago": 1,
-     "snippet": "Los hermanos Pou logran la primera escalada en libre de 'Vicios Ocultos' en los Picos de Europa. Iker y Eneko Pou regresan al Tiro Pedabejo, donde abrieron ...",
-     "via": "local"
-    },
-    {
-     "title": "Los hermanos Pou completan en libre “Vicios Ocultos”",
-     "link": "https://www.revistaoxigeno.es/actualidad/primera-ascension-en-libre-vicios-ocultos-hermanos-pou_333586_102_amp.html",
-     "domain": "revistaoxigeno.es",
-     "src": "web",
-     "date": "hace 1 día",
-     "days_ago": 1,
-     "snippet": "Los hermanos Pou logran la primera escalada en libre de “Vicios Ocultos”, una vía de 285 m y 7c abierta en Picos de Europa.",
-     "via": "local"
-    },
-    {
-     "title": "Picu Urriellu, Trad climbing",
-     "link": "https://www.thecrag.com/en/climbing/spain/naranjo-de-bulnes",
-     "domain": "thecrag.com",
-     "src": "web",
-     "date": "5 days ago",
-     "days_ago": 5,
-     "snippet": "A selective guidebook describing 80 classic multi-pitch rock climbing routes spread across the central massif of the Picos de Europa, including the Picu ...",
+     "date": "26 Sept 2026",
+     "days_ago": null,
+     "snippet": "Torrecerredo sits at roughly 8,690 feet in the Picos de Europa range. It is majestic, remote, and unforgiving. When people hear about mountain accidents, they ...",
      "via": "broad"
+    },
+    {
+     "title": "Escalada en Picos de Europa: vías largas y croquis - multilargo",
+     "link": "https://multilargo.com/escalada/picos-de-europa",
+     "domain": "multilargo.com",
+     "src": "web",
+     "date": "30 sept 2026",
+     "days_ago": null,
+     "snippet": "203 vías largas de Picos de Europa: Naranjo de Bulnes, Peña Santa, Fuente Dé, el Cornión y La Hermida, con croquis, grado, longitud y las restricciones del ...",
+     "via": "local"
     },
     {
      "title": "Guía Picos de Europa | Pablo Alonso |… en Camaleño - Misclub",
      "link": "https://misclub.es/centros/guia-picos-de-europa-pablo-alonso-escalada-en-cantabria-y-asturias-cantabria",
      "domain": "misclub.es",
      "src": "web",
-     "date": "hace 5 días",
-     "days_ago": 5,
+     "date": "27 sept 2026",
+     "days_ago": null,
      "snippet": "En Guía Picos de Europa | Pablo Alonso | Escalada en Cantabria y Asturias, en Camaleño, se practica montañismo. Reunimos su dirección exacta, su teléfono, su ...",
      "via": "local"
-    },
-    {
-     "title": "British climber dies after falling 60m on Spanish ...",
-     "link": "https://www.bbc.co.uk/news/articles/cm5yeed6dzgyo",
-     "domain": "bbc.co.uk",
-     "src": "web",
-     "date": "7 days ago",
-     "days_ago": 7,
-     "snippet": "Torrecerredo, which has an elevation of about 2,650m, is in the Picos de Europa, which is popular with climbers and walkers. The region's tourism board ...",
-     "via": "broad"
-    },
-    {
-     "title": "Via Ferrata de Valdeon in the Picos de Europa, Northern ...",
-     "link": "https://www.facebook.com/alpineguidesltd/posts/via-ferrata-de-valdeon-in-the-picos-de-europa-northern-spain-today-soooo-good-to/1527020626113284/",
-     "domain": "facebook.com",
-     "src": "social",
-     "date": null,
-     "days_ago": null,
-     "snippet": "Another excellent day of climbing in Picos de Europa. There's so much adventurous climbing in this región. It's such a privilege to climb here. Bigtime ...",
-     "via": "broad"
     }
    ]
   },
   "Gredos": {
-   "fetched_at": "2026-10-02T12:00:33+00:00",
+   "fetched_at": "2026-10-09T12:45:20+00:00",
    "search_name": "Gredos",
    "country": "Spain",
    "query_inputs": [
@@ -155,89 +125,19 @@
    ],
    "items": [
     {
-     "title": "GUÍAS DE MONTAÑA | ESCALADA DEPORTIVA EN GREDOS",
-     "link": "https://elvagonbejar.com/index.php/2026/09/25/guias-de-montana-escalada-deportiva-en-gredos/",
-     "domain": "elvagonbejar.com",
+     "title": "Escalada deportiva - FEDME",
+     "link": "https://fedme.es/categoria/escalada/",
+     "domain": "fedme.es",
      "src": "web",
-     "date": "hace 7 días",
-     "days_ago": 7,
-     "snippet": "Hoy sumamos a nuestras recomendaciones la guía “Escalada Deportiva Gredos / Sport Climbing”, de Raúl Lora, una publicación pensada para quienes quieren conocer ...",
-     "via": "local"
-    },
-    {
-     "title": "Gredos",
-     "link": "https://www.instagram.com/p/Dd1Vo_cIBOL/",
-     "domain": "instagram.com",
-     "src": "social",
-     "date": null,
-     "days_ago": null,
-     "snippet": "... likes, 0 comments - jaimecere on September 28, 2026: \"Gredos ... May be an image of climbing. Photo by Robin Smit on August 29, 2026 ...",
-     "via": "broad"
-    },
-    {
-     "title": "Sierra de Gredos, Escalada deportiva",
-     "link": "https://www.thecrag.com/es/escalar/spain/toledo-salamanca-area/area/5428469610",
-     "domain": "thecrag.com",
-     "src": "web",
-     "date": "21 sept 2026",
-     "days_ago": null,
-     "snippet": "Zonas ; 1 · Circo de Gredos · - ; 2 · Los Galayos · Todo Escalada clásica ; 3 · Plataforma de Gredos · Todo Escalada deportiva ; 4 · Riscos de Villarejo · Todo Escalada ...",
-     "via": "local"
-    },
-    {
-     "title": "‍♂️ GUÍAS DE MONTAÑA | ESCALADA DEPORTIVA ...",
-     "link": "https://www.instagram.com/p/DdtaUOMkSmF/",
-     "domain": "instagram.com",
-     "src": "social",
-     "date": null,
-     "days_ago": null,
-     "snippet": "Además, está editada en español e inglés, acercando la escalada de Gredos tanto a deportistas de aquí como a quienes llegan de fuera para conocer nuestras ...",
-     "via": "local"
-    },
-    {
-     "title": "Disfrutando de un buen día de escalada en Gredos. Para ...",
-     "link": "https://www.facebook.com/SERACguias/posts/disfrutando-de-un-buen-d%C3%ADa-de-escalada-en-gredos-para-esta-u-otras-propuestas-pu/1736030598044735/",
-     "domain": "facebook.com",
-     "src": "social",
-     "date": null,
-     "days_ago": null,
-     "snippet": "Disfrutando de un buen día de escalada en Gredos. Para esta u otras propuestas, puedes contactar con nosotros utilizando los siguientes medios: seracguias.",
-     "via": "local"
-    },
-    {
-     "title": "Peña de la Vieja, Escalada deportiva",
-     "link": "https://www.thecrag.com/es/escalar/spain/pena-de-la-vieja",
-     "domain": "thecrag.com",
-     "src": "web",
-     "date": "23 sept 2026",
-     "days_ago": null,
-     "snippet": "Introducción a la escalada en roca · Grados y conversiones de grados ... Sierra de Gredos Rock Climbing Guidebook. Autor(es): Raúl Lora. Fecha: 2013.",
-     "via": "local"
-    },
-    {
-     "title": "LIBRERÍA MONTAÑA",
-     "link": "https://www.outdoorsinlimite.com/categoria/material/librer-a-monta-a/",
-     "domain": "outdoorsinlimite.com",
-     "src": "web",
-     "date": "hace 23 horas",
-     "days_ago": null,
-     "snippet": "GREDOS ESCALADA DEPORTIVA. 24,00€. DESNIVEL Favorito. DESNIVEL. GREDOS ESCALADA EN HIELO, NIEVE Y MIXTA. 22,00€. DESNIVEL Favorito. DESNIVEL. GUADARRAMA.",
-     "via": "local"
-    },
-    {
-     "title": "Calendario de actividades de escalada en Madrid | Guías ...",
-     "link": "https://guiaspedrizamania.com/calendario-actividades-escalada-madrid/",
-     "domain": "guiaspedrizamania.com",
-     "src": "web",
-     "date": "19 sept 2026",
-     "days_ago": null,
-     "snippet": "Madrid y Gredos · Levante · Pirineos · Picos de Europa · Senderismo · Circular ... Bautismo de escalada en roca. Descubre la escalada en roca de forma segura ...",
+     "date": "hace 3 días",
+     "days_ago": 3,
+     "snippet": "Competiciones. Rallyes de escalada · Escalada en hielo · Esquí de montaña · Marcha Nórdica · Raquetas de nieve · Snowrunning / Skysnow · Contacto · Calle ...",
      "via": "local"
     }
    ]
   },
   "Mournes, NI": {
-   "fetched_at": "2026-10-02T12:00:33+00:00",
+   "fetched_at": "2026-10-09T12:45:20+00:00",
    "search_name": "Mournes",
    "country": "Northern Ireland",
    "query_inputs": [
@@ -258,61 +158,10 @@
      "tbs": "qdr:w2"
     }
    ],
-   "items": [
-    {
-     "title": "Gold Outdoor Adventure Residential, Mournes, N.Ireland",
-     "link": "https://www.dofe.org/opportunity-finder/article/gold-outdoor-adventure-residential-mournes-n-ireland/",
-     "domain": "dofe.org",
-     "src": "web",
-     "date": "23 hours ago",
-     "days_ago": 0,
-     "snippet": "Belfast Activity Centre – Gold Outdoor Adventure Residential, Mournes, N. ... Participants will engage in adventurous outdoor activities including wet bouldering ...",
-     "via": "broad"
-    },
-    {
-     "title": "SLIEVE DOAN HIKE FROM OTT CAR PARK",
-     "link": "https://mournepeak.com/slieve-doan-hike-from-ott-car-park",
-     "domain": "mournepeak.com",
-     "src": "web",
-     "date": "3 days ago",
-     "days_ago": 3,
-     "snippet": "The Mourne Wall stretched across the mountains ahead, with Silent Valley and the High Mournes opening out beyond it. After the climb from Ott Car Park, reaching ...",
-     "via": "broad"
-    },
-    {
-     "title": "Superb weather in the Mournes today, blue skies and ...",
-     "link": "https://www.facebook.com/MourneMountainAdventures/posts/superb-weather-in-the-mournes-today-blue-skies-and-sunshine-for-our-guided-hike-/1525371062967296/",
-     "domain": "facebook.com",
-     "src": "social",
-     "date": null,
-     "days_ago": null,
-     "snippet": "Some more pix from our little trek up Hen mountain in the Mournes. Note the rock climbers also enjoying the fantastic conditions. #hikingIreland #guidedhiking # ...",
-     "via": "broad"
-    },
-    {
-     "title": "Climbing 7 mountains in 18 hours in the mournes. Yo what ...",
-     "link": "https://www.instagram.com/p/DdrdyPpDkHX/",
-     "domain": "instagram.com",
-     "src": "social",
-     "date": null,
-     "days_ago": null,
-     "snippet": "Climbing 7 mountains in 18 hours in the mournes. Yo what an experience. Mindset over everything. Just tell yourself you can do it, it's easy and keep going.",
-     "via": "broad"
-    },
-    {
-     "title": "Hiking in the Mourne Mountains",
-     "link": "https://www.facebook.com/MullingarHiking/posts/incredible-days-hiking-in-the-mournesmullingar-hiking-group/1740776311113588/",
-     "domain": "facebook.com",
-     "src": "social",
-     "date": null,
-     "days_ago": null,
-     "snippet": "Incredible days hiking in the Mournes Mullingar Hiking Group. ... 5220 ft climbing, 14miles….⛰️ ⛰️⛺️⛺️⛰️ ⛰️ - at Mourne ...",
-     "via": "broad"
-    }
-   ]
+   "items": []
   },
   "Écrins (Aiguille Dibona)": {
-   "fetched_at": "2026-10-02T12:00:33+00:00",
+   "fetched_at": "2026-10-09T12:45:20+00:00",
    "search_name": "Aiguille Dibona",
    "country": "France",
    "query_inputs": [
@@ -335,63 +184,43 @@
    ],
    "items": [
     {
-     "title": "Aiguille Dibona : Éthique de la Joie",
-     "link": "https://www.camptocamp.org/routes/355192/fr/aiguille-dibona-ethique-de-la-joie",
-     "domain": "camptocamp.org",
-     "src": "forum",
-     "date": "il y a 1 jour",
-     "days_ago": 1,
-     "snippet": "Par l'arête N de l'Aiguille Dibona : en 2 rappels de 25 m (risque de coincer le nœud de jonction si rappel de 50 m) puis une grande traversée versant W pour ...",
-     "via": "local"
-    },
-    {
      "title": "Aiguille Dibona : Paul",
      "link": "https://www.camptocamp.org/routes/57597/fr/aiguille-dibona-paul",
      "domain": "camptocamp.org",
      "src": "forum",
-     "date": "il y a 2 jours",
+     "date": "2 days ago",
      "days_ago": 2,
      "snippet": "Voie de traversées, dalles et surplombs, située dans les contreforts de gauche de l'Aiguille Dibona. Historique de l'itinéraire. Équipement : 2004 - Daniel ...",
-     "via": "local"
-    },
-    {
-     "title": "Aiguille Dibona : Martine is on the rock",
-     "link": "https://www.camptocamp.org/routes/53914/fr/aiguille-dibona-martine-is-on-the-rock",
-     "domain": "camptocamp.org",
-     "src": "forum",
-     "date": "il y a 5 jours",
-     "days_ago": 5,
-     "snippet": "Aiguille Dibona : Martine is on the rock ; Dénivelé des difficultés 330 m ; Altitude du début des difficultés 2800 m ; Dénivelé de l'approche 80 m ; Remontées ...",
-     "via": "local"
-    },
-    {
-     "title": "Aiguille Dibona : Midas - Camptocamp.org",
-     "link": "https://www.camptocamp.org/routes/229999/fr/aiguille-dibona-midas",
-     "domain": "camptocamp.org",
-     "src": "forum",
-     "date": "il y a 5 jours",
-     "days_ago": 5,
-     "snippet": "Aiguille Dibona : Midas ; Matériel glacier crampons en début de saison ; Altitude 2719 m / 2900 m ; Dénivelé positif 180 m ; Dénivelé des difficultés 130 m.",
-     "via": "local"
-    },
-    {
-     "title": "Mountains of the world | Climbing Chronicle",
-     "link": "https://climbingchronicle.com/mountains/",
-     "domain": "climbingchronicle.com",
-     "src": "web",
-     "date": "1 day ago",
-     "days_ago": 1,
-     "snippet": "Explore the Climbing Chronicle mountain catalogue with elevation, location, photographs and linked sources ... Aiguille DibonaFrance · 3,131 m; Aiguille du ...",
      "via": "broad"
     },
     {
-     "title": "Montagnes",
-     "link": "https://alpinetrip.fr/category/montagnes/",
-     "domain": "alpinetrip.fr",
+     "title": "Aiguille Dibona Climbing: Routes, Access, and Tips",
+     "link": "https://www.facebook.com/fb-answers/aiguille-dibona-climbing/",
+     "domain": "facebook.com",
+     "src": "social",
+     "date": "il y a 6 jours",
+     "days_ago": 6,
+     "snippet": "Aiguille Dibona is a 3131m granite spire in the French Écrins known for classic 300-500m multi-pitch routes like Voie Madier and Face Sud Classique.",
+     "via": "local"
+    },
+    {
+     "title": "Aiguille Dibona (3131 m) (Mountain, summit)",
+     "link": "https://mapy.com/en/?source=osm&id=6333355",
+     "domain": "mapy.com",
+     "src": "web",
+     "date": "7 days ago",
+     "days_ago": 7,
+     "snippet": "... climbers for its shape, easy access ... Aiguille Dibona (3131 m). Mountain, summit. Saint-Christophe-en-Oisans, France.",
+     "via": "broad"
+    },
+    {
+     "title": "Aiguille Dibona — Rock Climbing (French 5a–7a) in Auvergne ...",
+     "link": "https://peakvisor.com/hiking-map?poi=aiguille-dibona",
+     "domain": "peakvisor.com",
      "src": "web",
      "date": "il y a 7 jours",
      "days_ago": 7,
-     "snippet": "Aiguille Dibona : voies d'escalade, approche et refuge du Soreiller L'Aiguille Dibona se gravit par l'arête Nord depuis le refuge du Soreiller. Voie normale (PD ...",
+     "snippet": "Rock climbing at Aiguille Dibona in Auvergne-Rhône-Alpes, France — 7 routes, grades French 5a–7a. Grades, topo links and photos on the PeakVisor hiking map.",
      "via": "local"
     },
     {
@@ -405,13 +234,13 @@
      "via": "broad"
     },
     {
-     "title": "sport route) Ellie at the top of the Draye after climbing \"Pets ...",
-     "link": "https://www.instagram.com/p/DdyPCUbiqyQ/",
+     "title": "Dent du Géant, Part 2: The Scramble A warm summer meant ...",
+     "link": "https://www.instagram.com/reel/DeHnEzLMKAJ/",
      "domain": "instagram.com",
      "src": "social",
      "date": null,
      "days_ago": null,
-     "snippet": "Aiguille Dibona. Photo by Louis Kennedy on September 10, 2026. May be an image of climbing. Photo by Louis Kennedy on September 10, 2026. May be an image of ...",
+     "snippet": "Photos from: Aiguille du Peigne, Grand Capucin, Aiguille Dibona, Ailefroide and Dent du Geant ... Dent du Géant is such a special climb - spectacular exposure, ...",
      "via": "broad"
     }
    ]
@@ -667,7 +496,7 @@
    ]
   },
   "Paklenica (Anica Kuk)": {
-   "fetched_at": "2026-10-02T12:00:33+00:00",
+   "fetched_at": "2026-10-09T12:45:20+00:00",
    "search_name": "Anica Kuk",
    "country": "Croatia",
    "query_inputs": [
@@ -690,83 +519,43 @@
    ],
    "items": [
     {
-     "title": "Beginner stepping into Scarpa Drago XT: my toes are ...",
-     "link": "https://www.reddit.com/r/climbingshoes/comments/1wnccs2/beginner_stepping_into_scarpa_drago_xt_my_toes/",
-     "domain": "reddit.com",
-     "src": "forum",
-     "date": null,
-     "days_ago": null,
-     "snippet": "Climbing Subaru direct on Anica Kuk (Paklenica, Croatia) · r/climbing - Climbing Subaru direct on Anica Kuk (Paklenica, Croatia). 143 upvotes · 10 comments ...",
+     "title": "Anica Kuk Specialty Climbing | Anića \"Klin\" (Paklenica ...",
+     "link": "http://m.houstonbizweekly.com/?gej=31.928044.2.62",
+     "domain": "m.houstonbizweekly.com",
+     "src": "web",
+     "date": "4 days ago",
+     "days_ago": 4,
+     "snippet": "Anića kuk \"Klin\" (Paklenica, Croatia, Paklenicahours to summit Anica Kuk Maja Travels, Croatia 2023 Climbing our first Big Wall – Anića Kuk ...",
      "via": "broad"
     },
     {
-     "title": "Paklenica, Sport climbing",
-     "link": "https://www.thecrag.com/en/climbing/croatia/paklenica-zadar",
-     "domain": "thecrag.com",
+     "title": "Anica Kuk — Rock Climbing (French 5c–6c) in Zadar County ...",
+     "link": "https://peakvisor.com/hiking-map?poi=anica-kuk",
+     "domain": "peakvisor.com",
      "src": "web",
      "date": "7 days ago",
      "days_ago": 7,
-     "snippet": "The most famous rock formation is Anica Kuk with routes up to 350 m. Most of the routes in Paklenica are well bolted. Grading is in UIAA or in French scale.",
+     "snippet": "Rock climbing at Anica Kuk in Zadar County, Croatia — 3 routes, grades French 5c–6c. Grades, topo links and photos on the PeakVisor hiking map.",
      "via": "broad"
     },
     {
-     "title": "Anića kuk, Sportklettern",
-     "link": "https://www.thecrag.com/de/klettern/croatia/paklenica-zadar/anica-kuk",
+     "title": "Anića kuk - North, Sport climbing",
+     "link": "https://www.thecrag.com/en/climbing/croatia/paklenica-zadar/anica-kuk/area/4413157770",
      "domain": "thecrag.com",
      "src": "web",
-     "date": "8 days ago",
+     "date": "1 Oct 2026",
      "days_ago": 8,
-     "snippet": "Anića kuk Hauptsächlich Sportklettern 93 Routen in Felswand · Karte · Saisonalität · Beschreibung · Ethik übernommen von Paklenica · Tags · Plane deinen Trip · Gebiete.",
+     "snippet": "Anića kuk - North Mostly Sport climbing 19 routes in sector · Map · Seasonality · Ethic inherited from Paklenica · Tags · Plan your Trip · Routes.",
      "via": "broad"
     },
     {
-     "title": "5a ★★Akademski, 180m Sport climb in Paklenica",
-     "link": "https://www.thecrag.com/en/climbing/croatia/paklenica-zadar/anica-kuk/route/4413424086",
-     "domain": "thecrag.com",
+     "title": "Anica Kuk Reliable Climbing / Anića Unmatched \"Klin ...",
+     "link": "https://app.murattatar.xyz/?f5f9a98=31_928044_3_26",
+     "domain": "app.murattatar.xyz",
      "src": "web",
-     "date": "23 Sept 2026",
-     "days_ago": null,
-     "snippet": "... climbing routes (sport and trad) in the National Park of Paklenica, including the famous Anica kuk wall. Buy · climb-europe.com. i. Paklenica Rock Climbing ...",
-     "via": "broad"
-    },
-    {
-     "title": "5b ★★Brid za veliki čekić, 150m Sport climb in Paklenica",
-     "link": "https://www.thecrag.com/en/climbing/croatia/paklenica-zadar/anica-kuk/route/2831083614",
-     "domain": "thecrag.com",
-     "src": "web",
-     "date": "19 Sept 2026",
-     "days_ago": null,
-     "snippet": "... climbing routes (sport and trad) in the National Park of Paklenica, including the famous Anica kuk wall. Buy · climb-europe.com. i. Paklenica Rock Climbing ...",
-     "via": "broad"
-    },
-    {
-     "title": "First time first day in Paklenica didn't ...",
-     "link": "https://www.instagram.com/p/Ddg05_qjYym/",
-     "domain": "instagram.com",
-     "src": "social",
      "date": null,
      "days_ago": null,
-     "snippet": "Eigentlich sollte es eine Besteigung des Anica Kuk werden, doch dann kam ein Gewitter #paklenica #climbing #Kroatien #climbinggirls · View all 2 comments.",
-     "via": "broad"
-    },
-    {
-     "title": "Kuk od Skradelin, Sport climbing - Paklenica",
-     "link": "https://www.thecrag.com/en/climbing/croatia/paklenica-zadar/area/24592806",
-     "domain": "thecrag.com",
-     "src": "web",
-     "date": "24 Sept 2026",
-     "days_ago": null,
-     "snippet": "... climbing routes (sport and trad) in the National Park of Paklenica, including the famous Anica kuk wall. ... climbing routes (sport and trad) in the National ...",
-     "via": "broad"
-    },
-    {
-     "title": "ČIKOLA via FERRATA kanjon Čikole feratom ...",
-     "link": "https://www.instagram.com/reel/Dd10EGxtZID/",
-     "domain": "instagram.com",
-     "src": "social",
-     "date": null,
-     "days_ago": null,
-     "snippet": "Eigentlich sollte es eine Besteigung des Anica Kuk werden, doch dann kam ein Gewitter #paklenica #climbing #Kroatien #climbinggirls · View all 2 comments.",
+     "snippet": "Anica Kuk Reliable Climbing / Anića Unmatched \"Klin\" (Paklenica, Croatia. Item no : 8d9109c3. sold recently ...",
      "via": "broad"
     }
    ]
@@ -827,7 +616,7 @@
    ]
   },
   "Tenerife": {
-   "fetched_at": "2026-10-02T12:00:33+00:00",
+   "fetched_at": "2026-10-09T12:45:20+00:00",
    "search_name": "Tenerife",
    "country": "Spain",
    "query_inputs": [
@@ -850,69 +639,69 @@
    ],
    "items": [
     {
-     "title": "Risco de Guaria climbing area",
-     "link": "https://www.tenerifeon.es/en/routes/climbing/risco-de-guaria-climbing-area",
-     "domain": "tenerifeon.es",
-     "src": "web",
-     "date": "4 days ago",
-     "days_ago": 4,
-     "snippet": "Sign in. To request a permit, you must be registered on Tenerife ON. ... If you don't have an account yet, create one now and restart the booking process.",
-     "via": "broad"
-    },
-    {
-     "title": "Tenerife, Rock climbing",
-     "link": "https://www.thecrag.com/en/climbing/spain/tenerife",
+     "title": "9, Sport climb in Tenerife",
+     "link": "https://www.thecrag.com/es/escalar/spain/tenerife/route/5168379288",
      "domain": "thecrag.com",
      "src": "web",
-     "date": "6 days ago",
-     "days_ago": 6,
-     "snippet": "A comprehensive guidebook describing 17 rock climbing and sport climbing areas in Tenerife, covering over 1,300 routes across a wide range of grades, including ...",
+     "date": "hace 5 días",
+     "days_ago": 5,
+     "snippet": "Una guía completa que describe 17 áreas de escalada en roca y deportiva en Tenerife, cubriendo más de 1.300 vías a través de una amplia gama de grados, ...",
+     "via": "local"
+    },
+    {
+     "title": "Santa Cruz de Tenerife Rock Climbing: 37 Crags & Boulders",
+     "link": "https://peakvisor.com/climbing/spain/santa-cruz-de-tenerife.html",
+     "domain": "peakvisor.com",
+     "src": "web",
+     "date": "7 days ago",
+     "days_ago": 7,
+     "snippet": "37 climbing areas in Santa Cruz de Tenerife, Spain: crags, boulders, climbing gyms and ice falls with grades, route counts, rock type and map locations.",
      "via": "broad"
     },
     {
-     "title": "Las Moraditas, Rock climbing",
-     "link": "https://www.thecrag.com/en/climbing/spain/tenerife/area/1031912922",
+     "title": "1, Sport climb in Tenerife",
+     "link": "https://www.thecrag.com/es/escalar/spain/tenerife/route/4639587426",
      "domain": "thecrag.com",
      "src": "web",
      "date": "7 days ago",
      "days_ago": 7,
-     "snippet": "A comprehensive guidebook describing 17 rock climbing and sport climbing areas in Tenerife, covering over 1,300 routes across a wide range of grades, including ...",
+     "snippet": "Una guía completa que describe 17 áreas de escalada en roca y deportiva en Tenerife, cubriendo más de 1.300 vías a través de una amplia gama de grados, ...",
      "via": "broad"
     },
     {
-     "title": "Accommodation suggestions for Tenerife, Canary Islands ...",
-     "link": "https://www.facebook.com/groups/747765365412569/posts/3291960564326357/",
-     "domain": "facebook.com",
-     "src": "social",
-     "date": null,
-     "days_ago": null,
-     "snippet": "Looking for somewhere to stay 14th to 21st of November. In Tenerife climbing for a week so location not a problem but parking nearby would be good.",
-     "via": "broad"
-    },
-    {
-     "title": "Cañada del El Capricho climbing area",
-     "link": "https://www.tenerifeon.es/en/routes/climbing/canada-del-el-capricho-climbing-area",
-     "domain": "tenerifeon.es",
+     "title": "17, Sport climb in Tenerife",
+     "link": "https://www.thecrag.com/es/escalar/spain/tenerife/route/4688357781",
+     "domain": "thecrag.com",
      "src": "web",
-     "date": "22 Sept 2026",
-     "days_ago": null,
-     "snippet": "Tailor your own route along Tenerife's trails quickly and easily.. Go to planner. Icono de Youtube. Login required. You need to ...",
-     "via": "broad"
+     "date": "hace 7 días",
+     "days_ago": 7,
+     "snippet": "Una guía completa que describe 17 áreas de escalada en roca y deportiva en Tenerife, cubriendo más de 1.300 vías a través de una amplia gama de grados, ...",
+     "via": "local"
     },
     {
-     "title": "Climbing partners wanted in Puerto de la Cruz, Tenerife for ...",
-     "link": "https://www.facebook.com/groups/271761596500093/posts/3017198998622992/",
-     "domain": "facebook.com",
-     "src": "social",
-     "date": null,
+     "title": "3, Sport climb in Tenerife",
+     "link": "https://www.thecrag.com/es/escalar/spain/tenerife/route/4639587570",
+     "domain": "thecrag.com",
+     "src": "web",
+     "date": "hace 7 días",
+     "days_ago": 7,
+     "snippet": "Una guía completa que describe 17 áreas de escalada en roca y deportiva en Tenerife, cubriendo más de 1.300 vías a través de una amplia gama de grados, ...",
+     "via": "local"
+    },
+    {
+     "title": "Climbing experiences in Tenerife",
+     "link": "https://www.myguidetenerife.com/experiences/climbing-experiences",
+     "domain": "myguidetenerife.com",
+     "src": "web",
+     "date": "28 Sept 2026",
      "days_ago": null,
-     "snippet": "Hello, I'll stay in Arico, Tenerife Climbing House from Oct. 20th to Nov. 9th. and would be happy to find partners or a group to climb with. Max. 6a, but also ...",
+     "snippet": "Climbing experiences in Tenerife · Tenerife: Mount Teide Summit Hiking Adventure with Cable Car · Top Things To Do in Tenerife · Luggage Storage · Gran Canaria: ...",
      "via": "broad"
     }
    ]
   },
   "Aladaglar": {
-   "fetched_at": "2026-10-02T12:00:33+00:00",
+   "fetched_at": "2026-10-09T12:45:20+00:00",
    "search_name": "Aladaglar",
    "country": "Turkey",
    "query_inputs": [
@@ -927,29 +716,29 @@
    ],
    "items": [
     {
+     "title": "mountain climbing in aladaglar in turkey",
+     "link": "https://stock.adobe.com/dk/images/mountain-climbing-in-aladaglar-in-turkey/520260550",
+     "domain": "stock.adobe.com",
+     "src": "web",
+     "date": "6 days ago",
+     "days_ago": 6,
+     "snippet": "MOUNTAIN CLIMBING IN ALADAGLAR IN TURKEY. af Burak. DIMENSIONER. 6000 x 4000 px. FILTYPE. JPEG. KATEGORI. Landskaber. LICENSTYPE. StandardellerUdvidet.",
+     "via": "broad"
+    },
+    {
      "title": "Aladağlar - Проект ALP",
      "link": "https://alp.org.ua/en/tags/aladaglar",
      "domain": "alp.org.ua",
      "src": "web",
-     "date": "2 days ago",
-     "days_ago": 2,
-     "snippet": "Tag: Aladağlar ; Rock climbing in Turkey: a brief overview of the new Çitdibi climbing area · September 30, 2026 ; Rock climbing in Turkey: 11 popular climbing ...",
-     "via": "broad"
-    },
-    {
-     "title": "Aladaglar 6 zirve Trail",
-     "link": "https://www.wikiloc.com/mountaineering-trails/aladaglar-6-zirve-286968150",
-     "domain": "wikiloc.com",
-     "src": "web",
-     "date": "20 Sept 2026",
+     "date": "30 Sept 2026",
      "days_ago": null,
-     "snippet": "Aladaglar 6 zirve Alpine Climbing trail in Çadıroluğu, Adana (Türkiye). Download its GPS track and follow the route on a map. Record your own itinerary from ...",
+     "snippet": "Tag: Aladağlar ; Rock climbing in Turkey: a brief overview of the new Çitdibi climbing area · September 30, 2026 ; Rock climbing in Turkey: 11 popular climbing ...",
      "via": "broad"
     }
    ]
   },
   "Loften": {
-   "fetched_at": "2026-10-02T12:00:33+00:00",
+   "fetched_at": "2026-10-09T12:45:20+00:00",
    "search_name": "Loften",
    "country": "Norway",
    "query_inputs": [
@@ -973,7 +762,7 @@
    "items": []
   },
   "Hoy": {
-   "fetched_at": "2026-10-02T12:00:33+00:00",
+   "fetched_at": "2026-10-09T12:45:20+00:00",
    "search_name": "Hoy",
    "country": "Scotland",
    "query_inputs": [
@@ -994,7 +783,38 @@
      "tbs": "qdr:w2"
     }
    ],
-   "items": []
+   "items": [
+    {
+     "title": "The old man of hoy — Rock Climbing (French 6a ... - PeakVisor",
+     "link": "https://peakvisor.com/hiking-map?poi=the-old-man-of-hoy",
+     "domain": "peakvisor.com",
+     "src": "web",
+     "date": "7 days ago",
+     "days_ago": 7,
+     "snippet": "Rock climbing at The old man of hoy in Scotland, United Kingdom — 1 routes, grades French 6a+. Grades, topo links and photos on the PeakVisor hiking map.",
+     "via": "broad"
+    },
+    {
+     "title": "Orkney climbing - uxrtlumuykoo.lol",
+     "link": "https://uxrtlumuykoo.lol/dqzclzpxrzehgqsqoeoflc",
+     "domain": "uxrtlumuykoo.lol",
+     "src": "web",
+     "date": "7 days ago",
+     "days_ago": 7,
+     "snippet": "| Climbing Daily Ep.815. 'Not a Hope in Hoy' | Climbing the world's hardest sea cliff. Mucklehouse Wall E5 6a, Orkney. Head On Out: Old Man of Hoy Climb.",
+     "via": "broad"
+    },
+    {
+     "title": "Old Man of Hoy climb in Scotland",
+     "link": "https://www.facebook.com/Matthawkinsmountaineering/posts/headed-up-to-scotland-with-laurence-last-week-to-climb-the-old-man-of-hoythe-ori/1414297130872111/",
+     "domain": "facebook.com",
+     "src": "social",
+     "date": null,
+     "days_ago": null,
+     "snippet": "Known for its solitary, dramatic form against the sea, the Old Man of Hoy has become an iconic landmark, particularly popular among rock climbers. Since the ...",
+     "via": "broad"
+    }
+   ]
   }
  }
 }
