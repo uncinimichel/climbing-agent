@@ -1,8 +1,8 @@
 # Climbing trip ~24 July 2026 — Michel & Dan
 
-**Updated:** 2026-10-10 12:04 UTC · ranked best-first.
+**Updated:** 2026-10-11 12:18 UTC · ranked best-first.
 
-> 📅 Trip starts <b>24 Jul</b> (-78 days out) — still past the live forecast, which currently reaches 25 Oct. Ranked on <b>typical late July weather</b> (2021–2024). Live forecast reaches your dates on 9 Jul.
+> 📅 Trip starts <b>24 Jul</b> (-79 days out) — still past the live forecast, which currently reaches 26 Oct. Ranked on <b>typical late July weather</b> (2021–2024). Live forecast reaches your dates on 9 Jul.
 
 **Links:** [multi-pitch.com](https://multi-pitch.com/) · [venue spreadsheet](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit) · [live dashboard](https://uncinimichel.github.io/climbing-agent/)
 
