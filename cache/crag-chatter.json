@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-16T10:38:34+00:00",
+ "generated": "2026-10-17T10:09:54+00:00",
  "window": "past 2 weeks (tbs=qdr:w2)",
  "venues": {
   "Lundy": {
@@ -1074,7 +1074,7 @@
    "items": []
   },
   "Hoy": {
-   "fetched_at": "2026-10-09T12:45:20+00:00",
+   "fetched_at": "2026-10-17T10:09:54+00:00",
    "search_name": "Hoy",
    "country": "Scotland",
    "query_inputs": [
@@ -1097,23 +1097,33 @@
    ],
    "items": [
     {
-     "title": "The old man of hoy — Rock Climbing (French 6a ... - PeakVisor",
-     "link": "https://peakvisor.com/hiking-map?poi=the-old-man-of-hoy",
-     "domain": "peakvisor.com",
+     "title": "Project Active Learn to... Boulder for Beginners",
+     "link": "https://studentsunionucl.org/whats-on/sport/project-active-learn-to-boulder-for-beginners",
+     "domain": "studentsunionucl.org",
      "src": "web",
-     "date": "7 days ago",
-     "days_ago": 7,
-     "snippet": "Rock climbing at The old man of hoy in Scotland, United Kingdom — 1 routes, grades French 6a+. Grades, topo links and photos on the PeakVisor hiking map.",
+     "date": "3 days ago",
+     "days_ago": 3,
+     "snippet": "Join us for our 6-Week Learn to... Boulder for Beginners · Where: Rise Climbing, Unit 6, Caxton Works, Hoy St, London E16 1ZA · When: Wednesday 14 October, ...",
      "via": "broad"
     },
     {
-     "title": "Orkney climbing - uxrtlumuykoo.lol",
-     "link": "https://uxrtlumuykoo.lol/dqzclzpxrzehgqsqoeoflc",
-     "domain": "uxrtlumuykoo.lol",
+     "title": "About Rob Johnson - www.expeditionguide.com",
+     "link": "https://www.expeditionguide.com/about-us/",
+     "domain": "expeditionguide.com",
      "src": "web",
-     "date": "7 days ago",
-     "days_ago": 7,
-     "snippet": "| Climbing Daily Ep.815. 'Not a Hope in Hoy' | Climbing the world's hardest sea cliff. Mucklehouse Wall E5 6a, Orkney. Head On Out: Old Man of Hoy Climb.",
+     "date": "8 days ago",
+     "days_ago": 8,
+     "snippet": "I love adventurous climbing, favourite rock climbs are routes like the Old Man of Hoy, big multi pitch routes on Cloggy or Gogarth. Winter Climbing for me ...",
+     "via": "broad"
+    },
+    {
+     "title": "Project Active Pay and Play Indoor Climbing",
+     "link": "https://studentsunionucl.org/whats-on/sport/project-active-pay-and-play-indoor-climbing",
+     "domain": "studentsunionucl.org",
+     "src": "web",
+     "date": "8 Oct 2026",
+     "days_ago": 9,
+     "snippet": "Location: Rise Climbing, Unit 6, Caxton Works, Hoy St, London E16 1ZA · Time: 16:00-17:00 · Equipment: All equipment will be provided at the session, please bring ...",
      "via": "broad"
     },
     {
@@ -1124,6 +1134,26 @@
      "date": null,
      "days_ago": null,
      "snippet": "Known for its solitary, dramatic form against the sea, the Old Man of Hoy has become an iconic landmark, particularly popular among rock climbers. Since the ...",
+     "via": "broad"
+    },
+    {
+     "title": "A climbers adventure of a lifetime. The Old man of Hoy The ...",
+     "link": "https://www.instagram.com/p/DeYwSc1kSo7/",
+     "domain": "instagram.com",
+     "src": "social",
+     "date": null,
+     "days_ago": null,
+     "snippet": "A climbers adventure of a lifetime. · Headed up to Scotland with Laurence last week to climb the old man of Hoy. · Which route would you prefer? · Ascent of ' ...",
+     "via": "broad"
+    },
+    {
+     "title": "🧗 Off the coast of the island of Hoy in Orkney, a single pillar ...",
+     "link": "https://www.facebook.com/scottishbloodline/posts/-off-the-coast-of-the-island-of-hoy-in-orkney-a-single-pillar-of-red-sandstone-s/122133744704893153/",
+     "domain": "facebook.com",
+     "src": "social",
+     "date": null,
+     "days_ago": null,
+     "snippet": "Known for its solitary, dramatic form against the sea, the Old Man of Hoy has become an iconic landmark, particularly popular among rock climbers, who are drawn ...",
      "via": "broad"
     }
    ]
