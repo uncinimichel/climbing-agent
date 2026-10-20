@@ -57,7 +57,34 @@ DOC_KEYS = {"source", "seed", "lens", "query", "position", "title", "url", "site
 # KNOWN names. {region} is substituted in; Italian lenses search google.it.
 IT_PARAMS = {"google_domain": "google.it", "gl": "it", "hl": "it"}
 EN_PARAMS = {"google_domain": "google.co.uk", "gl": "uk", "hl": "en"}
+# Spanish pack (added 2026-09-04 for the Puig Campana / Costa Blanca sweep):
+# google.es, Spanish crag vocabulary (escalada / sector / vía / reseña /
+# croquis), Spanish rebolting + regulation terms (reequipamiento, regulación,
+# nidificación, prohibido). Valencian terms (via ferrada excluded on purpose).
+ES_PARAMS = {"google_domain": "google.es", "gl": "es", "hl": "es"}
 SURVEY_LENSES_BY_LANG = {
+    "es": [
+        {"key": "crags-local", "q": '(escalada OR "vías de escalada" OR sector OR croquis) "{region}"',
+         "params": ES_PARAMS, "window": None},
+        {"key": "crags-en", "q": '"{region}" rock climbing (crag OR routes OR topo)',
+         "params": EN_PARAMS, "window": None},
+        {"key": "new-routes", "q": '("nueva vía" OR "nuevas vías" OR "vía nueva" OR reequipamiento OR reequipada OR "primera ascensión") "{region}"',
+         "params": ES_PARAMS, "window": "y"},
+        {"key": "access", "q": 'escalada (prohibido OR prohibición OR regulación OR cerrado OR nidificación OR "acceso") "{region}"',
+         "params": ES_PARAMS, "window": "y"},
+        {"key": "topo-pdf", "q": '(escalada OR reseña OR croquis OR topo OR guía) "{region}" filetype:pdf',
+         "params": ES_PARAMS, "window": None},
+        {"key": "crag-pages", "q": '(inurl:escalada OR inurl:sector OR inurl:vias OR inurl:croquis) "{region}"',
+         "params": ES_PARAMS, "window": None},
+        {"key": "guidebooks", "q": '"{region}" (guía OR guidebook OR reseñas OR rockfax OR desnivel) escalada',
+         "params": ES_PARAMS, "window": None},
+        {"key": "blogs", "q": '"{region}" (escalada OR "vía") (site:blogspot.com OR site:wordpress.com OR inurl:blog)',
+         "params": ES_PARAMS, "window": None},
+        {"key": "forums", "q": '"{region}" (escalada OR climbing) (site:reddit.com OR site:ukclimbing.com OR site:foro.desnivel.com OR site:8a.nu)',
+         "params": EN_PARAMS, "window": None},
+        {"key": "social-video", "q": '"{region}" (escalada OR climbing) (site:youtube.com OR site:instagram.com OR site:facebook.com)',
+         "params": ES_PARAMS, "window": "y"},
+    ],
     "it": [
         {"key": "crags-local", "q": '(falesia OR falesie OR arrampicata) "{region}"',
          "params": IT_PARAMS, "window": None},

@@ -61,7 +61,7 @@ def main(argv=None) -> int:
     sv = sub.add_parser("survey", help="region-level multi-lens SerpAPI discovery sweep (mechanical)")
     sv.add_argument("--region", required=True, help='region name, e.g. "Marche"')
     sv.add_argument("--num", type=int, default=20)
-    sv.add_argument("--lang", default="en", choices=["en", "it"], help="lens language pack")
+    sv.add_argument("--lang", default="en", choices=["en", "it", "es"], help="lens language pack")
     sv.add_argument("--force", action="store_true", help="ignore the shared-quota guard")
 
     ln = sub.add_parser("link", help="link a chatter run's docs to known crags")
