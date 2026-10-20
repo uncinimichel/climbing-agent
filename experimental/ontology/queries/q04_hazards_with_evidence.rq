@@ -1,0 +1,9 @@
+# Safety: every hazard assertion, its evidence span and the graph (source) asserting it
+PREFIX climb: <https://climbing-agent.dev/ontology/climb#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?graph ?route ?hazard ?critical ?evidence WHERE {
+  GRAPH ?graph { ?r climb:hazard ?h . ?h climb:hazardType ?ht . OPTIONAL { ?h climb:evidenceSpan ?evidence } }
+  ?r rdfs:label ?route .
+  ?ht climb:safety_critical ?critical .
+  BIND(REPLACE(STR(?ht), ".*/", "") AS ?hazard)
+} ORDER BY DESC(?critical) ?graph ?route

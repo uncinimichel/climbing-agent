@@ -1,0 +1,14 @@
+# Identity: candidate same-route links across UKC / Irish wiki / theCrag at Pigeon Rock, with grade agreement
+PREFIX climb: <https://climbing-agent.dev/ontology/climb#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+SELECT ?name ?srcA ?gradeA ?srcB ?gradeB ?confidence WHERE {
+  ?a climb:candidateSameAs ?b .
+  ?a climb:recordKind "route" ; rdfs:label ?name ; climb:source ?sa .
+  ?b climb:source ?sb .
+  OPTIONAL { ?a climb:grade/climb:gradeValue ?gradeA }
+  OPTIONAL { ?b climb:grade/climb:gradeValue ?gradeB }
+  OPTIONAL { ?st rdf:subject ?a ; rdf:predicate climb:candidateSameAs ; rdf:object ?b ; climb:matchConfidence ?confidence }
+  BIND(REPLACE(STR(?sa), ".*/", "") AS ?srcA) BIND(REPLACE(STR(?sb), ".*/", "") AS ?srcB)
+  FILTER(STR(?sa) < STR(?sb))
+} ORDER BY ?confidence ?name

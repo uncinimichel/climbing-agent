@@ -1,0 +1,10 @@
+# Conflicts: same candidate route, different grade string between two sources (the LLM/human adjudication queue)
+PREFIX climb: <https://climbing-agent.dev/ontology/climb#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?name ?srcA ?gradeA ?srcB ?gradeB WHERE {
+  ?a climb:candidateSameAs ?b ; climb:recordKind "route" ; rdfs:label ?name ; climb:source ?sa ;
+     climb:grade/climb:gradeValue ?gradeA .
+  ?b climb:source ?sb ; climb:grade/climb:gradeValue ?gradeB .
+  FILTER(STR(?sa) < STR(?sb) && ?gradeA != ?gradeB)
+  BIND(REPLACE(STR(?sa), ".*/", "") AS ?srcA) BIND(REPLACE(STR(?sb), ".*/", "") AS ?srcB)
+} ORDER BY ?name

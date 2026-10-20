@@ -1,0 +1,7 @@
+# Coverage: for each curated Route, how many source records it is linked to and which sources
+PREFIX climb: <https://climbing-agent.dev/ontology/climb#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?crag (COUNT(DISTINCT ?r) AS ?routes) (COUNT(DISTINCT ?sr) AS ?linkedSourceRecords) (GROUP_CONCAT(DISTINCT ?src; separator=",") AS ?sources) WHERE {
+  ?r a climb:Route ; climb:place/climb:crag ?c . ?c rdfs:label ?crag .
+  OPTIONAL { ?r climb:sourceRecord ?sr . ?sr climb:source ?s . BIND(REPLACE(STR(?s), ".*/", "") AS ?src) }
+} GROUP BY ?crag ORDER BY ?crag

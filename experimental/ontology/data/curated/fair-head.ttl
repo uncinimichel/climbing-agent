@@ -1,0 +1,137 @@
+@prefix climb:   <https://climbing-agent.dev/ontology/climb#> .
+@prefix vocab:   <https://climbing-agent.dev/vocab/> .
+@prefix rock:    <https://climbing-agent.dev/vocab/rock_type/> .
+@prefix disc:    <https://climbing-agent.dev/vocab/discipline/> .
+@prefix haz:     <https://climbing-agent.dev/vocab/hazard/> .
+@prefix sun:     <https://climbing-agent.dev/vocab/sun_window/> .
+@prefix gsys:    <https://climbing-agent.dev/vocab/grade_system/> .
+@prefix appr:    <https://climbing-agent.dev/vocab/approach_difficulty/> .
+@prefix prot:    <https://climbing-agent.dev/vocab/protection_grade/> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix geo:     <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+@prefix prov:    <http://www.w3.org/ns/prov#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix schema:  <https://schema.org/> .
+
+#################################################################
+# Hand-curated PLACE records for Fair Head — loaded into the
+# graph <https://climbing-agent.dev/graph/curated>.
+#
+# This file is the test of "can a human / LLM edit a place in
+# Turtle as easily as in JSON". Each place is independent: nothing
+# here is inherited from the crag header. Facts I could not source
+# are simply absent — never guessed. Every place cites where its
+# facts came from (prov:wasDerivedFrom) so the provenance query can
+# show it.
+#
+# Place URIs must match json2rdf.py's slug of the record's sector
+# names, so the record's routes attach to these places.
+#################################################################
+
+# ---- crag header: grouping only -----------------------------------
+
+<https://climbing-agent.dev/id/crag/northern-ireland/antrim/fair-head>
+    a climb:Crag ;
+    rdfs:label "Fair Head" ;
+    climb:intro "Northern Ireland's biggest cliff: several kilometres of columnar dolerite above the sea near Ballycastle, almost all trad, from single-pitch cracks at Farrangandoo to 100 m walls at Rathlin Wall and The Prow."@en ;
+    climb:accessNotes "Seasonal nesting restrictions on some sectors — check Mountaineering Ireland notices before visiting."@en ;
+    schema:url <https://www.ukclimbing.com/logbook/crags/fair_head-17029/> ,
+               <https://www.thecrag.com/en/climbing/ireland/fair-head> ,
+               <http://wiki.climbing.ie/index.php?title=Fairhead> ;
+    prov:wasDerivedFrom <https://hikeandclimb.ie/fairhead-climbing/> .
+
+# ---- parking facilities (shared physical things, linked FROM places) ----
+
+<https://climbing-agent.dev/id/parking/northern-ireland/antrim/fair-head/seans-farm>
+    a climb:Parking ;
+    rdfs:label "Sean's farm car park (Ballycastle end)" ;
+    schema:description "Donation box. Nearest for the Ballycastle Descent Gully sectors."@en ;
+    prov:wasDerivedFrom <https://hikeandclimb.ie/fairhead-climbing/> .
+
+<https://climbing-agent.dev/id/parking/northern-ireland/antrim/fair-head/national-trust>
+    a climb:Parking ;
+    rdfs:label "National Trust car park (Murlough Bay road)" ;
+    schema:description "Signposted. Better for routes approached by the Grey Man's Path."@en ;
+    prov:wasDerivedFrom <https://hikeandclimb.ie/fairhead-climbing/> .
+
+# ---- places: each a complete, independent record -------------------
+
+<https://climbing-agent.dev/id/place/northern-ireland/antrim/fair-head/the-prow>
+    a climb:Place ;
+    rdfs:label "The Prow" ;
+    climb:crag <https://climbing-agent.dev/id/crag/northern-ireland/antrim/fair-head> ;
+    climb:rockType rock:dolerite ;
+    # theCrag states afternoon sun; it does NOT state a compass aspect, so
+    # aspect is absent and sunWindow is a source-stated fact here, not derived.
+    climb:sunWindow sun:afternoon ;
+    climb:parking <https://climbing-agent.dev/id/parking/northern-ireland/antrim/fair-head/national-trust> ;
+    climb:approachVia "Grey Man's Path" ;
+    climb:approachTimeMin 15 ;
+    climb:approachDifficulty appr:steep-rough ;
+    climb:descentVia "Grey Man's Path" ;
+    climb:tidal false ;
+    climb:intro "Excellent single-pitch lines on the big prow; one of the most visited sectors, and it gets the afternoon sun."@en ;
+    prov:wasDerivedFrom <https://www.thecrag.com/en/climbing/ireland/fair-head/area/12518431> ,
+                        <https://hikeandclimb.ie/fairhead-climbing/> .
+
+<https://climbing-agent.dev/id/place/northern-ireland/antrim/fair-head/farrangandoo>
+    a climb:Place ;
+    rdfs:label "Farrangandoo" ;
+    climb:crag <https://climbing-agent.dev/id/crag/northern-ireland/antrim/fair-head> ;
+    climb:rockType rock:dolerite ;
+    climb:parking <https://climbing-agent.dev/id/parking/northern-ireland/antrim/fair-head/national-trust> ;
+    climb:approachVia "Grey Man's Path" ;
+    climb:approachDifficulty appr:steep-rough ;
+    climb:tidal false ;
+    climb:intro "A popular small sector of columns with a crack every couple of metres — about thirty single-pitch climbs."@en ;
+    prov:wasDerivedFrom <https://hikeandclimb.ie/fairhead-climbing/> .
+
+<https://climbing-agent.dev/id/place/northern-ireland/antrim/fair-head/ballycastle-descent-gully-west>
+    a climb:Place ;
+    rdfs:label "Ballycastle Descent Gully West" ;
+    climb:crag <https://climbing-agent.dev/id/crag/northern-ireland/antrim/fair-head> ;
+    climb:rockType rock:dolerite ;
+    climb:parking <https://climbing-agent.dev/id/parking/northern-ireland/antrim/fair-head/seans-farm> ;
+    climb:approachVia "Ballycastle Descent Gully" ;
+    climb:approachTimeMin 15 ;
+    climb:approachDifficulty appr:steep-rough ;
+    climb:descentVia "Ballycastle Descent Gully" ;
+    climb:tidal false ;
+    climb:intro "The west side of the popular descent gully; a concentration of the easier climbs, so the usual first stop for visitors."@en ;
+    prov:wasDerivedFrom <https://hikeandclimb.ie/fairhead-climbing/> .
+
+<https://climbing-agent.dev/id/place/northern-ireland/antrim/fair-head/ballycastle-descent-gully-east>
+    a climb:Place ;
+    rdfs:label "Ballycastle Descent Gully East" ;
+    climb:crag <https://climbing-agent.dev/id/crag/northern-ireland/antrim/fair-head> ;
+    climb:rockType rock:dolerite ;
+    climb:parking <https://climbing-agent.dev/id/parking/northern-ireland/antrim/fair-head/seans-farm> ;
+    climb:approachVia "Ballycastle Descent Gully" ;
+    climb:approachTimeMin 15 ;
+    climb:descentVia "Ballycastle Descent Gully" ;
+    climb:tidal false ;
+    prov:wasDerivedFrom <https://hikeandclimb.ie/fairhead-climbing/> .
+
+<https://climbing-agent.dev/id/place/northern-ireland/antrim/fair-head/rathlin-wall>
+    a climb:Place ;
+    rdfs:label "Rathlin Wall" ;
+    climb:crag <https://climbing-agent.dev/id/crag/northern-ireland/antrim/fair-head> ;
+    climb:rockType rock:dolerite ;
+    climb:tidal false ;
+    climb:intro "The tallest, most continuous wall on the head: long, sustained crack and corner lines in the E grades."@en ;
+    # approach / parking deliberately absent: not yet sourced. Blank, not guessed.
+    prov:wasDerivedFrom <https://www.thecrag.com/en/climbing/ireland/fair-head> .
+
+<https://climbing-agent.dev/id/place/northern-ireland/antrim/fair-head/grey-mans-path>
+    a climb:Place ;
+    rdfs:label "Grey Man's Path" ;
+    climb:crag <https://climbing-agent.dev/id/crag/northern-ireland/antrim/fair-head> ;
+    climb:rockType rock:dolerite ;
+    climb:parking <https://climbing-agent.dev/id/parking/northern-ireland/antrim/fair-head/national-trust> ;
+    climb:approachVia "Grey Man's Path" ;
+    climb:approachTimeMin 15 ;
+    climb:descentVia "Grey Man's Path" ;
+    climb:tidal false ;
+    prov:wasDerivedFrom <https://www.thecrag.com/en/climbing/ireland/fair-head/area/12518287> ,
+                        <https://hikeandclimb.ie/fairhead-climbing/> .

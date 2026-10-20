@@ -1,0 +1,216 @@
+@prefix sh:      <http://www.w3.org/ns/shacl#> .
+@prefix climb:   <https://climbing-agent.dev/ontology/climb#> .
+@prefix vocab:   <https://climbing-agent.dev/vocab/> .
+@prefix rock:    <https://climbing-agent.dev/vocab/rock_type/> .
+@prefix disc:    <https://climbing-agent.dev/vocab/discipline/> .
+@prefix haz:     <https://climbing-agent.dev/vocab/hazard/> .
+@prefix sun:     <https://climbing-agent.dev/vocab/sun_window/> .
+@prefix gsys:    <https://climbing-agent.dev/vocab/grade_system/> .
+@prefix appr:    <https://climbing-agent.dev/vocab/approach_difficulty/> .
+@prefix prot:    <https://climbing-agent.dev/vocab/protection_grade/> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix geo:     <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+@prefix shapes:  <https://climbing-agent.dev/shapes#> .
+
+#################################################################
+# SHACL shapes — the rules the JSON lint + Studio store enforce
+# today, restated once. Severities:
+#   sh:Violation  = would be a 422 in the Studio / red in CI
+#   sh:Warning    = lint warning (report, don't block)
+# Vocabulary rules use sh:class + skos:inScheme via sh:node so that
+# adding a code to taxonomies.json (-> vocab.ttl) is the only step.
+#################################################################
+
+# ---- reusable "must be a concept of scheme X" node shapes ------
+
+shapes:InRockScheme a sh:NodeShape ;
+    sh:property [ sh:path skos:inScheme ; sh:hasValue vocab:rock_type ;
+                  sh:message "rock type is not a code of the rock_type taxonomy" ] .
+shapes:InDisciplineScheme a sh:NodeShape ;
+    sh:property [ sh:path skos:inScheme ; sh:hasValue vocab:discipline ;
+                  sh:message "discipline is not a taxonomy code" ] .
+shapes:InProtectionScheme a sh:NodeShape ;
+    sh:property [ sh:path skos:inScheme ; sh:hasValue vocab:protection_grade ;
+                  sh:message "protection grade is not a taxonomy code" ] .
+shapes:InFeatureScheme a sh:NodeShape ;
+    sh:property [ sh:path skos:inScheme ; sh:hasValue vocab:feature ;
+                  sh:message "feature is not a taxonomy code" ] .
+shapes:InCharacterScheme a sh:NodeShape ;
+    sh:property [ sh:path skos:inScheme ; sh:hasValue vocab:character ;
+                  sh:message "character is not a taxonomy code" ] .
+shapes:InHazardScheme a sh:NodeShape ;
+    sh:property [ sh:path skos:inScheme ; sh:hasValue vocab:hazard ;
+                  sh:message "hazard is not a taxonomy code" ] .
+shapes:InInclineScheme a sh:NodeShape ;
+    sh:property [ sh:path skos:inScheme ; sh:hasValue vocab:incline ;
+                  sh:message "incline is not a taxonomy code" ] .
+shapes:InSunWindowScheme a sh:NodeShape ;
+    sh:property [ sh:path skos:inScheme ; sh:hasValue vocab:sun_window ;
+                  sh:message "sun window is not a taxonomy code" ] .
+shapes:InGradeSystemScheme a sh:NodeShape ;
+    sh:property [ sh:path skos:inScheme ; sh:hasValue vocab:grade_system ;
+                  sh:message "grade system is not a registered system" ] .
+shapes:InCommitmentScheme a sh:NodeShape ;
+    sh:property [ sh:path skos:inScheme ; sh:hasValue vocab:commitment_grade ;
+                  sh:message "commitment grade is not a taxonomy code" ] .
+shapes:InApproachDifficultyScheme a sh:NodeShape ;
+    sh:property [ sh:path skos:inScheme ; sh:hasValue vocab:approach_difficulty ;
+                  sh:message "approach difficulty is not a taxonomy code" ] .
+
+# ---- Place -----------------------------------------------------
+
+shapes:PlaceShape a sh:NodeShape ;
+    sh:targetClass climb:Place ;
+    sh:property [ sh:path rdfs:label ; sh:minCount 1 ; sh:datatype xsd:string ;
+                  sh:message "a place needs a name" ] ;
+    sh:property [ sh:path climb:crag ; sh:minCount 1 ; sh:maxCount 1 ; sh:class climb:Crag ;
+                  sh:message "a place belongs to exactly one crag header" ] ;
+    sh:property [ sh:path climb:rockType ; sh:maxCount 1 ; sh:node shapes:InRockScheme ] ;
+    sh:property [ sh:path climb:sunWindow ; sh:node shapes:InSunWindowScheme ] ;
+    sh:property [ sh:path climb:approachDifficulty ; sh:maxCount 1 ; sh:node shapes:InApproachDifficultyScheme ] ;
+    sh:property [ sh:path climb:aspect ; sh:maxCount 1 ;
+                  sh:pattern "^(N|NE|E|SE|S|SW|W|NW|all)$" ;
+                  sh:message "aspect must be one of N NE E SE S SW W NW all" ] ;
+    sh:property [ sh:path geo:lat ; sh:maxCount 1 ; sh:datatype xsd:decimal ; sh:minInclusive -90 ; sh:maxInclusive 90 ] ;
+    sh:property [ sh:path geo:long ; sh:maxCount 1 ; sh:datatype xsd:decimal ; sh:minInclusive -180 ; sh:maxInclusive 180 ] ;
+    sh:property [ sh:path geo:lat ; sh:minCount 1 ; sh:severity sh:Warning ;
+                  sh:message "place without coordinates (lint warning)" ] ;
+    # A place that says it is tidal must say why (parser rule #4 at place level)
+    sh:sparql [
+        sh:severity sh:Violation ;
+        sh:message "tidal=true asserted without an evidence span" ;
+        sh:select """
+            PREFIX climb: <https://climbing-agent.dev/ontology/climb#>
+            SELECT $this WHERE {
+              $this climb:tidal true .
+              FILTER NOT EXISTS { $this climb:tidalEvidence ?e }
+            }""" ] .
+
+# ---- Crag header: must NOT carry place facts -------------------
+
+shapes:CragShape a sh:NodeShape ;
+    sh:targetClass climb:Crag ;
+    sh:property [ sh:path rdfs:label ; sh:minCount 1 ] ;
+    sh:property [ sh:path climb:aspect ; sh:maxCount 0 ;
+                  sh:message "aspect is a Place fact; a Crag header must not carry it (no inheritance)" ] ;
+    sh:property [ sh:path climb:approachTimeMin ; sh:maxCount 0 ;
+                  sh:message "approach is a Place fact; a Crag header must not carry it" ] ;
+    sh:property [ sh:path climb:parking ; sh:maxCount 0 ;
+                  sh:message "parking is a Place fact; a Crag header must not carry it" ] ;
+    sh:property [ sh:path climb:sunWindow ; sh:maxCount 0 ;
+                  sh:message "sun window is a Place fact/derivation; a Crag header must not carry it" ] .
+
+# ---- Route -----------------------------------------------------
+
+shapes:RouteShape a sh:NodeShape ;
+    sh:targetClass climb:Route ;
+    sh:property [ sh:path rdfs:label ; sh:minCount 1 ; sh:message "a route needs a name" ] ;
+    sh:property [ sh:path climb:place ; sh:minCount 1 ; sh:maxCount 1 ; sh:class climb:Place ;
+                  sh:message "every route is on exactly one Place (Zero-Garbage rule #6: else quarantine)" ] ;
+    sh:property [ sh:path climb:grade ; sh:node shapes:GradeShape ] ;
+    sh:property [ sh:path climb:grade ; sh:minCount 1 ; sh:severity sh:Warning ;
+                  sh:message "route without any grade" ] ;
+    sh:property [ sh:path ( climb:grade climb:gradeSystem ) ; sh:minCount 1 ; sh:severity sh:Warning ;
+                  sh:message "grade without a system (theCrag mixes systems by regional context) — resolve via gradeContext" ] ;
+    sh:property [ sh:path climb:discipline ; sh:node shapes:InDisciplineScheme ] ;
+    sh:property [ sh:path climb:protectionGrade ; sh:maxCount 1 ; sh:node shapes:InProtectionScheme ] ;
+    sh:property [ sh:path climb:feature ; sh:node shapes:InFeatureScheme ] ;
+    sh:property [ sh:path climb:character ; sh:node shapes:InCharacterScheme ] ;
+    sh:property [ sh:path climb:incline ; sh:maxCount 1 ; sh:node shapes:InInclineScheme ] ;
+    sh:property [ sh:path climb:commitmentGrade ; sh:maxCount 1 ; sh:node shapes:InCommitmentScheme ] ;
+    sh:property [ sh:path climb:hazard ; sh:node shapes:HazardAssertionShape ] ;
+    sh:property [ sh:path climb:stars ; sh:maxCount 1 ; sh:datatype xsd:integer ; sh:minInclusive 0 ; sh:maxInclusive 3 ;
+                  sh:message "stars are 0..3" ] ;
+    sh:property [ sh:path climb:dataGrade ; sh:maxCount 1 ; sh:datatype xsd:integer ; sh:minInclusive 1 ; sh:maxInclusive 7 ] ;
+    sh:property [ sh:path climb:pitchCount ; sh:maxCount 1 ; sh:datatype xsd:integer ; sh:minInclusive 1 ] ;
+    sh:property [ sh:path climb:lengthM ; sh:maxCount 1 ; sh:datatype xsd:integer ; sh:minInclusive 1 ] ;
+    sh:property [ sh:path climb:status ; sh:maxCount 1 ; sh:in ( "draft" "publish" "quarantined" ) ] ;
+    sh:property [ sh:path climb:taggedBy ; sh:maxCount 1 ; sh:in ( "human" "llm" "source" ) ] ;
+    # Route must not carry Place facts (the reshaping's whole point)
+    sh:property [ sh:path climb:aspect ; sh:maxCount 0 ;
+                  sh:message "aspect is a Place fact; not on a Route" ] ;
+    sh:property [ sh:path climb:approachTimeMin ; sh:maxCount 0 ;
+                  sh:message "approach time is a Place fact; not on a Route" ] ;
+    sh:property [ sh:path climb:monthNormals ; sh:maxCount 0 ;
+                  sh:message "climatology is a Place fact; not on a Route" ] ;
+    # governance #32: publish => human-tagged
+    sh:sparql [
+        sh:message "status=publish requires taggedBy=human (governance #32)" ;
+        sh:select """
+            PREFIX climb: <https://climbing-agent.dev/ontology/climb#>
+            SELECT $this WHERE {
+              $this climb:status "publish" .
+              FILTER NOT EXISTS { $this climb:taggedBy "human" }
+            }""" ] ;
+    # multi-pitch discipline must agree with pitch count (structural rule in ingest/schema.py)
+    sh:sparql [
+        sh:severity sh:Warning ;
+        sh:message "pitchCount >= 2 but discipline multi-pitch missing" ;
+        sh:select """
+            PREFIX climb: <https://climbing-agent.dev/ontology/climb#>
+            PREFIX gsys: <https://climbing-agent.dev/vocab/grade_system/>
+            PREFIX disc: <https://climbing-agent.dev/vocab/discipline/>
+            SELECT $this WHERE {
+              $this climb:pitchCount ?n . FILTER(?n >= 2)
+              FILTER NOT EXISTS { $this climb:discipline disc:multi-pitch }
+            }""" ] .
+
+shapes:GradeShape a sh:NodeShape ;
+    sh:property [ sh:path climb:gradeValue ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:string ; sh:minLength 1 ;
+                  sh:message "a grade needs its verbatim value" ] ;
+    sh:property [ sh:path climb:gradeSystem ; sh:maxCount 1 ; sh:node shapes:InGradeSystemScheme ] ;
+    # BAS values must look like an adjectival grade; UIAA like roman numerals
+    sh:sparql [
+        sh:message "grade value does not match its system's pattern" ;
+        sh:select """
+            PREFIX climb: <https://climbing-agent.dev/ontology/climb#>
+            PREFIX gsys: <https://climbing-agent.dev/vocab/grade_system/>
+            PREFIX disc: <https://climbing-agent.dev/vocab/discipline/>
+            SELECT $this ?v WHERE {
+              $this climb:gradeValue ?v ; climb:gradeSystem ?s .
+              FILTER(
+                (?s = gsys:BAS  && !regex(?v, "^(M|D|VD|HVD|S|HS|MVS|VS|HVS|E[0-9]+)( [1-7][abc])?$")) ||
+                (?s = gsys:UIAA && !regex(?v, "^(I|II|III|IV|V|VI|VII|VIII|IX|X|XI|XII)[+-]?$")) ||
+                (?s = gsys:FS   && !regex(?v, "^f?[1-9][abc]?\\\\+?$"))
+              )
+            }""" ] .
+
+# ---- Hazard assertions: safety-critical ones need evidence ------
+
+shapes:HazardAssertionShape a sh:NodeShape ;
+    sh:property [ sh:path climb:hazardType ; sh:minCount 1 ; sh:maxCount 1 ; sh:node shapes:InHazardScheme ] ;
+    sh:sparql [
+        sh:message "safety-critical hazard asserted without an evidence span (parser rule #4)" ;
+        sh:select """
+            PREFIX climb: <https://climbing-agent.dev/ontology/climb#>
+            SELECT $this WHERE {
+              $this climb:hazardType ?h .
+              ?h climb:safety_critical true .
+              FILTER NOT EXISTS { $this climb:evidenceSpan ?e . FILTER(STRLEN(STR(?e)) > 0) }
+            }""" ] .
+
+# ---- Pitch -----------------------------------------------------
+
+shapes:PitchShape a sh:NodeShape ;
+    sh:targetClass climb:Pitch ;
+    sh:property [ sh:path climb:route ; sh:minCount 1 ; sh:maxCount 1 ; sh:class climb:Route ] ;
+    sh:property [ sh:path climb:pitchNumber ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:integer ; sh:minInclusive 1 ] ;
+    sh:property [ sh:path climb:grade ; sh:node shapes:GradeShape ] .
+
+# ---- Source records: identity is a statement, never a merge -----
+
+shapes:SourceRecordShape a sh:NodeShape ;
+    sh:targetClass climb:SourceRecord ;
+    sh:property [ sh:path climb:source ; sh:minCount 1 ; sh:maxCount 1 ; sh:class climb:Source ;
+                  sh:message "a source record must say which source it came from" ] ;
+    sh:property [ sh:path climb:sourceId ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path climb:candidateSameAs ; sh:class climb:SourceRecord ;
+                  sh:message "candidateSameAs links source records to source records only (entities are never collapsed)" ] ;
+    sh:property [ sh:path climb:grade ; sh:node shapes:GradeShape ] ;
+    sh:property [ sh:path ( climb:grade climb:gradeSystem ) ; sh:minCount 1 ; sh:severity sh:Warning ;
+                  sh:message "grade without a system (theCrag mixes systems by regional context) — resolve via gradeContext" ] ;
+    sh:property [ sh:path climb:discipline ; sh:node shapes:InDisciplineScheme ] ;
+    sh:property [ sh:path climb:rockType ; sh:node shapes:InRockScheme ] ;
+    sh:property [ sh:path climb:hazard ; sh:node shapes:HazardAssertionShape ] .

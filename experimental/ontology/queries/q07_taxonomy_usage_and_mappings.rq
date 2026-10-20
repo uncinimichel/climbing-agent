@@ -1,0 +1,9 @@
+# Vocabulary: how often each concept is used across ALL graphs, and whether it has an outside mapping (OSM/OpenBeta/theCrag)
+PREFIX climb: <https://climbing-agent.dev/ontology/climb#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+SELECT ?scheme ?code (COUNT(?s) AS ?uses) (SAMPLE(?m) AS ?mapping) WHERE {
+  ?concept a skos:Concept ; skos:inScheme ?sch ; skos:notation ?code .
+  OPTIONAL { ?s ?p ?concept . FILTER(?p != skos:inScheme && ?p != skos:topConceptOf) }
+  OPTIONAL { ?concept skos:exactMatch|skos:closeMatch ?m }
+  BIND(REPLACE(STR(?sch), ".*/", "") AS ?scheme)
+} GROUP BY ?scheme ?code HAVING (COUNT(?s) > 0) ORDER BY DESC(?uses) LIMIT 25

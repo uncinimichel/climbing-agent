@@ -1,0 +1,1344 @@
+@prefix climb: <https://climbing-agent.dev/ontology/climb#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix thecrag: <https://www.thecrag.com/tag/> .
+@prefix vocab: <https://climbing-agent.dev/vocab/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://climbing-agent.dev/vocab/approach_difficulty/flat-path> a skos:Concept ;
+    skos:definition "Flat path, trainers fine."@en ;
+    skos:inScheme vocab:approach_difficulty ;
+    skos:notation "flat-path" ;
+    skos:prefLabel "flat path"@en ;
+    skos:topConceptOf vocab:approach_difficulty .
+
+<https://climbing-agent.dev/vocab/approach_difficulty/scramble> a skos:Concept ;
+    skos:definition "Hands-on scrambling to reach the base."@en ;
+    skos:inScheme vocab:approach_difficulty ;
+    skos:notation "scramble" ;
+    skos:prefLabel "scramble"@en ;
+    skos:topConceptOf vocab:approach_difficulty .
+
+<https://climbing-agent.dev/vocab/approach_difficulty/steep-rough> a skos:Concept ;
+    skos:definition "Steep or rough ground, no path in places."@en ;
+    skos:inScheme vocab:approach_difficulty ;
+    skos:notation "steep-rough" ;
+    skos:prefLabel "steep rough"@en ;
+    skos:topConceptOf vocab:approach_difficulty .
+
+<https://climbing-agent.dev/vocab/approach_difficulty/technical> a skos:Concept ;
+    skos:definition "Technical approach: abseil, Tyrolean, boat or tidal timing."@en ;
+    skos:inScheme vocab:approach_difficulty ;
+    skos:notation "technical" ;
+    skos:prefLabel "technical"@en ;
+    skos:topConceptOf vocab:approach_difficulty .
+
+<https://climbing-agent.dev/vocab/approach_difficulty/uphill-walk> a skos:Concept ;
+    skos:definition "Uphill walk on a path."@en ;
+    skos:inScheme vocab:approach_difficulty ;
+    skos:notation "uphill-walk" ;
+    skos:prefLabel "uphill walk"@en ;
+    skos:topConceptOf vocab:approach_difficulty .
+
+<https://climbing-agent.dev/vocab/ascent_style/aid> a skos:Concept ;
+    skos:definition "Weighting gear to make upward progress."@en ;
+    skos:inScheme vocab:ascent_style ;
+    skos:notation "aid" ;
+    skos:prefLabel "aid"@en ;
+    skos:topConceptOf vocab:ascent_style ;
+    climb:is_modifier false .
+
+<https://climbing-agent.dev/vocab/ascent_style/clean> a skos:Concept ;
+    skos:definition "Modifier: no falls, no resting on gear."@en ;
+    skos:inScheme vocab:ascent_style ;
+    skos:notation "clean" ;
+    skos:prefLabel "clean"@en ;
+    skos:topConceptOf vocab:ascent_style ;
+    climb:is_modifier true .
+
+<https://climbing-agent.dev/vocab/ascent_style/dog> a skos:Concept ;
+    skos:definition "Modifier: worked the route resting on gear (hangdog)."@en ;
+    skos:inScheme vocab:ascent_style ;
+    skos:notation "dog" ;
+    skos:prefLabel "dog"@en ;
+    skos:topConceptOf vocab:ascent_style ;
+    climb:is_modifier true .
+
+<https://climbing-agent.dev/vocab/ascent_style/flash> a skos:Concept ;
+    skos:definition "Lead first try, clean, with prior beta."@en ;
+    skos:inScheme vocab:ascent_style ;
+    skos:notation "flash" ;
+    skos:prefLabel "flash"@en ;
+    skos:topConceptOf vocab:ascent_style ;
+    climb:is_modifier false .
+
+<https://climbing-agent.dev/vocab/ascent_style/groundup> a skos:Concept ;
+    skos:definition "Attempted from the ground up, no top-rope rehearsal."@en ;
+    skos:inScheme vocab:ascent_style ;
+    skos:notation "groundup" ;
+    skos:prefLabel "groundup"@en ;
+    skos:topConceptOf vocab:ascent_style ;
+    climb:is_modifier false .
+
+<https://climbing-agent.dev/vocab/ascent_style/headpoint> a skos:Concept ;
+    skos:definition "Trad: clean lead after top-rope practice."@en ;
+    skos:inScheme vocab:ascent_style ;
+    skos:notation "headpoint" ;
+    skos:prefLabel "headpoint"@en ;
+    skos:topConceptOf vocab:ascent_style ;
+    climb:is_modifier false .
+
+<https://climbing-agent.dev/vocab/ascent_style/onsight> a skos:Concept ;
+    skos:definition "Lead first try, clean, no prior beta."@en ;
+    skos:inScheme vocab:ascent_style ;
+    skos:notation "onsight" ;
+    skos:prefLabel "onsight"@en ;
+    skos:topConceptOf vocab:ascent_style ;
+    climb:is_modifier false .
+
+<https://climbing-agent.dev/vocab/ascent_style/pinkpoint> a skos:Concept ;
+    skos:definition "Redpoint with gear pre-placed (now usually folded into redpoint)."@en ;
+    skos:inScheme vocab:ascent_style ;
+    skos:notation "pinkpoint" ;
+    skos:prefLabel "pinkpoint"@en ;
+    skos:topConceptOf vocab:ascent_style ;
+    climb:is_modifier false .
+
+<https://climbing-agent.dev/vocab/ascent_style/redpoint> a skos:Concept ;
+    skos:definition "Clean lead after rehearsal."@en ;
+    skos:inScheme vocab:ascent_style ;
+    skos:notation "redpoint" ;
+    skos:prefLabel "redpoint"@en ;
+    skos:topConceptOf vocab:ascent_style ;
+    climb:is_modifier false .
+
+<https://climbing-agent.dev/vocab/ascent_style/second> a skos:Concept ;
+    skos:definition "Climbed after the leader, roped from above."@en ;
+    skos:inScheme vocab:ascent_style ;
+    skos:notation "second" ;
+    skos:prefLabel "second"@en ;
+    skos:topConceptOf vocab:ascent_style ;
+    climb:is_modifier false .
+
+<https://climbing-agent.dev/vocab/ascent_style/solo> a skos:Concept ;
+    skos:definition "Climbed with no rope."@en ;
+    skos:inScheme vocab:ascent_style ;
+    skos:notation "solo" ;
+    skos:prefLabel "solo"@en ;
+    skos:topConceptOf vocab:ascent_style ;
+    climb:is_modifier false .
+
+<https://climbing-agent.dev/vocab/ascent_style/toprope> a skos:Concept ;
+    skos:definition "Climbed on a rope anchored above."@en ;
+    skos:inScheme vocab:ascent_style ;
+    skos:notation "toprope" ;
+    skos:prefLabel "toprope"@en ;
+    skos:topConceptOf vocab:ascent_style ;
+    climb:is_modifier false .
+
+<https://climbing-agent.dev/vocab/character/crimpy> a skos:Concept ;
+    skos:definition "Specifically small-edge crimping."@en ;
+    skos:inScheme vocab:character ;
+    skos:notation "crimpy" ;
+    skos:prefLabel "crimpy"@en ;
+    skos:topConceptOf vocab:character .
+
+<https://climbing-agent.dev/vocab/character/delicate> a skos:Concept ;
+    skos:definition "Balance/friction climbing; precision under little security."@en ;
+    skos:inScheme vocab:character ;
+    skos:notation "delicate" ;
+    skos:prefLabel "delicate"@en ;
+    skos:topConceptOf vocab:character .
+
+<https://climbing-agent.dev/vocab/character/exposed> a skos:Concept ;
+    skos:definition "Big-air positions beyond what the protection grade captures."@en ;
+    skos:inScheme vocab:character ;
+    skos:notation "exposed" ;
+    skos:prefLabel "exposed"@en ;
+    skos:topConceptOf vocab:character .
+
+<https://climbing-agent.dev/vocab/character/fingery> a skos:Concept ;
+    skos:definition "Significant small holds on the hard sections (Rockfax \"f\")."@en ;
+    skos:inScheme vocab:character ;
+    skos:notation "fingery" ;
+    skos:prefLabel "fingery"@en ;
+    skos:topConceptOf vocab:character .
+
+<https://climbing-agent.dev/vocab/character/fluttery> a skos:Concept ;
+    skos:definition "Bold, heady climbing — spaced or marginal gear above hard moves (the Rockfax heart symbol; UK climbers say \"bold\")."@en ;
+    skos:inScheme vocab:character ;
+    skos:notation "fluttery" ;
+    skos:prefLabel "fluttery"@en ;
+    skos:topConceptOf vocab:character .
+
+<https://climbing-agent.dev/vocab/character/powerful> a skos:Concept ;
+    skos:definition "Demands strength on steep ground (Rockfax \"p\")."@en ;
+    skos:inScheme vocab:character ;
+    skos:notation "powerful" ;
+    skos:prefLabel "powerful"@en ;
+    skos:topConceptOf vocab:character .
+
+<https://climbing-agent.dev/vocab/character/pumpy> a skos:Concept ;
+    skos:definition "Steep endurance climbing — the pump is the crux."@en ;
+    skos:inScheme vocab:character ;
+    skos:notation "pumpy" ;
+    skos:prefLabel "pumpy"@en ;
+    skos:topConceptOf vocab:character .
+
+<https://climbing-agent.dev/vocab/character/reachy> a skos:Concept ;
+    skos:definition "Move spans favour reach; height-dependent."@en ;
+    skos:inScheme vocab:character ;
+    skos:notation "reachy" ;
+    skos:prefLabel "reachy"@en ;
+    skos:topConceptOf vocab:character .
+
+<https://climbing-agent.dev/vocab/character/rounded> a skos:Concept ;
+    skos:definition "Rounded, sloping holds and breaks (gritstone-style) — Rockfax symbol; friction- and humidity-sensitive."@en ;
+    skos:inScheme vocab:character ;
+    skos:notation "rounded" ;
+    skos:prefLabel "rounded"@en ;
+    skos:topConceptOf vocab:character .
+
+<https://climbing-agent.dev/vocab/character/sustained> a skos:Concept ;
+    skos:definition "Lots of hard moves with little respite (Rockfax \"s\")."@en ;
+    skos:inScheme vocab:character ;
+    skos:notation "sustained" ;
+    skos:prefLabel "sustained"@en ;
+    skos:topConceptOf vocab:character .
+
+<https://climbing-agent.dev/vocab/character/technical> a skos:Concept ;
+    skos:definition "Intricate movement; body position over pulling."@en ;
+    skos:inScheme vocab:character ;
+    skos:notation "technical" ;
+    skos:prefLabel "technical"@en ;
+    skos:topConceptOf vocab:character .
+
+<https://climbing-agent.dev/vocab/commitment_grade/ABO> a skos:Concept ;
+    skos:definition "Abominable — beyond ED."@en ;
+    skos:inScheme vocab:commitment_grade ;
+    skos:notation "ABO" ;
+    skos:prefLabel "ABO"@en ;
+    skos:topConceptOf vocab:commitment_grade ;
+    climb:system "IFAS" .
+
+<https://climbing-agent.dev/vocab/commitment_grade/AD> a skos:Concept ;
+    skos:definition "Assez difficile."@en ;
+    skos:inScheme vocab:commitment_grade ;
+    skos:notation "AD" ;
+    skos:prefLabel "AD"@en ;
+    skos:topConceptOf vocab:commitment_grade ;
+    climb:system "IFAS" .
+
+<https://climbing-agent.dev/vocab/commitment_grade/D> a skos:Concept ;
+    skos:definition "Difficile."@en ;
+    skos:inScheme vocab:commitment_grade ;
+    skos:notation "D" ;
+    skos:prefLabel "D"@en ;
+    skos:topConceptOf vocab:commitment_grade ;
+    climb:system "IFAS" .
+
+<https://climbing-agent.dev/vocab/commitment_grade/ED> a skos:Concept ;
+    skos:definition "Extrêmement difficile."@en ;
+    skos:inScheme vocab:commitment_grade ;
+    skos:notation "ED" ;
+    skos:prefLabel "ED"@en ;
+    skos:topConceptOf vocab:commitment_grade ;
+    climb:system "IFAS" .
+
+<https://climbing-agent.dev/vocab/commitment_grade/F> a skos:Concept ;
+    skos:definition "Facile — easy."@en ;
+    skos:inScheme vocab:commitment_grade ;
+    skos:notation "F" ;
+    skos:prefLabel "F"@en ;
+    skos:topConceptOf vocab:commitment_grade ;
+    climb:system "IFAS" .
+
+<https://climbing-agent.dev/vocab/commitment_grade/I> a skos:Concept ;
+    skos:definition "A couple of hours."@en ;
+    skos:inScheme vocab:commitment_grade ;
+    skos:notation "I" ;
+    skos:prefLabel "I"@en ;
+    skos:topConceptOf vocab:commitment_grade ;
+    climb:system "NCCS" .
+
+<https://climbing-agent.dev/vocab/commitment_grade/II> a skos:Concept ;
+    skos:definition "A few hours."@en ;
+    skos:inScheme vocab:commitment_grade ;
+    skos:notation "II" ;
+    skos:prefLabel "II"@en ;
+    skos:topConceptOf vocab:commitment_grade ;
+    climb:system "NCCS" .
+
+<https://climbing-agent.dev/vocab/commitment_grade/III> a skos:Concept ;
+    skos:definition "Most of a morning."@en ;
+    skos:inScheme vocab:commitment_grade ;
+    skos:notation "III" ;
+    skos:prefLabel "III"@en ;
+    skos:topConceptOf vocab:commitment_grade ;
+    climb:system "NCCS" .
+
+<https://climbing-agent.dev/vocab/commitment_grade/IV> a skos:Concept ;
+    skos:definition "A full day."@en ;
+    skos:inScheme vocab:commitment_grade ;
+    skos:notation "IV" ;
+    skos:prefLabel "IV"@en ;
+    skos:topConceptOf vocab:commitment_grade ;
+    climb:system "NCCS" .
+
+<https://climbing-agent.dev/vocab/commitment_grade/PD> a skos:Concept ;
+    skos:definition "Peu difficile."@en ;
+    skos:inScheme vocab:commitment_grade ;
+    skos:notation "PD" ;
+    skos:prefLabel "PD"@en ;
+    skos:topConceptOf vocab:commitment_grade ;
+    climb:system "IFAS" .
+
+<https://climbing-agent.dev/vocab/commitment_grade/TD> a skos:Concept ;
+    skos:definition "Très difficile."@en ;
+    skos:inScheme vocab:commitment_grade ;
+    skos:notation "TD" ;
+    skos:prefLabel "TD"@en ;
+    skos:topConceptOf vocab:commitment_grade ;
+    climb:system "IFAS" .
+
+<https://climbing-agent.dev/vocab/commitment_grade/V> a skos:Concept ;
+    skos:definition "Long day / possible bivvy."@en ;
+    skos:inScheme vocab:commitment_grade ;
+    skos:notation "V" ;
+    skos:prefLabel "V"@en ;
+    skos:topConceptOf vocab:commitment_grade ;
+    climb:system "NCCS" .
+
+<https://climbing-agent.dev/vocab/commitment_grade/VI> a skos:Concept ;
+    skos:definition "Multi-day."@en ;
+    skos:inScheme vocab:commitment_grade ;
+    skos:notation "VI" ;
+    skos:prefLabel "VI"@en ;
+    skos:topConceptOf vocab:commitment_grade ;
+    climb:system "NCCS" .
+
+<https://climbing-agent.dev/vocab/commitment_grade/VII> a skos:Concept ;
+    skos:definition "Remote multi-day big-wall."@en ;
+    skos:inScheme vocab:commitment_grade ;
+    skos:notation "VII" ;
+    skos:prefLabel "VII"@en ;
+    skos:topConceptOf vocab:commitment_grade ;
+    climb:system "NCCS" .
+
+<https://climbing-agent.dev/vocab/discipline/aid> a skos:Concept ;
+    skos:definition "Weighting gear to progress (A/C grades)."@en ;
+    skos:exactMatch <https://openbeta.io/schema/ClimbType/aid>,
+        <https://wiki.openstreetmap.org/wiki/Tag:climbing:aid=yes> ;
+    skos:inScheme vocab:discipline ;
+    skos:notation "aid" ;
+    skos:prefLabel "aid"@en ;
+    skos:topConceptOf vocab:discipline .
+
+<https://climbing-agent.dev/vocab/discipline/alpine> a skos:Concept ;
+    skos:definition "Mountain approach, altitude, mixed commitment."@en ;
+    skos:exactMatch <https://openbeta.io/schema/ClimbType/alpine> ;
+    skos:inScheme vocab:discipline ;
+    skos:notation "alpine" ;
+    skos:prefLabel "alpine"@en ;
+    skos:topConceptOf vocab:discipline .
+
+<https://climbing-agent.dev/vocab/discipline/big-wall> a skos:Concept ;
+    skos:definition "Multi-day / very long."@en ;
+    skos:inScheme vocab:discipline ;
+    skos:notation "big-wall" ;
+    skos:prefLabel "big-wall"@en ;
+    skos:topConceptOf vocab:discipline .
+
+<https://climbing-agent.dev/vocab/discipline/bouldering> a skos:Concept ;
+    skos:definition "Ropeless, low, over pads."@en ;
+    skos:exactMatch <https://openbeta.io/schema/ClimbType/bouldering>,
+        <https://wiki.openstreetmap.org/wiki/Tag:climbing:boulder=yes> ;
+    skos:inScheme vocab:discipline ;
+    skos:notation "bouldering" ;
+    skos:prefLabel "bouldering"@en ;
+    skos:topConceptOf vocab:discipline .
+
+<https://climbing-agent.dev/vocab/discipline/deepwatersolo> a skos:Concept ;
+    skos:definition "Ropeless over water (DWS)."@en ;
+    skos:exactMatch <https://openbeta.io/schema/ClimbType/deepwatersolo>,
+        <https://wiki.openstreetmap.org/wiki/Tag:climbing:deepwater=yes> ;
+    skos:inScheme vocab:discipline ;
+    skos:notation "deepwatersolo" ;
+    skos:prefLabel "deepwatersolo"@en ;
+    skos:topConceptOf vocab:discipline .
+
+<https://climbing-agent.dev/vocab/discipline/ice> a skos:Concept ;
+    skos:definition "Frozen falls/ice (WI grades)."@en ;
+    skos:exactMatch <https://openbeta.io/schema/ClimbType/ice>,
+        <https://wiki.openstreetmap.org/wiki/Tag:climbing:ice=yes> ;
+    skos:inScheme vocab:discipline ;
+    skos:notation "ice" ;
+    skos:prefLabel "ice"@en ;
+    skos:topConceptOf vocab:discipline .
+
+<https://climbing-agent.dev/vocab/discipline/mixed> a skos:Concept ;
+    skos:definition "Rock + ice (M grades)."@en ;
+    skos:exactMatch <https://openbeta.io/schema/ClimbType/mixed>,
+        <https://wiki.openstreetmap.org/wiki/Tag:climbing:mixed=yes> ;
+    skos:inScheme vocab:discipline ;
+    skos:notation "mixed" ;
+    skos:prefLabel "mixed"@en ;
+    skos:topConceptOf vocab:discipline .
+
+<https://climbing-agent.dev/vocab/discipline/multi-pitch> a skos:Concept ;
+    skos:definition "Multiple rope-lengths with belay stances (the platform's focus)."@en ;
+    skos:exactMatch <https://wiki.openstreetmap.org/wiki/Tag:climbing:multipitch=yes> ;
+    skos:inScheme vocab:discipline ;
+    skos:notation "multi-pitch" ;
+    skos:prefLabel "multi-pitch"@en ;
+    skos:topConceptOf vocab:discipline .
+
+<https://climbing-agent.dev/vocab/discipline/scrambling> a skos:Concept ;
+    skos:definition "Easy ungraded/Grade 1-3 terrain between walking and climbing — approach ridges, easy alpine crests."@en ;
+    skos:inScheme vocab:discipline ;
+    skos:notation "scrambling" ;
+    skos:prefLabel "scrambling"@en ;
+    skos:topConceptOf vocab:discipline .
+
+<https://climbing-agent.dev/vocab/discipline/single-pitch> a skos:Concept ;
+    skos:definition "One rope-length."@en ;
+    skos:inScheme vocab:discipline ;
+    skos:notation "single-pitch" ;
+    skos:prefLabel "single-pitch"@en ;
+    skos:topConceptOf vocab:discipline .
+
+<https://climbing-agent.dev/vocab/discipline/snow> a skos:Concept ;
+    skos:definition "Snow climbing."@en ;
+    skos:exactMatch <https://openbeta.io/schema/ClimbType/snow> ;
+    skos:inScheme vocab:discipline ;
+    skos:notation "snow" ;
+    skos:prefLabel "snow"@en ;
+    skos:topConceptOf vocab:discipline .
+
+<https://climbing-agent.dev/vocab/discipline/sport> a skos:Concept ;
+    skos:definition "Pre-placed bolts."@en ;
+    skos:exactMatch <https://openbeta.io/schema/ClimbType/sport>,
+        <https://wiki.openstreetmap.org/wiki/Tag:climbing:sport=yes> ;
+    skos:inScheme vocab:discipline ;
+    skos:notation "sport" ;
+    skos:prefLabel "sport"@en ;
+    skos:topConceptOf vocab:discipline .
+
+<https://climbing-agent.dev/vocab/discipline/tr> a skos:Concept ;
+    skos:definition "Top-rope."@en ;
+    skos:inScheme vocab:discipline ;
+    skos:notation "tr" ;
+    skos:prefLabel "tr"@en ;
+    skos:topConceptOf vocab:discipline .
+
+<https://climbing-agent.dev/vocab/discipline/trad> a skos:Concept ;
+    skos:definition "Leader-placed removable protection."@en ;
+    skos:exactMatch <https://openbeta.io/schema/ClimbType/trad>,
+        <https://wiki.openstreetmap.org/wiki/Tag:climbing:trad=yes> ;
+    skos:inScheme vocab:discipline ;
+    skos:notation "trad" ;
+    skos:prefLabel "trad"@en ;
+    skos:topConceptOf vocab:discipline .
+
+<https://climbing-agent.dev/vocab/discipline/via-ferrata> a skos:Concept ;
+    skos:definition "Protected cabled route."@en ;
+    skos:inScheme vocab:discipline ;
+    skos:notation "via-ferrata" ;
+    skos:prefLabel "via-ferrata"@en ;
+    skos:topConceptOf vocab:discipline .
+
+<https://climbing-agent.dev/vocab/feature/ar-te> a skos:Concept ;
+    skos:definition "A narrow outward-pointing edge or prow — climbed on or beside it, exposed on both sides."@en ;
+    skos:inScheme vocab:feature ;
+    skos:notation "arête" ;
+    skos:prefLabel "arête"@en ;
+    skos:topConceptOf vocab:feature .
+
+<https://climbing-agent.dev/vocab/feature/bulge> a skos:Concept ;
+    skos:definition "A rounded steepening passed in a move or two — \"pull through the bulge\"; smaller than a roof."@en ;
+    skos:inScheme vocab:feature ;
+    skos:notation "bulge" ;
+    skos:prefLabel "bulge"@en ;
+    skos:topConceptOf vocab:feature .
+
+<https://climbing-agent.dev/vocab/feature/chimney> a skos:Concept ;
+    skos:definition "A crack wide enough to fit the whole body inside; climbed by back-and-footing."@en ;
+    skos:inScheme vocab:feature ;
+    skos:notation "chimney" ;
+    skos:prefLabel "chimney"@en ;
+    skos:topConceptOf vocab:feature .
+
+<https://climbing-agent.dev/vocab/feature/corner> a skos:Concept ;
+    skos:definition "An inside angle where two faces meet (dihedral / open book) — the opposite of an arête."@en ;
+    skos:inScheme vocab:feature ;
+    skos:notation "corner" ;
+    skos:prefLabel "corner"@en ;
+    skos:topConceptOf vocab:feature .
+
+<https://climbing-agent.dev/vocab/feature/crack> a skos:Concept ;
+    skos:definition "A fissure taking jams and natural protection — the classic trad medium."@en ;
+    skos:inScheme vocab:feature ;
+    skos:notation "crack" ;
+    skos:prefLabel "crack"@en ;
+    skos:topConceptOf vocab:feature .
+
+<https://climbing-agent.dev/vocab/feature/face> a skos:Concept ;
+    skos:definition "An open wall climbed on holds rather than a crack line."@en ;
+    skos:inScheme vocab:feature ;
+    skos:notation "face" ;
+    skos:prefLabel "face"@en ;
+    skos:topConceptOf vocab:feature .
+
+<https://climbing-agent.dev/vocab/feature/flake> a skos:Concept ;
+    skos:definition "A partly-detached sheet of rock forming an edge or crack behind it — check it is attached."@en ;
+    skos:inScheme vocab:feature ;
+    skos:notation "flake" ;
+    skos:prefLabel "flake"@en ;
+    skos:topConceptOf vocab:feature .
+
+<https://climbing-agent.dev/vocab/feature/groove> a skos:Concept ;
+    skos:definition "A shallow rounded corner or scoop, often climbed by bridging."@en ;
+    skos:inScheme vocab:feature ;
+    skos:notation "groove" ;
+    skos:prefLabel "groove"@en ;
+    skos:topConceptOf vocab:feature .
+
+<https://climbing-agent.dev/vocab/feature/gully> a skos:Concept ;
+    skos:definition "A wide mountain cleft or couloir line — common on UK/Irish mountain crags; often loose or wet."@en ;
+    skos:inScheme vocab:feature ;
+    skos:notation "gully" ;
+    skos:prefLabel "gully"@en ;
+    skos:topConceptOf vocab:feature .
+
+<https://climbing-agent.dev/vocab/feature/offwidth> a skos:Concept ;
+    skos:definition "A crack too wide to jam and too narrow to chimney — awkward, specialist technique and big gear."@en ;
+    skos:inScheme vocab:feature ;
+    skos:notation "offwidth" ;
+    skos:prefLabel "offwidth"@en ;
+    skos:topConceptOf vocab:feature .
+
+<https://climbing-agent.dev/vocab/feature/pillar> a skos:Concept ;
+    skos:definition "A free-standing or semi-detached column of rock."@en ;
+    skos:inScheme vocab:feature ;
+    skos:notation "pillar" ;
+    skos:prefLabel "pillar"@en ;
+    skos:topConceptOf vocab:feature .
+
+<https://climbing-agent.dev/vocab/feature/pockets> a skos:Concept ;
+    skos:definition "Holes or solution pockets used as holds (limestone / conglomerate)."@en ;
+    skos:inScheme vocab:feature ;
+    skos:notation "pockets" ;
+    skos:prefLabel "pockets"@en ;
+    skos:topConceptOf vocab:feature .
+
+<https://climbing-agent.dev/vocab/feature/ramp> a skos:Concept ;
+    skos:definition "An inclined ledge or weakness trending diagonally across steeper rock."@en ;
+    skos:inScheme vocab:feature ;
+    skos:notation "ramp" ;
+    skos:prefLabel "ramp"@en ;
+    skos:topConceptOf vocab:feature .
+
+<https://climbing-agent.dev/vocab/feature/ridge> a skos:Concept ;
+    skos:definition "A long crest line with exposure on both sides — alpine-flavoured climbing."@en ;
+    skos:inScheme vocab:feature ;
+    skos:notation "ridge" ;
+    skos:prefLabel "ridge"@en ;
+    skos:topConceptOf vocab:feature .
+
+<https://climbing-agent.dev/vocab/feature/roof> a skos:Concept ;
+    skos:definition "A horizontal overhang crossed on its underside."@en ;
+    skos:inScheme vocab:feature ;
+    skos:notation "roof" ;
+    skos:prefLabel "roof"@en ;
+    skos:topConceptOf vocab:feature .
+
+<https://climbing-agent.dev/vocab/feature/slab> a skos:Concept ;
+    skos:definition "Rock below vertical — friction and balance rather than pulling."@en ;
+    skos:inScheme vocab:feature ;
+    skos:notation "slab" ;
+    skos:prefLabel "slab"@en ;
+    skos:topConceptOf vocab:feature .
+
+<https://climbing-agent.dev/vocab/feature/tufa> a skos:Concept ;
+    skos:definition "Calcite ribs and blobs left by flowing water on limestone; pinched rather than pulled."@en ;
+    skos:inScheme vocab:feature ;
+    skos:notation "tufa" ;
+    skos:prefLabel "tufa"@en ;
+    skos:topConceptOf vocab:feature .
+
+<https://climbing-agent.dev/vocab/grade_system/A> a skos:Concept ;
+    skos:definition "Aid — e.g. A2 (worldwide)"@en ;
+    skos:inScheme vocab:grade_system ;
+    skos:notation "A" ;
+    skos:prefLabel "Aid"@en ;
+    skos:topConceptOf vocab:grade_system ;
+    climb:discipline "aid" ;
+    climb:example "A2" ;
+    climb:region "worldwide" .
+
+<https://climbing-agent.dev/vocab/grade_system/AI> a skos:Concept ;
+    skos:definition "Alpine ice — e.g. AI3 (worldwide)"@en ;
+    skos:inScheme vocab:grade_system ;
+    skos:notation "AI" ;
+    skos:prefLabel "Alpine ice"@en ;
+    skos:topConceptOf vocab:grade_system ;
+    climb:discipline "ice" ;
+    climb:example "AI3" ;
+    climb:region "worldwide" .
+
+<https://climbing-agent.dev/vocab/grade_system/ALP> a skos:Concept ;
+    skos:definition "Alpine (overall commitment) — e.g. PD, AD, D, TD, ED (Alps)"@en ;
+    skos:inScheme vocab:grade_system ;
+    skos:notation "ALP" ;
+    skos:prefLabel "Alpine (overall commitment)"@en ;
+    skos:topConceptOf vocab:grade_system ;
+    climb:discipline "alpine" ;
+    climb:example "PD, AD, D, TD, ED" ;
+    climb:region "Alps" .
+
+<https://climbing-agent.dev/vocab/grade_system/BAS> a skos:Concept ;
+    skos:definition "British Adjectival (adjective + technical) — e.g. VS 4c, HVS 5b, E1 5b (UK/Ireland)"@en ;
+    skos:exactMatch <https://wiki.openstreetmap.org/wiki/Tag:climbing:grade:british_adjectival> ;
+    skos:inScheme vocab:grade_system ;
+    skos:notation "BAS" ;
+    skos:prefLabel "British Adjectival (adjective + technical)"@en ;
+    skos:topConceptOf vocab:grade_system ;
+    climb:discipline "rock" ;
+    climb:example "VS 4c, HVS 5b, E1 5b" ;
+    climb:region "UK/Ireland" .
+
+<https://climbing-agent.dev/vocab/grade_system/BRZ> a skos:Concept ;
+    skos:definition "Brazilian (overall + technical) — e.g. VIsup, 7b (Brazil)"@en ;
+    skos:exactMatch <https://openbeta.io/schema/GradeType/brazilianCrux> ;
+    skos:inScheme vocab:grade_system ;
+    skos:notation "BRZ" ;
+    skos:prefLabel "Brazilian (overall + technical)"@en ;
+    skos:topConceptOf vocab:grade_system ;
+    climb:discipline "rock" ;
+    climb:example "VIsup, 7b" ;
+    climb:region "Brazil" .
+
+<https://climbing-agent.dev/vocab/grade_system/C> a skos:Concept ;
+    skos:definition "Clean aid — e.g. C3 (worldwide)"@en ;
+    skos:inScheme vocab:grade_system ;
+    skos:notation "C" ;
+    skos:prefLabel "Clean aid"@en ;
+    skos:topConceptOf vocab:grade_system ;
+    climb:discipline "aid" ;
+    climb:example "C3" ;
+    climb:region "worldwide" .
+
+<https://climbing-agent.dev/vocab/grade_system/D> a skos:Concept ;
+    skos:definition "Drytooling — e.g. D8 (worldwide)"@en ;
+    skos:inScheme vocab:grade_system ;
+    skos:notation "D" ;
+    skos:prefLabel "Drytooling"@en ;
+    skos:topConceptOf vocab:grade_system ;
+    climb:discipline "mixed" ;
+    climb:example "D8" ;
+    climb:region "worldwide" .
+
+<https://climbing-agent.dev/vocab/grade_system/EW> a skos:Concept ;
+    skos:definition "Ewbank — e.g. 18, 24 (Australia/NZ/ZA)"@en ;
+    skos:exactMatch <https://openbeta.io/schema/GradeType/ewbank> ;
+    skos:inScheme vocab:grade_system ;
+    skos:notation "EW" ;
+    skos:prefLabel "Ewbank"@en ;
+    skos:topConceptOf vocab:grade_system ;
+    climb:discipline "rock" ;
+    climb:example "18, 24" ;
+    climb:region "Australia/NZ/ZA" .
+
+<https://climbing-agent.dev/vocab/grade_system/FS> a skos:Concept ;
+    skos:definition "French Sport — e.g. f4c, f6a+ (Europe/sport)"@en ;
+    skos:exactMatch <https://openbeta.io/schema/GradeType/french>,
+        <https://wiki.openstreetmap.org/wiki/Tag:climbing:grade:french> ;
+    skos:inScheme vocab:grade_system ;
+    skos:notation "FS" ;
+    skos:prefLabel "French Sport"@en ;
+    skos:topConceptOf vocab:grade_system ;
+    climb:discipline "rock" ;
+    climb:example "f4c, f6a+" ;
+    climb:region "Europe/sport" .
+
+<https://climbing-agent.dev/vocab/grade_system/Font> a skos:Concept ;
+    skos:definition "Fontainebleau — e.g. 6a+, 7c (Europe)"@en ;
+    skos:exactMatch <https://openbeta.io/schema/GradeType/font> ;
+    skos:inScheme vocab:grade_system ;
+    skos:notation "Font" ;
+    skos:prefLabel "Fontainebleau"@en ;
+    skos:topConceptOf vocab:grade_system ;
+    climb:discipline "bouldering" ;
+    climb:example "6a+, 7c" ;
+    climb:region "Europe" .
+
+<https://climbing-agent.dev/vocab/grade_system/M> a skos:Concept ;
+    skos:definition "Mixed (rock + ice) — e.g. M6, M8 (worldwide)"@en ;
+    skos:inScheme vocab:grade_system ;
+    skos:notation "M" ;
+    skos:prefLabel "Mixed (rock + ice)"@en ;
+    skos:topConceptOf vocab:grade_system ;
+    climb:discipline "mixed" ;
+    climb:example "M6, M8" ;
+    climb:region "worldwide" .
+
+<https://climbing-agent.dev/vocab/grade_system/N> a skos:Concept ;
+    skos:definition "Norwegian/Scandinavian — e.g. N6− (Scandinavia)"@en ;
+    skos:exactMatch <https://wiki.openstreetmap.org/wiki/Tag:climbing:grade:norwegian> ;
+    skos:inScheme vocab:grade_system ;
+    skos:notation "N" ;
+    skos:prefLabel "Norwegian/Scandinavian"@en ;
+    skos:topConceptOf vocab:grade_system ;
+    climb:discipline "rock" ;
+    climb:example "N6−" ;
+    climb:region "Scandinavia" .
+
+<https://climbing-agent.dev/vocab/grade_system/S> a skos:Concept ;
+    skos:definition "DWS seriousness (tide/depth/fall risk) — e.g. S0–S3 (UK)"@en ;
+    skos:inScheme vocab:grade_system ;
+    skos:notation "S" ;
+    skos:prefLabel "DWS seriousness (tide/depth/fall risk)"@en ;
+    skos:topConceptOf vocab:grade_system ;
+    climb:discipline "deepwatersolo" ;
+    climb:example "S0–S3" ;
+    climb:region "UK" .
+
+<https://climbing-agent.dev/vocab/grade_system/SCO> a skos:Concept ;
+    skos:definition "Scottish Winter (overall + technical) — e.g. VI,7 (Scotland)"@en ;
+    skos:inScheme vocab:grade_system ;
+    skos:notation "SCO" ;
+    skos:prefLabel "Scottish Winter (overall + technical)"@en ;
+    skos:topConceptOf vocab:grade_system ;
+    climb:discipline "mixed" ;
+    climb:example "VI,7" ;
+    climb:region "Scotland" .
+
+<https://climbing-agent.dev/vocab/grade_system/SX> a skos:Concept ;
+    skos:definition "Saxon (Dresden) — e.g. VIIb, VIIIa (Saxon Switzerland)"@en ;
+    skos:exactMatch <https://wiki.openstreetmap.org/wiki/Tag:climbing:grade:saxon> ;
+    skos:inScheme vocab:grade_system ;
+    skos:notation "SX" ;
+    skos:prefLabel "Saxon (Dresden)"@en ;
+    skos:topConceptOf vocab:grade_system ;
+    climb:discipline "rock" ;
+    climb:example "VIIb, VIIIa" ;
+    climb:region "Saxon Switzerland" .
+
+<https://climbing-agent.dev/vocab/grade_system/UIAA> a skos:Concept ;
+    skos:definition "UIAA — e.g. IV−, V+, VI+ (Alps/Germany)"@en ;
+    skos:exactMatch <https://openbeta.io/schema/GradeType/uiaa>,
+        <https://wiki.openstreetmap.org/wiki/Tag:climbing:grade:uiaa> ;
+    skos:inScheme vocab:grade_system ;
+    skos:notation "UIAA" ;
+    skos:prefLabel "UIAA"@en ;
+    skos:topConceptOf vocab:grade_system ;
+    climb:discipline "rock" ;
+    climb:example "IV−, V+, VI+" ;
+    climb:region "Alps/Germany" .
+
+<https://climbing-agent.dev/vocab/grade_system/V> a skos:Concept ;
+    skos:definition "Hueco / V-scale — e.g. V0, V7 (US)"@en ;
+    skos:exactMatch <https://openbeta.io/schema/GradeType/vscale>,
+        <https://wiki.openstreetmap.org/wiki/Tag:climbing:grade:hueco> ;
+    skos:inScheme vocab:grade_system ;
+    skos:notation "V" ;
+    skos:prefLabel "Hueco / V-scale"@en ;
+    skos:topConceptOf vocab:grade_system ;
+    climb:discipline "bouldering" ;
+    climb:example "V0, V7" ;
+    climb:region "US" .
+
+<https://climbing-agent.dev/vocab/grade_system/VF> a skos:Concept ;
+    skos:definition "Via ferrata (Hüsler/Schall) — e.g. K3, C (Alps)"@en ;
+    skos:inScheme vocab:grade_system ;
+    skos:notation "VF" ;
+    skos:prefLabel "Via ferrata (Hüsler/Schall)"@en ;
+    skos:topConceptOf vocab:grade_system ;
+    climb:discipline "via-ferrata" ;
+    climb:example "K3, C" ;
+    climb:region "Alps" .
+
+<https://climbing-agent.dev/vocab/grade_system/WI> a skos:Concept ;
+    skos:definition "Water ice — e.g. WI3, WI5 (worldwide)"@en ;
+    skos:exactMatch <https://openbeta.io/schema/GradeType/wi>,
+        <https://wiki.openstreetmap.org/wiki/Tag:climbing:grade:ice> ;
+    skos:inScheme vocab:grade_system ;
+    skos:notation "WI" ;
+    skos:prefLabel "Water ice"@en ;
+    skos:topConceptOf vocab:grade_system ;
+    climb:discipline "ice" ;
+    climb:example "WI3, WI5" ;
+    climb:region "worldwide" .
+
+<https://climbing-agent.dev/vocab/grade_system/YDS> a skos:Concept ;
+    skos:definition "Yosemite Decimal — e.g. 5.7, 5.10a (US)"@en ;
+    skos:exactMatch <https://openbeta.io/schema/GradeType/yds>,
+        <https://wiki.openstreetmap.org/wiki/Tag:climbing:grade:yds_class> ;
+    skos:inScheme vocab:grade_system ;
+    skos:notation "YDS" ;
+    skos:prefLabel "Yosemite Decimal"@en ;
+    skos:topConceptOf vocab:grade_system ;
+    climb:discipline "rock" ;
+    climb:example "5.7, 5.10a" ;
+    climb:region "US" .
+
+<https://climbing-agent.dev/vocab/hazard/abseil> a skos:Concept ;
+    skos:definition "Requires an abseil (approach/descent)."@en ;
+    skos:inScheme vocab:hazard ;
+    skos:notation "abseil" ;
+    skos:prefLabel "abseil"@en ;
+    skos:topConceptOf vocab:hazard ;
+    climb:feeds "gear & planning" ;
+    climb:kind "route" ;
+    climb:safety_critical false .
+
+<https://climbing-agent.dev/vocab/hazard/altitude> a skos:Concept ;
+    skos:definition "High enough for thin air / altitude effects."@en ;
+    skos:inScheme vocab:hazard ;
+    skos:notation "altitude" ;
+    skos:prefLabel "altitude"@en ;
+    skos:topConceptOf vocab:hazard ;
+    climb:feeds "planning" ;
+    climb:kind "objective" ;
+    climb:safety_critical true .
+
+<https://climbing-agent.dev/vocab/hazard/avalanche> a skos:Concept ;
+    skos:definition "Avalanche terrain (snow slopes, couloirs)."@en ;
+    skos:inScheme vocab:hazard ;
+    skos:notation "avalanche" ;
+    skos:prefLabel "avalanche"@en ;
+    skos:topConceptOf vocab:hazard ;
+    climb:feeds "safety" ;
+    climb:kind "objective" ;
+    climb:safety_critical true .
+
+<https://climbing-agent.dev/vocab/hazard/boat> a skos:Concept ;
+    skos:definition "Reached by boat or swim."@en ;
+    skos:inScheme vocab:hazard ;
+    skos:notation "boat" ;
+    skos:prefLabel "boat"@en ;
+    skos:topConceptOf vocab:hazard ;
+    climb:feeds "logistics" ;
+    climb:kind "route" ;
+    climb:safety_critical false .
+
+<https://climbing-agent.dev/vocab/hazard/cornice> a skos:Concept ;
+    skos:definition "Corniced ridge/summit."@en ;
+    skos:inScheme vocab:hazard ;
+    skos:notation "cornice" ;
+    skos:prefLabel "cornice"@en ;
+    skos:topConceptOf vocab:hazard ;
+    climb:feeds "safety" ;
+    climb:kind "objective" ;
+    climb:safety_critical true .
+
+<https://climbing-agent.dev/vocab/hazard/crevasse> a skos:Concept ;
+    skos:definition "Crevasse hazard on the approach/route."@en ;
+    skos:inScheme vocab:hazard ;
+    skos:notation "crevasse" ;
+    skos:prefLabel "crevasse"@en ;
+    skos:topConceptOf vocab:hazard ;
+    climb:feeds "safety" ;
+    climb:kind "objective" ;
+    climb:safety_critical true .
+
+<https://climbing-agent.dev/vocab/hazard/grassLedges> a skos:Concept ;
+    skos:closeMatch <https://wiki.openstreetmap.org/wiki/Tag:climbing:hazard:vegetation=yes> ;
+    skos:definition "Vegetated ledges (wet/awkward)."@en ;
+    skos:inScheme vocab:hazard ;
+    skos:notation "grassLedges" ;
+    skos:prefLabel "grassLedges"@en ;
+    skos:topConceptOf vocab:hazard ;
+    climb:feeds "conditions" ;
+    climb:kind "route" ;
+    climb:safety_critical false .
+
+<https://climbing-agent.dev/vocab/hazard/loose> a skos:Concept ;
+    skos:closeMatch <https://wiki.openstreetmap.org/wiki/Tag:climbing:hazard:loose_rock=yes> ;
+    skos:definition "Loose / friable rock."@en ;
+    skos:inScheme vocab:hazard ;
+    skos:notation "loose" ;
+    skos:prefLabel "loose"@en ;
+    skos:topConceptOf vocab:hazard ;
+    climb:feeds "safety" ;
+    climb:kind "route" ;
+    climb:safety_critical true .
+
+<https://climbing-agent.dev/vocab/hazard/nesting-birds> a skos:Concept ;
+    skos:closeMatch <https://wiki.openstreetmap.org/wiki/Tag:climbing:hazard:animal_nest=yes> ;
+    skos:definition "Seasonal nesting restriction (BMC RAD-style) — the crag or route may be banned in spring/summer."@en ;
+    skos:inScheme vocab:hazard ;
+    skos:notation "nesting-birds" ;
+    skos:prefLabel "nesting-birds"@en ;
+    skos:topConceptOf vocab:hazard ;
+    climb:feeds "access gating by date" ;
+    climb:kind "route" ;
+    climb:safety_critical false .
+
+<https://climbing-agent.dev/vocab/hazard/polished> a skos:Concept ;
+    skos:closeMatch <https://wiki.openstreetmap.org/wiki/Tag:climbing:hazard:slippery_rock=yes> ;
+    skos:definition "Glassy, traffic-polished rock — badly friction-dependent; treacherous when humid or damp (Rockfax condition note)."@en ;
+    skos:inScheme vocab:hazard ;
+    skos:notation "polished" ;
+    skos:prefLabel "polished"@en ;
+    skos:topConceptOf vocab:hazard ;
+    climb:feeds "difficulty-in-practice" ;
+    climb:kind "route" ;
+    climb:safety_critical false .
+
+<https://climbing-agent.dev/vocab/hazard/rockfall> a skos:Concept ;
+    skos:definition "Rockfall-prone (loose gullies, thaw, parties above)."@en ;
+    skos:exactMatch <https://wiki.openstreetmap.org/wiki/Tag:climbing:hazard:rockfall_zone=yes> ;
+    skos:inScheme vocab:hazard ;
+    skos:notation "rockfall" ;
+    skos:prefLabel "rockfall"@en ;
+    skos:topConceptOf vocab:hazard ;
+    climb:feeds "safety" ;
+    climb:kind "objective" ;
+    climb:safety_critical true .
+
+<https://climbing-agent.dev/vocab/hazard/seepage> a skos:Concept ;
+    skos:closeMatch <https://wiki.openstreetmap.org/wiki/Tag:climbing:hazard:wet=yes> ;
+    skos:definition "Weeps / holds water after rain."@en ;
+    skos:inScheme vocab:hazard ;
+    skos:notation "seepage" ;
+    skos:prefLabel "seepage"@en ;
+    skos:topConceptOf vocab:hazard ;
+    climb:feeds "Predictive Condition Algorithm" ;
+    climb:kind "route" ;
+    climb:safety_critical true .
+
+<https://climbing-agent.dev/vocab/hazard/serac> a skos:Concept ;
+    skos:definition "Serac hazard on the approach/route."@en ;
+    skos:inScheme vocab:hazard ;
+    skos:notation "serac" ;
+    skos:prefLabel "serac"@en ;
+    skos:topConceptOf vocab:hazard ;
+    climb:feeds "safety" ;
+    climb:kind "objective" ;
+    climb:safety_critical true .
+
+<https://climbing-agent.dev/vocab/hazard/stormExposed> a skos:Concept ;
+    skos:definition "Exposed to lightning / no quick escape in a storm."@en ;
+    skos:inScheme vocab:hazard ;
+    skos:notation "stormExposed" ;
+    skos:prefLabel "stormExposed"@en ;
+    skos:topConceptOf vocab:hazard ;
+    climb:feeds "safety" ;
+    climb:kind "objective" ;
+    climb:safety_critical true .
+
+<https://climbing-agent.dev/vocab/hazard/tidal> a skos:Concept ;
+    skos:definition "Access/base tide-dependent (sea cliffs)."@en ;
+    skos:inScheme vocab:hazard ;
+    skos:notation "tidal" ;
+    skos:prefLabel "tidal"@en ;
+    skos:topConceptOf vocab:hazard ;
+    climb:feeds "tide-window logic (live 2026-07-05: planner tide tiles, Open-Meteo Marine)" ;
+    climb:kind "route" ;
+    climb:safety_critical true .
+
+<https://climbing-agent.dev/vocab/hazard/traverse> a skos:Concept ;
+    skos:definition "Sustained sideways climbing — complicates retreat, rope-work and seconding; kept as a hazard because it gates escapability."@en ;
+    skos:inScheme vocab:hazard ;
+    skos:notation "traverse" ;
+    skos:prefLabel "traverse"@en ;
+    skos:topConceptOf vocab:hazard ;
+    climb:feeds "rope management / commitment" ;
+    climb:kind "route" ;
+    climb:safety_critical false .
+
+<https://climbing-agent.dev/vocab/hazard/vegetated> a skos:Concept ;
+    skos:definition "Dirty or vegetated rock — needs traffic or a dry spell; slower to dry after rain."@en ;
+    skos:inScheme vocab:hazard ;
+    skos:notation "vegetated" ;
+    skos:prefLabel "vegetated"@en ;
+    skos:topConceptOf vocab:hazard ;
+    climb:feeds "drying-time model" ;
+    climb:kind "route" ;
+    climb:safety_critical false .
+
+<https://climbing-agent.dev/vocab/incline/Overhanging> a skos:Concept ;
+    skos:exactMatch <https://wiki.openstreetmap.org/wiki/Tag:climbing:inclination:overhang=yes> ;
+    skos:inScheme vocab:incline ;
+    skos:notation "Overhanging" ;
+    skos:prefLabel "Overhanging"@en ;
+    skos:topConceptOf vocab:incline ;
+    climb:sort_order 6 .
+
+<https://climbing-agent.dev/vocab/incline/Slab> a skos:Concept ;
+    skos:exactMatch <https://wiki.openstreetmap.org/wiki/Tag:climbing:inclination:slab=yes> ;
+    skos:inScheme vocab:incline ;
+    skos:notation "Slab" ;
+    skos:prefLabel "Slab"@en ;
+    skos:topConceptOf vocab:incline ;
+    climb:sort_order 1 .
+
+<https://climbing-agent.dev/vocab/incline/Slab-Vertical> a skos:Concept ;
+    skos:inScheme vocab:incline ;
+    skos:notation "Slab & Vertical" ;
+    skos:prefLabel "Slab & Vertical"@en ;
+    skos:topConceptOf vocab:incline ;
+    climb:sort_order 2 .
+
+<https://climbing-agent.dev/vocab/incline/Slab-Vertical-Overhanging> a skos:Concept ;
+    skos:inScheme vocab:incline ;
+    skos:notation "Slab, Vertical & Overhanging" ;
+    skos:prefLabel "Slab, Vertical & Overhanging"@en ;
+    skos:topConceptOf vocab:incline ;
+    climb:sort_order 4 .
+
+<https://climbing-agent.dev/vocab/incline/Vertical> a skos:Concept ;
+    skos:exactMatch <https://wiki.openstreetmap.org/wiki/Tag:climbing:inclination:vertical=yes> ;
+    skos:inScheme vocab:incline ;
+    skos:notation "Vertical" ;
+    skos:prefLabel "Vertical"@en ;
+    skos:topConceptOf vocab:incline ;
+    climb:sort_order 3 .
+
+<https://climbing-agent.dev/vocab/incline/Vertical-Overhanging> a skos:Concept ;
+    skos:inScheme vocab:incline ;
+    skos:notation "Vertical & Overhanging" ;
+    skos:prefLabel "Vertical & Overhanging"@en ;
+    skos:topConceptOf vocab:incline ;
+    climb:sort_order 5 .
+
+<https://climbing-agent.dev/vocab/protection_grade/G> a skos:Concept ;
+    skos:definition "Solid, plentiful protection."@en ;
+    skos:inScheme vocab:protection_grade ;
+    skos:notation "G" ;
+    skos:prefLabel "G"@en ;
+    skos:topConceptOf vocab:protection_grade ;
+    climb:sort_order 0 .
+
+<https://climbing-agent.dev/vocab/protection_grade/PG> a skos:Concept ;
+    skos:definition "Good protection, generally safe."@en ;
+    skos:exactMatch <https://openbeta.io/schema/SafetyEnum/PG> ;
+    skos:inScheme vocab:protection_grade ;
+    skos:notation "PG" ;
+    skos:prefLabel "PG"@en ;
+    skos:topConceptOf vocab:protection_grade ;
+    climb:sort_order 1 .
+
+<https://climbing-agent.dev/vocab/protection_grade/PG-13> a skos:Concept ;
+    skos:definition "Mostly good; some runouts or marginal placements."@en ;
+    skos:exactMatch <https://openbeta.io/schema/SafetyEnum/PG13> ;
+    skos:inScheme vocab:protection_grade ;
+    skos:notation "PG-13" ;
+    skos:prefLabel "PG-13"@en ;
+    skos:topConceptOf vocab:protection_grade ;
+    climb:sort_order 2 .
+
+<https://climbing-agent.dev/vocab/protection_grade/R> a skos:Concept ;
+    skos:definition "Serious — runout; a fall risks injury."@en ;
+    skos:exactMatch <https://openbeta.io/schema/SafetyEnum/R> ;
+    skos:inScheme vocab:protection_grade ;
+    skos:notation "R" ;
+    skos:prefLabel "R"@en ;
+    skos:topConceptOf vocab:protection_grade ;
+    climb:sort_order 3 .
+
+<https://climbing-agent.dev/vocab/protection_grade/UNSPECIFIED> a skos:Concept ;
+    skos:definition "Protection not yet assessed — the honest default."@en ;
+    skos:exactMatch <https://openbeta.io/schema/SafetyEnum/UNSPECIFIED> ;
+    skos:inScheme vocab:protection_grade ;
+    skos:notation "UNSPECIFIED" ;
+    skos:prefLabel "UNSPECIFIED"@en ;
+    skos:topConceptOf vocab:protection_grade .
+
+<https://climbing-agent.dev/vocab/protection_grade/X> a skos:Concept ;
+    skos:definition "Extreme — ground-fall / death potential."@en ;
+    skos:exactMatch <https://openbeta.io/schema/SafetyEnum/X> ;
+    skos:inScheme vocab:protection_grade ;
+    skos:notation "X" ;
+    skos:prefLabel "X"@en ;
+    skos:topConceptOf vocab:protection_grade ;
+    climb:sort_order 4 .
+
+<https://climbing-agent.dev/vocab/protection_grade/runout> a skos:Concept ;
+    skos:closeMatch <https://wiki.openstreetmap.org/wiki/Tag:climbing:hazard:long_runout=yes> ;
+    skos:definition "A stretch with no protection below you (OpenBeta SafetyEnum)."@en ;
+    skos:exactMatch <https://openbeta.io/schema/SafetyEnum/runout> ;
+    skos:inScheme vocab:protection_grade ;
+    skos:notation "runout" ;
+    skos:prefLabel "runout"@en ;
+    skos:topConceptOf vocab:protection_grade .
+
+<https://climbing-agent.dev/vocab/protection_grade/terrain> a skos:Concept ;
+    skos:definition "Danger from the terrain itself, not fall distance."@en ;
+    skos:exactMatch <https://openbeta.io/schema/SafetyEnum/terrain> ;
+    skos:inScheme vocab:protection_grade ;
+    skos:notation "terrain" ;
+    skos:prefLabel "terrain"@en ;
+    skos:topConceptOf vocab:protection_grade .
+
+<https://climbing-agent.dev/vocab/rock_type/andesite> a skos:Concept ;
+    skos:definition "Volcanic; blocky, variable quality."@en ;
+    skos:inScheme vocab:rock_type ;
+    skos:notation "andesite" ;
+    skos:prefLabel "andesite"@en ;
+    skos:topConceptOf vocab:rock_type ;
+    climb:fragile_when_wet false ;
+    climb:notes "Volcanic; blocky, variable quality." ;
+    climb:seeps false .
+
+<https://climbing-agent.dev/vocab/rock_type/basalt> a skos:Concept ;
+    skos:definition "Columnar jointing gives parallel crack systems; moderate drying."@en ;
+    skos:exactMatch <https://wiki.openstreetmap.org/wiki/Tag:climbing:rock=basalt> ;
+    skos:inScheme vocab:rock_type ;
+    skos:notation "basalt" ;
+    skos:prefLabel "basalt"@en ;
+    skos:topConceptOf vocab:rock_type ;
+    climb:fragile_when_wet false ;
+    climb:notes "Columnar jointing gives parallel crack systems; moderate drying." ;
+    climb:seeps false .
+
+<https://climbing-agent.dev/vocab/rock_type/chalk> a skos:Concept ;
+    skos:definition "Soft marine limestone (Dover, Beachy Head) — friable, specialist trad; never climb wet; protection unreliable."@en ;
+    skos:inScheme vocab:rock_type ;
+    skos:notation "chalk" ;
+    skos:prefLabel "chalk"@en ;
+    skos:topConceptOf vocab:rock_type ;
+    climb:fragile_when_wet true ;
+    climb:notes "Soft marine limestone (Dover, Beachy Head) — friable, specialist trad; never climb wet; protection unreliable." ;
+    climb:seeps true .
+
+<https://climbing-agent.dev/vocab/rock_type/conglomerate> a skos:Concept ;
+    skos:definition "Cobbles in matrix (Montserrat, Meteora, Riglos); pockety; protection often spaced."@en ;
+    skos:inScheme vocab:rock_type ;
+    skos:notation "conglomerate" ;
+    skos:prefLabel "conglomerate"@en ;
+    skos:topConceptOf vocab:rock_type ;
+    climb:fragile_when_wet false ;
+    climb:notes "Cobbles in matrix (Montserrat, Meteora, Riglos); pockety; protection often spaced." ;
+    climb:seeps false .
+
+<https://climbing-agent.dev/vocab/rock_type/dolerite> a skos:Concept ;
+    skos:closeMatch <https://wiki.openstreetmap.org/wiki/Tag:climbing:rock=dolerite> ;
+    skos:definition "Fair Head — grippy, dries reasonably; sea-cliff exposure."@en ;
+    skos:inScheme vocab:rock_type ;
+    skos:notation "dolerite" ;
+    skos:prefLabel "dolerite"@en ;
+    skos:topConceptOf vocab:rock_type ;
+    climb:fragile_when_wet false ;
+    climb:notes "Fair Head — grippy, dries reasonably; sea-cliff exposure." ;
+    climb:seeps false .
+
+<https://climbing-agent.dev/vocab/rock_type/dolomite> a skos:Concept ;
+    skos:definition "Alpine; afternoon convection risk."@en ;
+    skos:exactMatch <https://wiki.openstreetmap.org/wiki/Tag:climbing:rock=dolomite> ;
+    skos:inScheme vocab:rock_type ;
+    skos:notation "dolomite" ;
+    skos:prefLabel "dolomite"@en ;
+    skos:topConceptOf vocab:rock_type ;
+    climb:fragile_when_wet false ;
+    climb:notes "Alpine; afternoon convection risk." ;
+    climb:seeps false .
+
+<https://climbing-agent.dev/vocab/rock_type/gabbro> a skos:Concept ;
+    skos:definition "Extremely grippy (Skye); rough."@en ;
+    skos:inScheme vocab:rock_type ;
+    skos:notation "gabbro" ;
+    skos:prefLabel "gabbro"@en ;
+    skos:topConceptOf vocab:rock_type ;
+    climb:fragile_when_wet false ;
+    climb:notes "Extremely grippy (Skye); rough." ;
+    climb:seeps false .
+
+<https://climbing-agent.dev/vocab/rock_type/gneiss> a skos:Concept ;
+    skos:definition "Banded metamorphic (Alps, Norway); generally solid, good friction."@en ;
+    skos:exactMatch <https://wiki.openstreetmap.org/wiki/Tag:climbing:rock=gneiss> ;
+    skos:inScheme vocab:rock_type ;
+    skos:notation "gneiss" ;
+    skos:prefLabel "gneiss"@en ;
+    skos:topConceptOf vocab:rock_type ;
+    climb:fragile_when_wet false ;
+    climb:notes "Banded metamorphic (Alps, Norway); generally solid, good friction." ;
+    climb:seeps false .
+
+<https://climbing-agent.dev/vocab/rock_type/granite> a skos:Concept ;
+    skos:definition "Dries fast; low seepage; good friction when cool. Poorly-cemented grades shed grains."@en ;
+    skos:exactMatch <https://wiki.openstreetmap.org/wiki/Tag:climbing:rock=granite> ;
+    skos:inScheme vocab:rock_type ;
+    skos:notation "granite" ;
+    skos:prefLabel "granite"@en ;
+    skos:topConceptOf vocab:rock_type ;
+    climb:fragile_when_wet false ;
+    climb:notes "Dries fast; low seepage; good friction when cool. Poorly-cemented grades shed grains." ;
+    climb:seeps false .
+
+<https://climbing-agent.dev/vocab/rock_type/gritstone> a skos:Concept ;
+    skos:closeMatch <https://wiki.openstreetmap.org/wiki/Tag:climbing:rock=gritstone> ;
+    skos:definition "Coarse UK sandstone — superb friction, rounded breaks; dries fast, greasy in humidity; avoid when wet."@en ;
+    skos:inScheme vocab:rock_type ;
+    skos:notation "gritstone" ;
+    skos:prefLabel "gritstone"@en ;
+    skos:topConceptOf vocab:rock_type ;
+    climb:fragile_when_wet true ;
+    climb:notes "Coarse UK sandstone — superb friction, rounded breaks; dries fast, greasy in humidity; avoid when wet." ;
+    climb:seeps false .
+
+<https://climbing-agent.dev/vocab/rock_type/limestone> a skos:Concept ;
+    skos:definition "Seeps for days; overhangs stay wet; slick when humid."@en ;
+    skos:exactMatch <https://wiki.openstreetmap.org/wiki/Tag:climbing:rock=limestone> ;
+    skos:inScheme vocab:rock_type ;
+    skos:notation "limestone" ;
+    skos:prefLabel "limestone"@en ;
+    skos:topConceptOf vocab:rock_type ;
+    climb:fragile_when_wet false ;
+    climb:friction_dry 6.4e-01 ;
+    climb:notes "Seeps for days; overhangs stay wet; slick when humid." ;
+    climb:seeps true .
+
+<https://climbing-agent.dev/vocab/rock_type/phonolite> a skos:Concept ;
+    skos:definition "Sound, fine-grained volcanic (Canaries/Teide); climbs like fine rhyolite; dries fast."@en ;
+    skos:inScheme vocab:rock_type ;
+    skos:notation "phonolite" ;
+    skos:prefLabel "phonolite"@en ;
+    skos:topConceptOf vocab:rock_type ;
+    climb:fragile_when_wet false ;
+    climb:notes "Sound, fine-grained volcanic (Canaries/Teide); climbs like fine rhyolite; dries fast." ;
+    climb:seeps false .
+
+<https://climbing-agent.dev/vocab/rock_type/quartzite> a skos:Concept ;
+    skos:definition "Hard, can be polished; variable drying."@en ;
+    skos:inScheme vocab:rock_type ;
+    skos:notation "quartzite" ;
+    skos:prefLabel "quartzite"@en ;
+    skos:topConceptOf vocab:rock_type ;
+    climb:fragile_when_wet false ;
+    climb:notes "Hard, can be polished; variable drying." ;
+    climb:seeps false .
+
+<https://climbing-agent.dev/vocab/rock_type/rhyolite> a skos:Concept ;
+    skos:definition "Welsh mountain rock; lichenous, slow to dry high up."@en ;
+    skos:inScheme vocab:rock_type ;
+    skos:notation "rhyolite" ;
+    skos:prefLabel "rhyolite"@en ;
+    skos:topConceptOf vocab:rock_type ;
+    climb:fragile_when_wet false ;
+    climb:notes "Welsh mountain rock; lichenous, slow to dry high up." ;
+    climb:seeps false .
+
+<https://climbing-agent.dev/vocab/rock_type/sandstone> a skos:Concept ;
+    skos:definition "Fragile when wet — do not climb wet (holds break). Highest dry friction."@en ;
+    skos:exactMatch <https://wiki.openstreetmap.org/wiki/Tag:climbing:rock=sandstone> ;
+    skos:inScheme vocab:rock_type ;
+    skos:notation "sandstone" ;
+    skos:prefLabel "sandstone"@en ;
+    skos:topConceptOf vocab:rock_type ;
+    climb:fragile_when_wet true ;
+    climb:friction_dry 7.4e-01 ;
+    climb:notes "Fragile when wet — do not climb wet (holds break). Highest dry friction." ;
+    climb:seeps false .
+
+<https://climbing-agent.dev/vocab/rock_type/schist> a skos:Concept ;
+    skos:definition "Layered; can be friable and ledgy; holds moisture in breaks."@en ;
+    skos:inScheme vocab:rock_type ;
+    skos:notation "schist" ;
+    skos:prefLabel "schist"@en ;
+    skos:topConceptOf vocab:rock_type ;
+    climb:fragile_when_wet false ;
+    climb:notes "Layered; can be friable and ledgy; holds moisture in breaks." ;
+    climb:seeps false .
+
+<https://climbing-agent.dev/vocab/rock_type/slate> a skos:Concept ;
+    skos:definition "Non-porous — drains instantly but slick when wet; positive edges; quarried faces."@en ;
+    skos:inScheme vocab:rock_type ;
+    skos:notation "slate" ;
+    skos:prefLabel "slate"@en ;
+    skos:topConceptOf vocab:rock_type ;
+    climb:fragile_when_wet false ;
+    climb:notes "Non-porous — drains instantly but slick when wet; positive edges; quarried faces." ;
+    climb:seeps false .
+
+<https://climbing-agent.dev/vocab/rock_type/volcanic> a skos:Concept ;
+    skos:definition "Lake District; broken, mountain drainage."@en ;
+    skos:inScheme vocab:rock_type ;
+    skos:notation "volcanic" ;
+    skos:prefLabel "volcanic"@en ;
+    skos:topConceptOf vocab:rock_type ;
+    climb:fragile_when_wet false ;
+    climb:notes "Lake District; broken, mountain drainage." ;
+    climb:seeps false .
+
+<https://climbing-agent.dev/vocab/sun_window/afternoon> a skos:Concept ;
+    skos:closeMatch thecrag:afternoon-sun ;
+    skos:definition "Sun from around midday (roughly W-facing) — cold starts, warm finishes."@en ;
+    skos:inScheme vocab:sun_window ;
+    skos:notation "afternoon" ;
+    skos:prefLabel "afternoon"@en ;
+    skos:topConceptOf vocab:sun_window .
+
+<https://climbing-agent.dev/vocab/sun_window/all-day> a skos:Concept ;
+    skos:closeMatch thecrag:all-day-sun ;
+    skos:definition "Open to the sun most of the day (roughly S-facing) — dries fast, hot in summer."@en ;
+    skos:inScheme vocab:sun_window ;
+    skos:notation "all-day" ;
+    skos:prefLabel "all-day"@en ;
+    skos:topConceptOf vocab:sun_window .
+
+<https://climbing-agent.dev/vocab/sun_window/morning> a skos:Concept ;
+    skos:closeMatch thecrag:morning-sun ;
+    skos:definition "Sun until around midday (roughly E-facing) — cool afternoons."@en ;
+    skos:inScheme vocab:sun_window ;
+    skos:notation "morning" ;
+    skos:prefLabel "morning"@en ;
+    skos:topConceptOf vocab:sun_window .
+
+<https://climbing-agent.dev/vocab/sun_window/shade> a skos:Concept ;
+    skos:closeMatch thecrag:shady ;
+    skos:definition "Little or no direct sun (N-facing or sheltered) — slow to dry, cool in heat."@en ;
+    skos:inScheme vocab:sun_window ;
+    skos:notation "shade" ;
+    skos:prefLabel "shade"@en ;
+    skos:topConceptOf vocab:sun_window .
+
+vocab:sun_window a skos:ConceptScheme ;
+    dcterms:source "corpus/record/taxonomies.json" ;
+    dcterms:title "climbing-agent sun_window" .
+
+vocab:approach_difficulty a skos:ConceptScheme ;
+    dcterms:source "knowledge/curator-handbook.md (words still open)" ;
+    dcterms:title "Approach difficulty (described enum)" .
+
+vocab:incline a skos:ConceptScheme ;
+    dcterms:source "corpus/record/taxonomies.json" ;
+    dcterms:title "climbing-agent incline" .
+
+vocab:protection_grade a skos:ConceptScheme ;
+    dcterms:source "corpus/record/taxonomies.json" ;
+    dcterms:title "climbing-agent protection_grade" .
+
+vocab:character a skos:ConceptScheme ;
+    dcterms:source "corpus/record/taxonomies.json" ;
+    dcterms:title "climbing-agent character" .
+
+vocab:ascent_style a skos:ConceptScheme ;
+    dcterms:source "corpus/record/taxonomies.json" ;
+    dcterms:title "climbing-agent ascent_style" .
+
+vocab:commitment_grade a skos:ConceptScheme ;
+    dcterms:source "corpus/record/taxonomies.json" ;
+    dcterms:title "climbing-agent commitment_grade" .
+
+vocab:discipline a skos:ConceptScheme ;
+    dcterms:source "corpus/record/taxonomies.json" ;
+    dcterms:title "climbing-agent discipline" .
+
+vocab:feature a skos:ConceptScheme ;
+    dcterms:source "corpus/record/taxonomies.json" ;
+    dcterms:title "climbing-agent feature" .
+
+vocab:hazard a skos:ConceptScheme ;
+    dcterms:source "corpus/record/taxonomies.json" ;
+    dcterms:title "climbing-agent hazard" .
+
+vocab:rock_type a skos:ConceptScheme ;
+    dcterms:source "corpus/record/taxonomies.json" ;
+    dcterms:title "climbing-agent rock_type" .
+
+vocab:grade_system a skos:ConceptScheme ;
+    dcterms:source "corpus/record/grades.json#systems" ;
+    dcterms:title "Grade systems" .
+

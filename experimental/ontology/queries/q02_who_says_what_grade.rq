@@ -1,0 +1,13 @@
+# Provenance: every grade anyone gives for "The Fly" (Pigeon Rock), by source graph
+PREFIX climb: <https://climbing-agent.dev/ontology/climb#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?graph ?record ?grade ?system ?pitches ?stars WHERE {
+  GRAPH ?graph {
+    ?record rdfs:label "The Fly" ; climb:grade ?g .
+    ?g climb:gradeValue ?grade .
+    OPTIONAL { ?g climb:gradeSystem ?sys }
+    OPTIONAL { ?record climb:pitchCount ?pitches }
+    OPTIONAL { ?record climb:stars ?stars }
+  }
+  BIND(REPLACE(STR(?sys), ".*/", "") AS ?system)
+} ORDER BY ?graph

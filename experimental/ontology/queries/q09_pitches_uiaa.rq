@@ -1,0 +1,10 @@
+# Pitches: pitch-by-pitch grades of the Vajolet route, with the regional grade context
+PREFIX climb: <https://climbing-agent.dev/ontology/climb#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?route ?routeGrade ?pitch ?pitchGrade ?lengthM ?gradeContext WHERE {
+  ?pt a climb:Pitch ; climb:route ?r ; climb:pitchNumber ?pitch .
+  ?r rdfs:label ?route ; climb:grade/climb:gradeValue ?routeGrade ; climb:place/climb:crag/climb:parentArea ?region .
+  OPTIONAL { ?pt climb:grade/climb:gradeValue ?pitchGrade }
+  OPTIONAL { ?pt climb:lengthM ?lengthM }
+  OPTIONAL { ?region climb:gradeContext ?gradeContext }
+} ORDER BY ?route ?pitch

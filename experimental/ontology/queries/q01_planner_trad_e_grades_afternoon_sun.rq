@@ -1,0 +1,18 @@
+# Planner: trad routes E1-E3 on places with afternoon sun, within ~60 km of Belfast, with the graph each fact came from
+PREFIX climb: <https://climbing-agent.dev/ontology/climb#>
+PREFIX disc:  <https://climbing-agent.dev/vocab/discipline/>
+PREFIX sun:   <https://climbing-agent.dev/vocab/sun_window/>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX geo:   <http://www.w3.org/2003/01/geo/wgs84_pos#>
+SELECT ?place ?route ?grade ?stars ?sunGraph WHERE {
+  GRAPH ?sunGraph { ?p climb:sunWindow sun:afternoon . }
+  ?p a climb:Place ; rdfs:label ?place ; climb:crag ?c .
+  # coordinates may sit on the place or, for now, on the crag's sibling "record" facts; accept either
+  OPTIONAL { ?p geo:lat ?lat ; geo:long ?lon }
+  ?r climb:place ?p ; rdfs:label ?route ; climb:discipline disc:trad ; climb:grade ?g .
+  ?g climb:gradeValue ?grade .
+  OPTIONAL { ?r climb:stars ?stars }
+  FILTER regex(?grade, "^E[123] ")
+  # Belfast 54.597,-5.930 — bbox ~0.55 deg lat / 0.9 deg lon (~60 km); skipped when no coords yet
+  FILTER(!bound(?lat) || (abs(?lat - 54.597) < 0.7 && abs(?lon + 5.930) < 1.0))
+} ORDER BY DESC(?stars) ?grade LIMIT 25

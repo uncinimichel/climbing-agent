@@ -1,0 +1,188 @@
+<title>Crag Graph Explorer</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    --ground: #F2F3F0; --panel: #FFFFFF; --ink: #1B1F24; --ink-2: #4A5058; --ink-3: #7A8189;
+    --line: #D3D6D9; --line-2: #E6E8EA; --hover: #EBEDEF; --canvas: #F8F8F6;
+    --g-record: #2F4B7C; --g-curated: #3E7C59; --g-ukc: #C46A1B; --g-thecrag: #7A4FA8;
+    --g-irishwiki: #2A8C8C; --g-link: #8A919C; --g-llm: #B8860B; --g-enrich: #5E8A9E; --g-dev: #C23B3B;
+    --display: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif;
+    --body: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #15181C; --panel: #1E232A; --ink: #E8EAED; --ink-2: #AEB4BC; --ink-3: #7F868F;
+      --line: #343A42; --line-2: #2A2F36; --hover: #262C34; --canvas: #191D22;
+      --g-record: #7FA1DD; --g-curated: #7CC29A; --g-ukc: #E6944A; --g-thecrag: #B58AE0;
+      --g-irishwiki: #5FC2C2; --g-link: #8A919C; --g-llm: #E0B44A; --g-enrich: #86B3C8; --g-dev: #E0665F;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #15181C; --panel: #1E232A; --ink: #E8EAED; --ink-2: #AEB4BC; --ink-3: #7F868F;
+    --line: #343A42; --line-2: #2A2F36; --hover: #262C34; --canvas: #191D22;
+    --g-record: #7FA1DD; --g-curated: #7CC29A; --g-ukc: #E6944A; --g-thecrag: #B58AE0;
+    --g-irishwiki: #5FC2C2; --g-link: #8A919C; --g-llm: #E0B44A; --g-enrich: #86B3C8; --g-dev: #E0665F;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--ground); color: var(--ink); font: 14px/1.45 var(--body); height: 100vh; display: flex; flex-direction: column; }
+  header { display: flex; align-items: baseline; gap: 20px; padding: 14px 20px 10px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+  h1 { font: 700 22px/1 var(--display); letter-spacing: -0.01em; margin: 0; }
+  h1 small { font: 500 13px var(--body); color: var(--ink-3); margin-left: 10px; }
+  .scenes { display: flex; gap: 4px; }
+  .scenes button, .legend button { font: 500 13px var(--body); color: var(--ink-2); background: transparent; border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; cursor: pointer; }
+  .scenes button[aria-pressed="true"] { background: var(--ink); color: var(--ground); border-color: var(--ink); }
+  .scenes button:focus-visible, .legend button:focus-visible, input:focus-visible { outline: 2px solid var(--g-record); outline-offset: 2px; }
+  input[type=search] { font: 14px var(--body); color: var(--ink); background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 5px 10px; min-width: 220px; margin-left: auto; }
+  .legend { display: flex; gap: 6px; padding: 8px 20px; border-bottom: 1px solid var(--line); flex-wrap: wrap; align-items: center; }
+  .legend .lbl { font: 500 11px var(--mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); margin-right: 6px; }
+  .legend button { display: inline-flex; align-items: center; gap: 7px; font-family: var(--mono); font-size: 12px; }
+  .legend button .sw { width: 10px; height: 10px; border-radius: 50%; background: var(--c); }
+  .legend button[aria-pressed="false"] { opacity: 0.4; text-decoration: line-through; }
+  .legend .shapes { margin-left: auto; display: flex; gap: 12px; font: 12px var(--mono); color: var(--ink-3); }
+  main { flex: 1; display: flex; min-height: 0; }
+  #net { flex: 1; background: var(--canvas); min-width: 0; }
+  aside { width: 360px; border-left: 1px solid var(--line); background: var(--panel); overflow: auto; padding: 18px 20px 28px; }
+  aside .kind { font: 500 11px var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); }
+  aside h2 { font: 700 20px/1.15 var(--display); margin: 4px 0 2px; text-wrap: balance; }
+  aside .uri { font: 11px var(--mono); color: var(--ink-3); word-break: break-all; margin-bottom: 14px; }
+  aside h3 { font: 500 11px var(--mono); letter-spacing: 0.08em; text-transform: uppercase; margin: 16px 0 6px; display: flex; align-items: center; gap: 8px; color: var(--ink-2); }
+  aside h3 .sw { width: 9px; height: 9px; border-radius: 50%; background: var(--c); }
+  dl { margin: 0; display: grid; grid-template-columns: minmax(110px, auto) 1fr; gap: 3px 12px; }
+  dt { font: 12px var(--mono); color: var(--ink-3); }
+  dd { margin: 0; font-size: 13px; overflow-wrap: anywhere; }
+  aside .empty { color: var(--ink-3); font-size: 13px; }
+  aside p.hint { color: var(--ink-3); font-size: 13px; margin: 0 0 14px; }
+  .links { margin-top: 16px; }
+  .links button { display: block; width: 100%; text-align: left; font: 13px var(--body); color: var(--ink); background: transparent; border: 0; border-top: 1px solid var(--line-2); padding: 7px 0; cursor: pointer; }
+  .links button:hover { background: var(--hover); }
+  .links button span { font: 11px var(--mono); color: var(--ink-3); margin-left: 6px; }
+  footer { font: 12px var(--body); color: var(--ink-3); padding: 6px 20px; border-top: 1px solid var(--line); display: flex; gap: 18px; flex-wrap: wrap; }
+  @media (max-width: 760px) { main { flex-direction: column; } aside { width: auto; border-left: 0; border-top: 1px solid var(--line); max-height: 45vh; } input[type=search] { margin-left: 0; width: 100%; } .legend .shapes { display: none; } }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<header>
+  <h1>Crag Graph Explorer <small>experimental/ontology · 16,690 triples · 13 named graphs</small></h1>
+  <div class="scenes" role="tablist" aria-label="Scene">
+    <button role="tab" data-scene="fair-head" aria-pressed="true">Fair Head</button>
+    <button role="tab" data-scene="pigeon" aria-pressed="false">Pigeon Rock identity web</button>
+    <button role="tab" data-scene="all" aria-pressed="false">Both</button>
+  </div>
+  <input type="search" id="q" placeholder="Find a route or place…" aria-label="Find a node">
+</header>
+<div class="legend" id="legend"><span class="lbl">named graph</span>
+  <span class="shapes"><span>■ crag</span><span>◆ place</span><span>● route</span><span>○ source record</span><span>▲ parking</span></span>
+</div>
+<main>
+  <div id="net" role="img" aria-label="Interactive graph of crags, places, routes and source records"></div>
+  <aside id="panel">
+    <p class="hint">Click a node to read its facts, grouped by the named graph that asserted them. Colour is the source; shape is the kind of thing. Dashed edges are machine-proposed identities, not merges.</p>
+    <p class="empty">Nothing selected.</p>
+  </aside>
+</main>
+<footer>
+  <span>Solid colour = who said it: record, curated, UKC, theCrag, Irish wiki, LLM tagger, Open-Meteo.</span>
+  <span>Places are independent records. The crag node is a grouping header only.</span>
+  <span>Source prose is not included in this page.</span>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js"></script>
+<script>
+const DATA = /*DATA*/;
+const css = getComputedStyle(document.documentElement);
+const tok = (v) => css.getPropertyValue(v).trim();
+const graphColor = (g) => {
+  if (g.startsWith('g:record')) return tok('--g-record');
+  if (g.startsWith('g:curated')) return tok('--g-curated');
+  if (g.startsWith('g:src/ukc')) return tok('--g-ukc');
+  if (g.startsWith('g:src/thecrag')) return tok('--g-thecrag');
+  if (g.startsWith('g:src/irishwiki')) return tok('--g-irishwiki');
+  if (g.startsWith('g:llm')) return tok('--g-llm');
+  if (g.startsWith('g:enrich')) return tok('--g-enrich');
+  if (g.startsWith('g:link')) return tok('--g-link');
+  return tok('--g-dev');
+};
+const graphVar = (g) => g.startsWith('g:record') ? '--g-record' : g.startsWith('g:curated') ? '--g-curated' : g.startsWith('g:src/ukc') ? '--g-ukc' : g.startsWith('g:src/thecrag') ? '--g-thecrag' : g.startsWith('g:src/irishwiki') ? '--g-irishwiki' : g.startsWith('g:llm') ? '--g-llm' : g.startsWith('g:enrich') ? '--g-enrich' : g.startsWith('g:link') ? '--g-link' : '--g-dev';
+const shapeOf = (k) => ({Crag: 'square', Place: 'diamond', Route: 'dot', SourceRoute: 'dot', SourceCrag: 'square', Parking: 'triangle', Pitch: 'dot'}[k] || 'dot');
+const sizeOf = (k) => ({Crag: 26, SourceCrag: 20, Place: 18, Parking: 14, Route: 9, SourceRoute: 7}[k] || 8);
+const nodeGraph = (n) => {
+  if (n.kind === 'SourceRoute' || n.kind === 'SourceCrag') { const src = n.id.split('/src/')[1]?.split('/')[0]; return src === 'dev-fixtures' ? 'g:dev' : 'g:src/' + src; }
+  return n.graph;
+};
+
+// scenes: BFS from each crag header so every node knows which neighbourhood it belongs to
+const adj = new Map(); DATA.edges.forEach(e => { (adj.get(e.from) || adj.set(e.from, []).get(e.from)).push(e.to); (adj.get(e.to) || adj.set(e.to, []).get(e.to)).push(e.from); });
+const sceneOf = new Map();
+const seed = (id, name) => { const st = [id]; while (st.length) { const x = st.pop(); if (sceneOf.has(x)) continue; sceneOf.set(x, name); (adj.get(x) || []).forEach(y => st.push(y)); } };
+seed('https://climbing-agent.dev/id/crag/northern-ireland/mourne-and-down/pigeon-rock', 'pigeon');
+DATA.nodes.filter(n => n.kind === 'SourceCrag').forEach(n => seed(n.id, 'pigeon'));
+seed('https://climbing-agent.dev/id/crag/northern-ireland/antrim/fair-head', 'fair-head');
+
+const byId = new Map(DATA.nodes.map(n => [n.id, n]));
+const graphs = [...new Set(DATA.nodes.map(nodeGraph).concat(DATA.edges.map(e => e.graph)))].sort();
+const enabled = new Set(graphs);
+let scene = 'fair-head';
+
+const legend = document.getElementById('legend');
+graphs.forEach(g => {
+  const b = document.createElement('button'); b.setAttribute('aria-pressed', 'true'); b.style.setProperty('--c', `var(${graphVar(g)})`);
+  b.innerHTML = `<span class="sw"></span>${g.replace(/\/2026.*$/, '')}`;
+  b.onclick = () => { enabled.has(g) ? enabled.delete(g) : enabled.add(g); b.setAttribute('aria-pressed', String(enabled.has(g))); render(); };
+  legend.insertBefore(b, legend.querySelector('.shapes'));
+});
+document.querySelectorAll('.scenes button').forEach(b => b.onclick = () => { scene = b.dataset.scene; document.querySelectorAll('.scenes button').forEach(x => x.setAttribute('aria-pressed', String(x === b))); render(true); });
+
+const nodes = new vis.DataSet(); const edges = new vis.DataSet();
+const network = new vis.Network(document.getElementById('net'), {nodes, edges}, {
+  physics: {solver: 'forceAtlas2Based', forceAtlas2Based: {gravitationalConstant: -38, springLength: 70, avoidOverlap: 0.6}, stabilization: {iterations: 160}},
+  interaction: {hover: true, tooltipDelay: 120, navigationButtons: false},
+  nodes: {font: {face: tok('--body') || 'IBM Plex Sans', size: 12, color: tok('--ink-2')}, borderWidth: 1.5},
+  edges: {color: {inherit: false}, width: 1, smooth: {type: 'continuous'}, font: {size: 9, color: tok('--ink-3'), strokeWidth: 0}, arrows: {to: {enabled: false}}}
+});
+
+function render(refit) {
+  const visible = DATA.nodes.filter(n => (scene === 'all' || sceneOf.get(n.id) === scene) && enabled.has(nodeGraph(n)));
+  const vis_ids = new Set(visible.map(n => n.id));
+  nodes.clear(); edges.clear();
+  nodes.add(visible.map(n => {
+    const c = graphColor(nodeGraph(n)); const k = n.kind;
+    return {id: n.id, label: (k === 'Route' || k === 'SourceRoute') ? undefined : n.label, title: n.label + ' · ' + k, shape: shapeOf(k), size: sizeOf(k),
+      color: {background: (k === 'SourceRoute' || k === 'SourceCrag') ? tok('--canvas') : c, border: c, highlight: {background: c, border: tok('--ink')}, hover: {background: c, border: tok('--ink')}},
+      font: {color: tok('--ink-2')}};
+  }));
+  edges.add(DATA.edges.filter(e => vis_ids.has(e.from) && vis_ids.has(e.to) && enabled.has(e.graph)).map((e, i) => ({
+    id: i, from: e.from, to: e.to, dashes: e.label === 'climb:candidateSameAs', color: {color: graphColor(e.graph), opacity: e.label === 'climb:candidateSameAs' ? 0.7 : 0.45},
+    label: (e.label === 'climb:parking' || e.label === 'climb:sourceRecord') ? e.label.replace('climb:', '') : undefined })));
+  if (refit) network.once('stabilized', () => network.fit({animation: !matchMedia('(prefers-reduced-motion: reduce)').matches}));
+}
+
+const panel = document.getElementById('panel');
+function show(id) {
+  const n = byId.get(id); if (!n) return;
+  const groups = new Map(); n.facts.forEach(f => (groups.get(f.g) || groups.set(f.g, []).get(f.g)).push(f));
+  let html = `<div class="kind">${n.kind.replace(/([A-Z])/g, ' $1').trim()}</div><h2>${esc(n.label)}</h2><div class="uri">${esc(n.id.replace('https://climbing-agent.dev/id/', 'id:'))}</div>`;
+  if (!groups.size) html += '<p class="empty">No facts asserted about this node yet — blank, not guessed.</p>';
+  [...groups.keys()].sort().forEach(g => {
+    html += `<h3><span class="sw" style="--c: var(${graphVar(g)})"></span>${esc(g.replace(/\/2026.*$/, ''))}</h3><dl>` +
+      groups.get(g).map(f => `<dt>${esc(f.p.replace('climb:', ''))}</dt><dd>${esc(f.v)}</dd>`).join('') + '</dl>';
+  });
+  const nb = (adj.get(id) || []).map(x => byId.get(x)).filter(Boolean).slice(0, 40);
+  if (nb.length) html += `<div class="links"><h3>connected</h3>${nb.map(m => `<button data-id="${esc(m.id)}">${esc(m.label)}<span>${m.kind}</span></button>`).join('')}</div>`;
+  panel.innerHTML = html;
+  panel.querySelectorAll('.links button').forEach(b => b.onclick = () => { network.selectNodes([b.dataset.id]); network.focus(b.dataset.id, {scale: 1.2, animation: true}); show(b.dataset.id); });
+}
+const esc = (s) => String(s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
+network.on('click', p => { if (p.nodes.length) show(p.nodes[0]); });
+network.on('doubleClick', p => { if (p.nodes.length) network.focus(p.nodes[0], {scale: 1.4, animation: true}); });
+document.getElementById('q').addEventListener('change', e => {
+  const q = e.target.value.trim().toLowerCase(); if (!q) return;
+  const hit = DATA.nodes.find(n => n.label.toLowerCase().includes(q) && (scene === 'all' || sceneOf.get(n.id) === scene)) || DATA.nodes.find(n => n.label.toLowerCase().includes(q));
+  if (!hit) return;
+  if (scene !== 'all' && sceneOf.get(hit.id) !== scene) { scene = 'all'; document.querySelectorAll('.scenes button').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.scene === 'all'))); render(); }
+  network.once('stabilized', () => { network.selectNodes([hit.id]); network.focus(hit.id, {scale: 1.4, animation: true}); });
+  network.selectNodes([hit.id]); network.focus(hit.id, {scale: 1.4, animation: true}); show(hit.id);
+});
+render(true);
+show('https://climbing-agent.dev/id/place/northern-ireland/antrim/fair-head/the-prow');
+</script>

@@ -1,0 +1,15 @@
+# Places per crag with which facts are filled (blank = honestly unknown), and route counts
+PREFIX climb: <https://climbing-agent.dev/ontology/climb#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX geo:   <http://www.w3.org/2003/01/geo/wgs84_pos#>
+SELECT ?crag ?place (COUNT(DISTINCT ?r) AS ?routes) ?rock ?aspect ?sun ?approachMin ?parking WHERE {
+  ?p a climb:Place ; rdfs:label ?place ; climb:crag ?c .
+  ?c rdfs:label ?crag .
+  OPTIONAL { ?r climb:place ?p }
+  OPTIONAL { ?p climb:rockType ?rk . BIND(REPLACE(STR(?rk), ".*/", "") AS ?rock) }
+  OPTIONAL { ?p climb:aspect ?aspect }
+  OPTIONAL { ?p climb:sunWindow ?sw . BIND(REPLACE(STR(?sw), ".*/", "") AS ?sun) }
+  OPTIONAL { ?p climb:approachTimeMin ?approachMin }
+  OPTIONAL { ?p climb:parking ?pk . ?pk rdfs:label ?parking }
+} GROUP BY ?crag ?place ?rock ?aspect ?sun ?approachMin ?parking
+ORDER BY ?crag DESC(?routes)

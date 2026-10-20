@@ -1,0 +1,325 @@
+@prefix climb:   <https://climbing-agent.dev/ontology/climb#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix prov:    <http://www.w3.org/ns/prov#> .
+@prefix schema:  <https://schema.org/> .
+@prefix geo:     <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+@prefix vann:    <http://purl.org/vocab/vann/> .
+
+#################################################################
+# The climbing-agent ontology (experiment, 2026-09-06)
+#
+# Design rules carried over from the JSON record:
+#   * closed vocabularies live in vocab.ttl as SKOS concept schemes;
+#     a property whose range is a scheme is marked climb:scheme.
+#   * a Place (sector) is an INDEPENDENT unit of curation with its
+#     own complete fact record. A Crag is a grouping header only —
+#     nothing is inherited from crag to place (Michel, 2026-09-06).
+#   * every field carries three annotations for the Studio, the lint
+#     and the LLM tagger: climb:level (which class it belongs on),
+#     climb:bucket (fact | derived | judgment), climb:evidenceRequired.
+#   * provenance is per named graph (one graph per source run) plus
+#     PROV-O on the graph node; see json2rdf.py.
+#################################################################
+
+<https://climbing-agent.dev/ontology/climb>
+    a owl:Ontology ;
+    dcterms:title "climbing-agent ontology" ;
+    dcterms:description "Crags, places (sectors), routes, pitches and their sources, for the climbing-agent curated corpus." ;
+    dcterms:created "2026-09-06"^^xsd:date ;
+    vann:preferredNamespacePrefix "climb" ;
+    owl:versionInfo "0.1-experiment" .
+
+# ---- annotation properties (field metadata) --------------------
+
+climb:level a owl:AnnotationProperty ;
+    rdfs:label "level" ;
+    rdfs:comment "Which class this property is meant to live on: climb:Crag, climb:Place, climb:Route or climb:Pitch." .
+
+climb:bucket a owl:AnnotationProperty ;
+    rdfs:label "bucket" ;
+    rdfs:comment "Curator-handbook bucket: 'fact' (observable at the rock), 'derived' (engine computes it; never hand-set) or 'judgment' (opinion, flagged as such)." .
+
+climb:evidenceRequired a owl:AnnotationProperty ;
+    rdfs:label "evidence required" ;
+    rdfs:comment "true when a value may only be asserted with a quoted source span (parser rule #4)." .
+
+climb:scheme a owl:AnnotationProperty ;
+    rdfs:label "scheme" ;
+    rdfs:comment "The SKOS concept scheme whose concepts are the only allowed values." .
+
+# ---- classes ----------------------------------------------------
+
+climb:Area a owl:Class ;
+    rdfs:subClassOf schema:Place ;
+    rdfs:label "Area" ;
+    rdfs:comment "Any node of the geographic tree: country, region, crag or place." .
+
+climb:Country a owl:Class ; rdfs:subClassOf climb:Area ; rdfs:label "Country" .
+climb:Region  a owl:Class ; rdfs:subClassOf climb:Area ; rdfs:label "Region" ;
+    rdfs:comment "County / province level; the second path segment of the record key." .
+
+climb:Crag a owl:Class ;
+    rdfs:subClassOf climb:Area ;
+    rdfs:label "Crag" ;
+    rdfs:comment "A grouping header for one or more Places that share a name and a rough extent (e.g. Fair Head). Carries intro, guidebooks and external references. It does NOT carry aspect, approach or parking — those belong to each Place." .
+
+climb:Place a owl:Class ;
+    rdfs:subClassOf climb:Area ;
+    rdfs:label "Place" ;
+    rdfs:comment "The smallest physically coherent piece of rock: a sector at Fair Head, the whole crag at Pigeon Rock. The unit of curation. Has its own complete fact record and is never filled by inheritance." .
+
+climb:Route a owl:Class ;
+    rdfs:label "Route" ;
+    rdfs:comment "A climb on exactly one Place. Carries only route facts." .
+
+climb:Pitch a owl:Class ;
+    rdfs:label "Pitch" ;
+    rdfs:comment "One pitch of a multi-pitch Route." .
+
+climb:Grade a owl:Class ;
+    rdfs:label "Grade" ;
+    rdfs:comment "A verbatim grade string in a named grade system. Never a bare number; comparison across systems is judgment and lives downstream." .
+
+climb:HazardAssertion a owl:Class ;
+    rdfs:label "Hazard assertion" ;
+    rdfs:comment "A hazard concept attached to a Route or Place together with the evidence span that justifies it." .
+
+climb:Parking a owl:Class ;
+    rdfs:subClassOf schema:ParkingFacility ;
+    rdfs:label "Parking" .
+
+climb:Guidebook a owl:Class ;
+    rdfs:subClassOf schema:Book ;
+    rdfs:label "Guidebook" .
+
+climb:Source a owl:Class ;
+    rdfs:subClassOf prov:Agent ;
+    rdfs:label "Source" ;
+    rdfs:comment "A data source (UKC, theCrag, Irish wiki, multi-pitch.com, a human curator). Named graphs are attributed to a Source." .
+
+climb:SourceRecord a owl:Class ;
+    rdfs:label "Source record" ;
+    rdfs:comment "A crag or route AS ONE SOURCE DESCRIBES IT (e.g. UKC route 418365). Identity with a curated Route is a separate statement, never a merge." .
+
+climb:MonthNormals a owl:Class ;
+    rdfs:label "Monthly climate normals" .
+
+# ---- tree & membership ----------------------------------------
+
+climb:parentArea a owl:ObjectProperty ;
+    rdfs:domain climb:Area ; rdfs:range climb:Area ;
+    rdfs:label "parent area" .
+
+climb:crag a owl:ObjectProperty ;
+    rdfs:subPropertyOf climb:parentArea ;
+    rdfs:domain climb:Place ; rdfs:range climb:Crag ;
+    rdfs:label "crag" ;
+    rdfs:comment "Grouping only. Nothing flows down this edge." .
+
+climb:place a owl:ObjectProperty ;
+    rdfs:domain climb:Route ; rdfs:range climb:Place ;
+    rdfs:label "place" ;
+    rdfs:comment "The Place a Route is on. Exactly one." .
+
+climb:route a owl:ObjectProperty ;
+    rdfs:domain climb:Pitch ; rdfs:range climb:Route ;
+    rdfs:label "route" .
+
+# ---- place facts (level: Place; bucket: fact) --------------------
+
+climb:rockType a owl:ObjectProperty ;
+    rdfs:label "rock type" ; climb:level climb:Place ; climb:bucket "fact" ;
+    climb:scheme <https://climbing-agent.dev/vocab/rock_type> .
+
+climb:aspect a owl:DatatypeProperty ;
+    rdfs:label "aspect" ; rdfs:range xsd:string ;
+    climb:level climb:Place ; climb:bucket "fact" ;
+    rdfs:comment "Compass facing as the source states it (N, NE, ..., all). Never guessed from geometry." .
+
+climb:elevationM a owl:DatatypeProperty ;
+    rdfs:label "elevation (m)" ; rdfs:range xsd:integer ;
+    climb:level climb:Place ; climb:bucket "fact" .
+
+climb:approachTimeMin a owl:DatatypeProperty ;
+    rdfs:label "approach time (min)" ; rdfs:range xsd:integer ;
+    climb:level climb:Place ; climb:bucket "fact" .
+
+climb:approachDifficulty a owl:ObjectProperty ;
+    rdfs:label "approach difficulty" ; climb:level climb:Place ; climb:bucket "fact" ;
+    climb:scheme <https://climbing-agent.dev/vocab/approach_difficulty> .
+
+climb:approachVia a owl:DatatypeProperty ;
+    rdfs:label "approach via" ; rdfs:range xsd:string ;
+    climb:level climb:Place ; climb:bucket "fact" ;
+    rdfs:comment "Named path / gully used to reach the base." .
+
+climb:approachText a owl:DatatypeProperty ;
+    rdfs:label "approach (prose)" ; rdfs:range xsd:string ;
+    climb:level climb:Place ; climb:bucket "fact" .
+
+climb:descentVia a owl:DatatypeProperty ;
+    rdfs:label "descent via" ; rdfs:range xsd:string ;
+    climb:level climb:Place ; climb:bucket "fact" .
+
+climb:parking a owl:ObjectProperty ;
+    rdfs:label "parking" ; rdfs:range climb:Parking ;
+    climb:level climb:Place ; climb:bucket "fact" .
+
+climb:tidal a owl:DatatypeProperty ;
+    rdfs:label "tidal" ; rdfs:range xsd:boolean ;
+    climb:level climb:Place ; climb:bucket "fact" ; climb:evidenceRequired true .
+
+climb:accessNotes a owl:DatatypeProperty ;
+    rdfs:label "access notes" ; rdfs:range xsd:string ;
+    climb:level climb:Place ; climb:bucket "fact" .
+
+climb:sunWindow a owl:ObjectProperty ;
+    rdfs:label "sun window" ; climb:level climb:Place ; climb:bucket "derived" ;
+    climb:scheme <https://climbing-agent.dev/vocab/sun_window> ;
+    rdfs:comment "Derived from aspect by the engine. A SOURCE may also state it directly (The Prow: 'afternoon sun'); then it is a fact in that source's graph." .
+
+climb:dryWarmMonth a owl:DatatypeProperty ;
+    rdfs:label "dry warm month" ; rdfs:range xsd:integer ;
+    climb:level climb:Place ; climb:bucket "derived" .
+
+climb:monthNormals a owl:ObjectProperty ;
+    rdfs:label "monthly climate normals" ; rdfs:range climb:MonthNormals ;
+    climb:level climb:Place ; climb:bucket "fact" ;
+    rdfs:comment "Mechanical, from Open-Meteo; a fact about the grid cell, not a curator field." .
+
+climb:month a owl:DatatypeProperty ; rdfs:range xsd:integer .
+climb:tmaxMeanC a owl:DatatypeProperty ; rdfs:range xsd:decimal .
+climb:tminMeanC a owl:DatatypeProperty ; rdfs:range xsd:decimal .
+climb:precipDays a owl:DatatypeProperty ; rdfs:range xsd:decimal .
+climb:windMaxMeanKmh a owl:DatatypeProperty ; rdfs:range xsd:decimal .
+
+# ---- route facts (level: Route) ---------------------------------
+
+climb:grade a owl:ObjectProperty ;
+    rdfs:label "grade" ; rdfs:range climb:Grade ;
+    climb:level climb:Route ; climb:bucket "fact" .
+
+climb:gradeValue a owl:DatatypeProperty ;
+    rdfs:label "grade value" ; rdfs:domain climb:Grade ; rdfs:range xsd:string ;
+    rdfs:comment "Verbatim, e.g. 'E1 5b', 'IV+', 'f6a+'." .
+
+climb:gradeSystem a owl:ObjectProperty ;
+    rdfs:label "grade system" ; rdfs:domain climb:Grade ;
+    climb:scheme <https://climbing-agent.dev/vocab/grade_system> .
+
+climb:dataGrade a owl:DatatypeProperty ;
+    rdfs:label "data grade 1-7" ; rdfs:range xsd:integer ;
+    climb:level climb:Route ; climb:bucket "derived" ;
+    rdfs:comment "Normalised ladder from grade-conversion.md. Engine-computed from grade + system." .
+
+climb:lengthM a owl:DatatypeProperty ;
+    rdfs:label "length (m)" ; rdfs:range xsd:integer ; climb:level climb:Route ; climb:bucket "fact" .
+
+climb:pitchCount a owl:DatatypeProperty ;
+    rdfs:label "pitches" ; rdfs:range xsd:integer ; climb:level climb:Route ; climb:bucket "fact" .
+
+climb:boltsCount a owl:DatatypeProperty ;
+    rdfs:label "bolts" ; rdfs:range xsd:integer ; climb:level climb:Route ; climb:bucket "fact" .
+
+climb:discipline a owl:ObjectProperty ;
+    rdfs:label "discipline" ; climb:level climb:Route ; climb:bucket "fact" ;
+    climb:scheme <https://climbing-agent.dev/vocab/discipline> ;
+    rdfs:comment "Set-valued (OpenBeta ClimbType): a route can be trad AND multi-pitch." .
+
+climb:protectionGrade a owl:ObjectProperty ;
+    rdfs:label "protection grade" ; climb:level climb:Route ; climb:bucket "fact" ;
+    climb:scheme <https://climbing-agent.dev/vocab/protection_grade> .
+
+climb:feature a owl:ObjectProperty ;
+    rdfs:label "feature" ; climb:level climb:Route ; climb:bucket "fact" ;
+    climb:scheme <https://climbing-agent.dev/vocab/feature> .
+
+climb:character a owl:ObjectProperty ;
+    rdfs:label "character" ; climb:level climb:Route ; climb:bucket "judgment" ;
+    climb:scheme <https://climbing-agent.dev/vocab/character> .
+
+climb:incline a owl:ObjectProperty ;
+    rdfs:label "incline" ; climb:level climb:Route ; climb:bucket "fact" ;
+    climb:scheme <https://climbing-agent.dev/vocab/incline> .
+
+climb:commitmentGrade a owl:ObjectProperty ;
+    rdfs:label "commitment grade" ; climb:level climb:Route ; climb:bucket "fact" ;
+    climb:scheme <https://climbing-agent.dev/vocab/commitment_grade> .
+
+climb:stars a owl:DatatypeProperty ;
+    rdfs:label "stars" ; rdfs:range xsd:integer ;
+    climb:level climb:Route ; climb:bucket "judgment" .
+
+climb:firstAscent a owl:DatatypeProperty ;
+    rdfs:label "first ascent" ; rdfs:range xsd:string ; climb:level climb:Route ; climb:bucket "fact" .
+
+climb:leftRightIndex a owl:DatatypeProperty ;
+    rdfs:label "left-right index" ; rdfs:range xsd:integer ; climb:level climb:Route ; climb:bucket "fact" .
+
+climb:hazard a owl:ObjectProperty ;
+    rdfs:label "hazard" ; rdfs:range climb:HazardAssertion ;
+    climb:level climb:Route ; climb:bucket "fact" ; climb:evidenceRequired true .
+
+climb:hazardType a owl:ObjectProperty ;
+    rdfs:domain climb:HazardAssertion ;
+    climb:scheme <https://climbing-agent.dev/vocab/hazard> .
+
+climb:evidenceSpan a owl:DatatypeProperty ;
+    rdfs:label "evidence span" ; rdfs:range xsd:string ;
+    rdfs:comment "Verbatim quote from the source that justifies a safety-critical assertion." .
+
+climb:pitchNumber a owl:DatatypeProperty ; rdfs:range xsd:integer ; climb:level climb:Pitch .
+
+# ---- prose (level: Route or Place) ------------------------------
+
+climb:intro a owl:DatatypeProperty ;
+    rdfs:label "intro (why climb it)" ; rdfs:range xsd:string ; climb:bucket "judgment" .
+
+climb:description a owl:DatatypeProperty ;
+    rdfs:label "description (verbatim source prose)" ; rdfs:range xsd:string ; climb:bucket "fact" ;
+    rdfs:comment "Raw source text; LLM input. Never shown on the public site when the source forbids it." .
+
+# ---- lifecycle & curation --------------------------------------
+
+climb:status a owl:DatatypeProperty ;
+    rdfs:label "status" ; rdfs:range xsd:string ;
+    rdfs:comment "draft | publish | quarantined (record status vocabulary)." .
+
+climb:taggedBy a owl:DatatypeProperty ;
+    rdfs:label "tagged by" ; rdfs:range xsd:string ;
+    rdfs:comment "human | llm | source. publish requires human (governance #32)." .
+
+climb:needsFieldCheck a owl:DatatypeProperty ; rdfs:range xsd:boolean .
+
+# ---- identity across sources -----------------------------------
+
+climb:sourceRecord a owl:ObjectProperty ;
+    rdfs:label "source record" ; rdfs:range climb:SourceRecord ;
+    rdfs:comment "Curated identity: this Route/Crag IS the thing that source record describes (from the record's external_refs)." .
+
+climb:candidateSameAs a owl:ObjectProperty , owl:SymmetricProperty ;
+    rdfs:label "candidate same as" ;
+    rdfs:comment "Mechanically proposed identity between two SourceRecords (same normalised name, nearby crags). Judgment to confirm belongs to the LLM/human phase; entities are never collapsed." .
+
+climb:matchConfidence a owl:DatatypeProperty ; rdfs:range xsd:decimal .
+
+climb:sourceId a owl:DatatypeProperty ; rdfs:label "source id" ; rdfs:range xsd:string .
+climb:source   a owl:ObjectProperty ; rdfs:label "source" ; rdfs:range climb:Source .
+
+# ---- misc ------------------------------------------------------
+
+climb:isbn a owl:DatatypeProperty ; rdfs:range xsd:string .
+climb:page a owl:DatatypeProperty ; rdfs:range xsd:string .
+climb:gradeContext a owl:DatatypeProperty ;
+    rdfs:label "grade context" ; rdfs:range xsd:string ; climb:level climb:Region ;
+    rdfs:comment "Short country code (GB, IT) that disambiguates grade strings (OpenBeta). Set on Region or Country, read by the parser." .
+climb:timezone a owl:DatatypeProperty ; rdfs:range xsd:string .
+climb:recordPath a owl:DatatypeProperty ;
+    rdfs:label "record path" ; rdfs:range xsd:string ;
+    rdfs:comment "The JSON record key this node was converted from (round-trip anchor)." .
+climb:recordId a owl:DatatypeProperty ; rdfs:range xsd:integer .
