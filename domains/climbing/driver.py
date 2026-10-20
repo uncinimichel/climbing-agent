@@ -92,6 +92,24 @@ def build_banner(ctx, ranked):
                 f"Live forecast reaches your dates on {reaches_start:%-d %b}.")
 
 
+REPRICE_CLOSE_DAYS = 14     # inside this many days of departure, reprice every run…
+REPRICE_FAR_HOURS = 66      # …further out, at most every ~3 days (fares barely move)
+REPRICE_NEAR_HOURS = 20     # a same-day push rebuild reuses the cron's prices
+
+
+def pricing_due(flights_data, trip_start, now):
+    """Whether this run should spend SerpApi quota on flights. SerpApi's own
+    cache only lasts 1h, so a daily cron always pays in full — the cadence is
+    ours to set. Between due runs the keyless path reuses flights-latest.json."""
+    try:
+        last = datetime.fromisoformat(flights_data["priced_at"])
+    except (KeyError, TypeError, ValueError):
+        return True
+    days_out = (trip_start - now.date()).days
+    gap_h = REPRICE_NEAR_HOURS if days_out <= REPRICE_CLOSE_DAYS else REPRICE_FAR_HOURS
+    return (now - last).total_seconds() >= gap_h * 3600
+
+
 def run_trip(trip, repo_root, shared, serpapi_key=None,
              quota_guard=None, flight_cache=None, now=None):
     """Render one trip completely to trips/<slug>/index.html. The repo root is
@@ -100,15 +118,17 @@ def run_trip(trip, repo_root, shared, serpapi_key=None,
     Per-trip state (flights-latest, rank-history, daily report, history/) always
     lives in the trip's own directory. Returns (ranked, data) so the caller can
     build the picker from the same in-memory render data."""
-    ctx = trip_context(trip, repo_root, serpapi_key=serpapi_key)
     d = trips.trip_dir(repo_root, trip)
-    quota_guard = quota_guard or quota.AlwaysAllowQuotaGuard()
-    flight_cache = flight_cache or quota.NullFlightCache()
     flights_data = _load_json(d / "flights-latest.json", {})
-    mp_climbs = shared["mp_climbs"]
-
     now = now or datetime.now(timezone.utc)
     today = now.date().isoformat()
+    if serpapi_key and not pricing_due(flights_data, date.fromisoformat(trip["start"]), now):
+        print(f"[{trip['slug']}] flights priced at {flights_data['priced_at']} — reusing them (cadence)")
+        serpapi_key = None
+    ctx = trip_context(trip, repo_root, serpapi_key=serpapi_key)
+    quota_guard = quota_guard or quota.AlwaysAllowQuotaGuard()
+    flight_cache = flight_cache or quota.NullFlightCache()
+    mp_climbs = shared["mp_climbs"]
 
     results = [scoring.evaluate(v, ctx, shared["env_cache"], shared["climo_cache"],
                                 shared["stays_cache"], shared["link_health_cache"], mp_climbs)
@@ -149,6 +169,8 @@ def run_trip(trip, repo_root, shared, serpapi_key=None,
     flights_data["venues"] = priced
     flights_data["checked_at"] = (now.strftime("%Y-%m-%d %H:%M UTC")
                                    + (" (Google Flights/SerpApi)" if ctx.serpapi_key else " (no key — links only)"))
+    if ctx.serpapi_key:
+        flights_data["priced_at"] = now.isoformat(timespec="minutes")
     (d / "flights-latest.json").write_text(json.dumps(flights_data, indent=2) + "\n")
 
     banner = build_banner(ctx, ranked)

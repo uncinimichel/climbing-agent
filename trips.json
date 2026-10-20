@@ -59,7 +59,7 @@
       "status": "live",
       "start": "2026-11-27",
       "end": "2026-11-29",
-      "flex_days": 3,
+      "flex_days": 1,
       "travellers": [
         {
           "key": "michel",
