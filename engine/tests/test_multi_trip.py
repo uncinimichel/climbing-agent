@@ -60,7 +60,8 @@ def test_multi_trip_renders_picker_and_dashboards():
             env={**os.environ, "SERPAPI_KEY": ""},
             capture_output=True, text=True, timeout=300)
         assert result.returncode == 0, f"stdout:\n{result.stdout}\nstderr:\n{result.stderr}"
-        assert "[ni-july-2026] wrote trips/ni-july-2026/index.html" in result.stdout
+        # ended = closed: frozen on its last render, no API calls (no re-render)
+        assert "[ni-july-2026] ended — frozen" in result.stdout
         assert "[test-mt] wrote trips/test-mt/index.html" in result.stdout
         assert "[picker] wrote index.html" in result.stdout
 
@@ -72,7 +73,7 @@ def test_multi_trip_renders_picker_and_dashboards():
         assert 'href="trips/ni-july-2026/index.html"' not in root
         assert "Northern Ireland" not in root
 
-        # NI dashboard moved to trips/ni-july-2026/, keeps its shape + traveller
+        # the frozen NI dashboard at trips/ni-july-2026/ keeps its shape + traveller
         ni_dash = _window_data((NI_OUT / "index.html").read_text())
         assert len(ni_dash["venues"]) > 30
         assert ni_dash["trip"]["pills"][0] == "✈ Michel · London"

@@ -6,12 +6,15 @@ trips.json to its own trips/<slug>/index.html, then writes the repo-root trip
 picker linking to them. There is no feature flag — the pipeline always follows
 the registry, so adding a trip to trips.json is all it takes to make it appear.
 
-Flight quota: only the nearest-departing `live` trip spends SerpApi quota; every
-other trip (and any `ended` trip) renders keyless — distance estimates + last
-known prices. Per trip we also write daily-report.md, history/<date>.md,
-flights-latest.json and rank-history.json into the trip's own directory.
+Flight quota: only the nearest-departing `live` trip spends SerpApi quota; other
+live trips render keyless — distance estimates + last known prices. An `ended`
+trip is frozen: it reuses its last page's data and makes no API calls at all.
+Per trip we also write daily-report.md, history/<date>.md, flights-latest.json
+and rank-history.json into the trip's own directory.
 """
+import json
 import os
+import re
 import sys
 from pathlib import Path
 
@@ -36,6 +39,18 @@ _dotenv()
 SERPAPI_KEY = os.environ.get("SERPAPI_KEY")
 
 
+def frozen_data(trip):
+    """An ended trip is closed: no weather, no flights, no re-render. Its last
+    page's embedded window.DATA still feeds the picker and the venue pages.
+    None (→ render it once) if the trip has never been rendered."""
+    page = REPO_ROOT / "trips" / trip["slug"] / "index.html"
+    m = re.search(r"window\.DATA=(\{.*?\});window\.TAGT", page.read_text(), re.S) if page.exists() else None
+    if not m:
+        return None
+    print(f"[{trip['slug']}] ended — frozen, reusing its last render (no API calls)")
+    return json.loads(m.group(1))
+
+
 def main():
     shared = driver.load_shared(REPO_ROOT)
     print(f"multi-pitch climbs loaded: {len(shared['mp_climbs'])}")
@@ -48,9 +63,11 @@ def main():
     ordered = sorted(all_trips, key=lambda t: (t["status"] == "ended", t["start"]))
     summaries = []
     for t in ordered:
-        _, data = driver.run_trip(
-            t, REPO_ROOT, shared,
-            serpapi_key=SERPAPI_KEY if t["slug"] == nearest else None)
+        data = frozen_data(t) if t["status"] == "ended" else None
+        if data is None:
+            _, data = driver.run_trip(
+                t, REPO_ROOT, shared,
+                serpapi_key=SERPAPI_KEY if t["slug"] == nearest else None)
         summaries.append((t, data))
 
     driver.render_index(REPO_ROOT, summaries)

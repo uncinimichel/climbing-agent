@@ -45,7 +45,8 @@ def test_update_report_runs_clean_and_shape_matches():
     assert result.returncode == 0, (
         f"update_report.py exited {result.returncode}\nstdout:\n{result.stdout}\nstderr:\n{result.stderr}"
     )
-    assert "[ni-july-2026] wrote trips/ni-july-2026/index.html" in result.stdout
+    # NI is ended = frozen on its last render (no re-render, no API calls)
+    assert "[ni-july-2026] ended — frozen" in result.stdout
     assert "[picker] wrote index.html" in result.stdout
 
     # root is the trip picker (no dashboard blob); the NI dashboard moved to trips/
