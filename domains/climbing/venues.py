@@ -107,6 +107,15 @@ SHEET_ALIAS = {
 }
 
 
+# sheet spelling -> destination slug, where the plain slug of the sheet name
+# isn't the one the trip's crags curate (venues.json `destination`)
+DEST_SLUG = {"aaran": "arran", "llanberis": "snowdonia"}
+
+
+def destination_slug(sheet_key):
+    return DEST_SLUG.get(sheet_key) or "-".join(sheet_key.split())
+
+
 def _norm(s):
     s = unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode().lower()
     s = re.sub(r"[^a-z0-9 ]", " ", s)   # keep parenthetical tokens (e.g. "Llanberis")
@@ -207,9 +216,10 @@ def build_venues(curated_venues, csv_path):
                  "rock": g.get("rock", ""), "style": g.get("style", ""), "why": "",
                  "travel": g["travel"], "tidal": g.get("tidal", False), "auto": True}
             # physical character the ranking reads (felt temp / gusts / drying)
-            for k in ("aspect", "coastal", "wind_exposed", "drying"):
-                if g.get(k) is not None:
-                    v[k] = g[k]
+            for attr in ("aspect", "coastal", "wind_exposed", "drying"):
+                if g.get(attr) is not None:
+                    v[attr] = g[attr]
+        v.setdefault("destination", destination_slug(k))
         v["sheet"] = sh
         out.append(v)
     for name, v in curated.items():

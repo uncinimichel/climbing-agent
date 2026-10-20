@@ -5,7 +5,7 @@
     "end": "2026-11-29",
     "_comment": "LEGACY — trips.json window wins."
   },
-  "notes": "Winter-trip candidate pool. base = master catalogue (corpus publish areas with coords) minus sheet-covered areas; sheet_merge:true folds in Michel's prioritised curated spreadsheet. Ranking is climatology-driven this far out — it finds the best-conditions winter destination.",
+  "notes": "Winter-trip candidate pool. base = master catalogue (corpus publish areas with coords) minus sheet-covered areas; sheet_merge:true folds in Michel's prioritised curated spreadsheet. Ranking is climatology-driven this far out — it finds the best-conditions winter destination. Each crag carries curated `travel` (per-traveller mode + arrival airport, same shape as the sheet GAZETTEER) and `destination` (slug of the trip you'd book — crags sharing one are the same trip). Curated 2026-10-20; crags sharing an airport cost one SerpApi search (its 1h cache).",
   "venues": [
     {
       "name": "Mount Indefatigable",
@@ -17,7 +17,18 @@
       "style": "",
       "why": "",
       "aspect": "E/N",
-      "aspect_source": "curated 2026-09-04 (unverified): Kananaskis — east-face routes, north ridge"
+      "aspect_source": "curated 2026-09-04 (unverified): Kananaskis — east-face routes, north ridge",
+      "destination": "canadian-rockies",
+      "travel": {
+        "michel": {
+          "mode": "fly",
+          "to": "YYC"
+        },
+        "dan": {
+          "mode": "fly",
+          "to": "YYC"
+        }
+      }
     },
     {
       "name": "Anica Kuk",
@@ -28,7 +39,18 @@
       "rock": "limestone",
       "style": "",
       "why": "",
-      "aspect": "N"
+      "aspect": "N",
+      "destination": "paklenica",
+      "travel": {
+        "michel": {
+          "mode": "fly",
+          "to": "ZAD"
+        },
+        "dan": {
+          "mode": "fly",
+          "to": "ZAD"
+        }
+      }
     },
     {
       "name": "Avon Gorge",
@@ -40,7 +62,17 @@
       "style": "",
       "why": "",
       "aspect": "W",
-      "aspect_source": "curated 2026-09-04: gorge's east bank, Main Wall faces W over the Avon"
+      "aspect_source": "curated 2026-09-04: gorge's east bank, Main Wall faces W over the Avon",
+      "destination": "avon-gorge",
+      "travel": {
+        "michel": {
+          "mode": "drive"
+        },
+        "dan": {
+          "mode": "fly",
+          "to": "BRS"
+        }
+      }
     },
     {
       "name": "Bosigran",
@@ -51,7 +83,17 @@
       "rock": "granite",
       "style": "",
       "why": "",
-      "aspect": "W"
+      "aspect": "W",
+      "destination": "cornwall",
+      "travel": {
+        "michel": {
+          "mode": "drive"
+        },
+        "dan": {
+          "mode": "fly",
+          "to": "NQY"
+        }
+      }
     },
     {
       "name": "Chair Ladder",
@@ -62,7 +104,17 @@
       "rock": "granite",
       "style": "",
       "why": "",
-      "aspect": "SW"
+      "aspect": "SW",
+      "destination": "cornwall",
+      "travel": {
+        "michel": {
+          "mode": "drive"
+        },
+        "dan": {
+          "mode": "fly",
+          "to": "NQY"
+        }
+      }
     },
     {
       "name": "Cornakey Cliff",
@@ -73,7 +125,17 @@
       "rock": "sandstone",
       "style": "",
       "why": "",
-      "aspect": "S"
+      "aspect": "S",
+      "destination": "devon",
+      "travel": {
+        "michel": {
+          "mode": "drive"
+        },
+        "dan": {
+          "mode": "fly",
+          "to": "EXT"
+        }
+      }
     },
     {
       "name": "Scafell",
@@ -84,7 +146,17 @@
       "rock": "rhyolite",
       "style": "",
       "why": "",
-      "aspect": "N"
+      "aspect": "N",
+      "destination": "lake-district",
+      "travel": {
+        "michel": {
+          "mode": "drive"
+        },
+        "dan": {
+          "mode": "fly",
+          "to": "MAN"
+        }
+      }
     },
     {
       "name": "Wintours Leap",
@@ -96,7 +168,17 @@
       "style": "",
       "why": "",
       "aspect": "W",
-      "aspect_source": "curated 2026-09-04: Wye valley, faces W/SW"
+      "aspect_source": "curated 2026-09-04: Wye valley, faces W/SW",
+      "destination": "wye-valley",
+      "travel": {
+        "michel": {
+          "mode": "drive"
+        },
+        "dan": {
+          "mode": "fly",
+          "to": "BRS"
+        }
+      }
     },
     {
       "name": "Gimmer Crag",
@@ -107,7 +189,17 @@
       "rock": "volcanic",
       "style": "",
       "why": "",
-      "aspect": "SW"
+      "aspect": "SW",
+      "destination": "lake-district",
+      "travel": {
+        "michel": {
+          "mode": "drive"
+        },
+        "dan": {
+          "mode": "fly",
+          "to": "MAN"
+        }
+      }
     },
     {
       "name": "Aiguille Dibona",
@@ -118,7 +210,18 @@
       "rock": "granite",
       "style": "",
       "why": "",
-      "aspect": "S"
+      "aspect": "S",
+      "destination": "ecrins",
+      "travel": {
+        "michel": {
+          "mode": "fly",
+          "to": "LYS"
+        },
+        "dan": {
+          "mode": "fly",
+          "to": "LYS"
+        }
+      }
     },
     {
       "name": "Heiliger Geist",
@@ -129,7 +232,18 @@
       "rock": "conglomerate",
       "style": "",
       "why": "",
-      "aspect": "E"
+      "aspect": "E",
+      "destination": "meteora",
+      "travel": {
+        "michel": {
+          "mode": "fly",
+          "to": "SKG"
+        },
+        "dan": {
+          "mode": "fly",
+          "to": "SKG"
+        }
+      }
     },
     {
       "name": "Lion Rock",
@@ -140,7 +254,18 @@
       "rock": "granite",
       "style": "",
       "why": "",
-      "aspect": "W"
+      "aspect": "W",
+      "destination": "hong-kong",
+      "travel": {
+        "michel": {
+          "mode": "fly",
+          "to": "HKG"
+        },
+        "dan": {
+          "mode": "fly",
+          "to": "HKG"
+        }
+      }
     },
     {
       "name": "Sail Rock",
@@ -152,7 +277,17 @@
       "style": "",
       "why": "",
       "aspect": "W",
-      "aspect_source": "corpus area 'Donegal (Sail Rock)' = W"
+      "aspect_source": "corpus area 'Donegal (Sail Rock)' = W",
+      "destination": "donegal",
+      "travel": {
+        "michel": {
+          "mode": "fly",
+          "to": "LDY"
+        },
+        "dan": {
+          "mode": "drive"
+        }
+      }
     },
     {
       "name": "Tormore Group",
@@ -163,7 +298,17 @@
       "rock": "quartzite",
       "style": "",
       "why": "",
-      "aspect": "E"
+      "aspect": "E",
+      "destination": "donegal",
+      "travel": {
+        "michel": {
+          "mode": "fly",
+          "to": "LDY"
+        },
+        "dan": {
+          "mode": "drive"
+        }
+      }
     },
     {
       "name": "Vajolet towers",
@@ -174,7 +319,18 @@
       "rock": "dolomite",
       "style": "",
       "why": "",
-      "aspect": "SW"
+      "aspect": "SW",
+      "destination": "dolomites",
+      "travel": {
+        "michel": {
+          "mode": "fly",
+          "to": "VCE"
+        },
+        "dan": {
+          "mode": "fly",
+          "to": "VCE"
+        }
+      }
     },
     {
       "name": "Sass Pordoi",
@@ -185,7 +341,18 @@
       "rock": "dolomite",
       "style": "",
       "why": "",
-      "aspect": "NW"
+      "aspect": "NW",
+      "destination": "dolomites",
+      "travel": {
+        "michel": {
+          "mode": "fly",
+          "to": "VCE"
+        },
+        "dan": {
+          "mode": "fly",
+          "to": "VCE"
+        }
+      }
     },
     {
       "name": "Grande Fermeda",
@@ -196,7 +363,18 @@
       "rock": "dolomite",
       "style": "",
       "why": "",
-      "aspect": "S"
+      "aspect": "S",
+      "destination": "dolomites",
+      "travel": {
+        "michel": {
+          "mode": "fly",
+          "to": "VCE"
+        },
+        "dan": {
+          "mode": "fly",
+          "to": "VCE"
+        }
+      }
     },
     {
       "name": "Sass Pordoi South Face",
@@ -207,7 +385,18 @@
       "rock": "dolomite",
       "style": "",
       "why": "",
-      "aspect": "S"
+      "aspect": "S",
+      "destination": "dolomites",
+      "travel": {
+        "michel": {
+          "mode": "fly",
+          "to": "VCE"
+        },
+        "dan": {
+          "mode": "fly",
+          "to": "VCE"
+        }
+      }
     },
     {
       "name": "Sella Towers",
@@ -218,7 +407,18 @@
       "rock": "dolomite",
       "style": "",
       "why": "",
-      "aspect": "SW"
+      "aspect": "SW",
+      "destination": "dolomites",
+      "travel": {
+        "michel": {
+          "mode": "fly",
+          "to": "VCE"
+        },
+        "dan": {
+          "mode": "fly",
+          "to": "VCE"
+        }
+      }
     },
     {
       "name": "Amzkhssan Wall",
@@ -229,7 +429,18 @@
       "rock": "quartzite",
       "style": "",
       "why": "",
-      "aspect": "S"
+      "aspect": "S",
+      "destination": "anti-atlas",
+      "travel": {
+        "michel": {
+          "mode": "fly",
+          "to": "AGA"
+        },
+        "dan": {
+          "mode": "fly",
+          "to": "AGA"
+        }
+      }
     },
     {
       "name": "Lower Eagle Crag",
@@ -240,7 +451,18 @@
       "rock": "quartzite",
       "style": "",
       "why": "",
-      "aspect": "NE"
+      "aspect": "NE",
+      "destination": "anti-atlas",
+      "travel": {
+        "michel": {
+          "mode": "fly",
+          "to": "AGA"
+        },
+        "dan": {
+          "mode": "fly",
+          "to": "AGA"
+        }
+      }
     },
     {
       "name": "Ksar Rock",
@@ -251,7 +473,18 @@
       "rock": "quartzite",
       "style": "",
       "why": "",
-      "aspect": "SE"
+      "aspect": "SE",
+      "destination": "anti-atlas",
+      "travel": {
+        "michel": {
+          "mode": "fly",
+          "to": "AGA"
+        },
+        "dan": {
+          "mode": "fly",
+          "to": "AGA"
+        }
+      }
     },
     {
       "name": "High Sierra Dome",
@@ -262,7 +495,18 @@
       "rock": "granite",
       "style": "",
       "why": "",
-      "aspect": "S"
+      "aspect": "S",
+      "destination": "anti-atlas",
+      "travel": {
+        "michel": {
+          "mode": "fly",
+          "to": "AGA"
+        },
+        "dan": {
+          "mode": "fly",
+          "to": "AGA"
+        }
+      }
     },
     {
       "name": "Fair Head",
@@ -273,7 +517,17 @@
       "rock": "dolerite",
       "style": "",
       "why": "",
-      "aspect": "N"
+      "aspect": "N",
+      "destination": "fair-head",
+      "travel": {
+        "michel": {
+          "mode": "fly",
+          "to": "BFS"
+        },
+        "dan": {
+          "mode": "local"
+        }
+      }
     },
     {
       "name": "Slieve Beg",
@@ -284,7 +538,17 @@
       "rock": "granite",
       "style": "",
       "why": "",
-      "aspect": "SW"
+      "aspect": "SW",
+      "destination": "mournes",
+      "travel": {
+        "michel": {
+          "mode": "fly",
+          "to": "BFS"
+        },
+        "dan": {
+          "mode": "local"
+        }
+      }
     },
     {
       "name": "Buzzards Roost",
@@ -295,7 +559,17 @@
       "rock": "granite",
       "style": "",
       "why": "",
-      "aspect": "SE"
+      "aspect": "SE",
+      "destination": "mournes",
+      "travel": {
+        "michel": {
+          "mode": "fly",
+          "to": "BFS"
+        },
+        "dan": {
+          "mode": "local"
+        }
+      }
     },
     {
       "name": "Eagle Mountain",
@@ -306,7 +580,17 @@
       "rock": "granite",
       "style": "",
       "why": "",
-      "aspect": "NE"
+      "aspect": "NE",
+      "destination": "mournes",
+      "travel": {
+        "michel": {
+          "mode": "fly",
+          "to": "BFS"
+        },
+        "dan": {
+          "mode": "local"
+        }
+      }
     },
     {
       "name": "Pigeon Rock",
@@ -317,7 +601,17 @@
       "rock": "granite",
       "style": "",
       "why": "",
-      "aspect": "E"
+      "aspect": "E",
+      "destination": "mournes",
+      "travel": {
+        "michel": {
+          "mode": "fly",
+          "to": "BFS"
+        },
+        "dan": {
+          "mode": "local"
+        }
+      }
     },
     {
       "name": "Slieve Lamagan",
@@ -328,7 +622,17 @@
       "rock": "granite",
       "style": "",
       "why": "",
-      "aspect": "SE"
+      "aspect": "SE",
+      "destination": "mournes",
+      "travel": {
+        "michel": {
+          "mode": "fly",
+          "to": "BFS"
+        },
+        "dan": {
+          "mode": "local"
+        }
+      }
     },
     {
       "name": "Stetind",
@@ -340,7 +644,18 @@
       "style": "",
       "why": "",
       "aspect": "S/W",
-      "aspect_source": "curated 2026-09-04 (unverified): Sydpilaren S, west face routes W"
+      "aspect_source": "curated 2026-09-04 (unverified): Sydpilaren S, west face routes W",
+      "destination": "stetind",
+      "travel": {
+        "michel": {
+          "mode": "fly",
+          "to": "EVE"
+        },
+        "dan": {
+          "mode": "fly",
+          "to": "EVE"
+        }
+      }
     },
     {
       "name": "Meadinha",
@@ -351,7 +666,18 @@
       "rock": "granite",
       "style": "",
       "why": "",
-      "aspect": "SE"
+      "aspect": "SE",
+      "destination": "peneda-geres",
+      "travel": {
+        "michel": {
+          "mode": "fly",
+          "to": "OPO"
+        },
+        "dan": {
+          "mode": "fly",
+          "to": "OPO"
+        }
+      }
     },
     {
       "name": "Cir Mhor",
@@ -362,7 +688,18 @@
       "rock": "granite",
       "style": "",
       "why": "",
-      "aspect": "S"
+      "aspect": "S",
+      "destination": "arran",
+      "travel": {
+        "michel": {
+          "mode": "fly",
+          "to": "GLA"
+        },
+        "dan": {
+          "mode": "fly",
+          "to": "GLA"
+        }
+      }
     },
     {
       "name": "Old Man of Stoer",
@@ -373,7 +710,18 @@
       "rock": "sandstone",
       "style": "",
       "why": "",
-      "aspect": "SE"
+      "aspect": "SE",
+      "destination": "assynt",
+      "travel": {
+        "michel": {
+          "mode": "fly",
+          "to": "INV"
+        },
+        "dan": {
+          "mode": "fly",
+          "to": "INV"
+        }
+      }
     },
     {
       "name": "Old Man of Hoy",
@@ -384,7 +732,18 @@
       "rock": "sandstone",
       "style": "",
       "why": "",
-      "aspect": "E"
+      "aspect": "E",
+      "destination": "hoy",
+      "travel": {
+        "michel": {
+          "mode": "fly",
+          "to": "KOI"
+        },
+        "dan": {
+          "mode": "fly",
+          "to": "KOI"
+        }
+      }
     },
     {
       "name": "El Castellet",
@@ -395,7 +754,18 @@
       "rock": "limestone",
       "style": "",
       "why": "",
-      "aspect": "S"
+      "aspect": "S",
+      "destination": "costa-blanca",
+      "travel": {
+        "michel": {
+          "mode": "fly",
+          "to": "ALC"
+        },
+        "dan": {
+          "mode": "fly",
+          "to": "ALC"
+        }
+      }
     },
     {
       "name": "Roca Gris",
@@ -406,7 +776,18 @@
       "rock": "conglomerate",
       "style": "",
       "why": "",
-      "aspect": "S"
+      "aspect": "S",
+      "destination": "montserrat",
+      "travel": {
+        "michel": {
+          "mode": "fly",
+          "to": "BCN"
+        },
+        "dan": {
+          "mode": "fly",
+          "to": "BCN"
+        }
+      }
     },
     {
       "name": "Penya Roc",
@@ -417,7 +798,18 @@
       "rock": "limestone",
       "style": "",
       "why": "",
-      "aspect": "NE"
+      "aspect": "NE",
+      "destination": "costa-blanca",
+      "travel": {
+        "michel": {
+          "mode": "fly",
+          "to": "ALC"
+        },
+        "dan": {
+          "mode": "fly",
+          "to": "ALC"
+        }
+      }
     },
     {
       "name": "Peñón de Ifach",
@@ -428,7 +820,18 @@
       "rock": "limestone",
       "style": "",
       "why": "",
-      "aspect": "S"
+      "aspect": "S",
+      "destination": "costa-blanca",
+      "travel": {
+        "michel": {
+          "mode": "fly",
+          "to": "ALC"
+        },
+        "dan": {
+          "mode": "fly",
+          "to": "ALC"
+        }
+      }
     },
     {
       "name": "Los Galayos",
@@ -439,7 +842,18 @@
       "rock": "granite",
       "style": "",
       "why": "",
-      "aspect": "W"
+      "aspect": "W",
+      "destination": "gredos",
+      "travel": {
+        "michel": {
+          "mode": "fly",
+          "to": "MAD"
+        },
+        "dan": {
+          "mode": "fly",
+          "to": "MAD"
+        }
+      }
     },
     {
       "name": "Cathedral Rock",
@@ -450,7 +864,18 @@
       "rock": "basalt",
       "style": "",
       "why": "",
-      "aspect": "E"
+      "aspect": "E",
+      "destination": "tenerife",
+      "travel": {
+        "michel": {
+          "mode": "fly",
+          "to": "TFS"
+        },
+        "dan": {
+          "mode": "fly",
+          "to": "TFS"
+        }
+      }
     },
     {
       "name": "Puig Campana",
@@ -461,7 +886,18 @@
       "rock": "limestone",
       "style": "",
       "why": "",
-      "aspect": "S"
+      "aspect": "S",
+      "destination": "costa-blanca",
+      "travel": {
+        "michel": {
+          "mode": "fly",
+          "to": "ALC"
+        },
+        "dan": {
+          "mode": "fly",
+          "to": "ALC"
+        }
+      }
     },
     {
       "name": "The Devils Tower",
@@ -472,7 +908,18 @@
       "rock": "volcanic",
       "style": "",
       "why": "",
-      "aspect": "S"
+      "aspect": "S",
+      "destination": "devils-tower",
+      "travel": {
+        "michel": {
+          "mode": "fly",
+          "to": "RAP"
+        },
+        "dan": {
+          "mode": "fly",
+          "to": "RAP"
+        }
+      }
     },
     {
       "name": "Cwm Cneifion",
@@ -483,7 +930,17 @@
       "rock": "rhyolite",
       "style": "",
       "why": "",
-      "aspect": "SW"
+      "aspect": "SW",
+      "destination": "snowdonia",
+      "travel": {
+        "michel": {
+          "mode": "drive"
+        },
+        "dan": {
+          "mode": "fly",
+          "to": "MAN"
+        }
+      }
     },
     {
       "name": "Tryfan",
@@ -494,7 +951,17 @@
       "rock": "rhyolite",
       "style": "",
       "why": "",
-      "aspect": "E"
+      "aspect": "E",
+      "destination": "snowdonia",
+      "travel": {
+        "michel": {
+          "mode": "drive"
+        },
+        "dan": {
+          "mode": "fly",
+          "to": "MAN"
+        }
+      }
     },
     {
       "name": "Great Tor",
@@ -505,7 +972,17 @@
       "rock": "limestone",
       "style": "",
       "why": "",
-      "aspect": "SE"
+      "aspect": "SE",
+      "destination": "gower",
+      "travel": {
+        "michel": {
+          "mode": "drive"
+        },
+        "dan": {
+          "mode": "fly",
+          "to": "BRS"
+        }
+      }
     },
     {
       "name": "Three Cliffs Bay",
@@ -516,7 +993,17 @@
       "rock": "limestone",
       "style": "",
       "why": "",
-      "aspect": "S"
+      "aspect": "S",
+      "destination": "gower",
+      "travel": {
+        "michel": {
+          "mode": "drive"
+        },
+        "dan": {
+          "mode": "fly",
+          "to": "BRS"
+        }
+      }
     },
     {
       "name": "Clogwyn Dur Arddu",
@@ -527,7 +1014,17 @@
       "rock": "rhyolite",
       "style": "",
       "why": "",
-      "aspect": "N"
+      "aspect": "N",
+      "destination": "snowdonia",
+      "travel": {
+        "michel": {
+          "mode": "drive"
+        },
+        "dan": {
+          "mode": "fly",
+          "to": "MAN"
+        }
+      }
     },
     {
       "name": "Cwm Idwal",
@@ -538,7 +1035,17 @@
       "rock": "rhyolite",
       "style": "",
       "why": "",
-      "aspect": "NW"
+      "aspect": "NW",
+      "destination": "snowdonia",
+      "travel": {
+        "michel": {
+          "mode": "drive"
+        },
+        "dan": {
+          "mode": "fly",
+          "to": "MAN"
+        }
+      }
     },
     {
       "name": "Dinorwic Quarry",
@@ -549,7 +1056,17 @@
       "rock": "slate",
       "style": "",
       "why": "",
-      "aspect": "SE"
+      "aspect": "SE",
+      "destination": "snowdonia",
+      "travel": {
+        "michel": {
+          "mode": "drive"
+        },
+        "dan": {
+          "mode": "fly",
+          "to": "MAN"
+        }
+      }
     },
     {
       "name": "Lliwedd",
@@ -560,7 +1077,17 @@
       "rock": "rhyolite",
       "style": "",
       "why": "",
-      "aspect": "N"
+      "aspect": "N",
+      "destination": "snowdonia",
+      "travel": {
+        "michel": {
+          "mode": "drive"
+        },
+        "dan": {
+          "mode": "fly",
+          "to": "MAN"
+        }
+      }
     },
     {
       "name": "Idwal Slabs",
@@ -571,7 +1098,17 @@
       "rock": "rhyolite",
       "style": "",
       "why": "",
-      "aspect": "NE"
+      "aspect": "NE",
+      "destination": "snowdonia",
+      "travel": {
+        "michel": {
+          "mode": "drive"
+        },
+        "dan": {
+          "mode": "fly",
+          "to": "MAN"
+        }
+      }
     }
   ]
 }
