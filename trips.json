@@ -108,7 +108,7 @@
     {
       "slug": "winter-trip-b",
       "name": "Winter Trip B",
-      "status": "live",
+      "status": "ended",
       "start": "2026-12-04",
       "end": "2026-12-06",
       "flex_days": 3,
@@ -160,7 +160,7 @@
     {
       "slug": "winter-trip-c",
       "name": "Winter Trip C",
-      "status": "live",
+      "status": "ended",
       "start": "2026-12-11",
       "end": "2026-12-13",
       "flex_days": 3,
