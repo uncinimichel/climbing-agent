@@ -92,6 +92,11 @@ def _stop(trip, data, is_best):
       </a>"""
 
 
+def _headline(n):
+    words = {1: "One", 2: "Two", 3: "Three", 4: "Four", 5: "Five"}
+    return f"{words.get(n, n)} weekend{'s' if n != 1 else ''} out." if n else "No live weekends."
+
+
 def build_index(summaries, now=None):
     now = now or datetime.now(timezone.utc)
     live = [(t, d) for t, d in summaries if t.get("status") == "live"]
@@ -113,6 +118,7 @@ def build_index(summaries, now=None):
     return (_PAGE.replace("__CANON__", PAGES_BASE)
                  .replace("__STOPS__", stops)
                  .replace("__NLIVE__", str(len(live)))
+                 .replace("__HEADLINE__", _headline(len(live)))
                  .replace("__UPDATED__", now.strftime("%-d %b %Y")))
 
 
@@ -242,7 +248,7 @@ _PAGE = """<!doctype html>
   <div class="wrap">
     <header>
       <div class="eyebrow">Climbing agent · winter</div>
-      <h1>Three weekends out. Pick your <em>line</em>.</h1>
+      <h1>__HEADLINE__ Pick your <em>line</em>.</h1>
       <p class="lede">For each candidate weekend, the agent ranks <b>every crag in
         the catalogue</b> and surfaces the one with the best conditions. This far
         out it reads typical winter weather; it sharpens to live forecast as each

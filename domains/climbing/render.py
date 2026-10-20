@@ -591,7 +591,8 @@ def venue_payload(n, r, ctx, mp_climbs, guidebooks, extra_climbing_data, tag_spe
             wd = dt.strftime("%a")
         except Exception:
             dt, wd = None, str(s["day"])
-        entry = {"day": s["day"], "lbl": wd, "tmax": s["tmax"], "dir": s.get("dir"),
+        entry = {"day": s["day"], "mon": dt.strftime("%b") if dt else "", "lbl": wd,
+                 "tmax": s["tmax"], "dir": s.get("dir"),
                  "precip": s["precip"], "wind": s.get("wind", 0),
                  "cloud": s.get("cloud"), "trip": s["trip"]}
         if dt and v.get("lat") is not None and v.get("lon") is not None:
@@ -1340,7 +1341,7 @@ function wxHtml(v){
     +(safeUrl(v.weather)?'<a class="lk sm" target="_blank" rel="noopener" href="'+safeUrl(v.weather)+'">Full forecast on Windy ↗</a>':'')+'</div>'
     +takeaway(v)
     +'<div id="wxChart"></div>'
-    +(v.seasonal?'<div class="outlook">Long-range outlook (model reach ~45 days, experimental '+num(v.seasonal.members)+'-member ensemble) supplies the big per-day numbers until the live forecast lands ~8 July.</div>':'')
+    +(v.seasonal?'<div class="outlook">Long-range outlook (model reach ~45 days, experimental '+num(v.seasonal.members)+'-member ensemble) supplies the big per-day numbers until the live forecast lands ~'+esc(D.trip.liveFrom)+'.</div>':'')
     +'</div>';
 }
 
@@ -2056,6 +2057,8 @@ def build_data(ranked, now, banner, ctx, mp_climbs, guidebooks, extra_climbing_d
         "travellers": travellers,
         "dates": f"{ctx.rep_out_lbl} → {ctx.rep_back_lbl}",
         "periodLbl": ctx.period_lbl,
+        # the 16-day forecast first reaches the trip start 15 days before it
+        "liveFrom": f"{ctx.target_start - timedelta(days=15):%-d %B}",
         "repoUrl": REPO_URL,
         "mapUrl": MP_MAP_URL, "sheetUrl": SHEET_URL, "mpUrl": SITE_URL,
         "updated": now.strftime("%a %d %b %Y, %H:%M UTC"),
@@ -2163,9 +2166,9 @@ def venue_page(v, trip, tag_spec, all_venues=None):
         uv = (e.get("fc") or {}).get("uv", e.get("uv"))
         lows = " / ".join(x["t"] for x in (e.get("tide") or []) if x.get("k") == "L")
         rows.append(
-            "<tr><td>%s %s Jul</td><td>%s</td><td>%s°C</td><td>%s°C</td><td>%s</td><td>%s</td>"
+            "<tr><td>%s %s %s</td><td>%s</td><td>%s°C</td><td>%s°C</td><td>%s</td><td>%s</td>"
             "<td>%s</td><td>%s</td><td>%s h</td><td>%s</td>%s</tr>" % (
-                _esc(e.get("lbl", "")), _esc(e.get("day", "")), _sky_label(e),
+                _esc(e.get("lbl", "")), _esc(e.get("day", "")), _esc(e.get("mon", "")), _sky_label(e),
                 _esc(o.get("tmax", "–")), _esc(e.get("tmax", "–")),
                 _esc(o.get("precip", e.get("precip", "–"))), _esc(e.get("wind", "–")),
                 _esc(sun[0] or "–"), _esc(sun[1] or "–"), _esc(sun[2] if sun[2] is not None else "–"),
@@ -2370,7 +2373,7 @@ def build_md(ranked, now, banner, ctx, mp_climbs, match_sheet_row=None):
              f"**Links:** [multi-pitch.com]({SITE_URL}) · [venue spreadsheet]({SHEET_URL}) · "
              f"[live dashboard](https://uncinimichel.github.io/climbing-agent/)", "",
              "## 🏆 Venues + flights (best first)", "",
-             "| # | Venue | Score | Typical July | "
+             f"| # | Venue | Score | Typical {ctx.period_lbl} | "
              + " | ".join(f"✈️ {names[k]}" + (f" ({cities[k]})" if cities.get(k) else "") for k in keys)
              + " |",
              "|---|" + "---|" * (3 + len(keys))]
