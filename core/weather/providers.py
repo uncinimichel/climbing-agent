@@ -16,8 +16,21 @@ import math
 from datetime import date, datetime, timedelta
 
 from ..http import get_json
+from ..trip import md_range
 
-CLIMO_VER = "v3"   # bump to re-fetch every venue once (v3: + cloud_cover_mean)
+CLIMO_VER = "v4"   # bump to re-fetch every venue once (v3: + cloud_cover_mean;
+                   # v4: per-year requests, ±CLIMO_PAD_DAYS aggregate window)
+# The "typical" verdict aggregates trip ±7 days, not just the trip days: with a
+# 3-day trip × 4 years the old sample was 12 days, so wet-day % moved in 8%
+# steps and one wet day swung a venue ~10 points.
+CLIMO_PAD_DAYS = 7
+
+
+def _shift_year(d, n):
+    try:
+        return d.replace(year=d.year + n)
+    except ValueError:            # 29 Feb in a non-leap year
+        return d.replace(year=d.year + n, day=28)
 
 
 def forecast(lat, lon, env_cache=None):
@@ -90,23 +103,35 @@ def climatology(lat, lon, ctx, cache=None):
     years = ctx.climo_years
     graph_start, graph_end = ctx.graph_start, ctx.graph_end
     graph_md, trip_md = ctx.graph_md, ctx.trip_md
+    win_start = ctx.target_start - timedelta(days=CLIMO_PAD_DAYS)
+    win_end = ctx.target_end + timedelta(days=CLIMO_PAD_DAYS)
+    win_md = md_range(win_start, win_end)
     ck = f"{lat},{lon}|{years[0]}-{years[-1]}|{graph_start:%m%d}-{graph_end:%m%d}|{CLIMO_VER}"
     cached = cache.get(ck) if cache else None
     if cached is not None:
         return cached
-    d = get_json(
-        "https://archive-api.open-meteo.com/v1/archive"
-        f"?latitude={lat}&longitude={lon}"
-        f"&start_date={years[0]}-{graph_start:%m-%d}&end_date={years[-1]}-{graph_end:%m-%d}"
-        "&daily=temperature_2m_max,precipitation_sum,windspeed_10m_max,winddirection_10m_dominant,"
-        "cloud_cover_mean&timezone=auto"
-    )["daily"]
+    # one small request per year for just the window (a single ranged request
+    # would download every day of every year in between and filter them away)
+    keys = ("time", "temperature_2m_max", "precipitation_sum", "windspeed_10m_max",
+            "winddirection_10m_dominant", "cloud_cover_mean")
+    d = {k: [] for k in keys}
+    for y in years:
+        n = y - ctx.target_start.year
+        part = get_json(
+            "https://archive-api.open-meteo.com/v1/archive"
+            f"?latitude={lat}&longitude={lon}"
+            f"&start_date={_shift_year(win_start, n)}&end_date={_shift_year(win_end, n)}"
+            "&daily=temperature_2m_max,precipitation_sum,windspeed_10m_max,winddirection_10m_dominant,"
+            "cloud_cover_mean&timezone=auto"
+        )["daily"]
+        for k in keys:
+            d[k] += part.get(k) or [None] * len(part["time"])
     tmaxs, winds, rain_days, total = [], [], 0, 0
     per_day = {}   # (month, day) -> {"t","p","w"} lists for the graph window
-    dirs = d.get("winddirection_10m_dominant") or [None] * len(d["time"])
-    clouds = d.get("cloud_cover_mean") or [None] * len(d["time"])
+    dirs = d["winddirection_10m_dominant"]
+    clouds = d["cloud_cover_mean"]
     for t, tx, pr, wd, wdir, cc in zip(d["time"], d["temperature_2m_max"], d["precipitation_sum"],
-                                       d.get("windspeed_10m_max", [None] * len(d["time"])), dirs, clouds):
+                                       d["windspeed_10m_max"], dirs, clouds):
         dd = date.fromisoformat(t)
         md = (dd.month, dd.day)
         if tx is None:
@@ -121,7 +146,7 @@ def climatology(lat, lon, ctx, cache=None):
             if wdir is not None:
                 e.setdefault("dx", []).append(math.cos(math.radians(wdir)))
                 e.setdefault("dy", []).append(math.sin(math.radians(wdir)))
-        if md in trip_md:                        # trip window aggregate
+        if md in win_md:                         # trip ±CLIMO_PAD_DAYS aggregate
             total += 1
             tmaxs.append(tx)
             winds.append(wd or 0)
@@ -191,13 +216,14 @@ def seasonal(lat, lon, ctx, env_cache=None):
         pvals = gp
         if not tvals:
             continue
-        total += 1
         tmaxs.append(sum(tvals) / len(tvals))
-        mp = sum(pvals) / len(pvals) if pvals else 0
-        precs.append(mp)
-        if mp >= 3:
-            wet += 1
-    if not total:
+        precs.append(sum(pvals) / len(pvals) if pvals else 0)
+        # wet days are counted PER MEMBER: the ensemble-mean precip almost never
+        # reaches 3 mm (members disagree on which day it rains), so thresholding
+        # the mean reported ~0% wet everywhere
+        total += len(pvals)
+        wet += sum(1 for p in pvals if p >= 3)
+    if not tmaxs or not total:
         return None
     return {"tmax": round(sum(tmaxs) / len(tmaxs)), "rain_pct": round(100 * wet / total),
             "precip": round(sum(precs) / len(precs), 1), "members": max(1, len(tkeys)),

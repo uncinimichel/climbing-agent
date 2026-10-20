@@ -49,7 +49,7 @@ def short_name(name):
     return name.split("(")[0].split(",")[0].strip()
 
 
-DEFAULT_CLIMO_YEARS = [2021, 2022, 2023, 2024]
+DEFAULT_CLIMO_YEARS = list(range(2016, 2026))   # 10 years (was 2021–2024: too few samples)
 
 
 class NeutralPreferences:
