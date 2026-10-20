@@ -1,6 +1,6 @@
 # Winter Trip A — best winter destination (Michel & Dan)
 
-**Updated:** 2026-10-20 09:11 UTC · ranked best-first.
+**Updated:** 2026-10-20 10:57 UTC · ranked best-first.
 
 > 📅 Trip starts <b>27 Nov</b> (38 days out) — still past the live forecast, which currently reaches 4 Nov. Ranked on <b>typical late November weather</b> (2016–2025) blended with a <b>long-range outlook</b> (model reach ~45 days; shown per venue). Live forecast reaches your dates on 12 Nov.
 
