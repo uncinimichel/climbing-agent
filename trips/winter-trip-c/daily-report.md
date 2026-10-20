@@ -1,8 +1,8 @@
 # Winter Trip C — best winter destination (Michel & Dan)
 
-**Updated:** 2026-10-19 12:05 UTC · ranked best-first.
+**Updated:** 2026-10-20 06:14 UTC · ranked best-first.
 
-> 📅 Trip starts <b>11 Dec</b> (53 days out) — still past the live forecast, which currently reaches 3 Nov. Ranked on <b>typical mid December weather</b> (2021–2024). Live forecast reaches your dates on 26 Nov.
+> 📅 Trip starts <b>11 Dec</b> (52 days out) — still past the live forecast, which currently reaches 4 Nov. Ranked on <b>typical mid December weather</b> (2021–2024). Live forecast reaches your dates on 26 Nov.
 
 **Links:** [multi-pitch.com](https://multi-pitch.com/) · [venue spreadsheet](https://docs.google.com/spreadsheets/d/1N4Xs-aSGFc8-ibysqpdCvQIfMH4Rjx4n5WQnqITGPC8/edit) · [live dashboard](https://uncinimichel.github.io/climbing-agent/)
 
