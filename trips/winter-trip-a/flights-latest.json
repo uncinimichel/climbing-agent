@@ -199,80 +199,6 @@
         "cached": true
       }
     },
-    "Montserrat": {
-      "michel": {
-        "mode": "fly",
-        "to": "BCN",
-        "options": [
-          {
-            "price": 46,
-            "airline": "Ryanair",
-            "from": "STN",
-            "to": "BCN",
-            "dep": "18:10",
-            "arr": "21:20",
-            "stops": 0
-          },
-          {
-            "price": 49,
-            "airline": "Ryanair",
-            "from": "STN",
-            "to": "BCN",
-            "dep": "21:15",
-            "arr": "00:25",
-            "stops": 0
-          },
-          {
-            "price": 50,
-            "airline": "Ryanair",
-            "from": "LTN",
-            "to": "BCN",
-            "dep": "15:35",
-            "arr": "18:45",
-            "stops": 0
-          }
-        ],
-        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTExLTI3agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDQkNOGkISCjIwMjYtMTEtMjlqBwgBEgNCQ05yBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ",
-        "book_url": "https://www.skyscanner.net/transport/flights/stn/bcn/261127/261129/",
-        "cached": true
-      },
-      "dan": {
-        "mode": "fly",
-        "to": "BCN",
-        "options": [
-          {
-            "price": 59,
-            "airline": "Ryanair",
-            "from": "DUB",
-            "to": "BCN",
-            "dep": "21:15",
-            "arr": "00:45",
-            "stops": 0
-          },
-          {
-            "price": 65,
-            "airline": "Ryanair",
-            "from": "DUB",
-            "to": "BCN",
-            "dep": "07:40",
-            "arr": "11:10",
-            "stops": 0
-          },
-          {
-            "price": 110,
-            "airline": "Vueling",
-            "from": "DUB",
-            "to": "BCN",
-            "dep": "12:50",
-            "arr": "16:30",
-            "stops": 0
-          }
-        ],
-        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTExLTI3agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQkNOGjASCjIwMjYtMTEtMjlqBwgBEgNCQ05yBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
-        "book_url": "https://www.skyscanner.net/transport/flights/dub/bcn/261127/261129/",
-        "cached": true
-      }
-    },
     "Costa Blanca": {
       "michel": {
         "mode": "fly",
@@ -569,6 +495,80 @@
         "cached": true
       }
     },
+    "Montserrat": {
+      "michel": {
+        "mode": "fly",
+        "to": "BCN",
+        "options": [
+          {
+            "price": 46,
+            "airline": "Ryanair",
+            "from": "STN",
+            "to": "BCN",
+            "dep": "18:10",
+            "arr": "21:20",
+            "stops": 0
+          },
+          {
+            "price": 49,
+            "airline": "Ryanair",
+            "from": "STN",
+            "to": "BCN",
+            "dep": "21:15",
+            "arr": "00:25",
+            "stops": 0
+          },
+          {
+            "price": 50,
+            "airline": "Ryanair",
+            "from": "LTN",
+            "to": "BCN",
+            "dep": "15:35",
+            "arr": "18:45",
+            "stops": 0
+          }
+        ],
+        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTExLTI3agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDQkNOGkISCjIwMjYtMTEtMjlqBwgBEgNCQ05yBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ",
+        "book_url": "https://www.skyscanner.net/transport/flights/stn/bcn/261127/261129/",
+        "cached": true
+      },
+      "dan": {
+        "mode": "fly",
+        "to": "BCN",
+        "options": [
+          {
+            "price": 59,
+            "airline": "Ryanair",
+            "from": "DUB",
+            "to": "BCN",
+            "dep": "21:15",
+            "arr": "00:45",
+            "stops": 0
+          },
+          {
+            "price": 65,
+            "airline": "Ryanair",
+            "from": "DUB",
+            "to": "BCN",
+            "dep": "07:40",
+            "arr": "11:10",
+            "stops": 0
+          },
+          {
+            "price": 110,
+            "airline": "Vueling",
+            "from": "DUB",
+            "to": "BCN",
+            "dep": "12:50",
+            "arr": "16:30",
+            "stops": 0
+          }
+        ],
+        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTExLTI3agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQkNOGjASCjIwMjYtMTEtMjlqBwgBEgNCQ05yBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
+        "book_url": "https://www.skyscanner.net/transport/flights/dub/bcn/261127/261129/",
+        "cached": true
+      }
+    },
     "Anti Atlas": {
       "michel": {
         "mode": "fly",
@@ -792,6 +792,6 @@
       }
     }
   },
-  "checked_at": "2026-10-27 11:32 UTC (no key \u2014 links only)",
+  "checked_at": "2026-10-28 12:09 UTC (no key \u2014 links only)",
   "priced_at": "2026-10-26T12:09+00:00"
 }
