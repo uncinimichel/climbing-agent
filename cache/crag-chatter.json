@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-30T12:10:56+00:00",
+ "generated": "2026-10-31T11:27:59+00:00",
  "window": "past 2 weeks (tbs=qdr:w2)",
  "venues": {
   "Lundy": {
@@ -782,7 +782,7 @@
    "items": []
   },
   "Hoy": {
-   "fetched_at": "2026-10-24T10:11:11+00:00",
+   "fetched_at": "2026-10-31T11:27:59+00:00",
    "search_name": "Hoy",
    "country": "Scotland",
    "query_inputs": [
@@ -805,44 +805,64 @@
    ],
    "items": [
     {
-     "title": "Project Active Learn to... Boulder for Beginners",
-     "link": "https://studentsunionucl.org/whats-on/sport/project-active-learn-to-boulder-for-beginners",
-     "domain": "studentsunionucl.org",
+     "title": "Old Man of Hoy Roll Call",
+     "link": "/goto?url=CAEShAEB6zswFRsX2xWgleJ2e7JU4eON4lM8S38SHytUMjGEccvzjBxl5SfBJ_FvaXRlYCnq0XkMOnyDfm5cE6yRfj4jtxRm85aUPU2OkKILs4JCm246vfcq0LdCQLXmN7Y3YBj4p9siI_Iqnm3Dioo0gZy4XB56c1elddWQBD5hMlGSWSKUJvo",
+     "domain": "",
      "src": "web",
-     "date": "14 Oct 2026",
-     "days_ago": 10,
-     "snippet": "Join us for our 6-Week Learn to... Boulder for Beginners · Where: Rise Climbing, Unit 6, Caxton Works, Hoy St, London E16 1ZA · When: Wednesday 14 October, ...",
+     "date": "4 days ago",
+     "days_ago": 4,
+     "snippet": "We registered everyone who responded to our call for Old Man climbers. We hold the 2017-2023 summit book in our collection at Hoy Heritage Centre. Previous ...",
      "via": "broad"
     },
     {
-     "title": "the Old Man of Stoer, Am Buachaille ...",
-     "link": "https://www.instagram.com/p/DepQ86ziO-J/",
-     "domain": "instagram.com",
-     "src": "social",
-     "date": null,
-     "days_ago": null,
-     "snippet": "Headed up to Scotland with Laurence last week to climb the old man of Hoy. The Original route E1 5b was first climbed by the legendary Joe Brown and Pete Crew ...",
+     "title": "Old Man of Hoy Roll Call",
+     "link": "/goto?url=CAEShAEB6zswFdzOLP6pLfW97wU1JKDUyzDq7OrbgYzAaAcAQhLygDPRdBby_UQDtjo8cZ7_wKXC3fYbVPLAvn2r_WM4o61wc0ETxXM4xzhWiv5kKlqRMmL6hp7kXLBwHxQtMvSBE0Xl0JHlvUlB13QPm3Jc0EEGF3sFxh3M9MQ-zyRe0xqoQGs",
+     "domain": "",
+     "src": "web",
+     "date": "4 days ago",
+     "days_ago": 4,
+     "snippet": "We registered everyone who responded to our call for Old Man climbers. We hold the 2017-2023 summit book in our collection at Hoy Heritage Centre. Previous ...",
+     "via": "forums"
+    },
+    {
+     "title": "South Hoy",
+     "link": "/goto?url=CAESaAHrOzAV4nlkwyUy4xXZbto9V4x79ut0E5Tg1Mh-LmESz7yfm4tU8F2BvCIRaggwmrQQ0LhS3MFb9D8MP2iEI4yg2DyrUYWOM47HlOn_tNreuW38iRe20U_vqV7YHNleMSTaABKfEHff",
+     "domain": "",
+     "src": "web",
+     "date": "20 Oct 2026",
+     "days_ago": 11,
+     "snippet": "The Northern Isles. All Summer Winter. Trad, Sport, Boulder, DWS, Dry Tooling. Orkney · Hoy. South Hoy. Map/Info. View Full Crag and Route Details.",
      "via": "broad"
     },
     {
-     "title": "🏴󠁧󠁢󠁳󠁣󠁴󠁿 Scotland and the “Big Three” - Alex Ubeda ...",
-     "link": "https://www.facebook.com/Boreal.official/posts/-scotland-and-the-big-three-alex-ubedai-was-really-keen-to-take-on-this-project-/1517868873702099/",
-     "domain": "facebook.com",
-     "src": "social",
+     "title": "South Hoy",
+     "link": "https://routes.smc.org.uk/crag/south-hoy-2764",
+     "domain": "routes.smc.org.uk",
+     "src": "web",
+     "date": "20 Oct 2026",
+     "days_ago": 11,
+     "snippet": "The Northern Isles. All Summer Winter. Trad, Sport, Boulder, DWS, Dry Tooling. Orkney · Hoy. South Hoy. Map/Info. View Full Crag and Route Details.",
+     "via": "forums"
+    },
+    {
+     "title": "Duluth explorers club talk on climbing the old man of hoy",
+     "link": "/goto?url=CAESzAEB6zswFcLRC5xbcBpJslH78gF6vxjxnOB8r-Tvkg8ZeSDACaxutnOGRyg1iYG--hXkEm-6pQLtQayNxRJcW1rHGIgeeleV7a1cGzJJzx59cPtn96g4iUTv32iffrAmc8aPcexRrFC0sxUL2vULMkOt42FqTY7qnaB6qoOEt6XvepKWTbRBliYcW0aXFBuUFsCgKpGzvK5Ke1fhHXAOCns6mtyGVK-FPzB9_brIOZG1RqkXhLBt4zev_XiEnw3iee-khpLYQz7OaOzCtXk",
+     "domain": "",
+     "src": "web",
      "date": null,
      "days_ago": null,
-     "snippet": "The Old Man of Hoy. The UKs best sea stack and arguably one of the most 'out there' climbs in the country. but the boys crushed it! What an amazing adventure ...",
+     "snippet": "Rising 450 feet from the North Sea in Scotland's remote Orkney Islands, the \"Old Man of Hoy\" is perhaps the world's most iconic sea stack. After attempts...",
      "via": "broad"
     },
     {
-     "title": "On the 10th of October OCdts Hoy, Meadows and Miller ...",
-     "link": "https://www.instagram.com/p/De2ctjWkc9O/",
-     "domain": "instagram.com",
-     "src": "social",
+     "title": "Duluth explorers club talk on climbing the old man of hoy",
+     "link": "/goto?url=CAESzAEB6zswFYXuK1bsdcIbTMEX4wKvzqcLccLdnDWs-QZcfSeZUDqBp8rS2NlgdRX4hX8Du24Eu5B5i-gucq50IbQF0bCznu3mXP5dKrWdLrHyXufBWYqPiqT8F7LJym9e-GAsE9oBMpSH5R2JOMX_DhXNs4RSYgV13n7nE_BNMc07tbnif-RPZ2l8b0kS1jbwTdACnvqxvoChfEiHb-GwnFSEvN_TAeh-HV9rhu6H2uLKbVEZGck5Fk8ES349wDxK4gixUGy96bM3IMMYNJI",
+     "domain": "",
+     "src": "web",
      "date": null,
      "days_ago": null,
-     "snippet": "On the 10th of October OCdts Hoy, Meadows and Miller completed the week long Rock Climbing Foundation course on Ex Dragon Sparta. Alongside reserves from 3 ...",
-     "via": "broad"
+     "snippet": "Rising 450 feet from the North Sea in Scotland's remote Orkney Islands, the \"Old Man of Hoy\" is perhaps the world's most iconic sea stack. After attempts...",
+     "via": "forums"
     }
    ]
   }
