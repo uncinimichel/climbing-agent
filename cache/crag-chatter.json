@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-06T13:47:22+00:00",
+ "generated": "2026-11-07T12:26:21+00:00",
  "window": "past 2 weeks (tbs=qdr:w2)",
  "venues": {
   "Lundy": {
@@ -732,7 +732,7 @@
    "items": []
   },
   "Hoy": {
-   "fetched_at": "2026-10-31T11:27:59+00:00",
+   "fetched_at": "2026-11-07T12:26:21+00:00",
    "search_name": "Hoy",
    "country": "Scotland",
    "query_inputs": [
@@ -755,64 +755,34 @@
    ],
    "items": [
     {
-     "title": "Old Man of Hoy Roll Call",
-     "link": "/goto?url=CAEShAEB6zswFRsX2xWgleJ2e7JU4eON4lM8S38SHytUMjGEccvzjBxl5SfBJ_FvaXRlYCnq0XkMOnyDfm5cE6yRfj4jtxRm85aUPU2OkKILs4JCm246vfcq0LdCQLXmN7Y3YBj4p9siI_Iqnm3Dioo0gZy4XB56c1elddWQBD5hMlGSWSKUJvo",
-     "domain": "",
-     "src": "web",
+     "title": "Old Man of Hoy Scotland Landmark Information",
+     "link": "https://www.facebook.com/fb-answers/old-man-of-hoy-scotland-landmark-information/",
+     "domain": "facebook.com",
+     "src": "social",
      "date": "4 days ago",
      "days_ago": 4,
+     "snippet": "The Old Man of Hoy is renowned for its dramatic, isolated appearance and is a popular destination for rock climbers, with the first recorded ascent in 1966.",
+     "via": "broad"
+    },
+    {
+     "title": "Old Man of Hoy Roll Call",
+     "link": "https://hoyheritage.co.uk/places/old-man-of-hoy/old-man-of-hoy-roll-call/",
+     "domain": "hoyheritage.co.uk",
+     "src": "web",
+     "date": "27 Oct 2026",
+     "days_ago": 11,
      "snippet": "We registered everyone who responded to our call for Old Man climbers. We hold the 2017-2023 summit book in our collection at Hoy Heritage Centre. Previous ...",
      "via": "broad"
     },
     {
-     "title": "Old Man of Hoy Roll Call",
-     "link": "/goto?url=CAEShAEB6zswFdzOLP6pLfW97wU1JKDUyzDq7OrbgYzAaAcAQhLygDPRdBby_UQDtjo8cZ7_wKXC3fYbVPLAvn2r_WM4o61wc0ETxXM4xzhWiv5kKlqRMmL6hp7kXLBwHxQtMvSBE0Xl0JHlvUlB13QPm3Jc0EEGF3sFxh3M9MQ-zyRe0xqoQGs",
-     "domain": "",
-     "src": "web",
-     "date": "4 days ago",
-     "days_ago": 4,
-     "snippet": "We registered everyone who responded to our call for Old Man climbers. We hold the 2017-2023 summit book in our collection at Hoy Heritage Centre. Previous ...",
-     "via": "forums"
-    },
-    {
-     "title": "South Hoy",
-     "link": "/goto?url=CAESaAHrOzAV4nlkwyUy4xXZbto9V4x79ut0E5Tg1Mh-LmESz7yfm4tU8F2BvCIRaggwmrQQ0LhS3MFb9D8MP2iEI4yg2DyrUYWOM47HlOn_tNreuW38iRe20U_vqV7YHNleMSTaABKfEHff",
-     "domain": "",
-     "src": "web",
-     "date": "20 Oct 2026",
-     "days_ago": 11,
-     "snippet": "The Northern Isles. All Summer Winter. Trad, Sport, Boulder, DWS, Dry Tooling. Orkney · Hoy. South Hoy. Map/Info. View Full Crag and Route Details.",
-     "via": "broad"
-    },
-    {
-     "title": "South Hoy",
-     "link": "https://routes.smc.org.uk/crag/south-hoy-2764",
-     "domain": "routes.smc.org.uk",
-     "src": "web",
-     "date": "20 Oct 2026",
-     "days_ago": 11,
-     "snippet": "The Northern Isles. All Summer Winter. Trad, Sport, Boulder, DWS, Dry Tooling. Orkney · Hoy. South Hoy. Map/Info. View Full Crag and Route Details.",
-     "via": "forums"
-    },
-    {
      "title": "Duluth explorers club talk on climbing the old man of hoy",
-     "link": "/goto?url=CAESzAEB6zswFcLRC5xbcBpJslH78gF6vxjxnOB8r-Tvkg8ZeSDACaxutnOGRyg1iYG--hXkEm-6pQLtQayNxRJcW1rHGIgeeleV7a1cGzJJzx59cPtn96g4iUTv32iffrAmc8aPcexRrFC0sxUL2vULMkOt42FqTY7qnaB6qoOEt6XvepKWTbRBliYcW0aXFBuUFsCgKpGzvK5Ke1fhHXAOCns6mtyGVK-FPzB9_brIOZG1RqkXhLBt4zev_XiEnw3iee-khpLYQz7OaOzCtXk",
-     "domain": "",
-     "src": "web",
+     "link": "https://www.facebook.com/duluthclimbers/posts/rising-450-feet-from-the-north-sea-in-scotlands-remote-orkney-islands-the-old-ma/1885477706521697/",
+     "domain": "facebook.com",
+     "src": "social",
      "date": null,
      "days_ago": null,
      "snippet": "Rising 450 feet from the North Sea in Scotland's remote Orkney Islands, the \"Old Man of Hoy\" is perhaps the world's most iconic sea stack. After attempts...",
      "via": "broad"
-    },
-    {
-     "title": "Duluth explorers club talk on climbing the old man of hoy",
-     "link": "/goto?url=CAESzAEB6zswFYXuK1bsdcIbTMEX4wKvzqcLccLdnDWs-QZcfSeZUDqBp8rS2NlgdRX4hX8Du24Eu5B5i-gucq50IbQF0bCznu3mXP5dKrWdLrHyXufBWYqPiqT8F7LJym9e-GAsE9oBMpSH5R2JOMX_DhXNs4RSYgV13n7nE_BNMc07tbnif-RPZ2l8b0kS1jbwTdACnvqxvoChfEiHb-GwnFSEvN_TAeh-HV9rhu6H2uLKbVEZGck5Fk8ES349wDxK4gixUGy96bM3IMMYNJI",
-     "domain": "",
-     "src": "web",
-     "date": null,
-     "days_ago": null,
-     "snippet": "Rising 450 feet from the North Sea in Scotland's remote Orkney Islands, the \"Old Man of Hoy\" is perhaps the world's most iconic sea stack. After attempts...",
-     "via": "forums"
     }
    ]
   }
