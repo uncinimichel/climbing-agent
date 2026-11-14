@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-13T13:51:54+00:00",
+ "generated": "2026-11-14T13:10:23+00:00",
  "window": "past 2 weeks (tbs=qdr:w2)",
  "venues": {
   "Lundy": {
@@ -944,7 +944,7 @@
    "items": []
   },
   "Hoy": {
-   "fetched_at": "2026-11-07T12:26:21+00:00",
+   "fetched_at": "2026-11-14T13:10:23+00:00",
    "search_name": "Hoy",
    "country": "Scotland",
    "query_inputs": [
@@ -967,34 +967,44 @@
    ],
    "items": [
     {
+     "title": "The Old Man of Hoy | Outdoor Climbing | Chalk",
+     "link": "https://www.google.co.uk/goto?url=CAESdgHEIkXX-UxEtV2MqVXLn1SK3Xk96kAXFKgHxaYjZ8x3BAJ3IhUcsxtkylUcNWII_fOV5L3Ix21Qh1EVn9Pq1TZao5qW5Dgk5idh-CufBXcdPIHtsagoBeHO9aSyHCDwtXE54mGidCzEhMDeONZd0atf6DJrSxc",
+     "domain": "google.co.uk",
+     "src": "web",
+     "date": "8 days ago",
+     "days_ago": 8,
+     "snippet": "The Old Man of Hoy is a 449-foot (137m) sea stack on the island of Hoy, part of the Orkney archipelago off the north coast of Scotland.",
+     "via": "broad"
+    },
+    {
+     "title": "The Old Man of Hoy | Outdoor Climbing | Chalk",
+     "link": "https://www.google.co.uk/goto?url=CAESdgHEIkXXmOKe4M5gzkyvjymjPWP3NX9llXdivUKIQ_FOQzCnyJHjaxQStSfZb03trpi8hsfJd_N3vBiUvRruITTaX5bDV4u2vv_unj2A_kQE3WMH_0vjKE22iBWBnFs2JTKUp8roppGyON2CkyGijp1MgqkasaA",
+     "domain": "google.co.uk",
+     "src": "web",
+     "date": "8 days ago",
+     "days_ago": 8,
+     "snippet": "The Old Man of Hoy is a 449-foot (137m) sea stack on the island of Hoy, part of the Orkney archipelago off the north coast of Scotland.",
+     "via": "forums"
+    },
+    {
      "title": "Old Man of Hoy Scotland Landmark Information",
-     "link": "https://www.facebook.com/fb-answers/old-man-of-hoy-scotland-landmark-information/",
-     "domain": "facebook.com",
-     "src": "social",
-     "date": "4 days ago",
-     "days_ago": 4,
+     "link": "https://www.google.co.uk/goto?url=CAESjgEBxCJF16nR4D8MJnMcrqvBkGrkT6eHrGy2HO8egr4A64PzNupztNzf-z9fYLSZugCQO5bnn_tcrrmadpN9ibhsr_-mWSFsSypY2TdPMzzmWY3zOSi_7hHsmc_jqAd7ix4hzpWtQvHkqSxUn70MLZEE4lPXVSvWlnsV0pQq7q3nWE6KFgpDC6KevNh76380",
+     "domain": "google.co.uk",
+     "src": "web",
+     "date": "3 Nov 2026",
+     "days_ago": 11,
      "snippet": "The Old Man of Hoy is renowned for its dramatic, isolated appearance and is a popular destination for rock climbers, with the first recorded ascent in 1966.",
      "via": "broad"
     },
     {
-     "title": "Old Man of Hoy Roll Call",
-     "link": "https://hoyheritage.co.uk/places/old-man-of-hoy/old-man-of-hoy-roll-call/",
-     "domain": "hoyheritage.co.uk",
+     "title": "Old Man of Hoy Scotland Landmark Information",
+     "link": "https://www.google.co.uk/goto?url=CAESjgEBxCJF1yQuehros0cPP1I0ljRfoMn1fJF9KoJWqw-xSNTBziZwoxUInAaQh3V07lMVuIUT12-o0s72XaRZPBDDhedtJIMwFMBjs0P4V_nSh6hL2DrLsq0tEU0a7zDXdiOJKCYPvZWcrcLpKV4UZoXqEr1GB_YEAOoVdF2I_nBDrbB33vW6E5MbjuDLEKNX",
+     "domain": "google.co.uk",
      "src": "web",
-     "date": "27 Oct 2026",
+     "date": "3 Nov 2026",
      "days_ago": 11,
-     "snippet": "We registered everyone who responded to our call for Old Man climbers. We hold the 2017-2023 summit book in our collection at Hoy Heritage Centre. Previous ...",
-     "via": "broad"
-    },
-    {
-     "title": "Duluth explorers club talk on climbing the old man of hoy",
-     "link": "https://www.facebook.com/duluthclimbers/posts/rising-450-feet-from-the-north-sea-in-scotlands-remote-orkney-islands-the-old-ma/1885477706521697/",
-     "domain": "facebook.com",
-     "src": "social",
-     "date": null,
-     "days_ago": null,
-     "snippet": "Rising 450 feet from the North Sea in Scotland's remote Orkney Islands, the \"Old Man of Hoy\" is perhaps the world's most iconic sea stack. After attempts...",
-     "via": "broad"
+     "snippet": "The Old Man of Hoy is renowned for its dramatic, isolated appearance and is a popular destination for rock climbers, with the first recorded ascent in 1966.",
+     "via": "forums"
     }
    ]
   }
