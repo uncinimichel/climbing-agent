@@ -4,31 +4,15 @@
     "travellers": {
       "michel": [
         {
-          "shift": -1,
-          "out": "2026-11-26",
-          "back": "2026-11-28",
-          "book_url": "https://www.skyscanner.net/transport/flights/lgw/alc/261126/261128/",
-          "price": 148,
-          "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTExLTI2agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDQUxDGkISCjIwMjYtMTEtMjhqBwgBEgNBTENyBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ"
-        },
-        {
           "shift": 1,
           "out": "2026-11-28",
           "back": "2026-11-30",
           "book_url": "https://www.skyscanner.net/transport/flights/lgw/alc/261128/261130/",
-          "price": 122,
+          "price": 136,
           "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTExLTI4agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDQUxDGkISCjIwMjYtMTEtMzBqBwgBEgNBTENyBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ"
         }
       ],
       "dan": [
-        {
-          "shift": -1,
-          "out": "2026-11-26",
-          "back": "2026-11-28",
-          "book_url": "https://www.skyscanner.net/transport/flights/bfs/alc/261126/261128/",
-          "price": 235,
-          "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTExLTI2agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQUxDGjASCjIwMjYtMTEtMjhqBwgBEgNBTENyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ"
-        },
         {
           "shift": 1,
           "out": "2026-11-28",
@@ -53,7 +37,7 @@
         "to": "ALC",
         "options": [
           {
-            "price": 102,
+            "price": 149,
             "airline": "Wizz Air",
             "from": "LTN",
             "to": "ALC",
@@ -62,7 +46,7 @@
             "stops": 0
           },
           {
-            "price": 124,
+            "price": 163,
             "airline": "easyJet",
             "from": "LTN",
             "to": "ALC",
@@ -71,12 +55,12 @@
             "stops": 0
           },
           {
-            "price": 138,
+            "price": 170,
             "airline": "Ryanair",
-            "from": "LTN",
+            "from": "STN",
             "to": "ALC",
-            "dep": "16:30",
-            "arr": "20:05",
+            "dep": "18:55",
+            "arr": "22:30",
             "stops": 0
           }
         ],
@@ -88,16 +72,7 @@
         "to": "ALC",
         "options": [
           {
-            "price": 222,
-            "airline": "SWISS",
-            "from": "DUB",
-            "to": "ALC",
-            "dep": "18:35",
-            "arr": "19:15",
-            "stops": 1
-          },
-          {
-            "price": 296,
+            "price": 268,
             "airline": "Ryanair UK",
             "from": "BFS",
             "to": "ALC",
@@ -106,7 +81,16 @@
             "stops": 0
           },
           {
-            "price": 379,
+            "price": 297,
+            "airline": "SWISS",
+            "from": "DUB",
+            "to": "ALC",
+            "dep": "18:35",
+            "arr": "19:15",
+            "stops": 1
+          },
+          {
+            "price": 371,
             "airline": "Ryanair",
             "from": "DUB",
             "to": "ALC",
@@ -116,7 +100,7 @@
           }
         ],
         "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTExLTI3agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQUxDGjASCjIwMjYtMTEtMjlqBwgBEgNBTENyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
-        "book_url": "https://www.skyscanner.net/transport/flights/dub/alc/261127/261129/"
+        "book_url": "https://www.skyscanner.net/transport/flights/bfs/alc/261127/261129/"
       }
     },
     "El Castellet": {
@@ -125,7 +109,7 @@
         "to": "ALC",
         "options": [
           {
-            "price": 102,
+            "price": 149,
             "airline": "Wizz Air",
             "from": "LTN",
             "to": "ALC",
@@ -134,7 +118,7 @@
             "stops": 0
           },
           {
-            "price": 124,
+            "price": 163,
             "airline": "easyJet",
             "from": "LTN",
             "to": "ALC",
@@ -143,12 +127,12 @@
             "stops": 0
           },
           {
-            "price": 138,
+            "price": 170,
             "airline": "Ryanair",
-            "from": "LTN",
+            "from": "STN",
             "to": "ALC",
-            "dep": "16:30",
-            "arr": "20:05",
+            "dep": "18:55",
+            "arr": "22:30",
             "stops": 0
           }
         ],
@@ -160,16 +144,7 @@
         "to": "ALC",
         "options": [
           {
-            "price": 222,
-            "airline": "SWISS",
-            "from": "DUB",
-            "to": "ALC",
-            "dep": "18:35",
-            "arr": "19:15",
-            "stops": 1
-          },
-          {
-            "price": 296,
+            "price": 268,
             "airline": "Ryanair UK",
             "from": "BFS",
             "to": "ALC",
@@ -178,7 +153,16 @@
             "stops": 0
           },
           {
-            "price": 379,
+            "price": 297,
+            "airline": "SWISS",
+            "from": "DUB",
+            "to": "ALC",
+            "dep": "18:35",
+            "arr": "19:15",
+            "stops": 1
+          },
+          {
+            "price": 371,
             "airline": "Ryanair",
             "from": "DUB",
             "to": "ALC",
@@ -188,7 +172,7 @@
           }
         ],
         "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTExLTI3agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQUxDGjASCjIwMjYtMTEtMjlqBwgBEgNBTENyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
-        "book_url": "https://www.skyscanner.net/transport/flights/dub/alc/261127/261129/"
+        "book_url": "https://www.skyscanner.net/transport/flights/bfs/alc/261127/261129/"
       }
     },
     "Puig Campana": {
@@ -197,7 +181,7 @@
         "to": "ALC",
         "options": [
           {
-            "price": 102,
+            "price": 149,
             "airline": "Wizz Air",
             "from": "LTN",
             "to": "ALC",
@@ -206,7 +190,7 @@
             "stops": 0
           },
           {
-            "price": 124,
+            "price": 163,
             "airline": "easyJet",
             "from": "LTN",
             "to": "ALC",
@@ -215,12 +199,12 @@
             "stops": 0
           },
           {
-            "price": 138,
+            "price": 170,
             "airline": "Ryanair",
-            "from": "LTN",
+            "from": "STN",
             "to": "ALC",
-            "dep": "16:30",
-            "arr": "20:05",
+            "dep": "18:55",
+            "arr": "22:30",
             "stops": 0
           }
         ],
@@ -232,16 +216,7 @@
         "to": "ALC",
         "options": [
           {
-            "price": 222,
-            "airline": "SWISS",
-            "from": "DUB",
-            "to": "ALC",
-            "dep": "18:35",
-            "arr": "19:15",
-            "stops": 1
-          },
-          {
-            "price": 296,
+            "price": 268,
             "airline": "Ryanair UK",
             "from": "BFS",
             "to": "ALC",
@@ -250,7 +225,16 @@
             "stops": 0
           },
           {
-            "price": 379,
+            "price": 297,
+            "airline": "SWISS",
+            "from": "DUB",
+            "to": "ALC",
+            "dep": "18:35",
+            "arr": "19:15",
+            "stops": 1
+          },
+          {
+            "price": 371,
             "airline": "Ryanair",
             "from": "DUB",
             "to": "ALC",
@@ -260,97 +244,25 @@
           }
         ],
         "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTExLTI3agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQUxDGjASCjIwMjYtMTEtMjlqBwgBEgNBTENyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
-        "book_url": "https://www.skyscanner.net/transport/flights/dub/alc/261127/261129/"
+        "book_url": "https://www.skyscanner.net/transport/flights/bfs/alc/261127/261129/"
       }
     },
-    "Pe\u00f1\u00f3n de Ifach": {
-      "michel": {
-        "mode": "fly",
-        "to": "ALC",
-        "options": [
-          {
-            "price": 102,
-            "airline": "Wizz Air",
-            "from": "LTN",
-            "to": "ALC",
-            "dep": "16:30",
-            "arr": "20:10",
-            "stops": 0
-          },
-          {
-            "price": 124,
-            "airline": "easyJet",
-            "from": "LTN",
-            "to": "ALC",
-            "dep": "16:05",
-            "arr": "19:40",
-            "stops": 0
-          },
-          {
-            "price": 138,
-            "airline": "Ryanair",
-            "from": "LTN",
-            "to": "ALC",
-            "dep": "16:30",
-            "arr": "20:05",
-            "stops": 0
-          }
-        ],
-        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTExLTI3agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDQUxDGkISCjIwMjYtMTEtMjlqBwgBEgNBTENyBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ",
-        "book_url": "https://www.skyscanner.net/transport/flights/ltn/alc/261127/261129/"
-      },
-      "dan": {
-        "mode": "fly",
-        "to": "ALC",
-        "options": [
-          {
-            "price": 222,
-            "airline": "SWISS",
-            "from": "DUB",
-            "to": "ALC",
-            "dep": "18:35",
-            "arr": "19:15",
-            "stops": 1
-          },
-          {
-            "price": 296,
-            "airline": "Ryanair UK",
-            "from": "BFS",
-            "to": "ALC",
-            "dep": "06:00",
-            "arr": "09:55",
-            "stops": 0
-          },
-          {
-            "price": 379,
-            "airline": "Ryanair",
-            "from": "DUB",
-            "to": "ALC",
-            "dep": "16:35",
-            "arr": "20:20",
-            "stops": 0
-          }
-        ],
-        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTExLTI3agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQUxDGjASCjIwMjYtMTEtMjlqBwgBEgNBTENyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
-        "book_url": "https://www.skyscanner.net/transport/flights/dub/alc/261127/261129/"
-      }
-    },
-    "Roca Gris": {
+    "Montserrat": {
       "michel": {
         "mode": "fly",
         "to": "BCN",
         "options": [
           {
-            "price": 157,
-            "airline": "easyJet",
-            "from": "LTN",
+            "price": 123,
+            "airline": "Ryanair",
+            "from": "STN",
             "to": "BCN",
-            "dep": "17:00",
-            "arr": "20:10",
+            "dep": "21:15",
+            "arr": "00:25",
             "stops": 0
           },
           {
-            "price": 164,
+            "price": 154,
             "airline": "Ryanair",
             "from": "STN",
             "to": "BCN",
@@ -359,24 +271,33 @@
             "stops": 0
           },
           {
-            "price": 165,
-            "airline": "Wizz Air",
+            "price": 164,
+            "airline": "easyJet",
             "from": "LTN",
             "to": "BCN",
-            "dep": "06:00",
-            "arr": "09:05",
+            "dep": "17:00",
+            "arr": "20:10",
             "stops": 0
           }
         ],
         "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTExLTI3agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDQkNOGkISCjIwMjYtMTEtMjlqBwgBEgNCQ05yBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ",
-        "book_url": "https://www.skyscanner.net/transport/flights/ltn/bcn/261127/261129/"
+        "book_url": "https://www.skyscanner.net/transport/flights/stn/bcn/261127/261129/"
       },
       "dan": {
         "mode": "fly",
         "to": "BCN",
         "options": [
           {
-            "price": 155,
+            "price": 171,
+            "airline": "Vueling",
+            "from": "DUB",
+            "to": "BCN",
+            "dep": "12:50",
+            "arr": "16:30",
+            "stops": 0
+          },
+          {
+            "price": 197,
             "airline": "Ryanair",
             "from": "DUB",
             "to": "BCN",
@@ -385,21 +306,84 @@
             "stops": 0
           },
           {
-            "price": 188,
-            "airline": "Ryanair",
+            "price": 213,
+            "airline": "Aer Lingus",
             "from": "DUB",
             "to": "BCN",
-            "dep": "18:10",
-            "arr": "21:40",
+            "dep": "16:45",
+            "arr": "20:25",
+            "stops": 0
+          }
+        ],
+        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTExLTI3agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQkNOGjASCjIwMjYtMTEtMjlqBwgBEgNCQ05yBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
+        "book_url": "https://www.skyscanner.net/transport/flights/dub/bcn/261127/261129/"
+      }
+    },
+    "Roca Gris": {
+      "michel": {
+        "mode": "fly",
+        "to": "BCN",
+        "options": [
+          {
+            "price": 123,
+            "airline": "Ryanair",
+            "from": "STN",
+            "to": "BCN",
+            "dep": "21:15",
+            "arr": "00:25",
             "stops": 0
           },
           {
-            "price": 189,
+            "price": 154,
+            "airline": "Ryanair",
+            "from": "STN",
+            "to": "BCN",
+            "dep": "18:10",
+            "arr": "21:20",
+            "stops": 0
+          },
+          {
+            "price": 164,
+            "airline": "easyJet",
+            "from": "LTN",
+            "to": "BCN",
+            "dep": "17:00",
+            "arr": "20:10",
+            "stops": 0
+          }
+        ],
+        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTExLTI3agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDQkNOGkISCjIwMjYtMTEtMjlqBwgBEgNCQ05yBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ",
+        "book_url": "https://www.skyscanner.net/transport/flights/stn/bcn/261127/261129/"
+      },
+      "dan": {
+        "mode": "fly",
+        "to": "BCN",
+        "options": [
+          {
+            "price": 171,
+            "airline": "Vueling",
+            "from": "DUB",
+            "to": "BCN",
+            "dep": "12:50",
+            "arr": "16:30",
+            "stops": 0
+          },
+          {
+            "price": 197,
             "airline": "Ryanair",
             "from": "DUB",
             "to": "BCN",
-            "dep": "07:40",
-            "arr": "11:10",
+            "dep": "21:15",
+            "arr": "00:45",
+            "stops": 0
+          },
+          {
+            "price": 213,
+            "airline": "Aer Lingus",
+            "from": "DUB",
+            "to": "BCN",
+            "dep": "16:45",
+            "arr": "20:25",
             "stops": 0
           }
         ],
@@ -413,7 +397,7 @@
         "to": "ALC",
         "options": [
           {
-            "price": 102,
+            "price": 149,
             "airline": "Wizz Air",
             "from": "LTN",
             "to": "ALC",
@@ -422,7 +406,7 @@
             "stops": 0
           },
           {
-            "price": 124,
+            "price": 163,
             "airline": "easyJet",
             "from": "LTN",
             "to": "ALC",
@@ -431,12 +415,12 @@
             "stops": 0
           },
           {
-            "price": 138,
+            "price": 170,
             "airline": "Ryanair",
-            "from": "LTN",
+            "from": "STN",
             "to": "ALC",
-            "dep": "16:30",
-            "arr": "20:05",
+            "dep": "18:55",
+            "arr": "22:30",
             "stops": 0
           }
         ],
@@ -448,16 +432,7 @@
         "to": "ALC",
         "options": [
           {
-            "price": 222,
-            "airline": "SWISS",
-            "from": "DUB",
-            "to": "ALC",
-            "dep": "18:35",
-            "arr": "19:15",
-            "stops": 1
-          },
-          {
-            "price": 296,
+            "price": 268,
             "airline": "Ryanair UK",
             "from": "BFS",
             "to": "ALC",
@@ -466,7 +441,16 @@
             "stops": 0
           },
           {
-            "price": 379,
+            "price": 297,
+            "airline": "SWISS",
+            "from": "DUB",
+            "to": "ALC",
+            "dep": "18:35",
+            "arr": "19:15",
+            "stops": 1
+          },
+          {
+            "price": 371,
             "airline": "Ryanair",
             "from": "DUB",
             "to": "ALC",
@@ -476,7 +460,223 @@
           }
         ],
         "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTExLTI3agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQUxDGjASCjIwMjYtMTEtMjlqBwgBEgNBTENyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
-        "book_url": "https://www.skyscanner.net/transport/flights/dub/alc/261127/261129/"
+        "book_url": "https://www.skyscanner.net/transport/flights/bfs/alc/261127/261129/"
+      }
+    },
+    "Pe\u00f1\u00f3n de Ifach": {
+      "michel": {
+        "mode": "fly",
+        "to": "ALC",
+        "options": [
+          {
+            "price": 149,
+            "airline": "Wizz Air",
+            "from": "LTN",
+            "to": "ALC",
+            "dep": "16:30",
+            "arr": "20:10",
+            "stops": 0
+          },
+          {
+            "price": 163,
+            "airline": "easyJet",
+            "from": "LTN",
+            "to": "ALC",
+            "dep": "16:05",
+            "arr": "19:40",
+            "stops": 0
+          },
+          {
+            "price": 170,
+            "airline": "Ryanair",
+            "from": "STN",
+            "to": "ALC",
+            "dep": "18:55",
+            "arr": "22:30",
+            "stops": 0
+          }
+        ],
+        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTExLTI3agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDQUxDGkISCjIwMjYtMTEtMjlqBwgBEgNBTENyBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ",
+        "book_url": "https://www.skyscanner.net/transport/flights/ltn/alc/261127/261129/"
+      },
+      "dan": {
+        "mode": "fly",
+        "to": "ALC",
+        "options": [
+          {
+            "price": 268,
+            "airline": "Ryanair UK",
+            "from": "BFS",
+            "to": "ALC",
+            "dep": "06:00",
+            "arr": "09:55",
+            "stops": 0
+          },
+          {
+            "price": 297,
+            "airline": "SWISS",
+            "from": "DUB",
+            "to": "ALC",
+            "dep": "18:35",
+            "arr": "19:15",
+            "stops": 1
+          },
+          {
+            "price": 371,
+            "airline": "Ryanair",
+            "from": "DUB",
+            "to": "ALC",
+            "dep": "16:35",
+            "arr": "20:20",
+            "stops": 0
+          }
+        ],
+        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTExLTI3agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQUxDGjASCjIwMjYtMTEtMjlqBwgBEgNBTENyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
+        "book_url": "https://www.skyscanner.net/transport/flights/bfs/alc/261127/261129/"
+      }
+    },
+    "Anti Atlas": {
+      "michel": {
+        "mode": "fly",
+        "to": "AGA",
+        "options": [
+          {
+            "price": 201,
+            "airline": "Royal Air Maroc",
+            "from": "STN",
+            "to": "AGA",
+            "dep": "07:20",
+            "arr": "22:55",
+            "stops": 1
+          },
+          {
+            "price": 254,
+            "airline": "easyJet",
+            "from": "LTN",
+            "to": "AGA",
+            "dep": "08:00",
+            "arr": "12:00",
+            "stops": 0
+          },
+          {
+            "price": 346,
+            "airline": "Ryanair UK",
+            "from": "STN",
+            "to": "AGA",
+            "dep": "15:45",
+            "arr": "19:35",
+            "stops": 0
+          }
+        ],
+        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTExLTI3agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDQUdBGkISCjIwMjYtMTEtMjlqBwgBEgNBR0FyBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ",
+        "book_url": "https://www.skyscanner.net/transport/flights/stn/aga/261127/261129/"
+      },
+      "dan": {
+        "mode": "fly",
+        "to": "AGA",
+        "options": [
+          {
+            "price": 415,
+            "airline": "British Airways",
+            "from": "DUB",
+            "to": "AGA",
+            "dep": "20:35",
+            "arr": "11:20",
+            "stops": 1
+          },
+          {
+            "price": 416,
+            "airline": "Aer Lingus",
+            "from": "DUB",
+            "to": "AGA",
+            "dep": "06:15",
+            "arr": "22:55",
+            "stops": 2
+          },
+          {
+            "price": 2465,
+            "airline": "Lufthansa",
+            "from": "DUB",
+            "to": "AGA",
+            "dep": "05:10",
+            "arr": "13:30",
+            "stops": 1
+          }
+        ],
+        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTExLTI3agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQUdBGjASCjIwMjYtMTEtMjlqBwgBEgNBR0FyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
+        "book_url": "https://www.skyscanner.net/transport/flights/dub/aga/261127/261129/"
+      }
+    },
+    "Amzkhssan Wall": {
+      "michel": {
+        "mode": "fly",
+        "to": "AGA",
+        "options": [
+          {
+            "price": 201,
+            "airline": "Royal Air Maroc",
+            "from": "STN",
+            "to": "AGA",
+            "dep": "07:20",
+            "arr": "22:55",
+            "stops": 1
+          },
+          {
+            "price": 254,
+            "airline": "easyJet",
+            "from": "LTN",
+            "to": "AGA",
+            "dep": "08:00",
+            "arr": "12:00",
+            "stops": 0
+          },
+          {
+            "price": 346,
+            "airline": "Ryanair UK",
+            "from": "STN",
+            "to": "AGA",
+            "dep": "15:45",
+            "arr": "19:35",
+            "stops": 0
+          }
+        ],
+        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTExLTI3agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDQUdBGkISCjIwMjYtMTEtMjlqBwgBEgNBR0FyBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ",
+        "book_url": "https://www.skyscanner.net/transport/flights/stn/aga/261127/261129/"
+      },
+      "dan": {
+        "mode": "fly",
+        "to": "AGA",
+        "options": [
+          {
+            "price": 415,
+            "airline": "British Airways",
+            "from": "DUB",
+            "to": "AGA",
+            "dep": "20:35",
+            "arr": "11:20",
+            "stops": 1
+          },
+          {
+            "price": 416,
+            "airline": "Aer Lingus",
+            "from": "DUB",
+            "to": "AGA",
+            "dep": "06:15",
+            "arr": "22:55",
+            "stops": 2
+          },
+          {
+            "price": 2465,
+            "airline": "Lufthansa",
+            "from": "DUB",
+            "to": "AGA",
+            "dep": "05:10",
+            "arr": "13:30",
+            "stops": 1
+          }
+        ],
+        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTExLTI3agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQUdBGjASCjIwMjYtMTEtMjlqBwgBEgNBR0FyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
+        "book_url": "https://www.skyscanner.net/transport/flights/dub/aga/261127/261129/"
       }
     },
     "Mallorca": {
@@ -485,7 +685,7 @@
         "to": "PMI",
         "options": [
           {
-            "price": 192,
+            "price": 264,
             "airline": "easyJet",
             "from": "LGW",
             "to": "PMI",
@@ -494,16 +694,16 @@
             "stops": 0
           },
           {
-            "price": 282,
-            "airline": "easyJet",
+            "price": 275,
+            "airline": "British Airways",
             "from": "LGW",
             "to": "PMI",
-            "dep": "09:05",
-            "arr": "12:30",
+            "dep": "16:05",
+            "arr": "19:25",
             "stops": 0
           },
           {
-            "price": 313,
+            "price": 294,
             "airline": "British Airways",
             "from": "LCY",
             "to": "PMI",
@@ -520,7 +720,7 @@
         "to": "PMI",
         "options": [
           {
-            "price": 245,
+            "price": 249,
             "airline": "Iberia",
             "from": "DUB",
             "to": "PMI",
@@ -529,245 +729,29 @@
             "stops": 1
           },
           {
-            "price": 435,
-            "airline": "Vueling",
-            "from": "DUB",
-            "to": "PMI",
-            "dep": "12:50",
-            "arr": "23:50",
-            "stops": 1
-          },
-          {
-            "price": 461,
+            "price": 354,
             "airline": "Vueling",
             "from": "DUB",
             "to": "PMI",
             "dep": "12:50",
             "arr": "23:20",
             "stops": 1
+          },
+          {
+            "price": 448,
+            "airline": "SWISS",
+            "from": "DUB",
+            "to": "PMI",
+            "dep": "12:10",
+            "arr": "20:05",
+            "stops": 1
           }
         ],
         "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTExLTI3agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDUE1JGjASCjIwMjYtMTEtMjlqBwgBEgNQTUlyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
         "book_url": "https://www.skyscanner.net/transport/flights/dub/pmi/261127/261129/"
       }
-    },
-    "Montserrat": {
-      "michel": {
-        "mode": "fly",
-        "to": "BCN",
-        "options": [
-          {
-            "price": 157,
-            "airline": "easyJet",
-            "from": "LTN",
-            "to": "BCN",
-            "dep": "17:00",
-            "arr": "20:10",
-            "stops": 0
-          },
-          {
-            "price": 164,
-            "airline": "Ryanair",
-            "from": "STN",
-            "to": "BCN",
-            "dep": "18:10",
-            "arr": "21:20",
-            "stops": 0
-          },
-          {
-            "price": 165,
-            "airline": "Wizz Air",
-            "from": "LTN",
-            "to": "BCN",
-            "dep": "06:00",
-            "arr": "09:05",
-            "stops": 0
-          }
-        ],
-        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTExLTI3agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDQkNOGkISCjIwMjYtMTEtMjlqBwgBEgNCQ05yBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ",
-        "book_url": "https://www.skyscanner.net/transport/flights/ltn/bcn/261127/261129/"
-      },
-      "dan": {
-        "mode": "fly",
-        "to": "BCN",
-        "options": [
-          {
-            "price": 155,
-            "airline": "Ryanair",
-            "from": "DUB",
-            "to": "BCN",
-            "dep": "21:15",
-            "arr": "00:45",
-            "stops": 0
-          },
-          {
-            "price": 188,
-            "airline": "Ryanair",
-            "from": "DUB",
-            "to": "BCN",
-            "dep": "18:10",
-            "arr": "21:40",
-            "stops": 0
-          },
-          {
-            "price": 189,
-            "airline": "Ryanair",
-            "from": "DUB",
-            "to": "BCN",
-            "dep": "07:40",
-            "arr": "11:10",
-            "stops": 0
-          }
-        ],
-        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTExLTI3agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQkNOGjASCjIwMjYtMTEtMjlqBwgBEgNCQ05yBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
-        "book_url": "https://www.skyscanner.net/transport/flights/dub/bcn/261127/261129/"
-      }
-    },
-    "Anti Atlas": {
-      "michel": {
-        "mode": "fly",
-        "to": "AGA",
-        "options": [
-          {
-            "price": 221,
-            "airline": "easyJet",
-            "from": "LTN",
-            "to": "AGA",
-            "dep": "08:00",
-            "arr": "12:00",
-            "stops": 0
-          },
-          {
-            "price": 191,
-            "airline": "Royal Air Maroc",
-            "from": "STN",
-            "to": "AGA",
-            "dep": "07:20",
-            "arr": "16:10",
-            "stops": 1
-          },
-          {
-            "price": 317,
-            "airline": "Ryanair UK",
-            "from": "STN",
-            "to": "AGA",
-            "dep": "15:45",
-            "arr": "19:35",
-            "stops": 0
-          }
-        ],
-        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTExLTI3agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDQUdBGkISCjIwMjYtMTEtMjlqBwgBEgNBR0FyBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ",
-        "book_url": "https://www.skyscanner.net/transport/flights/ltn/aga/261127/261129/"
-      },
-      "dan": {
-        "mode": "fly",
-        "to": "AGA",
-        "options": [
-          {
-            "price": 387,
-            "airline": "Aer Lingus",
-            "from": "DUB",
-            "to": "AGA",
-            "dep": "06:15",
-            "arr": "22:55",
-            "stops": 2
-          },
-          {
-            "price": 968,
-            "airline": "Aer Lingus",
-            "from": "DUB",
-            "to": "AGA",
-            "dep": "06:15",
-            "arr": "16:10",
-            "stops": 2
-          },
-          {
-            "price": 1010,
-            "airline": "British Airways",
-            "from": "DUB",
-            "to": "AGA",
-            "dep": "18:25",
-            "arr": "11:20",
-            "stops": 1
-          }
-        ],
-        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTExLTI3agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDQUdBGjASCjIwMjYtMTEtMjlqBwgBEgNBR0FyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
-        "book_url": "https://www.skyscanner.net/transport/flights/dub/aga/261127/261129/"
-      }
-    },
-    "Calanques": {
-      "michel": {
-        "mode": "fly",
-        "to": "MRS",
-        "options": [
-          {
-            "price": 153,
-            "airline": "easyJet",
-            "from": "LGW",
-            "to": "MRS",
-            "dep": "17:20",
-            "arr": "20:15",
-            "stops": 0
-          },
-          {
-            "price": 224,
-            "airline": "Ryanair",
-            "from": "STN",
-            "to": "MRS",
-            "dep": "20:30",
-            "arr": "23:30",
-            "stops": 0
-          },
-          {
-            "price": 277,
-            "airline": "Ryanair",
-            "from": "STN",
-            "to": "MRS",
-            "dep": "11:00",
-            "arr": "14:00",
-            "stops": 0
-          }
-        ],
-        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhpCEgoyMDI2LTExLTI3agcIARIDTEdXagcIARIDTEhSagcIARIDTFROagcIARIDU1ROagcIARIDTENZcgcIARIDTVJTGkISCjIwMjYtMTEtMjlqBwgBEgNNUlNyBwgBEgNMR1dyBwgBEgNMSFJyBwgBEgNMVE5yBwgBEgNTVE5yBwgBEgNMQ1lAAUgBcAGYAQE&tfu=EgIIAQ",
-        "book_url": "https://www.skyscanner.net/transport/flights/lgw/mrs/261127/261129/"
-      },
-      "dan": {
-        "mode": "fly",
-        "to": "MRS",
-        "options": [
-          {
-            "price": 258,
-            "airline": "Air France",
-            "from": "DUB",
-            "to": "MRS",
-            "dep": "06:00",
-            "arr": "21:30",
-            "stops": 2
-          },
-          {
-            "price": 303,
-            "airline": "Air France",
-            "from": "DUB",
-            "to": "MRS",
-            "dep": "06:00",
-            "arr": "22:40",
-            "stops": 1
-          },
-          {
-            "price": 312,
-            "airline": "British Airways",
-            "from": "BHD",
-            "to": "MRS",
-            "dep": "16:50",
-            "arr": "17:45",
-            "stops": 1
-          }
-        ],
-        "view_url": "https://www.google.com/travel/flights?hl=en&gl=uk&curr=GBP&tfs=CBwQAhowEgoyMDI2LTExLTI3agcIARIDQkZTagcIARIDQkhEagcIARIDRFVCcgcIARIDTVJTGjASCjIwMjYtMTEtMjlqBwgBEgNNUlNyBwgBEgNCRlNyBwgBEgNCSERyBwgBEgNEVUJAAUgBcAGYAQE&tfu=EgIIAQ",
-        "book_url": "https://www.skyscanner.net/transport/flights/dub/mrs/261127/261129/"
-      }
     }
   },
-  "checked_at": "2026-11-25 16:41 UTC (Google Flights/SerpApi)",
-  "priced_at": "2026-11-25T16:41+00:00"
+  "checked_at": "2026-11-26 16:14 UTC (Google Flights/SerpApi)",
+  "priced_at": "2026-11-26T16:14+00:00"
 }
